@@ -39,14 +39,17 @@ docs_eng/                          — documentation (English)
   glossary.md                      — project glossary
 experiments/
   ARTIFACT_INVENTORY.md            — artifact inventory from Claude/ChatGPT dialogs
-  exp09a/                          — experiment 0.9a (analysis, sandbox)
-  phase1/                          — Phase 1: halo/feather experiments (code+data+report)
-  exp04/                           — Exp0.4: combined interest (code+protocol+data)
-  exp05/                           — Exp0.5: break oracle (code+data)
-  exp06/                           — Exp0.6: adaptive ρ switch (code)
-  exp07/                           — Exp0.7/0.7b: soft gate + two-stage (code+protocol+data)
-  exp08/                           — Exp0.8: dynamic schedule (code+design+data)
-  phase2/                          — Phase 2: probe, seam metric, crossspace (code+data+reports)
+  exp01_poc/                       — Exp0.1: PoC adaptive refinement (IPYNB)
+  exp02_cifar_poc/                 — Exp0.2: CIFAR PoC (IPYNB)
+  exp03_halo_diagnostic/           — Exp0.3: halo diagnostic (IPYNB)
+  exp04_combined_interest/         — Exp0.4: combined interest (code+protocol+data)
+  exp05_break_oracle/              — Exp0.5: break oracle (code+data)
+  exp06_adaptive_switch/           — Exp0.6: adaptive ρ switch (code)
+  exp07_gate/                      — Exp0.7/0.7b: soft gate + two-stage (code+protocol+data)
+  exp08_schedule/                  — Exp0.8: dynamic schedule (code+design+data)
+  exp09a_layout_sandbox/           — Exp0.9a: layout sandbox (code+data)
+  phase1_halo/                     — Phase 1: halo/feather hardening (code+data+report)
+  phase2_probe_seam/               — Phase 2: probe + seam metric (code+data+reports)
 ```
 
 ## Technologies
