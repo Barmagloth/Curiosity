@@ -20,9 +20,17 @@ Project-specific terms without which the documentation reads like gibberish. Org
 
 ## Space and Its Elements
 
-**Cell** — the elementary unit of discretization in a space of arbitrary dimensionality. Generalizations: a pixel is a cell in a 2D image, a voxel is a cell in a 3D volume. In Curiosity, state space X can be of any nature (features, latents, activations), hence the general term "cell" is used. In image experiments, cell = pixel.
+**Cell** — an atomic region of state space X, represented by a tree node at some depth. The cell's scale is determined by the path depth from root, not by a fixed grid size. If a node is not refined further, it is a leaf of the current tree. In image experiments, cell = pixel; in 3D, cell = voxel; but in Curiosity's general model, dimensionality is not fixed.
 
-**Tile** — a rectangular block of cells of fixed size at a given tree level. The basic unit the system operates on: tiles are selected for refinement, cached, and hashed. tile_size=16 means a 16×16 block of cells.
+**Leaf** — a tree node that is not split further at the current step and is processed as a terminal region. Leaf status is a property of the current tree state, not of the level itself: at the same level L, some nodes may be leaves while others are internal (already split).
+
+**Tile** — an operational unit of the pipeline: refine selection, caching, hashing, halo-blending. In a specific implementation, a tile may correspond to a node, a leaf, a batch of sibling nodes, or a spatial patch. A tile is **not** required to be rectangular or have a fixed size — this depends on the task. In image experiments, tile = square spatial block (e.g. 16×16 pixels). In the general case — a processing unit defined by the implementation.
+
+**Level L** — a node's depth in the refinement tree. Increasing level = finer partitioning of space. Dimensionality in Curiosity is not a fixed number of axes, but the depth of refinement.
+
+**Branching factor** — the number of child nodes produced by a split operation. A property of the refinement rule, not of the tile's geometric size. Not to be confused with `tile_size` (see below).
+
+**tile_size** — a task-specific parameter whose meaning depends on the domain: in image experiments = spatial extent of a block (tile_size=16 → 16×16 pixels); in abstract space it may refer to the processing batch size. **Not a synonym of branching factor** — these are different entities that were historically labeled similarly.
 
 **State space X** — the abstract state space that Curiosity operates on. Can be anything: image pixels, latent representations, neural network activations, any data. The system is not tied to any specific domain.
 
