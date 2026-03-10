@@ -14,22 +14,22 @@
 - [ ] `Curiosity experiment hierarchy` (MD) — **уже в гите** как `docs/experiment_hierarchy.md`
 
 ### Чат 3: «Фаза 2: проверка слепоты через probe-стратегии» (19 days ago)
-**Артефакты (15) — НУЖНО СКАЧАТЬ (Download all):**
-- [ ] `Phase2 full report` (MD) — финальный отчёт Phase 2
-- [ ] `Exp phase2 probe` (PY) — скрипт эксперимента probe
-- [ ] `Phase2 probe` (PNG) — график probe
-- [ ] `Phase2 quiet timeline` (PNG) — график quiet timeline
-- [ ] `Phase2 probe` (JSON) — данные probe
-- [ ] `Exp seam metric` (PY) — скрипт seam metric
-- [ ] `Phase2 seam metric` (PNG) — график seam metric
-- [ ] `Phase2 seam metric` (JSON) — данные seam metric
-- [ ] `Exp seam metric v2` (PY) — скрипт seam v2
-- [ ] `Seam metric v2` (PNG) — график seam v2
-- [ ] `Seam metric v2` (JSON) — данные seam v2
-- [ ] `Exp seam crossspace` (PY) — скрипт crossspace
-- [ ] `Seam crossspace` (PNG) — график crossspace
-- [ ] `Seam crossspace` (JSON) — данные crossspace
-- [ ] `Phase2 summary report` (MD) — сводный отчёт Phase 2
+**Артефакты (15) — ✅ СКАЧАНО (10 файлов в experiments/phase2/, 5 PNG ожидают):**
+- [x] `Phase2 full report` (MD) → `experiments/phase2/phase2_full_report.md`
+- [x] `Exp phase2 probe` (PY) → `experiments/phase2/exp_phase2_probe.py`
+- [ ] `Phase2 probe` (PNG) — график probe ⚠️ нужен ручной download
+- [ ] `Phase2 quiet timeline` (PNG) — график quiet timeline ⚠️ нужен ручной download
+- [x] `Phase2 probe` (JSON) → `experiments/phase2/phase2_probe.json`
+- [x] `Exp seam metric` (PY) → `experiments/phase2/exp_seam_metric.py`
+- [ ] `Phase2 seam metric` (PNG) — график seam metric ⚠️ нужен ручной download
+- [x] `Phase2 seam metric` (JSON) → `experiments/phase2/phase2_seam_metric.json`
+- [x] `Exp seam metric v2` (PY) → `experiments/phase2/exp_seam_metric_v2.py`
+- [ ] `Seam metric v2` (PNG) — график seam v2 ⚠️ нужен ручной download
+- [x] `Seam metric v2` (JSON) → `experiments/phase2/seam_metric_v2.json`
+- [x] `Exp seam crossspace` (PY) → `experiments/phase2/exp_seam_crossspace.py`
+- [ ] `Seam crossspace` (PNG) — график crossspace ⚠️ нужен ручной download
+- [x] `Seam crossspace` (JSON) → `experiments/phase2/seam_crossspace.json`
+- [x] `Phase2 summary report` (MD) → `experiments/phase2/phase2_summary_report.md`
 
 ### Чат 4: «Выбор структуры данных: Morton vs динамический список» (23 days ago)
 **Артефакты (6) — НУЖНО СКАЧАТЬ (Download all):**
@@ -93,6 +93,7 @@
 | Файл | Источник |
 |------|----------|
 | experiments/exp09a/ (3 файла) | Загружены пользователем |
+| experiments/phase2/ (10 файлов) | Claude чат 3 (скачано) |
 | docs/concept_v1.5.md | Claude + ChatGPT |
 | docs/concept_v1.4_historical.md | ChatGPT |
 | docs/workplan.md | ChatGPT |

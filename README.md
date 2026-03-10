@@ -38,6 +38,7 @@ docs/
 experiments/
   ARTIFACT_INVENTORY.md            — инвентарь артефактов из диалогов Claude/ChatGPT
   exp09a/                          — эксперимент 0.9a (analysis, sandbox)
+  phase2/                          — Phase 2: probe, seam metric, crossspace (код+данные+отчёты)
 ```
 
 ## Технологии

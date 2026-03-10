@@ -40,6 +40,7 @@ docs_eng/                          — documentation (English)
 experiments/
   ARTIFACT_INVENTORY.md            — artifact inventory from Claude/ChatGPT dialogs
   exp09a/                          — experiment 0.9a (analysis, sandbox)
+  phase2/                          — Phase 2: probe, seam metric, crossspace (code+data+reports)
 ```
 
 ## Technologies
