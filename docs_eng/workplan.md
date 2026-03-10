@@ -1,0 +1,120 @@
+# Work Plan (Curiosity)
+
+## Core Logic
+1. Only modules that provide standalone benefit survive: cache, detector, recomputation scheduler, profiling.
+2. Start not from a "smart tree" but from **data identity**: canonicalization → hash → cache.
+3. A tree without stability and metrics is a decorative bush. First define rules for change and measurement, then structure.
+
+---
+
+## A. Canonicalization + Content Hash of Tiles (First Viable Building Block)
+**Goal:** any data region (tile/patch/block) gets a stable ID and a "meaning" hash, not a "memory layout" hash.
+
+**Deliverables:**
+- `RegionPath`: path in tree (root → quadrants), stable byte serialization.
+- `TileSpec`: shape, dtype, contiguous/stride normalization, padding policy.
+- `Hash(tile)`: identical data → identical hash regardless of allocations.
+- Table: `hash -> cached_result` + hit/miss counters.
+
+**Tests:**
+- Same tile in different buffers → same hash.
+- Micro-change in data → hash changes (unless a separate "soft hash" mode is enabled).
+
+**Standalone value:** content-addressable cache for any pipeline.
+
+---
+
+## B. Change-Driven Recomputation Scheduler (Incrementality)
+**Goal:** skip work if input hasn't changed.
+
+**Deliverables:**
+- API: `compute(tile) -> result`, wrapper `cached_compute(tile, key=hash)`.
+- Task queue: recompute only changed tiles.
+- Log: which tiles were recomputed and why.
+
+**Metrics:**
+- Fraction of tiles recomputed on local change (expected to be small).
+- Latency/throughput with and without cache.
+
+**Standalone value:** incremental recomputation as an independent optimization.
+
+---
+
+## C. "Interestingness" as a Measurable Function (No Trees Yet)
+**Goal:** determine "where to compute" through measurements, not belief.
+
+**Deliverables:**
+- Tile-level scoring set:
+  - gradient / high-frequency energy,
+  - reconstruction error (if baseline/teacher available),
+  - activation/gradient variance.
+- Normalization of scores to a comparable scale.
+- Thresholds derived from distribution quantiles, not guesswork.
+
+**Standalone value:** ROI attention mask for compression, logging, adaptive upsampling, etc.
+
+---
+
+## D. Region Tree (Quadtree/Octree) + Split/Merge Rules
+**Goal:** formalize space partitioning so the scheduler can work with addresses.
+
+**Deliverables:**
+- Node: `path, level, bbox, hash, score, state`.
+- Operations:
+  - `split(node) -> 4 children`,
+  - `merge(children) -> parent`.
+- Stability:
+  - hysteresis (different split/merge thresholds),
+  - minimum "node age" before collapse,
+  - depth and/or change-rate limits.
+
+**Standalone value:** adaptive complexity markup for scenes/data.
+
+---
+
+## E. Delta-Only Recomputation and Boundary Stitching
+**Goal:** new leaves compute refinement, old ones are untouched, boundaries are reconciled.
+
+**Deliverables:**
+- Explicit "delta" definition (e.g., residual relative to coarse level).
+- Recomputation policy:
+  - `new_leaves`,
+  - `changed_hash_leaves`,
+  - `boundary_neighbors`.
+- Level stitching:
+  - overlap/padding,
+  - boundary blending (seamless).
+
+**Standalone value:** boundary-only refinement as an independent optimization.
+
+---
+
+## F. Benchmark + Management Overhead (Anti-Self-Deception)
+**Goal:** measure whether tree/queue/hash overhead eats the gain.
+
+**Deliverables:**
+- Per-stage profiling: hashing / scheduling / compute / merge.
+- Balance map: time and memory by component.
+- Scenarios:
+  - smooth scene (should be cheap),
+  - one sharp object (local subdivision),
+  - noise (should not subdivide infinitely).
+
+---
+
+## Mini-Roadmap (Each Step = A Standalone Trophy)
+1. Hash+Cache for tiles (canonicalization, stable key, hit/miss, log).
+2. Incremental scheduler (recompute only what changed).
+3. Interestingness scoring (metrics + normalization + quantile thresholds).
+4. Tree + hysteresis (split/merge without jitter).
+5. Recomputation policy (new/changed/boundary) + gain measurement.
+6. Delta + boundary stitching (overlap/blend for seamless output).
+7. Optimizations (batching, kernels, GPU specifics) — only after stabilization.
+
+---
+
+## What Remains Useful Even If "The Whole Thing" Doesn't Pan Out
+- Content-addressable cache.
+- Incremental recomputation.
+- ROI "interestingness" mask.
+- Stable adaptive complexity markup.
