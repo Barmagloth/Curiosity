@@ -39,6 +39,10 @@ experiments/
   ARTIFACT_INVENTORY.md            — инвентарь артефактов из диалогов Claude/ChatGPT
   exp09a/                          — эксперимент 0.9a (analysis, sandbox)
   phase1/                          — Phase 1: halo/feather experiments (код+данные+отчёт)
+  exp04/                           — Exp0.4: combined interest (код+протокол+данные)
+  exp05/                           — Exp0.5: break oracle (код+данные)
+  exp06/                           — Exp0.6: adaptive ρ switch (код)
+  exp07/                           — Exp0.7/0.7b: soft gate + two-stage (код+протокол+данные)
   exp08/                           — Exp0.8: dynamic schedule (код+дизайн+данные)
   phase2/                          — Phase 2: probe, seam metric, crossspace (код+данные+отчёты)
 ```

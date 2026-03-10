@@ -51,23 +51,32 @@
 - ~~`Phase1 summary report` (MD)~~ — superseded by _final (hardened)
 
 ### Чат 5: «Нужен ли динамический schedule для управления бюджетом» (24 days ago)
-**Артефакты — ✅ СКАЧАНО (3 файла в experiments/exp08/, PNG ожидают):**
+**Артефакты — ✅ ВСЕ СКАЧАНО:**
 - [x] `Exp08v5 schedule` (PY) → `experiments/exp08/exp08v5_schedule.py`
 - [x] `Exp08 design` (MD) → `experiments/exp08/exp08_design.md`
-- [ ] `Exp08 clean` (PNG) — график clean ⚠️ ожидает ручной download
-- [ ] `Exp08 shift` (PNG) — график shift ⚠️ ожидает ручной download
+- [x] `Exp08 clean` (PNG) → `experiments/exp08/exp08_clean.png`
+- [x] `Exp08 shift` (PNG) → `experiments/exp08/exp08_shift.png`
+- [x] `Exp08 noise` (PNG) → `experiments/exp08/exp08_noise.png`
+- [x] `Exp08 spatvar` (PNG) → `experiments/exp08/exp08_spatvar.png`
+- [x] `Probe ablation` (PNG) → `experiments/exp08/probe_ablation.png`
 - [x] `Exp08v5 summary` (JSON) → `experiments/exp08/exp08v5_summary.json`
 - ~~`Curiosity concept v1.5` (MD)~~ — уже в гите, идентичен (до pixel→cell правок)
 
 ### Чат 6: «Комбинированная интересность в адаптивной иерархии» (25 days ago)
-**Артефакты (7) — НУЖНО СКАЧАТЬ:**
-- [ ] `Exp04 protocol` (MD) — протокол Exp0.4
-- [ ] `Exp04 combined interest` (PY) — скрипт Exp0.4
-- [ ] `Run metrics` (JSON) — данные Exp0.4
-- [ ] `Exp05 break oracle` (PY) — скрипт Exp0.5
-- [ ] `Metrics noise` (JSON) — данные noise
-- [ ] `Exp07b twostage` (PY) — скрипт Exp0.7b
-- [ ] `Exp07 protocol` (MD) — протокол Exp0.7
+**Артефакты (13) — ✅ ВСЕ СКАЧАНО (по 4 подпапкам exp04–exp07):**
+- [x] `Exp04 protocol` (MD) → `experiments/exp04/exp04_protocol.md`
+- [x] `Exp04 combined interest` (PY) → `experiments/exp04/exp04_combined_interest.py`
+- [x] `Run metrics` (JSON) → `experiments/exp04/run_metrics.json`
+- [x] `Metrics clean` (JSON) → `experiments/exp04/metrics_clean.json`
+- [x] `Metrics alias` (JSON) → `experiments/exp04/metrics_alias.json`
+- [x] `Metrics blur` (JSON) → `experiments/exp04/metrics_blur.json`
+- [x] `Exp05 break oracle` (PY) → `experiments/exp05/exp05_break_oracle.py`
+- [x] `Metrics noise` (JSON) → `experiments/exp05/metrics_noise.json`
+- [x] `Exp06 adaptive` (PY) → `experiments/exp06/exp06_adaptive.py`
+- [x] `Exp07 protocol` (MD) → `experiments/exp07/exp07_protocol.md`
+- [x] `Exp07 soft gate` (PY) → `experiments/exp07/exp07_soft_gate.py`
+- [x] `Exp07b twostage` (PY) → `experiments/exp07/exp07b_twostage.py`
+- [x] `Exp07 summary` (JSON) → `experiments/exp07/exp07_summary.json`
 
 ### Чат 7: «Adaptive algorithm performance evaluation» (26 days ago)
 **Артефакты (1) — НУЖНО СКАЧАТЬ:**
@@ -105,7 +114,11 @@
 | experiments/exp09a/ (3 файла) | Загружены пользователем |
 | experiments/phase2/ (15 файлов) | Claude чат 3 (✅ полностью) |
 | experiments/phase1/ (14 файлов) | Claude чат 4 (✅ полностью, 2 superseded отброшены) |
-| experiments/exp08/ (3 файла) | Claude чат 5 (скачано, PNG ожидают) |
+| experiments/exp08/ (8 файлов) | Claude чат 5 (✅ полностью) |
+| experiments/exp04/ (6 файлов) | Claude чат 6 |
+| experiments/exp05/ (2 файла) | Claude чат 6 |
+| experiments/exp06/ (1 файл) | Claude чат 6 |
+| experiments/exp07/ (4 файла) | Claude чат 6 |
 | docs/concept_v1.5.md | Claude + ChatGPT |
 | docs/concept_v1.4_historical.md | ChatGPT |
 | docs/workplan.md | ChatGPT |
@@ -118,7 +131,7 @@
 **Высокий (код + данные экспериментов):**
 1. ~~Чат 3 Claude~~ — ✅ done
 2. ~~Чат 4 Claude~~ — ✅ done
-3. Чат 6 Claude — 7 файлов Exp0.4 + Exp0.5 + Exp0.7
+3. ~~Чат 6 Claude~~ — ✅ done
 4. ~~Чат 5 Claude~~ — ✅ done (PNG ожидают)
 5. Чат 7 Claude — 1 notebook Exp0.3
 
