@@ -51,13 +51,13 @@
 - ~~`Phase1 summary report` (MD)~~ — superseded by _final (hardened)
 
 ### Чат 5: «Нужен ли динамический schedule для управления бюджетом» (24 days ago)
-**Артефакты (~7) — НУЖНО СКАЧАТЬ:**
-- [ ] `Exp08v5 schedule` (PY) — скрипт Exp0.8 v5
-- [ ] `Exp08 design` (MD) — дизайн-документ Exp0.8
-- [ ] `Exp08 clean` (PNG) — график clean
-- [ ] `Exp08 shift` (PNG) — график shift
-- [ ] `Exp08v5 summary` (MD?) — сводка v5
-- [ ] `Curiosity concept v1.5` (MD) ×2 — **уже в гите** (промежуточные версии)
+**Артефакты — ✅ СКАЧАНО (3 файла в experiments/exp08/, PNG ожидают):**
+- [x] `Exp08v5 schedule` (PY) → `experiments/exp08/exp08v5_schedule.py`
+- [x] `Exp08 design` (MD) → `experiments/exp08/exp08_design.md`
+- [ ] `Exp08 clean` (PNG) — график clean ⚠️ ожидает ручной download
+- [ ] `Exp08 shift` (PNG) — график shift ⚠️ ожидает ручной download
+- [x] `Exp08v5 summary` (JSON) → `experiments/exp08/exp08v5_summary.json`
+- ~~`Curiosity concept v1.5` (MD)~~ — уже в гите, идентичен (до pixel→cell правок)
 
 ### Чат 6: «Комбинированная интересность в адаптивной иерархии» (25 days ago)
 **Артефакты (7) — НУЖНО СКАЧАТЬ:**
@@ -105,6 +105,7 @@
 | experiments/exp09a/ (3 файла) | Загружены пользователем |
 | experiments/phase2/ (15 файлов) | Claude чат 3 (✅ полностью) |
 | experiments/phase1/ (14 файлов) | Claude чат 4 (✅ полностью, 2 superseded отброшены) |
+| experiments/exp08/ (3 файла) | Claude чат 5 (скачано, PNG ожидают) |
 | docs/concept_v1.5.md | Claude + ChatGPT |
 | docs/concept_v1.4_historical.md | ChatGPT |
 | docs/workplan.md | ChatGPT |
@@ -118,7 +119,7 @@
 1. ~~Чат 3 Claude~~ — ✅ done
 2. ~~Чат 4 Claude~~ — ✅ done
 3. Чат 6 Claude — 7 файлов Exp0.4 + Exp0.5 + Exp0.7
-4. Чат 5 Claude — ~5 файлов Exp0.8
+4. ~~Чат 5 Claude~~ — ✅ done (PNG ожидают)
 5. Чат 7 Claude — 1 notebook Exp0.3
 
 **Средний (ChatGPT чаты — возможны canvas-артефакты):**
