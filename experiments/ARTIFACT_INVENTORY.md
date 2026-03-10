@@ -14,29 +14,34 @@
 - [ ] `Curiosity experiment hierarchy` (MD) — **уже в гите** как `docs/experiment_hierarchy.md`
 
 ### Чат 3: «Фаза 2: проверка слепоты через probe-стратегии» (19 days ago)
-**Артефакты (15) — ✅ СКАЧАНО (10 файлов в experiments/phase2/, 5 PNG ожидают):**
+**Артефакты (15) — ✅ ВСЕ СКАЧАНО:**
 - [x] `Phase2 full report` (MD) → `experiments/phase2/phase2_full_report.md`
 - [x] `Exp phase2 probe` (PY) → `experiments/phase2/exp_phase2_probe.py`
-- [ ] `Phase2 probe` (PNG) — график probe ⚠️ нужен ручной download
-- [ ] `Phase2 quiet timeline` (PNG) — график quiet timeline ⚠️ нужен ручной download
+- [x] `Phase2 probe` (PNG) → `experiments/phase2/phase2_probe.png`
+- [x] `Phase2 quiet timeline` (PNG) → `experiments/phase2/phase2_quiet_timeline.png`
 - [x] `Phase2 probe` (JSON) → `experiments/phase2/phase2_probe.json`
 - [x] `Exp seam metric` (PY) → `experiments/phase2/exp_seam_metric.py`
-- [ ] `Phase2 seam metric` (PNG) — график seam metric ⚠️ нужен ручной download
+- [x] `Phase2 seam metric` (PNG) → `experiments/phase2/phase2_seam_metric.png`
 - [x] `Phase2 seam metric` (JSON) → `experiments/phase2/phase2_seam_metric.json`
 - [x] `Exp seam metric v2` (PY) → `experiments/phase2/exp_seam_metric_v2.py`
-- [ ] `Seam metric v2` (PNG) — график seam v2 ⚠️ нужен ручной download
+- [x] `Seam metric v2` (PNG) → `experiments/phase2/seam_metric_v2.png`
 - [x] `Seam metric v2` (JSON) → `experiments/phase2/seam_metric_v2.json`
 - [x] `Exp seam crossspace` (PY) → `experiments/phase2/exp_seam_crossspace.py`
-- [ ] `Seam crossspace` (PNG) — график crossspace ⚠️ нужен ручной download
+- [x] `Seam crossspace` (PNG) → `experiments/phase2/seam_crossspace.png`
 - [x] `Seam crossspace` (JSON) → `experiments/phase2/seam_crossspace.json`
 - [x] `Phase2 summary report` (MD) → `experiments/phase2/phase2_summary_report.md`
 
 ### Чат 4: «Выбор структуры данных: Morton vs динамический список» (23 days ago)
-**Артефакты — ✅ СКАЧАНО (6 файлов в experiments/phase1/, 3 PNG ожидают, 2 superseded):**
+**Артефакты — ✅ ВСЕ СКАЧАНО (2 superseded отброшены):**
 - [x] `Phase1 summary report final` (MD) → `experiments/phase1/phase1_summary_report_final.md`
-- [ ] `Phase1 a1 final` (PNG) — график A1 ⚠️ нужен ручной download
-- [ ] `Phase1 a2ext v2` (PNG) — график A2 extended ⚠️ нужен ручной download
-- [ ] `Phase1 hardened` (PNG) — график hardened ⚠️ нужен ручной download
+- [x] `Phase1 A1 final` (PNG) → `experiments/phase1/phase1_A1_final.png`
+- [x] `Phase1 a2ext v2` (PNG) → `experiments/phase1/phase1_a2ext_v2.png`
+- [x] `Phase1 a2ext curves` (PNG) → `experiments/phase1/phase1_a2ext_curves.png`
+- [x] `Phase1 a2ext rmin vs spectral` (PNG) → `experiments/phase1/phase1_a2ext_rmin_vs_spectral.png`
+- [x] `Phase1 analytical vs empirical` (PNG) → `experiments/phase1/phase1_analytical_vs_empirical.png`
+- [x] `Phase1 hardened` (PNG) → `experiments/phase1/phase1_hardened.png`
+- [x] `Phase1 v3 spatial` (PNG) → `experiments/phase1/phase1_v3_spatial.png`
+- [x] `Phase1 v3 summary` (PNG) → `experiments/phase1/phase1_v3_summary.png`
 - [x] `Exp phase1 hardened` (PY) → `experiments/phase1/exp_phase1_hardened.py`
 - [x] `Exp phase1 a2ext v2` (PY) → `experiments/phase1/exp_phase1_a2ext_v2.py`
 - [x] `Exp phase1 v3` (PY) → `experiments/phase1/exp_phase1_v3.py`
@@ -98,8 +103,8 @@
 | Файл | Источник |
 |------|----------|
 | experiments/exp09a/ (3 файла) | Загружены пользователем |
-| experiments/phase2/ (10 файлов) | Claude чат 3 (скачано) |
-| experiments/phase1/ (6 файлов) | Claude чат 4 (скачано, 2 superseded отброшены) |
+| experiments/phase2/ (15 файлов) | Claude чат 3 (✅ полностью) |
+| experiments/phase1/ (14 файлов) | Claude чат 4 (✅ полностью, 2 superseded отброшены) |
 | docs/concept_v1.5.md | Claude + ChatGPT |
 | docs/concept_v1.4_historical.md | ChatGPT |
 | docs/workplan.md | ChatGPT |
@@ -110,8 +115,8 @@
 ## Приоритет скачивания
 
 **Высокий (код + данные экспериментов):**
-1. Чат 3 Claude — 15 файлов Phase 2 (probe + seam metric + crossspace)
-2. Чат 4 Claude — 6 файлов Phase 1 (halo experiments)
+1. ~~Чат 3 Claude~~ — ✅ done
+2. ~~Чат 4 Claude~~ — ✅ done
 3. Чат 6 Claude — 7 файлов Exp0.4 + Exp0.5 + Exp0.7
 4. Чат 5 Claude — ~5 файлов Exp0.8
 5. Чат 7 Claude — 1 notebook Exp0.3
