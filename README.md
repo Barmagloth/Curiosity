@@ -28,9 +28,11 @@ Curiosity — исследовательский ML-проект по созда
 README.md                          — этот файл
 docs/
   concept_v1.5.md                  — концептуальный документ (канонический)
+  concept_v1.4_historical.md       — ранняя версия концепции (после Exp0.2–0.3)
   experiment_results.md            — результаты всех экспериментов Exp0.1–Exp0.8
   experiment_hierarchy.md          — граф зависимостей экспериментов и roadmap
   architecture.md                  — архитектура системы и ключевые решения
+  workplan.md                      — план реализации (модули A–F, мини-роадмап)
   handoff.md                       — документ передачи проекта
 ```
 
