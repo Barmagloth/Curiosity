@@ -37,6 +37,9 @@ docs_eng/                          — documentation (English)
   workplan.md                      — implementation plan (modules A–F, mini-roadmap)
   handoff.md                       — project handoff document
   glossary.md                      — project glossary
+experiments/
+  ARTIFACT_INVENTORY.md            — artifact inventory from Claude/ChatGPT dialogs
+  exp09a/                          — experiment 0.9a (analysis, sandbox)
 ```
 
 ## Technologies

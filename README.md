@@ -35,6 +35,9 @@ docs/
   workplan.md                      — план реализации (модули A–F, мини-роадмап)
   handoff.md                       — документ передачи проекта
   glossary.md                      — глоссарий терминов проекта
+experiments/
+  ARTIFACT_INVENTORY.md            — инвентарь артефактов из диалогов Claude/ChatGPT
+  exp09a/                          — эксперимент 0.9a (analysis, sandbox)
 ```
 
 ## Технологии
