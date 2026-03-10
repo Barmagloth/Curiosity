@@ -6,6 +6,28 @@ Updated after Phase 1–2 (halo, probe, seam metric) and Exp0.9a sandbox (layout
 
 ---
 
+# Mapping: folders → questions → validation plan
+
+| Folder | Question | Validation plan | Status |
+|--------|----------|-----------------|--------|
+| `exp01_poc/` | Does adaptive refinement work? | — | ✅ Yes (PoC) |
+| `exp02_cifar_poc/` | (same, CIFAR) | — | ✅ Yes |
+| `exp03_halo_diagnostic/` | Is halo required? | — | ✅ Yes |
+| `phase1_halo/` | Halo: r_min, blending, hardened | §A (A1+A2+A3) | ✅ Closed |
+| `exp04_combined_interest/` | Is combined interest needed? | — | ✅ Yes |
+| `exp05_break_oracle/` | Oracle-free verification | — | ✅ Yes |
+| `exp06_adaptive_switch/` | Auto-switch ρ | — | ✅ Yes |
+| `exp07_gate/` | Two-stage gate | — | ✅ Yes |
+| `exp08_schedule/` | Schedule + governor + probe | — | ✅ Closed |
+| `phase2_probe_seam/` | Probe + SeamScore validation | §B (B1+B2) | ✅ Closed |
+| `exp09a_layout_sandbox/` | Layout: grid vs compact (microbench) | §C (C3/Exp0.9a) | ✅ Partial |
+| *(future)* | Layout GPU end-to-end | §C → P0 (0.9b0+) | 🔓 Open |
+
+**Note:** §A/B/C are sections of the validation plan written between Exp0.3 and Phase 1.
+In §B, "B1/B2" = probe scenes. In P1 below, "B1/B2/B3" = tree compression. Different contexts.
+
+---
+
 # Closed (No Further Experiments Needed)
 
 | # | Question | Status | Source |
@@ -205,6 +227,56 @@ P0 (GPU layout)
 7. **P3a/P3b** — tree semantics (after P1)
 8. **C-pre** — profile cluster check (after P3, cheap)
 9. **P4** — "don't break features" (after everything)
+
+---
+
+# Naming Convention (v3+)
+
+Historically, numbering grew organically: chronological IDs (0.1–0.9a),
+validation plan sections (§A/B/C), roadmap levels (P0–P4),
+sub-experiments within levels (B1–B3 in P1). Result: confusion.
+
+**Rules for new experiments:**
+
+1. **Single sequential numbering.** Next experiment = `exp10`.
+   Integer numbering, no dots (dots confused with sub-versions).
+   Number = creation order. Never reused.
+
+2. **Sub-experiments use lowercase letter.** `exp10a`, `exp10b`, `exp10c`.
+   One series = one numeric root.
+
+3. **Folder = `exp{N}{suffix}_{short_name}/`.** Examples:
+   `exp10_buffer_scaling/`, `exp10a_synthetic_kernel/`, `exp11_dirty_signatures/`.
+
+4. **Roadmap mapping — only in this document**, not in folder names.
+   Folders don't contain "P0" or "B2" in their names.
+
+5. **Each folder contains README.md** (short, 5–15 lines):
+   - Question/hypothesis (one sentence)
+   - Kill criteria
+   - Link to roadmap level (P0/P1/P2/...)
+   - Status (open / closed / killed)
+
+6. **Legacy names are not renamed.** `phase1_halo/`, `phase2_probe_seam/`,
+   `exp09a_layout_sandbox/` — historical legacy, linked to new numbering
+   via the mapping table above.
+
+**Working order → experiment number mapping:**
+
+| Step | Roadmap | Description | Future exp# |
+|------|---------|-------------|-------------|
+| 1 | P0 | buffer-scaling probe (kill/go compact) | exp10 |
+| 2 | P0 | end-to-end pipeline grid vs compact | exp10a/b/c |
+| 3 | P1-B2 | dirty signatures | exp11 |
+| 4 | P2a | sensitivity sweep of gate thresholds | exp12 |
+| 5 | P1-B1 | segment compression | exp13 |
+| 6 | P1-B3 | anchors + rebuild | exp14 |
+| 7 | P3a/b | tree semantics | exp15 |
+| 8 | C-pre | profile cluster check | exp16 |
+| 9 | P4 | "don't break features" | exp17 |
+
+Numbers are provisional. If an unplanned experiment arises between steps,
+it gets the next free number.
 
 ---
 
