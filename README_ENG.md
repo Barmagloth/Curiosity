@@ -47,9 +47,9 @@ experiments/
   exp06_adaptive_switch/           — Exp0.6: adaptive ρ switch (code)
   exp07_gate/                      — Exp0.7/0.7b: soft gate + two-stage (code+protocol+data)
   exp08_schedule/                  — Exp0.8: dynamic schedule (code+design+data)
-  exp09a_layout_sandbox/           — Exp0.9a: layout sandbox (code+data)
-  phase1_halo/                     — Phase 1: halo/feather hardening (code+data+report)
-  phase2_probe_seam/               — Phase 2: probe + seam metric (code+data+reports)
+  exp09a_layout_sandbox/           — Exp0.9a: layout microbench (validation plan §C / C3)
+  phase1_halo/                     — Validation plan §A (A1+A2+A3): halo/overlap hardening
+  phase2_probe_seam/               — Validation plan §B (B1+B2): probe + seam metric
 ```
 
 ## Technologies

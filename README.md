@@ -45,9 +45,9 @@ experiments/
   exp06_adaptive_switch/           — Exp0.6: adaptive ρ switch (код)
   exp07_gate/                      — Exp0.7/0.7b: soft gate + two-stage (код+протокол+данные)
   exp08_schedule/                  — Exp0.8: dynamic schedule (код+дизайн+данные)
-  exp09a_layout_sandbox/           — Exp0.9a: layout sandbox (код+данные)
-  phase1_halo/                     — Phase 1: halo/feather hardening (код+данные+отчёт)
-  phase2_probe_seam/               — Phase 2: probe + seam metric (код+данные+отчёты)
+  exp09a_layout_sandbox/           — Exp0.9a: layout microbench (план §C / C3)
+  phase1_halo/                     — План валидации §A (A1+A2+A3): halo/overlap hardening
+  phase2_probe_seam/               — План валидации §B (B1+B2): probe + seam metric
 ```
 
 ## Технологии
