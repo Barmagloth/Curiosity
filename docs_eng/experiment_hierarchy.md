@@ -154,9 +154,42 @@ P3. Tree semantics
 
 ---
 
+## Level SC: Scale-Consistency Invariant (v1.6)
+
+Partially formalizes the meta-question from v1.5 "how not to break features." Depends on P0 (pipeline), independent of P1/P2/P3. Can run in parallel.
+
+### SC-baseline. Verification of Metrics D_parent / D_hf
+
+```
+SC-baseline. Scale-Consistency Verification
+├── SC-0: fix pair (R, Up), verify R idempotence
+├── SC-1: prepare positive (strong + empirical) and negative baselines
+├── SC-2: compute D_parent, D_hf across all cases
+├── SC-3: analyze separability (AUC, effect size, quantile separation)
+│         globally + by depth + by structure type
+├── SC-4: kill criterion — if separability < thresholds → review metrics/(R,Up)
+└── SC-5: set data-driven τ_parent[L] (if acceptance passes)
+```
+
+**Kill criterion:** Global ROC-AUC ≥ 0.75, Depth-conditioned AUC ≥ 0.65, Effect size ≥ medium (d ≥ 0.5). If not met — change metrics, **do not** tweak thresholds.
+
+**SC-baseline output:** validated thresholds τ_parent[L] or decision to revise metric construction.
+
+Full protocol: `docs/scale_consistency_verification_protocol_v1.0.md`.
+
+### SC-enforce. Enforcement (after SC-baseline)
+
+```
+SC-enforce. Scale-Consistency Enforcement
+├── damp delta / reject split / increase local strictness when D_parent > τ_parent
+└── D_parent as contextual signal in ρ (not self-sufficient)
+```
+
+---
+
 ## Level 4: Global Coherence ("Don't Break Features")
 
-Depends on **everything above**. Meta-question from Concept v1.5.
+Depends on **everything above** + SC-baseline. Meta-question from Concept v1.5, partially formalized through Scale-Consistency Invariant (Concept v1.6, section 8).
 
 ### P4. Representation Coherence Under Non-Uniform Depth
 
@@ -167,6 +200,7 @@ P4. "Don't break features"
 │        (classifier / autoencoder)
 │        compare with dense-refined and coarse-only
 │        question: does downstream break under non-uniform depth?
+│        (with scale-consistency enforcement vs. without)
 │
 ├── P4b: matryoshka invariant
 │        verify that the representation at any "matryoshka" level
@@ -175,7 +209,7 @@ P4. "Don't break features"
 │
 └── P4c: guarantee mechanism (if P4a/b show a problem)
          options: padding/projection layer, consistency loss,
-         depth-aware normalization
+         depth-aware normalization, stricter τ_parent
 ```
 
 **P4 output:** either "non-uniform depth doesn't break downstream" (and the question is closed), or a concrete protection mechanism.
@@ -204,15 +238,15 @@ If the contract is not met — freeze is indefinite.
 P0 (GPU layout)
  ├──→ P1 (tree compression)  ──→ P3 (tree semantics)
  │                                       │
- └──→ P2 (ρ auto-tuning)                ├──→ C-pre
-                                          │
-                              P4 ("don't break features")
-                              depends on P0 + P1 + P2 + P3
+ ├──→ P2 (ρ auto-tuning)                ├──→ C-pre
+ │                                        │
+ └──→ SC-baseline ──→ SC-enforce ────────→ P4 ("don't break features")
+                                           depends on P0 + P1 + P2 + P3 + SC
 ```
 
 **Critical path:** P0 → P1 → P3 → P4.
 
-**Parallel branch:** P2 (auto-tuning) runs in parallel with P1; both are needed before P4.
+**Parallel branches:** P2 and SC-baseline — both run in parallel with P1, all are needed before P4.
 
 ---
 
@@ -222,11 +256,13 @@ P0 (GPU layout)
 2. **P0: 0.9b/0.9c/0.9h** — if compact survives; otherwise lock in grid
 3. **P1-B2** — dirty signatures (parallel with P0 GPU part, runs on CPU)
 4. **P2a** — sensitivity sweep of gate thresholds (parallel with P1)
-5. **P1-B1** — segment compression (after B2)
-6. **P1-B3** — anchors + rebuild (after B1+B2)
-7. **P3a/P3b** — tree semantics (after P1)
-8. **C-pre** — profile cluster check (after P3, cheap)
-9. **P4** — "don't break features" (after everything)
+5. **SC-baseline** — verification of D_parent/D_hf, set τ_parent (parallel with P1)
+6. **P1-B1** — segment compression (after B2)
+7. **P1-B3** — anchors + rebuild (after B1+B2)
+8. **SC-enforce** — enforcement of scale-consistency (after SC-baseline)
+9. **P3a/P3b** — tree semantics (after P1)
+10. **C-pre** — profile cluster check (after P3, cheap)
+11. **P4** — "don't break features" (after everything + SC)
 
 ---
 
@@ -269,11 +305,13 @@ sub-experiments within levels (B1–B3 in P1). Result: confusion.
 | 2 | P0 | end-to-end pipeline grid vs compact | exp10a/b/c |
 | 3 | P1-B2 | dirty signatures | exp11 |
 | 4 | P2a | sensitivity sweep of gate thresholds | exp12 |
-| 5 | P1-B1 | segment compression | exp13 |
-| 6 | P1-B3 | anchors + rebuild | exp14 |
-| 7 | P3a/b | tree semantics | exp15 |
-| 8 | C-pre | profile cluster check | exp16 |
-| 9 | P4 | "don't break features" | exp17 |
+| 5 | SC-baseline | verification of D_parent/D_hf, τ_parent | exp12a |
+| 6 | P1-B1 | segment compression | exp13 |
+| 7 | P1-B3 | anchors + rebuild | exp14 |
+| 8 | SC-enforce | enforcement of scale-consistency | exp14a |
+| 9 | P3a/b | tree semantics | exp15 |
+| 10 | C-pre | profile cluster check | exp16 |
+| 11 | P4 | "don't break features" | exp17 |
 
 Numbers are provisional. If an unplanned experiment arises between steps,
 it gets the next free number.

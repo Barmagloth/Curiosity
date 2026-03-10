@@ -84,11 +84,13 @@ Project-specific terms without which the documentation reads like gibberish. Org
 
 ## Probe and Exploration
 
-**Probe** — a dedicated portion of the budget (5–10%) for exploring unknown regions. Without probe, the system only sees what it has already found (exploitation-only = structural blindness).
+**Probe** — a dedicated portion of the budget (5–10%) for exploring unknown regions. Without probe, the system only sees what it has already found (exploitation-only = structural blindness). As of v1.6, probe is clarified as a mechanism for protection against false fixed points. Probe remains mandatory even when a scale-stable fixed point is reached.
 
 **Exploration / Exploitation** — exploitation is refining already-found "interesting" areas; exploration is searching for new ones. 90–95% of budget goes to exploitation, 5–10% to exploration. Both are mandatory: exploration does not fix seams, halo does not replace exploration.
 
 **Structural blindness** — a state where the system cannot see the internal structure of regions because it never examines them. Probe is the insurance against this.
+
+**False fixed point** — a state of apparent stability that is not actually a true stopping point. Probe is the only safeguard, because a false fixed point is indistinguishable from a true one without external verification.
 
 ---
 
@@ -126,6 +128,26 @@ Project-specific terms without which the documentation reads like gibberish. Org
 
 ---
 
+## Scale-Consistency (v1.6)
+
+**Scale-Consistency Invariant** — the requirement that delta does not redefine the semantics of the parent scale. Formally: `‖R(delta)‖ / (α·‖coarse‖ + β) < τ_rel`. Closes the open question from v1.5 "how not to break features." See concept_v1.6.md, section 8, for details.
+
+**R (coarse-graining operator)** — `gaussian blur + decimation`. Projects the signal from fine to coarse scale. Fixed before experiments — an architectural choice.
+
+**Up (restoration operator)** — `bilinear upsampling`. Projects the coarse component back to the original scale. This is **not** the inverse of R.
+
+**Pair (R, Up)** — a fixed pair of operators for measuring scale-consistency. Different pairs yield different tree physics. Does not change during a single verification cycle.
+
+**D_parent** — a metric for delta leakage into the parent scale: `D_parent = ‖R(delta)‖ / (α·‖coarse‖ + β)`. Higher = worse. The primary enforcement signal.
+
+**D_hf** — a metric for high-frequency purity of delta: `D_hf = ‖delta - Up(R(delta))‖ / (‖delta‖ + ε)`. Higher = better (delta lives in the HF subspace). A diagnostic signal, not a hard constraint.
+
+**τ_parent** — a data-driven threshold for D_parent, set by the baseline experiment. May depend on level L.
+
+**Scale-stable fixed point** — a node where simultaneously: (1) gain < τ_gain, (2) D_parent < τ_parent, (3) stable for K steps. A local refinement stopping criterion. Probe remains mandatory as a safeguard.
+
+---
+
 ## Metrics
 
 **MSE (Mean Squared Error)** — mean squared error. The basic reconstruction quality metric.
@@ -156,17 +178,18 @@ Project-specific terms without which the documentation reads like gibberish. Org
 
 ## Priority Hierarchy
 
-**P0–P4** — experiment priority levels:
+**P0–P4 and SC** — experiment priority levels:
 
 - **P0**: GPU layout (foundation; without it, everything else is decorative)
 - **P1**: Tree compression (dirty signatures, segment compression, anchors)
 - **P2**: Auto-tuning of gate thresholds (instability/FSR)
 - **P3**: Tree semantics (LCA distance, bushes, clustering)
-- **P4**: "Don't break features" (downstream compatibility)
+- **SC**: Scale-consistency baseline + enforcement (parallel with P1)
+- **P4**: "Don't break features" (downstream compatibility, partially formalized through Scale-Consistency Invariant in v1.6)
 
 The order is strict: no jumping ahead without closing dependencies.
 
-**Critical path**: P0 → P1 → P3 → P4. P2 runs in parallel with P1.
+**Critical path**: P0 → P1 → P3 → P4. P2 and SC run in parallel with P1.
 
 ---
 
@@ -192,4 +215,4 @@ The order is strict: no jumping ahead without closing dependencies.
 
 **C (DAG + profiles)** — routing refinement via a directed acyclic graph instead of a tree. Frozen indefinitely. Entry contract for unfreezing: (1) at least 2 irreducible objectives, (2) a concrete downstream consumer, (3) an observable conflict between objectives.
 
-**Matryoshka invariant** — the requirement that the representation at any "matryoshka" (nested refinement) level is a valid input for the downstream consumer. Not just visually smooth, but functionally correct. Tested in P4.
+**Matryoshka invariant** — the requirement that the representation at any "matryoshka" (nested refinement) level is a valid input for the downstream consumer. Not just visually smooth, but functionally correct. The Scale-Consistency Invariant (v1.6) is the formalization of this requirement at the level of individual nodes. Tested in P4.

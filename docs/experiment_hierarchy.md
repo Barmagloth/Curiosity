@@ -154,9 +154,42 @@ P3. Семантика дерева
 
 ---
 
+## Уровень SC: Scale-Consistency Invariant (v1.6)
+
+Частично формализует мета-вопрос v1.5 «как не сломать фичи». Зависит от P0 (pipeline), не зависит от P1/P2/P3. Может идти параллельно.
+
+### SC-baseline. Верификация метрик D_parent / D_hf
+
+```
+SC-baseline. Scale-Consistency Verification
+├── SC-0: фиксация пары (R, Up), проверка идемпотентности R
+├── SC-1: подготовка positive (strong + empirical) и negative baseline
+├── SC-2: вычисление D_parent, D_hf по всем случаям
+├── SC-3: анализ separability (AUC, effect size, quantile separation)
+│         глобально + по уровням + по типам структуры
+├── SC-4: kill criterion — если separability < порогов → пересмотр метрик/(R,Up)
+└── SC-5: установка data-driven τ_parent[L] (если acceptance пройден)
+```
+
+**Kill criterion:** Global ROC-AUC ≥ 0.75, Depth-conditioned AUC ≥ 0.65, Effect size ≥ medium (d ≥ 0.5). Если не проходит — менять метрики, **не** подгонять пороги.
+
+**Выход SC-baseline:** валидированные пороги τ_parent[L] или решение о пересмотре конструкции метрик.
+
+Полный протокол: `docs/scale_consistency_verification_protocol_v1.0.md`.
+
+### SC-enforce. Enforcement (после SC-baseline)
+
+```
+SC-enforce. Scale-Consistency Enforcement
+├── damp delta / reject split / increase local strictness при D_parent > τ_parent
+└── D_parent как контекстный сигнал в ρ (не самодостаточный)
+```
+
+---
+
 ## Уровень 4: глобальная согласованность ("не сломать фичи")
 
-Зависит от **всего выше**. Мета-вопрос из Concept v1.5.
+Зависит от **всего выше** + SC-baseline. Мета-вопрос из Concept v1.5, частично формализован через Scale-Consistency Invariant (Concept v1.6, раздел 8).
 
 ### P4. Согласованность представления при неоднородной глубине
 
@@ -167,6 +200,7 @@ P4. "Не сломать фичи"
 │        (классификатор / автоэнкодер)
 │        сравнить с dense-refined и coarse-only
 │        вопрос: ломается ли downstream при неоднородной глубине?
+│        (с enforcement scale-consistency vs. без)
 │
 ├── P4b: matryoshka invariant
 │        проверить что представление на любом уровне "матрёшки"
@@ -175,7 +209,7 @@ P4. "Не сломать фичи"
 │
 └── P4c: механизм гарантии (если P4a/b показали проблему)
          варианты: padding/projection слой, consistency loss,
-         depth-aware normalization
+         depth-aware normalization, усиление τ_parent
 ```
 
 **Выход P4:** либо "неоднородная глубина не ломает downstream" (и вопрос закрыт), либо конкретный механизм защиты.
@@ -204,15 +238,15 @@ P4. "Не сломать фичи"
 P0 (layout GPU)
  ├──→ P1 (компрессия дерева)  ──→ P3 (семантика дерева)
  │                                       │
- └──→ P2 (автонастройка ρ)               ├──→ C-pre
-                                          │
-                              P4 ("не сломать фичи")
-                              зависит от P0 + P1 + P2 + P3
+ ├──→ P2 (автонастройка ρ)               ├──→ C-pre
+ │                                        │
+ └──→ SC-baseline ──→ SC-enforce ────────→ P4 ("не сломать фичи")
+                                           зависит от P0 + P1 + P2 + P3 + SC
 ```
 
 **Критический путь:** P0 → P1 → P3 → P4.
 
-**Параллельная ветка:** P2 (автонастройка) идёт параллельно P1, обе нужны до P4.
+**Параллельные ветки:** P2, SC-baseline — обе идут параллельно P1, все нужны до P4.
 
 ---
 
@@ -222,11 +256,13 @@ P0 (layout GPU)
 2. **P0: 0.9b/0.9c/0.9h** — если compact жив; иначе фиксируем grid
 3. **P1-B2** — dirty-сигнатуры (параллельно с P0 GPU-частью на CPU)
 4. **P2a** — sensitivity sweep порогов гейта (параллельно с P1)
-5. **P1-B1** — segment compression (после B2)
-6. **P1-B3** — anchors + rebuild (после B1+B2)
-7. **P3a/P3b** — семантика дерева (после P1)
-8. **C-pre** — кластерность профилей (после P3, дёшево)
-9. **P4** — "не сломать фичи" (после всего)
+5. **SC-baseline** — верификация D_parent/D_hf, установка τ_parent (параллельно с P1)
+6. **P1-B1** — segment compression (после B2)
+7. **P1-B3** — anchors + rebuild (после B1+B2)
+8. **SC-enforce** — enforcement scale-consistency (после SC-baseline)
+9. **P3a/P3b** — семантика дерева (после P1)
+10. **C-pre** — кластерность профилей (после P3, дёшево)
+11. **P4** — "не сломать фичи" (после всего + SC)
 
 ---
 
@@ -269,11 +305,13 @@ P0 (layout GPU)
 | 2 | P0 | end-to-end pipeline grid vs compact | exp10a/b/c |
 | 3 | P1-B2 | dirty-сигнатуры | exp11 |
 | 4 | P2a | sensitivity sweep порогов гейта | exp12 |
-| 5 | P1-B1 | segment compression | exp13 |
-| 6 | P1-B3 | anchors + rebuild | exp14 |
-| 7 | P3a/b | семантика дерева | exp15 |
-| 8 | C-pre | кластерность профилей | exp16 |
-| 9 | P4 | «не сломать фичи» | exp17 |
+| 5 | SC-baseline | верификация D_parent/D_hf, τ_parent | exp12a |
+| 6 | P1-B1 | segment compression | exp13 |
+| 7 | P1-B3 | anchors + rebuild | exp14 |
+| 8 | SC-enforce | enforcement scale-consistency | exp14a |
+| 9 | P3a/b | семантика дерева | exp15 |
+| 10 | C-pre | кластерность профилей | exp16 |
+| 11 | P4 | «не сломать фичи» | exp17 |
 
 Номера предварительные. Если между шагами возникнет незапланированный
 эксперимент — он получает следующий свободный номер.
