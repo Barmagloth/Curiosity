@@ -36,6 +36,7 @@ docs_eng/                          — documentation (English)
   architecture.md                  — system architecture and key decisions
   workplan.md                      — implementation plan (modules A–F, mini-roadmap)
   handoff.md                       — project handoff document
+  glossary.md                      — project glossary
 ```
 
 ## Technologies

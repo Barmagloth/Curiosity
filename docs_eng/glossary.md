@@ -1,0 +1,187 @@
+# Curiosity Glossary
+
+Project-specific terms without which the documentation reads like gibberish. Organized by conceptual groups.
+
+---
+
+## Core Concepts
+
+**Adaptive refinement** — the core of the system. The idea is that the space is not refined uniformly, but only where the informativeness function ρ indicates it is justified. Opposite approaches: uniform refinement (refine everything) or random selection (choose randomly).
+
+**Coarse (coarse level)** — the initial approximation from which the system starts. All subsequent work is refinement on top of this level. Formula: `output = coarse + delta`.
+
+**Delta** — an additive correction to the coarse level. Initialized to zero, bounded in energy. When the current refinement level is disabled, the system falls back to the previous valid state.
+
+**Refinement** — the process: compute ρ → decide whether to split → refine selected regions → repeat. Each iteration increases resolution only in "interesting" areas.
+
+**Split / Merge** — split divides a region into subregions (typically 4, as in a quadtree); merge is the reverse operation, collapsing children back into their parent. Hysteresis (different thresholds for split and merge) prevents oscillation.
+
+---
+
+## Space and Its Elements
+
+**Cell** — the elementary unit of discretization in a space of arbitrary dimensionality. Generalizations: a pixel is a cell in a 2D image, a voxel is a cell in a 3D volume. In Curiosity, state space X can be of any nature (features, latents, activations), hence the general term "cell" is used. In image experiments, cell = pixel.
+
+**Tile** — a rectangular block of cells of fixed size at a given tree level. The basic unit the system operates on: tiles are selected for refinement, cached, and hashed. tile_size=16 means a 16×16 block of cells.
+
+**State space X** — the abstract state space that Curiosity operates on. Can be anything: image pixels, latent representations, neural network activations, any data. The system is not tied to any specific domain.
+
+---
+
+## Informativeness Function and Signals
+
+**ρ (rho)** — the informativeness function. Determines where refinement makes sense. The semantics of the entire tree are determined by ρ. May include multiple components (residual, HF, variance, etc.).
+
+**Interestingness** — informal name for ρ. An "interesting" region is one where ρ is high and refinement is justified. The interestingness policy determines how to balance different signals at different depth levels.
+
+**Residual** — the error of the current approximation. The primary informativeness signal. On clean data, residual-only = ideal (oracle), but under noise/blur/alias it degrades (oracle correlation drops from 0.90 to 0.54).
+
+**HF energy (high-frequency energy)** — structural energy computed via Laplacian or gradient. Catches sharp transitions but produces false positives on seams between tiles.
+
+**Variance** — local variance or disagreement between sources. Sensitive to noise (bad) and to genuine uncertainty (good).
+
+**Payoff** — expected gain from refinement minus cost. A split is allowed only if gain > cost.
+
+**Oracle** — the ideal, practically unattainable signal (ground truth). Used for evaluation: how well our real signal correlates with the oracle. Oracle information is prohibited in production metrics — it is for validation only.
+
+---
+
+## Two-Stage Gate
+
+**Two-stage gate** — the canonical architecture for combining ρ signals. Solves the problem: residual is good on clean data but breaks under noise; combination helps with noise but hurts on clean data.
+
+**Stage 1** — binary check: "Is residual healthy?" using instability and FSR metrics. If healthy — residual-only is used (zero loss on clean data). If not — transition to Stage 2.
+
+**Stage 2** — utility-weighted combination. Each expert (resid, var, hf) receives a weight: `U_i = median(gain) − λ·FSR − μ·instability`. Residual has a guaranteed minimum weight. Weights are smoothed by EMA with hysteresis.
+
+**Instability** — a signal reliability metric. High instability means the residual "jumps around" and cannot be trusted. Threshold for switching Stage 1 → Stage 2.
+
+**FSR (False Signal Rate)** — the fraction of false positives. High FSR means the signal frequently indicates "interesting here" where there is actually nothing.
+
+---
+
+## Boundaries and Seams
+
+**Halo** — the overlap zone between tiles. A mandatory component: without halo, hard insertion of a refined tile creates a step at the boundary, which the Laplacian catches as a false HF signal. Minimum size: 3 cells. Implemented as cosine feathering relative to coarse.
+
+**Cosine feathering** — a method for smooth transition between refined and coarse tiles. Weight changes smoothly via cosine function from 1 (tile center) to 0 (boundary), instead of a sharp cutoff.
+
+**Seam** — a boundary between tiles with different refinement levels. Artificial seams are an artifact that the system must not create. SeamScore measures their severity.
+
+**SeamScore** — seam quality metric. Formula: `SeamScore = Jumpout / (Jumpin + eps)`. Jumpout — outward gradient from the boundary, Jumpin — inward gradient. Closer to 1 is better (seam is invisible). Validated on 4 space types: 2D scalar grids, vector grids, irregular graphs, tree hierarchies. Production-ready.
+
+**Edge strips** — narrow strips of cells along the tile boundary used to compute SeamScore.
+
+---
+
+## Probe and Exploration
+
+**Probe** — a dedicated portion of the budget (5–10%) for exploring unknown regions. Without probe, the system only sees what it has already found (exploitation-only = structural blindness).
+
+**Exploration / Exploitation** — exploitation is refining already-found "interesting" areas; exploration is searching for new ones. 90–95% of budget goes to exploitation, 5–10% to exploration. Both are mandatory: exploration does not fix seams, halo does not replace exploration.
+
+**Structural blindness** — a state where the system cannot see the internal structure of regions because it never examines them. Probe is the insurance against this.
+
+---
+
+## Budget Governor
+
+**Governor** — an EMA controller that manages strictness to keep spending within budget. Without the governor, the budget is a declaration, not a constraint.
+
+**Strictness** — the quantile threshold for selecting candidate tiles for refinement. High strictness = only the most "interesting" tiles pass, spending is lower. Low = more tiles, spending is higher. The governor adjusts strictness so that cost/step stays within the corridor.
+
+**EMA (Exponential Moving Average)** — exponentially weighted moving average. Used for smoothing: gate weights, feedback signal in the governor, etc. Reacts to recent data more strongly than to old data.
+
+**Compliance (budget compliance)** — a metric of how well actual spending matches the target. Asymmetric: overbudget is penalized more heavily than underbudget.
+
+**Warmup** — the initial N steps during which the governor does not adjust strictness but accumulates spending statistics. Needed for correct calibration.
+
+**Hard cap** — a hard ceiling on spending per step (= 3× target). Safety fuse against spending explosion.
+
+---
+
+## Tree and Storage
+
+**Refinement tree** — a log of split decision routes. Each root→leaf path = a sequence of decisions. Does not necessarily yield a "semantic" metric (this is tested in P3).
+
+**Bush** — a set of paths in the tree leading to the same meaning. Formally: a cluster of leaf paths with small LCA distance.
+
+**LCA (Lowest Common Ancestor)** — the nearest common ancestor of two nodes in the tree. LCA distance = a measure of similarity between two paths. The closer the LCA is to the root, the farther apart the paths are.
+
+**Morton layout** — a data packing method using Z-curve (space-filling curve). Rejected: sort overhead consumes the benefit. Dead.
+
+**Block-sparse layout** — sparse block-based storage. Rejected: expansion ratio makes it inefficient. Dead.
+
+**Compact layout** — compact storage of only active cells. The sole surviving candidate (vs. grid). Exp0.9b0 — kill/go test.
+
+**Dirty signature** — a 12-bit signature (seam_risk + uncert + mass) for quickly determining whether a region has changed. Debounce (2 consecutive hits) protects against false positives from noise.
+
+---
+
+## Metrics
+
+**MSE (Mean Squared Error)** — mean squared error. The basic reconstruction quality metric.
+
+**PSNR (Peak Signal-to-Noise Ratio)** — peak signal-to-noise ratio, in decibels. Derived from MSE. Higher = better. A 0.5 dB difference is noticeable, 1+ dB is significant.
+
+**Winrate** — the fraction of scenarios in which method A beats method B. 98–100% = definitive superiority.
+
+**StdCost** — standard deviation of spending. A measure of budget predictability. The governor reduces StdCost by ~50%.
+
+**P95** — the 95th percentile of spending. A worst-case measure. The governor reduces P95 from 11.0 to ~6.5.
+
+---
+
+## Methodology
+
+**Kill criteria** — conditions under which an experiment is closed as unsuccessful. Defined before launch. Two-sided: speed + memory. If it doesn't pass — the experiment is dead, not "improved upon."
+
+**Cost-fair comparison** — a comparison in which computational costs are accounted for. You cannot compare a method with 10× overhead against a baseline and claim "we're better on PSNR" — cost must be included.
+
+**Observable-only** — metrics use only what the system can observe on its own, without oracle information. No peeking at ground truth during evaluation.
+
+**Holm-Bonferroni** — a statistical correction for multiple comparisons. When running N tests, the probability of a false positive increases. Holm-Bonferroni adjusts significance thresholds.
+
+**Ablation** — removing one component of the system and measuring how much the result degrades. Shows the component's contribution.
+
+---
+
+## Priority Hierarchy
+
+**P0–P4** — experiment priority levels:
+
+- **P0**: GPU layout (foundation; without it, everything else is decorative)
+- **P1**: Tree compression (dirty signatures, segment compression, anchors)
+- **P2**: Auto-tuning of gate thresholds (instability/FSR)
+- **P3**: Tree semantics (LCA distance, bushes, clustering)
+- **P4**: "Don't break features" (downstream compatibility)
+
+The order is strict: no jumping ahead without closing dependencies.
+
+**Critical path**: P0 → P1 → P3 → P4. P2 runs in parallel with P1.
+
+---
+
+## Scenario Types (used in experiments)
+
+**Clean** — clean data without distortions. Baseline scenario.
+
+**Noise** — random noise added to data. Residual degrades.
+
+**Blur** — blurring / defocus. Residual handles it (Stage 1 remains).
+
+**Alias** — frequency aliasing artifacts (Nyquist). Edge case for the gate.
+
+**Spatvar** — spatial variance. Non-uniform scene complexity.
+
+**JPEG** — compression artifacts. The only scenario with a negative for the two-stage gate (−0.21 dB).
+
+**Shift** — shift / scene change over time. Adaptability test.
+
+---
+
+## Frozen Concepts
+
+**C (DAG + profiles)** — routing refinement via a directed acyclic graph instead of a tree. Frozen indefinitely. Entry contract for unfreezing: (1) at least 2 irreducible objectives, (2) a concrete downstream consumer, (3) an observable conflict between objectives.
+
+**Matryoshka invariant** — the requirement that the representation at any "matryoshka" (nested refinement) level is a valid input for the downstream consumer. Not just visually smooth, but functionally correct. Tested in P4.

@@ -28,7 +28,7 @@ Series Exp0.1–Exp0.8 is complete. Below is a summary of each experiment with k
 
 **Question:** Does overlap (halo) at tile boundaries eliminate HF artifacts?
 
-**Result:** Yes. Halo ≥ 3 pixels at tile_size=16 eliminates artifacts. Interior-only HF metric confirmed: the problem was specifically in seams, not inside tiles.
+**Result:** Yes. Halo ≥ 3 cells (pixels in image experiments) at tile_size=16 eliminates artifacts. Interior-only HF metric confirmed: the problem was specifically in seams, not inside tiles.
 
 **Conclusion:** Boundary-aware blending (cosine feathering) with minimum overlap = 3 elements is a mandatory requirement.
 

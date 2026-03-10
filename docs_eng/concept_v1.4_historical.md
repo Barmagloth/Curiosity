@@ -144,7 +144,7 @@ Conclusion: Halo / overlap is a necessary condition for correctness.
 
 Minimum rule:
 
-* overlap ≥ 3–4 pixels at tile_size=16
+* overlap ≥ 3–4 cells (pixels in image experiments) at tile_size=16
 * blending performed relative to coarse
 
 Without boundary-aware refinement, the system is penalized by high-frequency metrics at low budgets.
@@ -227,5 +227,5 @@ Confirmed:
 
 * Adaptive tile selection yields MSE_rgb/PSNR gains.
 * HF degradation is caused by seam artifacts.
-* Halo ≥ 3–4 pixels eliminates HF degradation.
+* Halo ≥ 3–4 cells (pixels in image experiments) eliminates HF degradation.
 * Interior-only HF confirms the problem was in seams.

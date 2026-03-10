@@ -205,10 +205,10 @@ The smarter the adaptive tile selection, the stronger the artifact (adaptive con
 
 **Minimum rule:**
 
-* overlap ≥ 3–4 pixels at tile_size=16.
+* overlap ≥ 3–4 cells (pixels in image experiments) at tile_size=16.
 * Blending (cosine feather) is performed relative to coarse.
 
-Halo ≥ 3 pixels fully eliminates HF degradation. Interior-only HF metric confirmed: the problem was in seams, not in tile selection.
+Halo ≥ 3 cells (pixels in image experiments) fully eliminates HF degradation. Interior-only HF metric confirmed: the problem was in seams, not in tile selection.
 
 ---
 
