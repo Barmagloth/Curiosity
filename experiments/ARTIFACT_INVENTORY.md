@@ -32,13 +32,18 @@
 - [x] `Phase2 summary report` (MD) → `experiments/phase2/phase2_summary_report.md`
 
 ### Чат 4: «Выбор структуры данных: Morton vs динамический список» (23 days ago)
-**Артефакты (6) — НУЖНО СКАЧАТЬ (Download all):**
-- [ ] `Phase1 summary report` (MD) — сводный отчёт Phase 1
-- [ ] `Phase1 a1 final` (PNG) — график A1
-- [ ] `Phase1 a2ext v2` (PNG) — график A2 extended
-- [ ] `Phase1 hardened` (PNG) — график hardened
-- [ ] `Exp phase1 hardened` (PY) — скрипт hardened experiment
-- [ ] `Phase1 v3 results` (JSON) — данные v3
+**Артефакты — ✅ СКАЧАНО (6 файлов в experiments/phase1/, 3 PNG ожидают, 2 superseded):**
+- [x] `Phase1 summary report final` (MD) → `experiments/phase1/phase1_summary_report_final.md`
+- [ ] `Phase1 a1 final` (PNG) — график A1 ⚠️ нужен ручной download
+- [ ] `Phase1 a2ext v2` (PNG) — график A2 extended ⚠️ нужен ручной download
+- [ ] `Phase1 hardened` (PNG) — график hardened ⚠️ нужен ручной download
+- [x] `Exp phase1 hardened` (PY) → `experiments/phase1/exp_phase1_hardened.py`
+- [x] `Exp phase1 a2ext v2` (PY) → `experiments/phase1/exp_phase1_a2ext_v2.py`
+- [x] `Exp phase1 v3` (PY) → `experiments/phase1/exp_phase1_v3.py`
+- [x] `Phase1 hardened` (JSON) → `experiments/phase1/phase1_hardened.json`
+- [x] `Phase1 v3 results` (JSON) → `experiments/phase1/phase1_v3_results.json`
+- ~~`Exp phase1 a2ext` (PY)~~ — superseded by v2 (порог 5% → knee detection)
+- ~~`Phase1 summary report` (MD)~~ — superseded by _final (hardened)
 
 ### Чат 5: «Нужен ли динамический schedule для управления бюджетом» (24 days ago)
 **Артефакты (~7) — НУЖНО СКАЧАТЬ:**
@@ -94,6 +99,7 @@
 |------|----------|
 | experiments/exp09a/ (3 файла) | Загружены пользователем |
 | experiments/phase2/ (10 файлов) | Claude чат 3 (скачано) |
+| experiments/phase1/ (6 файлов) | Claude чат 4 (скачано, 2 superseded отброшены) |
 | docs/concept_v1.5.md | Claude + ChatGPT |
 | docs/concept_v1.4_historical.md | ChatGPT |
 | docs/workplan.md | ChatGPT |
