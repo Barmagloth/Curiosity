@@ -105,6 +105,6 @@ Series Exp0.1–Exp0.8 is complete. Below is a summary of each experiment with k
 | Probe (exploration) | Confirmed | Mandatory (5–10% budget) |
 | Two-stage gate | Confirmed | Mandatory under noise/degradation |
 | EMA budget governor | Confirmed | Mandatory |
-| SeamScore metric | Validated | Production-ready |
+| SeamScore metric | Validated | Stable within current validation scope |
 | Phase schedule | Not confirmed | Deferred |
-| Morton/block-sparse layout | Not confirmed | Inefficient (overhead) |
+| Morton/block-sparse layout | Preliminarily unfavorable | Per 0.9a microbench; P0 open |

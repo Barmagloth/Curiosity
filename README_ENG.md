@@ -18,9 +18,9 @@ The goal is to reshape the search space so that:
 
 ## Project Status
 
-The experiment series Exp0.1–Exp0.8 is **complete**. Results are consolidated into v1.5 documentation. The system is validated: adaptive refinement works and outperforms random selection under budget constraints.
+The experiment series Exp0.1–Exp0.8 is **complete**. Results are consolidated into v1.6 documentation. The system is validated: adaptive refinement works and outperforms random selection under budget constraints. The Scale-Consistency Invariant has been formalized.
 
-Next frontier — Exp0.9b0 (buffer-scaling probe, P0).
+Next frontier — Exp0.9b0 (buffer-scaling probe, P0) and SC-baseline (Scale-Consistency baseline validation).
 
 ## Repository Structure
 
@@ -29,13 +29,15 @@ README.md                          — project overview (Russian)
 README_ENG.md                      — project overview (English, this file)
 docs/                              — documentation (Russian)
 docs_eng/                          — documentation (English)
-  concept_v1.5.md                  — canonical concept document
-  concept_v1.4_historical.md       — early concept version (after Exp0.2–0.3)
+  concept_v1.6.md                  — canonical concept document
+  concept_v1.5_historical.md       — concept document after Exp0.1–Exp0.8
+  v1.5_historical/                 — historical documentation from v1.5 era
   experiment_results.md            — all experiment results Exp0.1–Exp0.8
   experiment_hierarchy.md          — experiment dependency graph and roadmap
   architecture.md                  — system architecture and key decisions
   workplan.md                      — implementation plan (modules A–F, mini-roadmap)
-  handoff.md                       — project handoff document
+  scale_consistency_verification_protocol — SC baseline experiment protocol
+  handoff_v1.5_to_v1.6             — handoff from v1.5 to v1.6
   glossary.md                      — project glossary
 experiments/
   ARTIFACT_INVENTORY.md            — artifact inventory from Claude/ChatGPT dialogs
@@ -57,6 +59,17 @@ experiments/
 - Python, PyTorch, CUDA (GPU)
 - Jupyter Notebooks for experiments
 - Versioned markdown for documentation
+
+## Independently Valuable Components
+
+The system is built from modules that survive the architecture scrutiny not because they are "useful in the overall picture," but because they provide standalone value:
+
+- **Content-addressable cache** — memoization by input hash; reduces redundant computation
+- **Incremental recomputation** — differential update on tree changes; avoids full re-evaluation
+- **ROI attention mask (ρ function)** — informativeness-weighted candidate selection; works across domains
+- **Adaptive complexity mapping (quadtree/octree + hysteresis)** — progressive space partitioning; generalizes to any dimensionality
+- **SeamScore** — seam quality metric; measures smoothness at boundaries independent of the refinement system
+- **Selection principle:** only modules that provide standalone value survive the kill criteria. All components above pass this test independently.
 
 ## Methodology
 

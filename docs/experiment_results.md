@@ -34,7 +34,7 @@
 
 ---
 
-## Exp0.4 — Нужна ли комбинированная p?
+## Exp0.4 — Нужна ли комбинированная ρ?
 
 **Вопрос:** Нужно ли комбинировать несколько сигналов информативности, или residual достаточен?
 
@@ -81,7 +81,7 @@
 
 ## Exp0.8 — Schedule и budget governor
 
-**Вопрос:** Нужен ли phase schedule (смена весов p по шагам) и budget governor?
+**Вопрос:** Нужен ли phase schedule (смена весов ρ по шагам) и budget governor?
 
 **Budget governor (EMA):**
 - StdCost снижается вдвое (~5.15 -> ~3.25).
@@ -105,6 +105,6 @@
 | Probe (exploration) | Подтверждён | Обязателен (5–10% бюджета) |
 | Двухстадийный гейт | Подтверждён | Обязателен при шуме/деградации |
 | EMA budget governor | Подтверждён | Обязателен |
-| SeamScore метрика | Валидирована | Production-ready |
+| SeamScore метрика | Валидирована | Стабильна в текущем scope валидации |
 | Phase schedule | Не подтверждён | Отложен |
-| Morton/block-sparse layout | Не подтверждён | Неэффективен (overhead) |
+| Morton/block-sparse layout | Предварительно невыгоден | По итогам 0.9a microbench; P0 открыт |

@@ -66,8 +66,8 @@ State space X (arbitrary nature)
 **Implementation:**
 - Overlap ≥ 3 discretization elements (at tile_size=16: ≥3–4 pixels)
 - Cosine feathering relative to coarse level
-- Halo initialized to zero, energy-bounded
-- Disabling current level → valid rollback to previous
+
+**Note:** Properties "zero initialization", "energy boundedness", "valid rollback on level disable" belong to delta / refinement level, not to halo. Halo is a boundary reconciliation mechanism, not a residual carrier.
 
 ---
 
@@ -114,7 +114,7 @@ Computed over edge strips (bands at tile boundaries).
 
 **Validation:** 2D scalar grids, vector-valued grids, irregular graphs, tree hierarchies.
 
-**Status:** Production-ready.
+**Status:** Validated and stable within current validation scope (4 space types). Final production-readiness depends on P0–P4 outcomes.
 
 ---
 
@@ -124,8 +124,8 @@ The tree is a log of split decisions. Each root-to-leaf path = a sequence of dec
 
 **Requirements:**
 - GPU-friendly structure (flat packing, no pointer chasing)
-- Morton and block-sparse layouts: **inefficient** (overhead exceeds gain)
-- Compact layouts: promising under low sparsity + large grid
+- Morton and block-sparse layouts: **preliminarily unfavorable** per Exp0.9a microbench (sort overhead / expansion ratio). Final decision after P0 (0.9b0+).
+- Compact layouts: preliminarily promising under low sparsity + large grid. Kill/go in Exp0.9b0.
 
 **Bush** = a set of paths leading to the same meaning. Distance metric via LCA / common prefix.
 

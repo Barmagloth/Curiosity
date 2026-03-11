@@ -20,7 +20,7 @@ Project-specific terms without which the documentation reads like gibberish. Org
 
 ## Space and Its Elements
 
-**Cell** — an atomic region of state space X, represented by a tree node at some depth. The cell's scale is determined by the path depth from root, not by a fixed grid size. If a node is not refined further, it is a leaf of the current tree. In image experiments, cell = pixel; in 3D, cell = voxel; but in Curiosity's general model, dimensionality is not fixed.
+**Cell** — an atomic region of state space X, represented by a tree node at some depth. The cell's scale is determined by the path depth from root, not by a fixed grid size. If a node is not refined further, it is a leaf of the current tree. In Curiosity's general model, dimensionality is not fixed; the concrete embodiment of a cell depends on the task (in image experiments it's a pixel block, but that's a special case, not the definition).
 
 **Leaf** — a tree node that is not split further at the current step and is processed as a terminal region. Leaf status is a property of the current tree state, not of the level itself: at the same level L, some nodes may be leaves while others are internal (already split).
 
