@@ -217,6 +217,8 @@ The order is strict: no jumping ahead without closing dependencies.
 
 **Track B — research** — Use the built instrument to study the structure of refinement trees. Begins only after passing the Instrument Readiness Gate. Includes P3 (tree semantics) and open research questions.
 
+**Track C — generalization** — Verify Curiosity's applicability to non-spatial domains: graphs, latent spaces, activations, feature hierarchies. Entry condition — successful Track B (semantic geometry confirmed). Long-term ambition, not a current goal.
+
 **Instrument Readiness Gate** — Five criteria, all mandatory for transition to Track B: (1) invariant pass, (2) overhead profile, (3) stability pass, (4) one validated benchmark, (5) attribution diagnostics. Instrument readiness ≠ perfection; it is the minimum at which the instrument does not lie. Details: `target_problem_definition_v1.1.md`.
 
 **Baselines** — Three baseline comparisons for Track A: dense baseline (full recomputation), same-budget random (random tile selection), same-budget uniform coarse (uniform coarse approximation).

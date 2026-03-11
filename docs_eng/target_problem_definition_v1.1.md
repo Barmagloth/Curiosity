@@ -9,16 +9,19 @@ Related to: `curiosity_concept_v1.6.md` (how it is built), `experiment_hierarchy
 
 ## Structure of Goals
 
-The project has two sequential goals, not parallel ones. The order is not optional.
+The project has three sequential goals, not parallel ones. The order is not optional.
 
 ```
 Track A — build the instrument
     ↓  (only after Instrument Readiness Gate)
 Track B — research with the instrument
+    ↓  (only after successful Track B)
+Track C — generalize to non-spatial domains
 ```
 
 Track A can be successful even if Track B fails.
 Track B cannot honestly begin until Track A reaches instrumental maturity.
+Track C cannot honestly begin until Track B confirms semantic geometry.
 Otherwise, we are studying artifacts of an unfinished apparatus, not the structure of the world.
 
 ---
@@ -121,14 +124,32 @@ Determined after reaching Instrument Readiness Gate, based on which downstream c
 
 ---
 
+## Track C — Generalization
+
+### Question
+Does the mechanism work beyond spatial data — in arbitrary state spaces?
+
+### Formulation
+Verify Curiosity's applicability to non-spatial domains: graphs, latent spaces,
+activations, feature hierarchies. Confirm the claimed domain-agnostic generality.
+
+### Entry Condition
+Track B is successful: semantic geometry of the tree confirmed on at least one domain.
+Without this, there is nothing to generalize.
+
+### Status
+**Long-term ambition. Not a current goal.**
+
+---
+
 ## What is Currently Honestly Not Fixed
 
 | Question | Status |
 |---|---|
 | Specific downstream task for Track B | Not chosen. Chosen after Readiness Gate. |
 | Feature consistency metric (downstream) | Not defined. D_parent is a proxy, not a direct measure. |
-| Applicability to non-spatial domains (graphs, latent) | Theoretically stated, experimentally not verified. |
-| Generality beyond spatial data | Long-term ambition, not current goal. |
+| Applicability to non-spatial domains (graphs, latent) | Theoretically stated, experimentally not verified. Fixed as Track C. |
+| Generality beyond spatial data | Long-term ambition. Entry condition — successful Track B. |
 
 ---
 
@@ -136,4 +157,4 @@ Determined after reaching Instrument Readiness Gate, based on which downstream c
 
 **Curiosity is a mechanism of adaptive refinement of representations under budget, which decides where to compute, computes only what is locally needed, preserves correctness at boundaries, and does not allow structural blindness or destruction of features.**
 
-Currently the instrument is being built (Track A). Later it will be used to research structure (Track B).
+Currently the instrument is being built (Track A). Later it will be used to research structure (Track B). Then generality is verified (Track C).
