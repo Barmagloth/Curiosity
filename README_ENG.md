@@ -32,6 +32,7 @@ docs_eng/                          — documentation (English)
   concept_v1.6.md                  — canonical concept document
   concept_v1.5_historical.md       — concept document after Exp0.1–Exp0.8
   v1.5_historical/                 — historical documentation from v1.5 era
+  target_problem_definition_v1.1.md — project goals, success criteria, Track A→B
   experiment_results.md            — all experiment results Exp0.1–Exp0.8
   experiment_hierarchy.md          — experiment dependency graph and roadmap
   architecture.md                  — system architecture and key decisions

@@ -211,6 +211,18 @@ The order is strict: no jumping ahead without closing dependencies.
 
 ---
 
+## Goal Structure (v1.1)
+
+**Track A — instrument** — Build the adaptive refinement pipeline that works correctly under budget. Active goal. All experiments P0–P4 and SC belong to Track A.
+
+**Track B — research** — Use the built instrument to study the structure of refinement trees. Begins only after passing the Instrument Readiness Gate. Includes P3 (tree semantics) and open research questions.
+
+**Instrument Readiness Gate** — Five criteria, all mandatory for transition to Track B: (1) invariant pass, (2) overhead profile, (3) stability pass, (4) one validated benchmark, (5) attribution diagnostics. Instrument readiness ≠ perfection; it is the minimum at which the instrument does not lie. Details: `target_problem_definition_v1.1.md`.
+
+**Baselines** — Three baseline comparisons for Track A: dense baseline (full recomputation), same-budget random (random tile selection), same-budget uniform coarse (uniform coarse approximation).
+
+---
+
 ## Frozen Concepts
 
 **C (DAG + profiles)** — routing refinement via a directed acyclic graph instead of a tree. Frozen indefinitely. Entry contract for unfreezing: (1) at least 2 irreducible objectives, (2) a concrete downstream consumer, (3) an observable conflict between objectives.

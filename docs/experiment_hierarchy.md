@@ -318,6 +318,20 @@ P0 (layout GPU)
 
 ---
 
+# Instrument Readiness Gate
+
+Все эксперименты P0–P4 + SC относятся к **Track A** (построение инструмента). Переход к **Track B** (исследование структуры дерева) — только после прохождения Instrument Readiness Gate:
+
+1. **Invariant pass** — все обязательные инварианты выполняются
+2. **Overhead profile** — overhead не съедает выигрыш
+3. **Stability pass** — система устойчива между прогонами
+4. **One validated benchmark** — adaptive > random > coarse с подтверждёнными числами
+5. **Attribution diagnostics** — вклад каждого модуля измерен (ablation)
+
+Подробно: `docs/target_problem_definition_v1.1.md`.
+
+---
+
 # Принципы
 
 * Сначала судья-цифры, потом амбиции.

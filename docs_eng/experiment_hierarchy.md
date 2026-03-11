@@ -318,6 +318,20 @@ it gets the next free number.
 
 ---
 
+# Instrument Readiness Gate
+
+All experiments P0–P4 + SC belong to **Track A** (building the instrument). Transition to **Track B** (researching tree structure) requires passing the Instrument Readiness Gate:
+
+1. **Invariant pass** — all mandatory invariants hold
+2. **Overhead profile** — overhead does not consume the gain
+3. **Stability pass** — system is stable across runs
+4. **One validated benchmark** — adaptive > random > coarse with confirmed numbers
+5. **Attribution diagnostics** — each module's contribution measured (ablation)
+
+Details: `docs/target_problem_definition_v1.1.md`.
+
+---
+
 # Principles
 
 * Judge numbers first, then ambitions.
