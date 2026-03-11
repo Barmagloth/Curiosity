@@ -10,7 +10,7 @@ This document describes the system's key components and architectural decisions.
 State space X (arbitrary nature)
        |
        v
-[Coarse representation] — initial coarse approximation
+[Root coarse] — initial coarse approximation (see concept_v1.6.md §1.2 for terminology)
        |
        v
 [Informativeness function ρ(x)] — determines where to refine
@@ -68,9 +68,9 @@ State space X (arbitrary nature)
 
 **Implementation:**
 - Overlap ≥ 3 discretization elements (at tile_size=16: ≥3–4 pixels)
-- Cosine feathering relative to coarse level
+- Cosine feathering relative to parent coarse
 
-**Note:** Properties "zero initialization", "energy boundedness", "valid rollback on level disable" belong to delta / refinement level, not to halo. Halo is a boundary reconciliation mechanism, not a residual carrier.
+**Note:** Properties "zero initialization", "energy boundedness", "valid rollback on level disable" belong to step_delta / refinement level, not to halo. Halo is a boundary reconciliation mechanism, not a residual carrier.
 
 ---
 
@@ -123,13 +123,13 @@ Computed over edge strips (bands at tile boundaries).
 
 ## Component 6: Scale-Consistency Invariant (v1.6)
 
-**Why:** Halo ensures local geometric correctness at tile boundaries. But a refined level can be smooth at seams while semantically contradicting the coarse level — delta smuggles low-frequency meaning upward. The Scale-Consistency Invariant guarantees this does not happen.
+**Why:** Halo ensures local geometric correctness at tile boundaries. But a refined level can be smooth at seams while semantically contradicting the parent coarse — step_delta smuggles low-frequency meaning upward. The Scale-Consistency Invariant guarantees this does not happen.
 
-**Principle:** coarse is the anchor, delta is the subordinate correction. Delta must be invisible from the level above.
+**Principle:** parent coarse is the anchor, step_delta is the subordinate correction. Step_delta must be invisible from the level above.
 
 **Formal requirement:**
 ```
-‖R(delta)‖ / (α·‖coarse‖ + β) < τ_rel
+‖R(step_delta)‖ / (α·‖parent_coarse‖ + β) < τ_rel
 ```
 
 **Operator pair (R, Up):**
@@ -141,14 +141,16 @@ Computed over edge strips (bands at tile boundaries).
 
 | Metric | Formula | Interpretation |
 |---|---|---|
-| D_parent | `‖R(delta)‖ / (α·‖coarse‖ + β)` | Delta leakage into parent scale. Lower = better. Enforcement signal. |
-| D_hf | `‖delta - Up(R(delta))‖ / (‖delta‖ + ε)` | HF purity of delta. Higher = better. Diagnostic, not hard constraint. |
+| D_parent | `‖R(step_delta)‖ / (α·‖parent_coarse‖ + β)` | Step_delta leakage into parent scale. Lower = better. Enforcement signal. |
+| D_hf | `‖step_delta - Up(R(step_delta))‖ / (‖step_delta‖ + ε)` | HF purity of step_delta. Higher = better. Diagnostic, not hard constraint. |
 
 **Enforcement (after baseline validation):**
-- `D_parent > τ_parent` → damp delta / reject split / increase local strictness
+- `D_parent > τ_parent` → damp step_delta / reject split / increase local strictness
 - D_parent is also used as a contextual signal in ρ (not self-sufficient)
 
 **Thresholds:** τ_parent is data-driven from the baseline experiment, may depend on level L.
+
+**Note on step_delta tolerance:** τ_parent effectively defines step_delta tolerance — the permissible fraction of parent_coarse alterable by step_delta. This balances two risks: too tight → loss of legitimate features; too loose → hierarchy drift. Optimal trade-off is data-dependent. See concept_v1.6.md §8.9.
 
 **Status:** Invariant formalized (concept v1.6, section 8). Baseline experiment (SC-baseline) is the next step. Protocol: `scale_consistency_verification_protocol_v1.0.md`.
 

@@ -76,7 +76,7 @@
 **Goal:** new leaves compute refinement, old ones are untouched, boundaries are reconciled.
 
 **Deliverables:**
-- Explicit "delta" definition (e.g., residual relative to coarse level).
+- Explicit step_delta definition (e.g., residual relative to parent_coarse).
 - Recomputation policy:
   - `new_leaves`,
   - `changed_hash_leaves`,
@@ -103,14 +103,14 @@
 ---
 
 ## G. Scale-Consistency: Don't Break Parent-Scale Semantics (v1.6)
-**Goal:** guarantee that delta does not redefine the coarse level by smuggling — refinement adds detail but does not push new LF meaning upward.
+**Goal:** guarantee that step_delta does not redefine parent_coarse by smuggling — refinement adds detail but does not push new LF meaning upward.
 
 **Deliverables:**
 - Implementation of operator pair (R, Up): `gaussian blur + decimation` / `bilinear upsampling`.
 - Compute D_parent and D_hf metrics per tree node.
 - Baseline experiment: collect D_parent/D_hf distributions on positive (correct refinement) and negative (artificial LF drift) cases. Evaluate separability (AUC, effect size, quantile separation).
 - Data-driven thresholds τ_parent[L] from baseline results.
-- Enforcement: damp delta / reject split / increase local strictness when D_parent > τ_parent.
+- Enforcement: damp step_delta / reject split / increase local strictness when D_parent > τ_parent.
 - Integration of D_parent as a contextual signal in ρ (not self-sufficient).
 
 **Kill criterion:** if separability between positive and negative is insufficient — revisit metrics or the (R, Up) pair, not the thresholds.
@@ -121,16 +121,45 @@
 
 ---
 
+## H. (R, Up) Sensitivity Probe (Exp0.10)
+**Goal:** verify that system behavior is qualitatively stable across different (R, Up) pairs.
+
+**Dependency:** after SC-baseline (module G baseline experiment).
+
+**Deliverables:**
+- Test 4 pairs: gaussian+bilinear (default), box+nearest, Lanczos+bicubic, haar wavelet.
+- Compare D_parent/D_hf distributions, tree topology divergence, PSNR ceiling, SC-baseline separability (ROC-AUC).
+- Decision: default justified, or pair selection mechanism needed.
+
+**Kill criterion:** topology + D_parent stable (±20%) → default stands. Divergence > 50% → new open question.
+
+---
+
+## I. Semantic Observables Logging (Non-Binding)
+**Goal:** accumulate data for Track B without affecting Track A kill criteria.
+
+**Deliverables:**
+- Log tree topology per run (for topology stability analysis).
+- Log LCA-distance vs. feature-distance scatter data.
+- Log cluster purity if labeled inputs are available.
+- Storage: append-only log alongside experiment results.
+
+**Standalone value:** if Track B opens, this data is ready. If not — zero cost beyond storage.
+
+---
+
 ## Mini-Roadmap (Each Step = A Standalone Trophy)
 1. Hash+Cache for tiles (canonicalization, stable key, hit/miss, log).
 2. Incremental scheduler (recompute only what changed).
 3. Interestingness scoring (metrics + normalization + quantile thresholds).
 4. Tree + hysteresis (split/merge without jitter).
 5. Recomputation policy (new/changed/boundary) + gain measurement.
-6. Delta + boundary stitching (overlap/blend for seamless output).
+6. Step_delta + boundary stitching (overlap/blend for seamless output).
 7. Scale-Consistency baseline (R/Up, D_parent/D_hf, separability, τ_parent).
 8. Scale-Consistency enforcement (damp/reject/strictness + integration into ρ).
-9. Optimizations (batching, kernels, GPU specifics) — only after stabilization.
+9. (R, Up) sensitivity probe (Exp0.10, after step 7).
+10. Semantic observables logging (non-binding, parallel with steps 7–9).
+11. Optimizations (batching, kernels, GPU specifics) — only after stabilization.
 
 ---
 

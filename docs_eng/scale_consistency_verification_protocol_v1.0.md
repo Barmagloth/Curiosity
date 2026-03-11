@@ -18,15 +18,15 @@ Before any experiments, fix and commit:
 
 | Parameter | Value | Justification |
 |---|---|---|
-| R | gaussian blur + decimation | Linear, GPU-cheap, aligned with coarse+delta |
+| R | gaussian blur + decimation | Linear, GPU-cheap, aligned with parent_coarse + step_delta |
 | Up | bilinear upsampling | Stable, interpretable, without introducing foreign semantics |
-| α | 1.0 (initial) | Normalization to coarse |
-| β | small constant (e.g., 1e-4 · mean(‖coarse‖)) | Protection against division by zero |
+| α | 1.0 (initial) | Normalization to parent_coarse |
+| β | small constant (e.g., 1e-4 · mean(‖parent_coarse‖)) | Protection against division by zero |
 | ε | small constant (analogous to β) | Stabilizer in D_hf |
 
 **The pair (R, Up) does not change during one verification cycle.** If a different pair needs to be checked — this is a separate cycle.
 
-Verify idempotency of R: `‖R(coarse) − coarse_downsampled‖` should be negligibly small.
+Verify idempotency of R: `‖R(parent_coarse) − parent_coarse_downsampled‖` should be negligibly small.
 
 ---
 
@@ -37,7 +37,7 @@ Verify idempotency of R: `‖R(coarse) − coarse_downsampled‖` should be negl
 Two confidence levels — store separately:
 
 **Strong positive** (prioritized):
-- Synthetic data with known GT: `delta = GT − coarse` (near-oracle)
+- Synthetic data with known GT: `step_delta = GT − parent_coarse` (near-oracle)
 - Confidence level high: scale-consistency is guaranteed by construction
 
 **Empirical positive** (auxiliary):
@@ -51,10 +51,10 @@ Both types are needed; do not mix into one sample until distribution compatibili
 
 Cases where the invariant is intentionally violated:
 
-- **LF drift:** add a low-frequency sinusoid (scale > tile_size) to correct delta
-- **Coarse shift:** delta intentionally shifts the coarse-mean of the region by 10–30%
-- **Random LF delta:** delta = random low-frequency noise unrelated to GT
-- **Semant-wrong:** delta flips the sign of coarse in the region (extreme case)
+- **LF drift:** add a low-frequency sinusoid (scale > tile_size) to correct step_delta
+- **Parent_coarse shift:** step_delta intentionally shifts the parent_coarse-mean of the region by 10–30%
+- **Random LF step_delta:** step_delta = random low-frequency noise unrelated to GT
+- **Semant-wrong:** step_delta flips the sign of parent_coarse in the region (extreme case)
 
 For each negative case, save the violation type as a label.
 
@@ -68,12 +68,12 @@ For each (node, level, type) compute:
 # R = gaussian_blur_then_downsample
 # Up = bilinear_upsample_to_original_size
 
-R_delta = R(delta)                        # coarse-projection of delta
-P_LF_delta = Up(R_delta)                  # LF-component of delta in original scale
-delta_HF = delta - P_LF_delta             # HF-remainder
+R_delta = R(step_delta)                   # coarse-projection of step_delta
+P_LF_delta = Up(R_delta)                  # LF-component of step_delta in original scale
+delta_HF = step_delta - P_LF_delta        # HF-remainder
 
-D_parent = norm(R_delta) / (alpha * norm(coarse) + beta)
-D_hf     = norm(delta_HF) / (norm(delta) + eps)
+D_parent = norm(R_delta) / (alpha * norm(parent_coarse) + beta)
+D_hf     = norm(delta_HF) / (norm(step_delta) + eps)
 ```
 
 Save: `(D_parent, D_hf, level, structure_type, case_type: pos/neg, neg_type)`
@@ -162,9 +162,9 @@ Analogous to τ_parent, but D_hf is used as a signal, not a hard constraint.
 
 ### 5.3 Energy dependence (optional, second pass)
 
-If systematic dependence of D_parent on ‖delta‖ is found in baseline:
-- On small delta many false positives → consider adaptive τ_rel(E)
-- On large delta τ is too soft → τ_rel(E) = decreasing function of energy
+If systematic dependence of D_parent on ‖step_delta‖ is found in baseline:
+- On small step_delta many false positives → consider adaptive τ_rel(E)
+- On large step_delta τ is too soft → τ_rel(E) = decreasing function of energy
 
 This is a second pass, not the first.
 
@@ -175,12 +175,12 @@ This is a second pass, not the first.
 After validation and threshold setting:
 
 ```python
-def check_scale_consistency(delta, coarse, level):
-    R_delta = R(delta)
-    D_parent = norm(R_delta) / (alpha * norm(coarse) + beta)
+def check_scale_consistency(step_delta, parent_coarse, level):
+    R_delta = R(step_delta)
+    D_parent = norm(R_delta) / (alpha * norm(parent_coarse) + beta)
 
     if D_parent > tau_parent[level]:
-        return "REJECT"  # damp delta, reject split, increase local strictness
+        return "REJECT"  # damp step_delta, reject split, increase local strictness
     return "OK"
 ```
 

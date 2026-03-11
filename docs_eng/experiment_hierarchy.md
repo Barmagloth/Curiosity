@@ -181,9 +181,31 @@ Full protocol: `docs/scale_consistency_verification_protocol_v1.0.md`.
 
 ```
 SC-enforce. Scale-Consistency Enforcement
-├── damp delta / reject split / increase local strictness when D_parent > τ_parent
+├── damp step_delta / reject split / increase local strictness when D_parent > τ_parent
 └── D_parent as contextual signal in ρ (not self-sufficient)
 ```
+
+### Exp0.10. (R, Up) Sensitivity Probe (after SC-baseline)
+
+```
+Exp0.10. (R, Up) Sensitivity Probe
+├── Dependency: SC-baseline (need validated metrics for one pair first)
+├── Pairs to test:
+│   ├── gaussian + bilinear (current default)
+│   ├── box + nearest (coarsest variant)
+│   ├── Lanczos + bicubic (more precise)
+│   └── haar wavelet decomposition (fundamentally different decomposition)
+├── Measured:
+│   ├── D_parent / D_hf distributions — do thresholds shift?
+│   ├── Tree topology divergence — same data → different trees?
+│   ├── PSNR ceiling — does R affect quality at equal budget?
+│   └── SC-baseline separability — does ROC-AUC change?
+└── Kill criterion:
+    if topology + D_parent stable (±20%) across pairs → default justified
+    if divergence > 50% → need pair selection mechanism (new open question)
+```
+
+**Exp0.10 output:** either "choice of R is not critical, default stands" or "pair selection mechanism needed."
 
 ---
 
@@ -241,7 +263,9 @@ P0 (GPU layout)
  ├──→ P2 (ρ auto-tuning)                ├──→ C-pre
  │                                        │
  └──→ SC-baseline ──→ SC-enforce ────────→ P4 ("don't break features")
-                                           depends on P0 + P1 + P2 + P3 + SC
+          │            depends on P0 + P1 + P2 + P3 + SC
+          │
+          └──→ Exp0.10 ((R, Up) sensitivity)
 ```
 
 **Critical path:** P0 → P1 → P3 → P4.
@@ -306,6 +330,7 @@ sub-experiments within levels (B1–B3 in P1). Result: confusion.
 | 3 | P1-B2 | dirty signatures | exp11 |
 | 4 | P2a | sensitivity sweep of gate thresholds | exp12 |
 | 5 | SC-baseline | verification of D_parent/D_hf, τ_parent | exp12a |
+| 5b | Exp0.10 | (R, Up) sensitivity probe (after SC-baseline) | exp12b |
 | 6 | P1-B1 | segment compression | exp13 |
 | 7 | P1-B3 | anchors + rebuild | exp14 |
 | 8 | SC-enforce | enforcement of scale-consistency | exp14a |

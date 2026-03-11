@@ -66,6 +66,18 @@ Budget is set as target_per_step (tiles/step). System overhead is included in bu
 2. **Same-budget random** — same budget, random tile selection
 3. **Same-budget uniform coarse** — same budget, uniform coarse approximation
 
+### Non-Binding Observables (Track A)
+
+The following metrics are logged during Track A experiments but **do not** affect kill criteria or success evaluation. They accumulate data for Track B.
+
+| Observable | What it measures | Cost |
+|---|---|---|
+| **Tree topology stability** | Do semantically similar inputs produce similar trees? (correlation of tree structure between runs) | Low (logging) |
+| **LCA-distance vs. feature-distance** | Scatter: distance in tree vs. distance in feature space | Low (logging) |
+| **Cluster purity** | If inputs have labels (e.g. CIFAR), do bushes align with classes? | Low (post-analysis) |
+
+These are **observational**, not prescriptive. Track A is evaluated by reconstruction, cost, and invariant compliance — not by tree semantics.
+
 ### Status
 **Active goal.** Exp0.1–Exp0.8 closed, basic invariants confirmed.
 Next step — Exp0.9b0 and baseline for scale-consistency.

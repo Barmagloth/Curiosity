@@ -42,23 +42,32 @@ There is an informativeness function ρ(x).
 
 Process:
 
-1. Start with a coarse approximation (coarse level).
+1. Start with a coarse approximation (**root coarse** — the initial representation, the starting point of the refinement tree).
 2. Compute ρ.
 3. Decide whether to split a region.
 4. Refine only selected regions.
 5. Repeat until stopping criteria.
 
+### Terminology: coarse and delta hierarchy
+
+The project distinguishes two senses of "coarse" and two senses of "delta":
+
+* **Root coarse** — the very first coarse representation from which the entire refinement tree grows. Global anchor.
+* **Parent coarse** — the coarse representation of the parent scale for a given refinement step. At level L, parent coarse is the output of level L−1. At L=1, parent coarse coincides with root coarse.
+* **Step delta** — the additive correction of a single refinement step: `refined_L = parent_coarse_L + step_delta_L`.
+* **Cumulative delta** — the accumulated correction relative to root coarse: `cumulative_delta_L = refined_L − root_coarse↓L` (where ↓L denotes projection to the scale of level L). Needed for drift diagnostics, not for local refinement mechanics.
+
 Refinement always takes the form:
 
 ```
-output = coarse + delta
+refined = parent_coarse + step_delta
 ```
 
-where delta:
+where step_delta:
 
 * is initialized to zero,
 * is energy-bounded,
-* disabling any current level returns a valid representation of the previous level,
+* disabling any current level returns parent_coarse (a valid representation of the previous level),
 * may degrade local consistency at boundaries.
 
 Halo is applied at each refinement level.
@@ -212,7 +221,7 @@ Halo ≥ 3 pixels eliminates HF artifacts at tile boundaries.
 **Minimum rule:**
 
 * overlap ≥ 3–4 pixels at tile_size=16.
-* Blending (cosine feather) is performed relative to coarse.
+* Blending (cosine feather) is performed relative to parent coarse.
 
 ---
 
@@ -235,56 +244,56 @@ Overlap does not replace exploration. Exploration does not fix seams. Both mecha
 
 The open question from v1.5 "how to ensure no broken features" formalizes through a requirement of scale-consistency of representations.
 
-Halo ensures local correctness at boundaries (geometric level). This is insufficient: a refined level can be smooth at seams, yet semantically contradict the coarse level at its own scale.
+Halo ensures local correctness at boundaries (geometric level). This is insufficient: a refined level can be smooth at seams, yet semantically contradict the parent coarse at its own scale.
 
 ## 8.2 Asymmetric Invariant
 
-Key principle: **coarse is the anchor, delta is a subordinate correction**.
+Key principle: **parent coarse is the anchor, step delta is a subordinate correction**.
 
-`refined = coarse + delta`
+`refined = parent_coarse + step_delta`
 
-The direction is one-way: refined does not redefine coarse, but lives within its tolerance. Strict equality `coarse = R(refined)` is a trap: it destroys the matryoshka and converts the tree into a pyramid of bottom-up dependencies.
+The direction is one-way: refined does not redefine parent coarse, but lives within its tolerance. Strict equality `parent_coarse = R(refined)` is a trap: it destroys the matryoshka and converts the tree into a pyramid of bottom-up dependencies.
 
 **Formal requirement:**
 
 ```
-‖R(delta)‖ / (α·‖coarse‖ + β) < τ_rel
+‖R(step_delta)‖ / (α·‖parent_coarse‖ + β) < τ_rel
 ```
 
-Meaning: delta should be invisible from the level above. Refinement can add detail, but should not smuggle a new coarse-level meaning upward.
+Meaning: step_delta should be invisible from the level above. Refinement can add detail, but should not smuggle a new parent-scale meaning upward.
 
 ## 8.3 Coarse-Graining Operator
 
 For the invariant to work, a consistent pair **(R, Up)** must be fixed:
 
-* **R** — upsampling operator: `low-pass filter + decimation`. Initial choice: gaussian blur + decimation (linear, GPU-cheap, consistent with coarse + delta).
+* **R** — coarse-graining operator: `low-pass filter + decimation`. Initial choice: gaussian blur + decimation (linear, GPU-cheap, consistent with parent_coarse + step_delta).
 * **Up** — LF-component restoration operator in delta space: `bilinear upsampling`. This is **not** the inverse of R (it does not exist), but a projection of the coarse component back into the original scale.
 
 Pair (R, Up) is fixed before the first experiment. Different pairs give different tree physics and different fixed points. The choice is architectural, not technical.
 
-Idempotency requirement: `‖R(coarse) − coarse_downsampled‖ ≈ 0`, where coarse_downsampled is coarse at R's scale. If not satisfied — the tree collapses. (R includes decimation, so the comparison is made in the smaller-scale space, not with the original coarse.)
+Idempotency requirement: `‖R(parent_coarse) − parent_coarse_downsampled‖ ≈ 0`, where parent_coarse_downsampled is parent_coarse at R's target scale. If not satisfied — the tree collapses. (R includes decimation, so the comparison is made in the smaller-scale space, not with the original parent_coarse.)
 
 ## 8.4 Metrics
 
 Two non-equivalent diagnostic axes (different numerators, but both built via pair (R, Up) — statistical independence not guaranteed):
 
-**D_parent** — delta leakage into parent scale:
+**D_parent** — step_delta leakage into parent scale:
 ```
-D_parent = ‖R(delta)‖ / (α·‖coarse‖ + β)
+D_parent = ‖R(step_delta)‖ / (α·‖parent_coarse‖ + β)
 ```
 
-**D_hf** — high-frequency purity of delta itself:
+**D_hf** — high-frequency purity of step_delta itself:
 ```
-delta_HF = delta - Up(R(delta))   # HF residue after LF-component removal
-D_hf = ‖delta_HF‖ / (‖delta‖ + ε)
+delta_HF = step_delta - Up(R(step_delta))   # HF residue after LF-component removal
+D_hf = ‖delta_HF‖ / (‖step_delta‖ + ε)
 ```
 
 Interpretation of combinations:
 
 | D_parent | D_hf | Meaning |
 |---|---|---|
-| high | low | delta is mostly LF and leaks into parent. Invariant violation. |
-| low | high | delta is detail-like, does not touch parent. Normal. |
+| high | low | step_delta is mostly LF and leaks into parent. Invariant violation. |
+| low | high | step_delta is detail-like, does not touch parent. Normal. |
 | both medium | — | Borderline zone; check residual/gain/probe. |
 
 ## 8.5 Threshold τ_rel / τ_parent
@@ -295,7 +304,7 @@ Interpretation of combinations:
 τ_rel  →  τ_parent[L]
 ```
 
-Threshold is not a constant: relative normalization is embedded in the formula, but at fine levels delta should become increasingly HF-pure, so τ_parent[L] may decay with depth. This is determined from the baseline experiment, not prescribed in advance.
+Threshold is not a constant: relative normalization is embedded in the formula, but at fine levels step_delta should become increasingly HF-pure, so τ_parent[L] may decay with depth. This is determined from the baseline experiment, not prescribed in advance.
 
 β in the denominator is a stabilizer against division by zero in nearly empty regions.
 
@@ -306,7 +315,7 @@ Threshold is not a constant: relative normalization is embedded in the formula, 
 Before enforcement is introduced, distributions of D_parent and D_hf must be collected on:
 
 * **Positive baseline** — demonstrably correct refinement cases (clean synthetic data, near-GT delta).
-* **Negative baseline** — demonstrably bad cases (artificial LF drift, intentional coarse shift, semantically wrong delta).
+* **Negative baseline** — demonstrably bad cases (artificial LF drift, intentional parent_coarse shift, semantically wrong step_delta).
 
 Measure across slices: globally, by tree level, by structure type (smooth, boundary, texture, noise).
 
@@ -320,14 +329,14 @@ After baseline validation:
 
 ```python
 if D_parent > τ_parent:
-    damp delta
+    damp step_delta
     reject split
     increase strictness locally
 ```
 
 D_parent is also used as a contextual signal in ρ:
 * high D_parent + high residual + stable gain → region is structurally interesting → raise probe priority
-* high D_parent + low gain + unstable delta → refinement mechanics problem → discourage split
+* high D_parent + low gain + unstable step_delta → refinement mechanics problem → discourage split
 
 ## 8.8 Scale-Stable Fixed Point
 
@@ -343,6 +352,28 @@ Meaning: refinement adds nothing meaningful either locally or at the level above
 **Probe remains mandatory** as insurance against false stabilization (a false fixed point is indistinguishable from a real one without external checks).
 
 Budget governor remains as a global safeguard. Local stopping by fixed point and global budget are orthogonal mechanisms.
+
+## 8.9 Step_delta Tolerance and Two-Sided Risk
+
+τ_parent effectively defines **step_delta tolerance** — the permissible fraction of parent_coarse that step_delta is allowed to alter when projected back to the parent scale.
+
+This creates a two-sided risk:
+
+> **τ_parent too tight** → SC invariant cuts legitimate features that only emerge upon refinement. The system loses information it should have kept. Consequence: conservative tree that under-refines structurally rich regions.
+>
+> **τ_parent too loose** → The tree rewrites itself in a few steps. Step_delta accumulates across levels, and parent_coarse semantics drift. In the best case — gradual drift; in the worst case — full hierarchy degradation.
+
+**Key clarification:** step_delta is computed relative to **parent_coarse** (the frozen working tile of the previous level), not relative to root_coarse. This limits the scale of the problem: each step_delta is small relative to its immediate parent, even if cumulative_delta relative to root_coarse is large.
+
+**Open question:** automatic mechanism for choosing τ_parent that balances these two risks does not yet exist. The baseline experiment (section 8.6) sets τ_parent empirically from positive cases, but the optimal trade-off between sensitivity and stability is data-dependent and may require adaptive τ_parent(L, regime). This is deferred until after the SC-baseline experiment provides real distributions.
+
+## 8.10 (R, Up) Sensitivity (Open)
+
+The choice of pair (R, Up) is architectural and determines the entire physics of the tree: D_parent distributions, D_hf distributions, scale-stable fixed points, and τ_parent thresholds.
+
+Current default (gaussian blur + decimation / bilinear upsampling) is chosen for simplicity and GPU efficiency. **Sensitivity of the system to this choice is assumed low but not validated experimentally.** If different (R, Up) pairs produce qualitatively different trees on the same data, the default may need justification or a selection mechanism.
+
+See **Exp0.10: (R, Up) Sensitivity Probe** in `experiment_hierarchy.md`. Dependency: after SC-baseline.
 
 ---
 
@@ -370,7 +401,7 @@ Halo is applied on both sides of a boundary.
 5. The system does not create artificial seams.
 6. The system does not become structurally blind.
 7. ρ defines map semantics; combination via two-stage gate.
-8. **Scale-consistency:** delta does not redefine the semantics of the parent scale. `‖R(delta)‖ / (α·‖coarse‖ + β) < τ_rel`. Pair (R, Up) is fixed. Thresholds are data-driven.
+8. **Scale-consistency:** step_delta does not redefine the semantics of the parent scale. `‖R(step_delta)‖ / (α·‖parent_coarse‖ + β) < τ_rel`. Pair (R, Up) is fixed. Thresholds are data-driven.
 
 ---
 
@@ -413,8 +444,11 @@ Formally: refinement must be boundary-aware, must include controlled exploration
 * Is auto-tuning of gate thresholds needed? (currently manual instability/FSR thresholds)
 * Is a complex data structure needed? (Morton / dynamic list vs. fixed grid)
 * Does the tree provide a semantic metric? (bushes, LCA-distance as feature)
-* How does the system behave with non-ideal refine? (delta ≠ GT − coarse)
+* How does the system behave with non-ideal refine? (step_delta ≠ GT − parent_coarse)
 * Does phase schedule come alive with non-ideal refine?
 * **Scale-consistency baseline:** what is the separability of D_parent / D_hf on positive vs. negative cases? Is the chosen pair (R, Up) sufficiently discriminative?
 * **Fixed points:** are scale-stable fixed points a reliable local stopping criterion in practice, or is probe insufficient as the only safeguard?
+* **(R, Up) sensitivity:** is the system's behavior qualitatively stable across different (R, Up) pairs? See section 8.10, Exp0.10.
+* **Step_delta tolerance:** automatic mechanism for choosing τ_parent that balances feature loss vs. hierarchy drift. See section 8.9.
+* **Track C spatial dependency:** transition to non-spatial domains (graphs, latent spaces) will require reworking spatially-dependent components: Halo (cosine feathering), R/Up (gaussian/bilinear), SeamScore (gradient energy), and parts of ρ (Laplacian-based HF energy). This is not incremental adaptation but partial redesign. Accepted as a known trade-off.
 * ~~How to ensure "no broken features"?~~ → Closed: formalized via Scale-Consistency Invariant (section 8). Transitions to experimental queue as baseline experiment.

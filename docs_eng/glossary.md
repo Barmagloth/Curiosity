@@ -8,9 +8,15 @@ Project-specific terms without which the documentation reads like gibberish. Org
 
 **Adaptive refinement** — the core of the system. The idea is that the space is not refined uniformly, but only where the informativeness function ρ indicates it is justified. Opposite approaches: uniform refinement (refine everything) or random selection (choose randomly).
 
-**Coarse (coarse level)** — the initial approximation from which the system starts. All subsequent work is refinement on top of this level. Formula: `output = coarse + delta`.
+**Root coarse** — the very first coarse representation from which the entire refinement tree grows. The global anchor of the system. At L=0, this is the only coarse representation that exists.
 
-**Delta** — an additive correction to the coarse level. Initialized to zero, bounded in energy. When the current refinement level is disabled, the system falls back to the previous valid state.
+**Parent coarse** — the coarse representation of the parent scale for a given refinement step. At level L, parent coarse is the output of level L−1. At L=1, parent coarse coincides with root coarse. This is the anchor in the scale-consistency invariant and in all refinement formulas: `refined = parent_coarse + step_delta`.
+
+**Step delta** — the additive correction of a single refinement step. Initialized to zero, bounded in energy. Formula: `refined_L = parent_coarse_L + step_delta_L`. When the current refinement level is disabled, the system falls back to parent_coarse.
+
+**Cumulative delta** — the accumulated correction relative to root coarse: `cumulative_delta_L = refined_L − root_coarse↓L`. Not used in local refinement mechanics; needed for drift diagnostics and analysis of accumulated effects across the tree.
+
+**Coarse (deprecated shorthand)** — in earlier documentation, "coarse" was used without qualification to mean either root coarse or parent coarse depending on context. As of v1.6 terminology update, always use the explicit form. When "coarse" appears as an adjective (e.g., "coarse levels", "coarse-graining"), it retains its general meaning.
 
 **Refinement** — the process: compute ρ → decide whether to split → refine selected regions → repeat. Each iteration increases resolution only in "interesting" areas.
 
@@ -70,7 +76,7 @@ Project-specific terms without which the documentation reads like gibberish. Org
 
 ## Boundaries and Seams
 
-**Halo** — the overlap zone between tiles. A mandatory component: without halo, hard insertion of a refined tile creates a step at the boundary, which the Laplacian catches as a false HF signal. Minimum size: 3 cells. Implemented as cosine feathering relative to coarse.
+**Halo** — the overlap zone between tiles. A mandatory component: without halo, hard insertion of a refined tile creates a step at the boundary, which the Laplacian catches as a false HF signal. Minimum size: 3 cells. Implemented as cosine feathering relative to parent coarse.
 
 **Cosine feathering** — a method for smooth transition between refined and coarse tiles. Weight changes smoothly via cosine function from 1 (tile center) to 0 (boundary), instead of a sharp cutoff.
 
@@ -130,7 +136,7 @@ Project-specific terms without which the documentation reads like gibberish. Org
 
 ## Scale-Consistency (v1.6)
 
-**Scale-Consistency Invariant** — the requirement that delta does not redefine the semantics of the parent scale. Formally: `‖R(delta)‖ / (α·‖coarse‖ + β) < τ_rel`. Closes the open question from v1.5 "how not to break features." See concept_v1.6.md, section 8, for details.
+**Scale-Consistency Invariant** — the requirement that step_delta does not redefine the semantics of the parent scale. Formally: `‖R(step_delta)‖ / (α·‖parent_coarse‖ + β) < τ_rel`. Closes the open question from v1.5 "how not to break features." See concept_v1.6.md, section 8, for details.
 
 **R (coarse-graining operator)** — `gaussian blur + decimation`. Projects the signal from fine to coarse scale. Fixed before experiments — an architectural choice.
 
@@ -138,11 +144,13 @@ Project-specific terms without which the documentation reads like gibberish. Org
 
 **Pair (R, Up)** — a fixed pair of operators for measuring scale-consistency. Different pairs yield different tree physics. Does not change during a single verification cycle.
 
-**D_parent** — a metric for delta leakage into the parent scale: `D_parent = ‖R(delta)‖ / (α·‖coarse‖ + β)`. Higher = worse. The primary enforcement signal.
+**D_parent** — a metric for step_delta leakage into the parent scale: `D_parent = ‖R(step_delta)‖ / (α·‖parent_coarse‖ + β)`. Higher = worse. The primary enforcement signal.
 
-**D_hf** — a metric for high-frequency purity of delta: `D_hf = ‖delta - Up(R(delta))‖ / (‖delta‖ + ε)`. Higher = better (delta lives in the HF subspace). A diagnostic signal, not a hard constraint.
+**D_hf** — a metric for high-frequency purity of step_delta: `D_hf = ‖step_delta - Up(R(step_delta))‖ / (‖step_delta‖ + ε)`. Higher = better (step_delta lives in the HF subspace). A diagnostic signal, not a hard constraint.
 
 **τ_parent** — a data-driven threshold for D_parent, set by the baseline experiment. May depend on level L.
+
+**Step_delta tolerance** — the permissible fraction of parent_coarse that step_delta may alter when projected to the parent scale. Operationally determined by τ_parent. Two-sided risk: too tight → loss of legitimate features; too loose → hierarchy drift. Automatic choice mechanism is an open question. See concept_v1.6.md, section 8.9.
 
 **Scale-stable fixed point** — a node where simultaneously: (1) gain < τ_gain, (2) D_parent < τ_parent, (3) stable for K steps. A local refinement stopping criterion. Probe remains mandatory as a safeguard.
 
@@ -230,3 +238,5 @@ The order is strict: no jumping ahead without closing dependencies.
 **C (DAG + profiles)** — routing refinement via a directed acyclic graph instead of a tree. Frozen indefinitely. Entry contract for unfreezing: (1) at least 2 irreducible objectives, (2) a concrete downstream consumer, (3) an observable conflict between objectives.
 
 **Matryoshka invariant** — the requirement that the representation at any "matryoshka" (nested refinement) level is a valid input for the downstream consumer. Not just visually smooth, but functionally correct. The Scale-Consistency Invariant (v1.6) is the formalization of this requirement at the level of individual nodes. Tested in P4.
+
+**Depth-dependent representation (deferred)** — the hypothesis that different tree levels may require qualitatively different features (step_delta of different types at different scales). Current architecture uses a uniform representation at all levels. Deferred consciously: (1) requires a working instrument first (Track A); (2) target requirements for each level cannot be specified in advance — the approach is presumed iterative. Investigate after Track A.
