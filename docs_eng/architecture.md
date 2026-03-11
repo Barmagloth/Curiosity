@@ -22,6 +22,9 @@ State space X (arbitrary nature)
 [Adaptive refinement] — refine selected regions
        |
        v
+[Scale-Consistency check] — D_parent < τ_parent? (v1.6)
+       |
+       v
 [Halo blending] — cosine feathering at boundaries
        |
        v
@@ -118,7 +121,40 @@ Computed over edge strips (bands at tile boundaries).
 
 ---
 
-## Component 6: Refinement Tree
+## Component 6: Scale-Consistency Invariant (v1.6)
+
+**Why:** Halo ensures local geometric correctness at tile boundaries. But a refined level can be smooth at seams while semantically contradicting the coarse level — delta smuggles low-frequency meaning upward. The Scale-Consistency Invariant guarantees this does not happen.
+
+**Principle:** coarse is the anchor, delta is the subordinate correction. Delta must be invisible from the level above.
+
+**Formal requirement:**
+```
+‖R(delta)‖ / (α·‖coarse‖ + β) < τ_rel
+```
+
+**Operator pair (R, Up):**
+- **R** (coarse-graining): `gaussian blur + decimation`. Projects fine → coarse.
+- **Up** (restoration): `bilinear upsampling`. Projects back to fine. Not the inverse of R.
+- The pair is fixed before experiments. Different pairs yield different tree physics.
+
+**Metrics:**
+
+| Metric | Formula | Interpretation |
+|---|---|---|
+| D_parent | `‖R(delta)‖ / (α·‖coarse‖ + β)` | Delta leakage into parent scale. Lower = better. Enforcement signal. |
+| D_hf | `‖delta - Up(R(delta))‖ / (‖delta‖ + ε)` | HF purity of delta. Higher = better. Diagnostic, not hard constraint. |
+
+**Enforcement (after baseline validation):**
+- `D_parent > τ_parent` → damp delta / reject split / increase local strictness
+- D_parent is also used as a contextual signal in ρ (not self-sufficient)
+
+**Thresholds:** τ_parent is data-driven from the baseline experiment, may depend on level L.
+
+**Status:** Invariant formalized (concept v1.6, section 8). Baseline experiment (SC-baseline) is the next step. Protocol: `scale_consistency_verification_protocol_v1.0.md`.
+
+---
+
+## Component 7: Refinement Tree
 
 The tree is a log of split decisions. Each root-to-leaf path = a sequence of decisions.
 

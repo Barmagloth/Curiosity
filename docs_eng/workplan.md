@@ -102,6 +102,25 @@
 
 ---
 
+## G. Scale-Consistency: Don't Break Parent-Scale Semantics (v1.6)
+**Goal:** guarantee that delta does not redefine the coarse level by smuggling — refinement adds detail but does not push new LF meaning upward.
+
+**Deliverables:**
+- Implementation of operator pair (R, Up): `gaussian blur + decimation` / `bilinear upsampling`.
+- Compute D_parent and D_hf metrics per tree node.
+- Baseline experiment: collect D_parent/D_hf distributions on positive (correct refinement) and negative (artificial LF drift) cases. Evaluate separability (AUC, effect size, quantile separation).
+- Data-driven thresholds τ_parent[L] from baseline results.
+- Enforcement: damp delta / reject split / increase local strictness when D_parent > τ_parent.
+- Integration of D_parent as a contextual signal in ρ (not self-sufficient).
+
+**Kill criterion:** if separability between positive and negative is insufficient — revisit metrics or the (R, Up) pair, not the thresholds.
+
+**Protocol:** `scale_consistency_verification_protocol_v1.0.md`.
+
+**Standalone value:** cross-scale semantic coherence diagnostics for any hierarchical representation.
+
+---
+
 ## Mini-Roadmap (Each Step = A Standalone Trophy)
 1. Hash+Cache for tiles (canonicalization, stable key, hit/miss, log).
 2. Incremental scheduler (recompute only what changed).
@@ -109,7 +128,9 @@
 4. Tree + hysteresis (split/merge without jitter).
 5. Recomputation policy (new/changed/boundary) + gain measurement.
 6. Delta + boundary stitching (overlap/blend for seamless output).
-7. Optimizations (batching, kernels, GPU specifics) — only after stabilization.
+7. Scale-Consistency baseline (R/Up, D_parent/D_hf, separability, τ_parent).
+8. Scale-Consistency enforcement (damp/reject/strictness + integration into ρ).
+9. Optimizations (batching, kernels, GPU specifics) — only after stabilization.
 
 ---
 
@@ -118,3 +139,4 @@
 - Incremental recomputation.
 - ROI "interestingness" mask.
 - Stable adaptive complexity markup.
+- Cross-scale coherence diagnostics (D_parent / D_hf).

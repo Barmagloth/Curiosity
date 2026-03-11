@@ -102,6 +102,25 @@
 
 ---
 
+## G. Scale-Consistency: не сломать семантику родительского масштаба (v1.6)
+**Цель:** гарантировать, что delta не переопределяет coarse-уровень «контрабандой» — refinement добавляет детали, но не проталкивает новый LF-смысл наверх.
+
+**Деливераблы:**
+- Реализация пары операторов (R, Up): `gaussian blur + decimation` / `bilinear upsampling`.
+- Вычисление метрик D_parent и D_hf по каждому узлу дерева.
+- Baseline-эксперимент: собрать распределения D_parent/D_hf на positive (корректный refinement) и negative (искусственный LF drift) случаях. Оценить separability (AUC, effect size, quantile separation).
+- Data-driven пороги τ_parent[L] по результатам baseline.
+- Enforcement: damp delta / reject split / increase local strictness при D_parent > τ_parent.
+- Интеграция D_parent как контекстного сигнала в ρ (не самодостаточного).
+
+**Kill criterion:** если separability между positive и negative недостаточна — пересматриваются метрики или пара (R, Up), а не пороги.
+
+**Протокол:** `scale_consistency_verification_protocol_v1.0.md`.
+
+**Польза отдельно:** диагностика межмасштабной семантической когерентности для любого hierarchical representation.
+
+---
+
 ## Мини-роадмап (каждый шаг — отдельный трофей)
 1. Hash+Cache для тайлов (каноникализация, стабильный ключ, hit/miss, журнал).
 2. Инкрементальный планировщик (пересчитываем только изменившееся).
@@ -109,7 +128,9 @@
 4. Дерево + гистерезис (split/merge без дрожи).
 5. Политика пересчёта (new/changed/boundary) + измерение выигрыша.
 6. Delta + boundary stitching (overlap/blend, чтобы не было швов).
-7. Оптимизации (батчинг, ядра, GPU-специфика) — только после стабилизации.
+7. Scale-Consistency baseline (R/Up, D_parent/D_hf, separability, τ_parent).
+8. Scale-Consistency enforcement (damp/reject/strictness + интеграция в ρ).
+9. Оптимизации (батчинг, ядра, GPU-специфика) — только после стабилизации.
 
 ---
 
@@ -118,4 +139,5 @@
 - Инкрементальный пересчёт.
 - ROI-маска «интересности».
 - Стабильная адаптивная разметка сложности.
+- Диагностика межмасштабной когерентности (D_parent / D_hf).
 
