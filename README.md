@@ -27,7 +27,7 @@ Curiosity — исследовательский ML-проект по созда
 ```
 README.md                          — этот файл
 docs/
-  target_problem_definition_v1.1.md — зачем проект, что успех, Track A→B
+  target_problem_definition_v1.1.md — зачем проект, что успех, Track A→B→C
   concept_v1.6.md                  — концептуальный документ (канонический)
   concept_v1.5_historical.md       — предыдущая версия (после Exp0.1–0.8)
   concept_v1.4_historical.md       — ранняя версия (после Exp0.2–0.3)

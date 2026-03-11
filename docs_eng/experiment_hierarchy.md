@@ -330,6 +330,8 @@ All experiments P0–P4 + SC belong to **Track A** (building the instrument). Tr
 
 Details: `docs/target_problem_definition_v1.1.md`.
 
+After successful Track B, **Track C** opens (generalization to non-spatial domains: graphs, latent spaces, activations). Long-term ambition, not a current goal.
+
 ---
 
 # Principles
