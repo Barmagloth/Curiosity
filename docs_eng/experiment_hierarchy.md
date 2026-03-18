@@ -271,10 +271,8 @@ P0 (GPU layout)
  │                                       │
  ├──→ P2 (ρ auto-tuning)                ├──→ C-pre
  │                                        │
- └──→ SC-baseline ──→ SC-enforce ────────→ P4 ("don't break features")
-          │            depends on P0 + P1 + P2 + P3 + SC
-          │
-          └──→ Exp0.10 ((R, Up) sensitivity)
+ └──→ SC-baseline (✅ SC-0..SC-4) ──→ SC-5 ──→ SC-enforce ──→ P4 ("don't break features")
+                                              depends on P0 + P1 + P2 + P3 + SC
 ```
 
 **Critical path:** P0 → P1 → P3 → P4.
@@ -288,11 +286,11 @@ P0 (GPU layout)
 1. **P0: 0.9b0** — buffer-scaling probe, kill/go for compact
 2. **P0: 0.9b/0.9c/0.9h** — if compact survives; otherwise lock in grid
 3. **P1-B2** — dirty signatures (parallel with P0 GPU part, runs on CPU)
-4. **P2a** — sensitivity sweep of gate thresholds (parallel with P1)
-5. **SC-baseline** — verification of D_parent/D_hf, set τ_parent (parallel with P1)
+4. **P2a** — sensitivity sweep of gate thresholds, **5 scenes × 4 space types** (code ready, parallel with P1)
+5. **SC-5** — set data-driven τ_parent[L] (SC-0..SC-4 ✅ complete; parallel with P1)
 6. **P1-B1** — segment compression (after B2)
 7. **P1-B3** — anchors + rebuild (after B1+B2)
-8. **SC-enforce** — enforcement of scale-consistency (after SC-baseline)
+8. **SC-enforce** — enforcement of scale-consistency (after SC-5)
 9. **P3a/P3b** — tree semantics (after P1)
 10. **C-pre** — profile cluster check (after P3, cheap)
 11. **P4** — "don't break features" (after everything + SC)
@@ -337,9 +335,8 @@ sub-experiments within levels (B1–B3 in P1). Result: confusion.
 | 1 | P0 | buffer-scaling probe (kill/go compact) | exp10 |
 | 2 | P0 | end-to-end pipeline grid vs compact | exp10a/b/c |
 | 3 | P1-B2 | dirty signatures | exp11 |
-| 4 | P2a | sensitivity sweep of gate thresholds | exp12 |
-| 5 | SC-baseline | verification of D_parent/D_hf, τ_parent | exp12a |
-| 5b | Exp0.10 | (R, Up) sensitivity probe (after SC-baseline) | exp12b |
+| 4 | P2a | sensitivity sweep of gate thresholds (5 scenes × 4 spaces) | exp12 |
+| 5 | SC-5 | set data-driven τ_parent[L] (SC-0..SC-4 ✅) | exp12a |
 | 6 | P1-B1 | segment compression | exp13 |
 | 7 | P1-B3 | anchors + rebuild | exp14 |
 | 8 | SC-enforce | enforcement of scale-consistency | exp14a |

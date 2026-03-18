@@ -249,7 +249,7 @@ P0 (layout GPU)
  │                                       │
  ├──→ P2 (автонастройка ρ)               ├──→ C-pre
  │                                        │
- └──→ SC-baseline ──→ SC-enforce ────────→ P4 ("не сломать фичи")
+ └──→ SC-baseline (✅ SC-0..SC-4) ──→ SC-5 ──→ SC-enforce ──→ P4 ("не сломать фичи")
                                            зависит от P0 + P1 + P2 + P3 + SC
 ```
 
@@ -264,11 +264,11 @@ P0 (layout GPU)
 1. **P0: 0.9b0** — buffer-scaling probe, kill/go для compact
 2. **P0: 0.9b/0.9c/0.9h** — если compact жив; иначе фиксируем grid
 3. **P1-B2** — dirty-сигнатуры (параллельно с P0 GPU-частью на CPU)
-4. **P2a** — sensitivity sweep порогов гейта (параллельно с P1)
-5. **SC-baseline** — верификация D_parent/D_hf, установка τ_parent (параллельно с P1)
+4. **P2a** — sensitivity sweep порогов гейта, **5 сцен × 4 пространства** (код готов, параллельно с P1)
+5. **SC-5** — установка data-driven τ_parent[L] (SC-0..SC-4 ✅ завершены; параллельно с P1)
 6. **P1-B1** — segment compression (после B2)
 7. **P1-B3** — anchors + rebuild (после B1+B2)
-8. **SC-enforce** — enforcement scale-consistency (после SC-baseline)
+8. **SC-enforce** — enforcement scale-consistency (после SC-5)
 9. **P3a/P3b** — семантика дерева (после P1)
 10. **C-pre** — кластерность профилей (после P3, дёшево)
 11. **P4** — "не сломать фичи" (после всего + SC)
@@ -313,8 +313,8 @@ P0 (layout GPU)
 | 1 | P0 | buffer-scaling probe (kill/go compact) | exp10 |
 | 2 | P0 | end-to-end pipeline grid vs compact | exp10a/b/c |
 | 3 | P1-B2 | dirty-сигнатуры | exp11 |
-| 4 | P2a | sensitivity sweep порогов гейта | exp12 |
-| 5 | SC-baseline | верификация D_parent/D_hf, τ_parent | exp12a |
+| 4 | P2a | sensitivity sweep порогов гейта (5 сцен × 4 пространства) | exp12 |
+| 5 | SC-5 | установка data-driven τ_parent[L] (SC-0..SC-4 ✅) | exp12a |
 | 6 | P1-B1 | segment compression | exp13 |
 | 7 | P1-B3 | anchors + rebuild | exp14 |
 | 8 | SC-enforce | enforcement scale-consistency | exp14a |
