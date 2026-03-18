@@ -1,0 +1,127 @@
+# Curiosity: Параллельный план работы команды
+
+## Контекст
+
+Проект Curiosity завершил серию Exp0.1–0.8. Впереди P0–P4 + SC-baseline + кросс-пространственная валидация Halo. Задача — распределить работу на 4+ параллельных исполнителя при условии, что Barmagloth выступает архитектором (принимает решения на развилках, ревьюит результаты, не пишет код).
+
+**Ограничение**: GPU — AMD (нет CUDA), нужен ROCm + PyTorch. Часть задач может стартовать на CPU.
+
+---
+
+## Потоки работы (Streams)
+
+### Фаза 0: Немедленный старт (Неделя 1–2)
+
+Четыре потока, все независимы друг от друга:
+
+| Поток | Исполнитель | Задача | Тип | Зависимости |
+|-------|-------------|--------|-----|-------------|
+| **S1: Окружение** | Executor A | Поднять ROCm + PyTorch на AMD GPU. Проверить совместимость существующего кода (exp07, exp08). Написать `environment.md` с версиями. | Инфраструктура | Нет — стартует сразу |
+| **S2: Halo cross-space** | Executor B | Расширить `phase2_probe_seam/exp_seam_crossspace.py` — валидировать Halo (cosine feathering, ≥3 элемента) на всех 4 типах пространств (scalar grid, vector grid, irregular graph, tree hierarchy). CPU-only. | Валидация | Нет — переиспользует код phase2 |
+| **S3: P2a sweep design** | Executor C | Реализовать sensitivity sweep порогов (instability_threshold, FSR_threshold) по 5 сценам (clean/noise/blur/spatvar/jpeg) **× 4 типа пространств** (scalar grid, vector grid, irregular graph, tree hierarchy). CPU-only, переиспользует код exp07/exp08 + phase2 cross-space инфраструктуру. | Эксперимент | Нет — данные и код есть |
+| **S4: SC-baseline scaffold** | Executor D | Реализовать каркас SC-baseline по протоколу `scale_consistency_verification_protocol_v1.0.md`: SC-0 (idempotence R), SC-1 (positive/negative baselines), SC-2 (D_parent, D_hf вычисление). CPU-only. | Код + валидация | Нет — протокол готов |
+
+**Развилки для архитектора (конец Фазы 0):**
+- S2 результат: Halo работает на всех 4 пространствах → статус «обязательный инвариант» подтверждён. Если нет → решение о модификации Halo.
+- S1 результат: ROCm работает → переход к GPU-экспериментам. Если нет → fallback на облако / WSL + CUDA.
+
+---
+
+### Фаза 1: P0 + параллельные CPU-задачи (Неделя 3–5)
+
+| Поток | Исполнитель | Задача | Тип | Зависимости |
+|-------|-------------|--------|-----|-------------|
+| **S1: P0 — Exp0.9b0** | Executor A | Buffer-scaling probe: O(k) vs O(M) overhead. Grid vs compact. Kill compact если overhead > 20%. Требует GPU. | Эксперимент (GPU) | S1 Фаза 0 (окружение) |
+| **S2: P1-B2 прототип** | Executor B | Dirty signatures: 12-bit signature (seam_risk + uncert + mass), debounce, AUC > 0.8. CPU-прототип, позже перенос на GPU. | Код + эксперимент | Нет (CPU) |
+| **S3: P2a выполнение** | Executor C | Запуск sensitivity sweep (из Фазы 0) на 5 сцен × 4 пространства. Определить: ridge width > 30% → ручные пороги ок; < 10% → нужен P2b. **Важно:** если ridge width различается между пространствами — это само по себе значимый результат, требующий решения архитектора. | Эксперимент | S3 Фаза 0 (код готов) |
+| **S4: SC-baseline выполнение** | Executor D | SC-0 через SC-3: вычислить D_parent/D_hf, проверить separability (AUC ≥ 0.75, Cohen's d ≥ 0.5). | Валидация | S4 Фаза 0 (каркас) |
+| **S5: Deferred revisit** | Executor E | Re-investigation Morton layout / block-sparse / phase schedule с иным подходом. Литобзор + новые идеи. Не эксперимент — research note с предложениями. | Исследование | Нет |
+
+**Развилки для архитектора (конец Фазы 1):**
+- P0 результат → выбор layout (grid / compact). Определяет весь P1.
+- P2a результат → go/no-go для P2b (adaptive threshold). **Дополнительно:** если ridge width существенно различается между типами пространств → может потребоваться space-dependent tuning (отдельное решение архитектора).
+- SC-baseline → pass/fail. Если fail → пересмотр пары (R, Up).
+- Deferred revisit → архитектор решает, стоит ли возвращать Morton/block-sparse/schedule в план.
+
+---
+
+### Фаза 2: Compression + enforcement (Неделя 6–8)
+
+| Поток | Исполнитель | Задача | Зависимости |
+|-------|-------------|--------|-------------|
+| **S1: P0 завершение** | Executor A | Exp0.9b (end-to-end если compact жив), Exp0.9h (halo determinism на GPU) | P0 Фаза 1 |
+| **S2: P1-B1 compression** | Executor B | Segment compression (degree-2 + signature-stable + length cap). Compression ratio > 50%, overhead < 10%. | P1-B2 (Фаза 1) + P0 layout |
+| **S3: P2b (условно)** | Executor C | Online percentile estimation для adaptive threshold. Только если P2a показал narrow ridge. Иначе — помогает другим потокам. | P2a результат |
+| **S4: SC-enforce** | Executor D | Damp delta / reject split при D_parent > τ_parent. Интеграция enforcement в pipeline. | SC-baseline pass |
+
+---
+
+### Фаза 3: Семантика + rebuild (Неделя 9–11)
+
+| Поток | Исполнитель | Задача | Зависимости |
+|-------|-------------|--------|-------------|
+| **S1: P1-B3 anchors** | Executor A/B | Periodic rebuild + anchor insertion. Divergence < 5% vs full rebuild. | P1-B1 |
+| **S2: P3a LCA-distance** | Executor C | Корреляция LCA-distance с feature similarity. Correlation > 0.3 → дерево семантично. | P1-B1 (compressed tree) |
+| **S3: P3b bushes** | Executor D | Кластеры leaf-paths. Silhouette > 0.4 + стабильность. | P3a (можно параллельно) |
+
+---
+
+### Фаза 4: Интеграция (Неделя 12–14)
+
+| Поток | Исполнитель | Задача | Зависимости |
+|-------|-------------|--------|-------------|
+| **S1: P4a downstream** | Executor A | Classifier/autoencoder на adaptive-refined vs dense vs coarse. Metric loss < 2%. | Все P0–P3 + SC |
+| **S2: P4b matryoshka** | Executor B | Каждый уровень вложенности валиден для downstream. | P4a |
+| **S3: C-pre** | Executor C | Есть ли natural clustering в trajectory features? Go/no-go для Track C. | P3 результаты |
+
+---
+
+## Критический путь
+
+```
+Фаза 0: S1(env) ──→ Фаза 1: S1(P0) ──→ Фаза 2: S2(P1-B1) ──→ Фаза 3: S1(P1-B3) ──→ Фаза 4: S1(P4)
+                                    └──→ Фаза 2: S1(P0 finish)
+```
+
+**Критический путь:** Env → P0 → P1(B2→B1→B3) → P4 = ~14 недель
+
+**Параллельные потоки сокращают реальное время:**
+- Halo cross-space (Фаза 0) — не на критическом пути, но блокирует уверенность в инвариантах
+- P2, SC-baseline — параллельны с P1, не удлиняют критический путь
+- Deferred revisit — чистый research, не блокирует ничего
+
+---
+
+## Точки принятия решений архитектором
+
+| Когда | Что решать | Входные данные |
+|-------|-----------|---------------|
+| Конец Фазы 0 | ROCm ok? Halo кросс-пространственный? | S1, S2 отчёты |
+| Конец Фазы 1 | Layout (grid/compact)? P2b нужен? SC pass? Morton/schedule возврат? | P0, P2a, SC, S5 отчёты |
+| Конец Фазы 2 | SC-enforce работает? Compression достаточна? | S2, S4 отчёты |
+| Конец Фазы 3 | Дерево семантично? C unfreezes? | P3a, P3b отчёты |
+| Конец Фазы 4 | Instrument Readiness Gate пройден? Переход на Track B? | P4a, P4b, C-pre |
+
+---
+
+## Ключевые файлы
+
+- `docs/experiment_hierarchy.md` — граф зависимостей, kill criteria
+- `docs/workplan.md` — модули A–F
+- `docs/scale_consistency_verification_protocol_v1.0.md` — протокол SC
+- `docs/concept_v1.6.md` — каноническая концепция
+- `experiments/phase2_probe_seam/` — код для переиспользования в Halo cross-space
+- `experiments/exp07_gate/`, `experiments/exp08_schedule/` — код для P2a sweep
+
+---
+
+## Верификация
+
+После каждой фазы:
+1. Все kill criteria проверены (числа, не мнения)
+2. Holm-Bonferroni коррекции при множественных сравнениях
+3. 10–20 seeds для воспроизводимости
+4. Результаты записаны в `docs/experiment_results.md` (append)
+5. Архитектор ревьюит перед переходом к следующей фазе
+
+**Принцип кросс-пространственной валидации:** Любой эксперимент, претендующий на утверждение об «произвольных пространствах», ОБЯЗАН проверяться минимум на 4 типах пространств (scalar grid, vector grid, irregular graph, tree hierarchy) — тех же, на которых валидирован SeamScore. Результат на одном типе пространства (например, 2D pixel grid) НЕ считается достаточным для обобщения.
