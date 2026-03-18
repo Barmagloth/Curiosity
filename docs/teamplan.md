@@ -38,15 +38,20 @@
 
 ---
 
-### Фаза 1: P0 + параллельные CPU-задачи (Неделя 3–5)
+### Фаза 1: P0 + DET-1 + параллельные CPU-задачи (Неделя 3–5)
 
 | Поток | Исполнитель | Задача | Тип | Зависимости |
 |-------|-------------|--------|-----|-------------|
 | **S1: P0 — Exp0.9b0** | Executor A | Buffer-scaling probe: O(k) vs O(M) overhead. Grid vs compact. Kill compact если overhead > 20%. Требует GPU. | Эксперимент (GPU) | S1 Фаза 0 (окружение) |
+| **S1b: DET-1** | Executor A | Seed determinism: canonical traversal order (Z-order tie-break), deterministic probe, governor isolation. Поглощает 0.9h. Kill: любое расхождение = fail. **Блокер для Фазы 2.** | Валидация | S1 P0 (layout определяет порядок обхода) |
 | **S2: P1-B2 прототип** | Executor B | Dirty signatures: 12-bit signature (seam_risk + uncert + mass), debounce, AUC > 0.8. CPU-прототип, позже перенос на GPU. | Код + эксперимент | Нет (CPU) |
 | **S3: P2a выполнение** | Executor C | Запуск sensitivity sweep (из Фазы 0) на 5 сцен × 4 пространства. Определить: ridge width > 30% → ручные пороги ок; < 10% → нужен P2b. **Важно:** если ridge width различается между пространствами — это само по себе значимый результат, требующий решения архитектора. | Эксперимент | S3 Фаза 0 (код готов) |
 | **S4: SC-baseline завершение** | Executor D | SC-0..SC-4 пройдены. Осталось: SC-5 — установить data-driven τ_parent[L]. Подготовить SC-enforce (Фаза 2). | Валидация | S4 Фаза 0 (каркас) ✅ |
 | **S5: Deferred revisit** | Executor E | Re-investigation Morton layout / block-sparse / phase schedule с иным подходом. Литобзор + новые идеи. Не эксперимент — research note с предложениями. | Исследование | Нет |
+
+**Gate: Фаза 1 → Фаза 2:**
+- P0 layout зафиксирован (grid / compact).
+- **DET-1 пройден** (побитовое совпадение при фиксированном seed). Без этого результаты Фазы 2 нетестируемы.
 
 **Развилки для архитектора (конец Фазы 1):**
 - P0 результат → выбор layout (grid / compact). Определяет весь P1.
@@ -56,12 +61,12 @@
 
 ---
 
-### Фаза 2: Compression + enforcement (Неделя 6–8)
+### Фаза 2: Compression + enforcement + DET-2 (Неделя 6–8)
 
 | Поток | Исполнитель | Задача | Зависимости |
 |-------|-------------|--------|-------------|
-| **S1: P0 завершение + DET** | Executor A | Exp0.9b (end-to-end если compact жив), DET-1 (seed determinism — поглощает 0.9h). DET-2 (cross-seed stability, 20 seeds). | P0 Фаза 1 |
-| **S2: P1-B1 compression** | Executor B | Segment compression (degree-2 + signature-stable + length cap). Compression ratio > 50%, overhead < 10%. | P1-B2 (Фаза 1) + P0 layout |
+| **S1: P0 завершение + DET-2** | Executor A | Exp0.9b (end-to-end если compact жив). DET-2 (cross-seed stability, 20 seeds × 4 пространства × 2 бюджета). | P0 + DET-1 (Фаза 1) |
+| **S2: P1-B1 compression** | Executor B | Segment compression (degree-2 + signature-stable + length cap). Compression ratio > 50%, overhead < 10%. | P1-B2 (Фаза 1) + P0 layout + DET-1 |
 | **S3: P2b (условно)** | Executor C | Online percentile estimation для adaptive threshold. Только если P2a показал narrow ridge. Иначе — помогает другим потокам. | P2a результат |
 | **S4: SC-enforce** | Executor D | Damp delta / reject split при D_parent > τ_parent. Интеграция enforcement в pipeline. | SC-baseline pass |
 
@@ -90,15 +95,16 @@
 ## Критический путь
 
 ```
-Фаза 0: S1(env) ──→ Фаза 1: S1(P0) ──→ Фаза 2: S2(P1-B1) ──→ Фаза 3: S1(P1-B3) ──→ Фаза 4: S1(P4)
-                                    └──→ Фаза 2: S1(P0 finish)
+Фаза 0: S1(env) ──→ Фаза 1: S1(P0) → S1b(DET-1) ──→ Фаза 2: S2(P1-B1) ──→ Фаза 3: S1(P1-B3) ──→ Фаза 4: S1(P4)
+                                                   └──→ Фаза 2: S1(P0 finish + DET-2)
 ```
 
-**Критический путь:** Env → P0 → P1(B2→B1→B3) → P4 = ~14 недель
+**Критический путь:** Env → P0 → DET-1 → P1(B2→B1→B3) → P4 = ~14 недель
 
 **Параллельные потоки сокращают реальное время:**
 - Halo cross-space (Фаза 0) — не на критическом пути, но блокирует уверенность в инвариантах
 - P2, SC-baseline — параллельны с P1, не удлиняют критический путь
+- DET-2 — параллельна с P1-B1 (после DET-1), блокирует Track B но не Фазу 3
 - Deferred revisit — чистый research, не блокирует ничего
 
 ---

@@ -38,15 +38,20 @@ Four streams, all independent of each other:
 
 ---
 
-### Phase 1: P0 + Parallel CPU Tasks (Week 3–5)
+### Phase 1: P0 + DET-1 + Parallel CPU Tasks (Week 3–5)
 
 | Stream | Executor | Task | Type | Dependencies |
 |--------|----------|------|------|--------------|
 | **S1: P0 — Exp0.9b0** | Executor A | Buffer-scaling probe: O(k) vs O(M) overhead. Grid vs compact. Kill compact if overhead > 20%. Requires GPU. | Experiment (GPU) | S1 Phase 0 (environment) |
+| **S1b: DET-1** | Executor A | Seed determinism: canonical traversal order (Z-order tie-break), deterministic probe, governor isolation. Absorbs 0.9h. Kill: any divergence = fail. **Blocker for Phase 2.** | Validation | S1 P0 (layout determines traversal order) |
 | **S2: P1-B2 prototype** | Executor B | Dirty signatures: 12-bit signature (seam_risk + uncert + mass), debounce, AUC > 0.8. CPU prototype, later ported to GPU. | Code + experiment | None (CPU) |
 | **S3: P2a execution** | Executor C | Run sensitivity sweep (from Phase 0) across 5 scenes × 4 spaces. Determine: ridge width > 30% → manual thresholds ok; < 10% → P2b needed. **Important:** if ridge width differs across spaces — this is itself a significant result requiring an architect decision. | Experiment | S3 Phase 0 (code ready) |
 | **S4: SC-baseline completion** | Executor D | SC-0..SC-4 passed. Remaining: SC-5 — set data-driven τ_parent[L]. Prepare SC-enforce (Phase 2). | Validation | S4 Phase 0 (scaffold) ✅ |
 | **S5: Deferred revisit** | Executor E | Re-investigation of Morton layout / block-sparse / phase schedule with a different approach. Literature review + new ideas. Not an experiment — a research note with proposals. | Research | None |
+
+**Gate: Phase 1 → Phase 2:**
+- P0 layout locked (grid / compact).
+- **DET-1 passed** (bitwise tree match at fixed seed). Without this, Phase 2 results are untestable.
 
 **Forks for the architect (end of Phase 1):**
 - P0 result → layout choice (grid / compact). Determines all of P1.
@@ -56,12 +61,12 @@ Four streams, all independent of each other:
 
 ---
 
-### Phase 2: Compression + Enforcement (Week 6–8)
+### Phase 2: Compression + Enforcement + DET-2 (Week 6–8)
 
 | Stream | Executor | Task | Dependencies |
 |--------|----------|------|--------------|
-| **S1: P0 completion + DET** | Executor A | Exp0.9b (end-to-end if compact survives), DET-1 (seed determinism — absorbs 0.9h). DET-2 (cross-seed stability, 20 seeds). | P0 Phase 1 |
-| **S2: P1-B1 compression** | Executor B | Segment compression (degree-2 + signature-stable + length cap). Compression ratio > 50%, overhead < 10%. | P1-B2 (Phase 1) + P0 layout |
+| **S1: P0 completion + DET-2** | Executor A | Exp0.9b (end-to-end if compact survives). DET-2 (cross-seed stability, 20 seeds × 4 spaces × 2 budgets). | P0 + DET-1 (Phase 1) |
+| **S2: P1-B1 compression** | Executor B | Segment compression (degree-2 + signature-stable + length cap). Compression ratio > 50%, overhead < 10%. | P1-B2 (Phase 1) + P0 layout + DET-1 |
 | **S3: P2b (conditional)** | Executor C | Online percentile estimation for adaptive threshold. Only if P2a showed narrow ridge. Otherwise — assists other streams. | P2a result |
 | **S4: SC-enforce** | Executor D | Damp delta / reject split when D_parent > τ_parent. Integration of enforcement into the pipeline. | SC-baseline pass |
 
@@ -90,15 +95,16 @@ Four streams, all independent of each other:
 ## Critical Path
 
 ```
-Phase 0: S1(env) ──→ Phase 1: S1(P0) ──→ Phase 2: S2(P1-B1) ──→ Phase 3: S1(P1-B3) ──→ Phase 4: S1(P4)
-                                     └──→ Phase 2: S1(P0 finish)
+Phase 0: S1(env) ──→ Phase 1: S1(P0) → S1b(DET-1) ──→ Phase 2: S2(P1-B1) ──→ Phase 3: S1(P1-B3) ──→ Phase 4: S1(P4)
+                                                    └──→ Phase 2: S1(P0 finish + DET-2)
 ```
 
-**Critical path:** Env → P0 → P1(B2→B1→B3) → P4 = ~14 weeks
+**Critical path:** Env → P0 → DET-1 → P1(B2→B1→B3) → P4 = ~14 weeks
 
 **Parallel streams reduce actual elapsed time:**
 - Halo cross-space (Phase 0) — not on the critical path, but blocks confidence in invariants
 - P2, SC-baseline — parallel with P1, do not extend the critical path
+- DET-2 — parallel with P1-B1 (after DET-1), blocks Track B but not Phase 3
 - Deferred revisit — pure research, blocks nothing
 
 ---
