@@ -158,7 +158,7 @@ P3. Tree semantics
 
 ---
 
-## Level SC: Scale-Consistency Invariant (v1.6)
+## Level SC: Scale-Consistency Invariant (v1.7)
 
 Partially formalizes the meta-question from v1.5 "how not to break features." Depends on P0 (pipeline), independent of P1/P2/P3. Can run in parallel.
 
@@ -220,7 +220,7 @@ Exp0.10. (R, Up) Sensitivity Probe
 
 ## Level 4: Global Coherence ("Don't Break Features")
 
-Depends on **everything above** + SC-baseline. Meta-question from Concept v1.5, partially formalized through Scale-Consistency Invariant (Concept v1.6, section 8).
+Depends on **everything above** + SC-baseline. Meta-question from Concept v1.5, partially formalized through Scale-Consistency Invariant (Concept v1.7, section 8).
 
 ### P4. Representation Coherence Under Non-Uniform Depth
 

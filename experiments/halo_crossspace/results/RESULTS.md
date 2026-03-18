@@ -57,4 +57,4 @@ The tree topology has a fundamental structural difference from grids and graphs:
 
 ## Recommendation
 
-The concept_v1.6.md statement "Halo >= 3 pixels eliminates HF artifacts at tile boundaries" should be scoped to grid/graph topologies. Tree/hierarchical spaces need a separate boundary-smoothing mechanism, or the claim should note this limitation.
+The concept_v1.7.md statement "Halo >= 3 pixels eliminates HF artifacts at tile boundaries" should be scoped to grid/graph topologies. Tree/hierarchical spaces need a separate boundary-smoothing mechanism, or the claim should note this limitation.

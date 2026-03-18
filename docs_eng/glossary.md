@@ -134,7 +134,7 @@ Project-specific terms without which the documentation reads like gibberish. Org
 
 ---
 
-## Scale-Consistency (v1.6)
+## Scale-Consistency (v1.7)
 
 **Scale-Consistency Invariant** — the requirement that step_delta does not redefine the semantics of the parent scale. Formally: `||R(step_delta)|| / (||step_delta|| + epsilon) < tau_rel`. Measures what fraction of step_delta energy is low-frequency (lf_frac). Closes the open question from v1.5 "how not to break features." See concept_v1.7.md, section 8, for details.
 
@@ -150,7 +150,7 @@ Project-specific terms without which the documentation reads like gibberish. Org
 
 **τ_parent** — a data-driven threshold for D_parent, set by the baseline experiment. May depend on level L.
 
-**Step_delta tolerance** — the permissible fraction of parent_coarse that step_delta may alter when projected to the parent scale. Operationally determined by τ_parent. Two-sided risk: too tight → loss of legitimate features; too loose → hierarchy drift. Automatic choice mechanism is an open question. See concept_v1.6.md, section 8.9.
+**Step_delta tolerance** — the permissible fraction of parent_coarse that step_delta may alter when projected to the parent scale. Operationally determined by τ_parent. Two-sided risk: too tight → loss of legitimate features; too loose → hierarchy drift. Automatic choice mechanism is an open question. See concept_v1.7.md, section 8.9.
 
 **Scale-stable fixed point** — a node where simultaneously: (1) gain < τ_gain, (2) D_parent < τ_parent, (3) stable for K steps. A local refinement stopping criterion. Probe remains mandatory as a safeguard.
 
@@ -193,7 +193,7 @@ Project-specific terms without which the documentation reads like gibberish. Org
 - **P2**: Auto-tuning of gate thresholds (instability/FSR)
 - **P3**: Tree semantics (LCA distance, bushes, clustering)
 - **SC**: Scale-consistency baseline + enforcement (parallel with P1)
-- **P4**: "Don't break features" (downstream compatibility, partially formalized through Scale-Consistency Invariant in v1.6)
+- **P4**: "Don't break features" (downstream compatibility, partially formalized through Scale-Consistency Invariant in v1.7)
 
 The order is strict: no jumping ahead without closing dependencies.
 
@@ -237,7 +237,7 @@ The order is strict: no jumping ahead without closing dependencies.
 
 **C (DAG + profiles)** — routing refinement via a directed acyclic graph instead of a tree. Frozen indefinitely. Entry contract for unfreezing: (1) at least 2 irreducible objectives, (2) a concrete downstream consumer, (3) an observable conflict between objectives.
 
-**Matryoshka invariant** — the requirement that the representation at any "matryoshka" (nested refinement) level is a valid input for the downstream consumer. Not just visually smooth, but functionally correct. The Scale-Consistency Invariant (v1.6) is the formalization of this requirement at the level of individual nodes. Tested in P4.
+**Matryoshka invariant** — the requirement that the representation at any "matryoshka" (nested refinement) level is a valid input for the downstream consumer. Not just visually smooth, but functionally correct. The Scale-Consistency Invariant (v1.7) is the formalization of this requirement at the level of individual nodes. Tested in P4.
 
 **Depth-dependent representation (deferred)** — the hypothesis that different tree levels may require qualitatively different features (step_delta of different types at different scales). Current architecture uses a uniform representation at all levels. Deferred consciously: (1) requires a working instrument first (Track A); (2) target requirements for each level cannot be specified in advance — the approach is presumed iterative. Investigate after Track A.
 

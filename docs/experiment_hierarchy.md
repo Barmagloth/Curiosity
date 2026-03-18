@@ -158,7 +158,7 @@ P3. Семантика дерева
 
 ---
 
-## Уровень SC: Scale-Consistency Invariant (v1.6)
+## Уровень SC: Scale-Consistency Invariant (v1.7)
 
 Частично формализует мета-вопрос v1.5 «как не сломать фичи». Зависит от P0 (pipeline), не зависит от P1/P2/P3. Может идти параллельно.
 
@@ -198,7 +198,7 @@ SC-enforce. Scale-Consistency Enforcement
 
 ## Уровень 4: глобальная согласованность ("не сломать фичи")
 
-Зависит от **всего выше** + SC-baseline. Мета-вопрос из Concept v1.5, частично формализован через Scale-Consistency Invariant (Concept v1.6, раздел 8).
+Зависит от **всего выше** + SC-baseline. Мета-вопрос из Concept v1.5, частично формализован через Scale-Consistency Invariant (Concept v1.7, раздел 8).
 
 ### P4. Согласованность представления при неоднородной глубине
 

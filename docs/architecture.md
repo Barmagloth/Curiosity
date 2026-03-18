@@ -22,10 +22,11 @@
 [Adaptive refinement] — уточнение выбранных регионов
        |
        v
-[Scale-Consistency check] — D_parent < τ_parent? (v1.6)
+[Scale-Consistency check] — D_parent < τ_parent? (v1.7)
        |
        v
 [Halo blending] — cosine feathering на границах
+       (если применим по правилу топологии)
        |
        v
 [Budget governor] — EMA-контроль расхода бюджета
@@ -65,8 +66,23 @@
 **Зачем:** Жёсткая вставка refined-тайла создаёт ступеньку на границе. Лапласиан ловит это как ложный HF-сигнал. Чем умнее adaptive выбор, тем сильнее артефакт.
 
 **Реализация:**
-- Overlap ≥ 3 элемента дискретизации (при tile_size=16: ≥3–4 пикселя)
+- Overlap ≥ 3 элемента (не "пикселя" — система не привязана к изображениям)
 - Cosine feathering относительно coarse уровня
+
+**Правило применимости (Phase 0, concept v1.7 §6):**
+
+Halo применим ТОЛЬКО когда выполнены ОБА условия:
+1. **Boundary parallelism ≥ 3** — минимум 3 независимых cross-edge на границе тайлов
+2. **No context leakage** — halo expansion не протекает в несвязанные тайлы
+
+| Топология | Halo? | Причина |
+|---|---|---|
+| Grid (tile ≥ 3) | ✅ Всегда | boundary = широкая полоса, нет leakage |
+| k-NN graph | ✅ Применять | min_cut обычно >> 3 |
+| Tree / Forest | ❌ Никогда | min_cut=1 (bottleneck), context leakage в sibling-поддеревья |
+| DAG | ⚠️ Per-case | Проверять boundary parallelism и leakage |
+
+Root cause tree failure: single-edge bottleneck + sibling bleed (85% fade на hop 1 достигает чужого поддерева) + extreme S/V asymmetry (0.032 vs 0.5 для grid).
 
 **Примечание:** свойства «инициализация нулём», «ограничение по энергии», «при отключении уровня — валидный откат» относятся к delta / уровню уточнения в целом, а не к halo. Halo — механизм согласования границ между тайлами, а не самостоятельный residual-носитель.
 
@@ -119,7 +135,7 @@
 
 ---
 
-## Компонент 6: Scale-Consistency Invariant (v1.6)
+## Компонент 6: Scale-Consistency Invariant (v1.7)
 
 **Зачем:** Halo обеспечивает локальную геометрическую корректность на границах тайлов. Но refined уровень может быть гладким по швам и при этом семантически противоречить coarse уровню — delta «контрабандой» проталкивает низкочастотный смысл наверх. Scale-Consistency Invariant гарантирует, что этого не происходит.
 
@@ -127,11 +143,11 @@
 
 **Формальное требование:**
 ```
-‖R(delta)‖ / (α·‖coarse‖ + β) < τ_rel
+‖R(delta)‖ / (‖delta‖ + ε) < τ_rel
 ```
 
 **Пара операторов (R, Up):**
-- **R** (coarse-graining): `gaussian blur + decimation`. Проецирует fine → coarse.
+- **R** (coarse-graining): `gaussian blur (σ=3.0) + decimation`. Проецирует fine → coarse.
 - **Up** (восстановление): `bilinear upsampling`. Проекция обратно в fine. Не обратный оператор к R.
 - Пара фиксируется до экспериментов. Разные пары дают разные физики дерева.
 
@@ -139,7 +155,7 @@
 
 | Метрика | Формула | Интерпретация |
 |---|---|---|
-| D_parent | `‖R(delta)‖ / (α·‖coarse‖ + β)` | Утечка delta в родительский масштаб. Ниже = лучше. Enforcement-сигнал. |
+| D_parent | `‖R(delta)‖ / (‖delta‖ + ε)` | Доля LF-энергии в delta. Ниже = лучше. Enforcement-сигнал. |
 | D_hf | `‖delta - Up(R(delta))‖ / (‖delta‖ + ε)` | HF-чистота delta. Выше = лучше. Диагностика, не hard constraint. |
 
 **Enforcement (после baseline-валидации):**
@@ -148,7 +164,16 @@
 
 **Пороги:** τ_parent — data-driven по baseline-эксперименту, может зависеть от уровня L.
 
-**Статус:** Инвариант формализован (concept v1.6, раздел 8). Baseline-эксперимент (SC-baseline) — следующий шаг. Протокол: `scale_consistency_verification_protocol_v1.0.md`.
+**Кросс-пространственная валидация (Phase 0):**
+
+| Пространство | D_parent AUC | D_hf AUC |
+|---|---|---|
+| T1 Scalar grid | 1.000 | 0.806 |
+| T2 Vector grid | 1.000 | 0.810 |
+| T3 Irregular graph | 1.000 | — |
+| T4 Tree hierarchy | 0.824 | — |
+
+**Статус:** SC-baseline (SC-0..SC-4) ✅ ЗАВЕРШЁН. D_parent валидирован на 4 пространствах. SC-5 (τ_parent) и SC-enforce — открыты. Протокол: `scale_consistency_verification_protocol_v1.0.md`.
 
 ---
 
@@ -158,7 +183,7 @@
 
 **Требования:**
 - GPU-дружественная структура (плоская упаковка, без pointer chasing)
-- Morton и block-sparse layouts: **предварительно невыгодны** по итогам Exp0.9a microbench (sort overhead / expansion ratio). Окончательное решение — после P0 (0.9b0+).
+- Morton и block-sparse layouts: **отложены (deferred)** по итогам Exp0.9a microbench (sort overhead / expansion ratio). Окончательное решение — после P0 (0.9b0+).
 - Compact layouts: предварительно перспективны при low sparsity + large grid. Kill/go — в Exp0.9b0.
 
 **Куст** = множество путей, ведущих к одному смыслу. Метрика расстояния через LCA / общий префикс.
@@ -169,6 +194,7 @@
 
 - **Язык:** Python
 - **ML-фреймворк:** PyTorch
-- **GPU:** CUDA
+- **GPU:** CUDA (environment_2) / DirectML (environment_1, AMD GPU)
+- **Окружения:** `.venv` (CPU, Python 3.13) + `.venv-gpu` (DirectML, Python 3.12). См. `docs/environment_1.md`
 - **Эксперименты:** Jupyter Notebooks
 - **Документация:** Versioned markdown

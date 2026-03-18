@@ -18,7 +18,7 @@ The goal is to reshape the search space so that:
 
 ## Project Status
 
-The experiment series Exp0.1–Exp0.8 is **complete**. Results are consolidated into v1.6 documentation. The system is validated: adaptive refinement works and outperforms random selection under budget constraints. The Scale-Consistency Invariant has been formalized.
+The experiment series Exp0.1–Exp0.8 is **complete**. Results are consolidated into v1.7 documentation. The system is validated: adaptive refinement works and outperforms random selection under budget constraints. The Scale-Consistency Invariant has been formalized.
 
 Next frontier — Exp0.9b0 (buffer-scaling probe, P0) and SC-baseline (Scale-Consistency baseline validation).
 
@@ -30,7 +30,7 @@ README_ENG.md                      — project overview (English, this file)
 docs/                              — documentation (Russian)
 docs_eng/                          — documentation (English)
   target_problem_definition_v1.1.md — project goals, success criteria, Track A→B→C
-  concept_v1.6.md                  — canonical concept document
+  concept_v1.7.md                  — canonical concept document
   concept_v1.5_historical.md       — previous version (after Exp0.1–Exp0.8)
   concept_v1.4_historical.md       — early version (after Exp0.2–0.3)
   scale_consistency_verification_protocol_v1.0.md — SC baseline experiment protocol
@@ -61,7 +61,7 @@ experiments/
 For a new project participant:
 
 1. **`docs_eng/target_problem_definition_v1.1.md`** — why the project exists, what counts as success
-2. **`docs_eng/concept_v1.6.md`** — canonical concept (all validated decisions)
+2. **`docs_eng/concept_v1.7.md`** — canonical concept (all validated decisions)
 3. **`docs_eng/glossary.md`** — project terminology
 4. **`docs_eng/architecture.md`** — architecture and components
 5. **`docs_eng/experiment_results.md`** — Exp0.1–Exp0.8 results with numbers

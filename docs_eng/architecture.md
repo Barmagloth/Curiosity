@@ -10,7 +10,7 @@ This document describes the system's key components and architectural decisions.
 State space X (arbitrary nature)
        |
        v
-[Root coarse] — initial coarse approximation (see concept_v1.6.md §1.2 for terminology)
+[Root coarse] — initial coarse approximation (see concept_v1.7.md §1.2 for terminology)
        |
        v
 [Informativeness function ρ(x)] — determines where to refine
@@ -22,10 +22,11 @@ State space X (arbitrary nature)
 [Adaptive refinement] — refine selected regions
        |
        v
-[Scale-Consistency check] — D_parent < τ_parent? (v1.6)
+[Scale-Consistency check] — D_parent < τ_parent? (v1.7)
        |
        v
 [Halo blending] — cosine feathering at boundaries
+       (if applicable per topology rule)
        |
        v
 [Budget governor] — EMA budget control
@@ -67,8 +68,23 @@ State space X (arbitrary nature)
 **Why:** Hard insertion of a refined tile creates a step discontinuity at the boundary. The Laplacian flags this as a false HF signal. The smarter the adaptive selection, the stronger the artifact.
 
 **Implementation:**
-- Overlap ≥ 3 discretization elements (at tile_size=16: ≥3–4 pixels)
+- Overlap ≥ 3 elements (not "pixels" — the system is not tied to images)
 - Cosine feathering relative to parent coarse
+
+**Applicability rule (Phase 0, concept v1.7 §6):**
+
+Halo is applicable ONLY when BOTH conditions are met:
+1. **Boundary parallelism ≥ 3** — at least 3 independent cross-edges at the tile boundary
+2. **No context leakage** — halo expansion does not leak into unrelated tiles
+
+| Topology | Halo? | Reason |
+|---|---|---|
+| Grid (tile ≥ 3) | ✅ Always | boundary = wide strip, no leakage |
+| k-NN graph | ✅ Apply | min_cut typically >> 3 |
+| Tree / Forest | ❌ Never | min_cut=1 (bottleneck), context leakage into sibling subtrees |
+| DAG | ⚠️ Per-case | Check boundary parallelism and leakage |
+
+Root cause tree failure: single-edge bottleneck + sibling bleed (85% fade at hop 1 reaches foreign subtree) + extreme S/V asymmetry (0.032 vs 0.5 for grid).
 
 **Note:** Properties "zero initialization", "energy boundedness", "valid rollback on level disable" belong to step_delta / refinement level, not to halo. Halo is a boundary reconciliation mechanism, not a residual carrier.
 
@@ -121,7 +137,7 @@ Computed over edge strips (bands at tile boundaries).
 
 ---
 
-## Component 6: Scale-Consistency Invariant (v1.6)
+## Component 6: Scale-Consistency Invariant (v1.7)
 
 **Why:** Halo ensures local geometric correctness at tile boundaries. But a refined level can be smooth at seams while semantically contradicting the parent coarse — step_delta smuggles low-frequency meaning upward. The Scale-Consistency Invariant guarantees this does not happen.
 
@@ -129,11 +145,11 @@ Computed over edge strips (bands at tile boundaries).
 
 **Formal requirement:**
 ```
-‖R(step_delta)‖ / (α·‖parent_coarse‖ + β) < τ_rel
+‖R(step_delta)‖ / (‖step_delta‖ + ε) < τ_rel
 ```
 
 **Operator pair (R, Up):**
-- **R** (coarse-graining): `gaussian blur + decimation`. Projects fine → coarse.
+- **R** (coarse-graining): `gaussian blur (σ=3.0) + decimation`. Projects fine → coarse.
 - **Up** (restoration): `bilinear upsampling`. Projects back to fine. Not the inverse of R.
 - The pair is fixed before experiments. Different pairs yield different tree physics.
 
@@ -141,7 +157,7 @@ Computed over edge strips (bands at tile boundaries).
 
 | Metric | Formula | Interpretation |
 |---|---|---|
-| D_parent | `‖R(step_delta)‖ / (α·‖parent_coarse‖ + β)` | Step_delta leakage into parent scale. Lower = better. Enforcement signal. |
+| D_parent | `‖R(step_delta)‖ / (‖step_delta‖ + ε)` | Fraction of LF energy in step_delta. Lower = better. Enforcement signal. |
 | D_hf | `‖step_delta - Up(R(step_delta))‖ / (‖step_delta‖ + ε)` | HF purity of step_delta. Higher = better. Diagnostic, not hard constraint. |
 
 **Enforcement (after baseline validation):**
@@ -150,9 +166,18 @@ Computed over edge strips (bands at tile boundaries).
 
 **Thresholds:** τ_parent is data-driven from the baseline experiment, may depend on level L.
 
-**Note on step_delta tolerance:** τ_parent effectively defines step_delta tolerance — the permissible fraction of parent_coarse alterable by step_delta. This balances two risks: too tight → loss of legitimate features; too loose → hierarchy drift. Optimal trade-off is data-dependent. See concept_v1.6.md §8.9.
+**Note on step_delta tolerance:** τ_parent effectively defines step_delta tolerance — the permissible fraction of parent_coarse alterable by step_delta. This balances two risks: too tight → loss of legitimate features; too loose → hierarchy drift. Optimal trade-off is data-dependent. See concept_v1.7.md §8.9.
 
-**Status:** Invariant formalized (concept v1.6, section 8). Baseline experiment (SC-baseline) is the next step. Protocol: `scale_consistency_verification_protocol_v1.0.md`.
+**Cross-space validation (Phase 0):**
+
+| Space | D_parent AUC | D_hf AUC |
+|---|---|---|
+| T1 Scalar grid | 1.000 | 0.806 |
+| T2 Vector grid | 1.000 | 0.810 |
+| T3 Irregular graph | 1.000 | — |
+| T4 Tree hierarchy | 0.824 | — |
+
+**Status:** SC-baseline (SC-0..SC-4) ✅ COMPLETE. D_parent validated across 4 spaces. SC-5 (τ_parent) and SC-enforce — open. Protocol: `scale_consistency_verification_protocol_v1.0.md`.
 
 ---
 
@@ -162,7 +187,7 @@ The tree is a log of split decisions. Each root-to-leaf path = a sequence of dec
 
 **Requirements:**
 - GPU-friendly structure (flat packing, no pointer chasing)
-- Morton and block-sparse layouts: **preliminarily unfavorable** per Exp0.9a microbench (sort overhead / expansion ratio). Final decision after P0 (0.9b0+).
+- Morton and block-sparse layouts: **deferred** per Exp0.9a microbench (sort overhead / expansion ratio). Final decision after P0 (0.9b0+).
 - Compact layouts: preliminarily promising under low sparsity + large grid. Kill/go in Exp0.9b0.
 
 **Bush** = a set of paths leading to the same meaning. Distance metric via LCA / common prefix.
@@ -173,6 +198,7 @@ The tree is a log of split decisions. Each root-to-leaf path = a sequence of dec
 
 - **Language:** Python
 - **ML framework:** PyTorch
-- **GPU:** CUDA
+- **GPU:** CUDA (environment_2) / DirectML (environment_1, AMD GPU)
+- **Environments:** `.venv` (CPU, Python 3.13) + `.venv-gpu` (DirectML, Python 3.12). See `docs/environment_1.md`
 - **Experiments:** Jupyter Notebooks
 - **Documentation:** Versioned markdown

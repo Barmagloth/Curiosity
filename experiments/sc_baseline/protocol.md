@@ -1,7 +1,7 @@
 # SC-Baseline Experiment Protocol
 
 Links to canonical protocol: `docs/scale_consistency_verification_protocol_v1.0.md`
-Conceptual basis: `docs/concept_v1.6.md` section 8 (Scale-Consistency Invariant)
+Conceptual basis: `docs/concept_v1.7.md` section 8 (Scale-Consistency Invariant)
 
 ---
 

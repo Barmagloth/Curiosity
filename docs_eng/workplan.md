@@ -102,7 +102,7 @@
 
 ---
 
-## G. Scale-Consistency: Don't Break Parent-Scale Semantics (v1.6)
+## G. Scale-Consistency: Don't Break Parent-Scale Semantics (v1.6; updated v1.7)
 **Goal:** guarantee that step_delta does not redefine parent_coarse by smuggling — refinement adds detail but does not push new LF meaning upward.
 
 **Deliverables:**
