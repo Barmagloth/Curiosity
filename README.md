@@ -54,6 +54,19 @@ experiments/
   phase2_probe_seam/               — План валидации §B (B1+B2): probe + seam metric
 ```
 
+## Рекомендованный порядок чтения
+
+Для нового участника проекта:
+
+1. **`docs/target_problem_definition_v1.1.md`** — зачем проект, что считается успехом
+2. **`docs/concept_v1.6.md`** — каноническая концепция (все валидированные решения)
+3. **`docs/glossary.md`** — термины проекта
+4. **`docs/architecture.md`** — архитектура и компоненты
+5. **`docs/experiment_results.md`** — результаты Exp0.1–Exp0.8 с числами
+6. **`docs/experiment_hierarchy.md`** — граф зависимостей и roadmap
+7. **`docs/handoff.md`** — документ передачи (статус + первая задача)
+8. **`docs/workplan.md`** — план реализации
+
 ## Технологии
 
 - Python, PyTorch, CUDA (GPU)

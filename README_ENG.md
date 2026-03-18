@@ -29,16 +29,17 @@ README.md                          — project overview (Russian)
 README_ENG.md                      — project overview (English, this file)
 docs/                              — documentation (Russian)
 docs_eng/                          — documentation (English)
-  concept_v1.6.md                  — canonical concept document
-  concept_v1.5_historical.md       — concept document after Exp0.1–Exp0.8
-  v1.5_historical/                 — historical documentation from v1.5 era
   target_problem_definition_v1.1.md — project goals, success criteria, Track A→B→C
+  concept_v1.6.md                  — canonical concept document
+  concept_v1.5_historical.md       — previous version (after Exp0.1–Exp0.8)
+  concept_v1.4_historical.md       — early version (after Exp0.2–0.3)
+  scale_consistency_verification_protocol_v1.0.md — SC baseline experiment protocol
+  handoff_v1.5_to_v1.6.md          — changelog v1.5→v1.6
   experiment_results.md            — all experiment results Exp0.1–Exp0.8
   experiment_hierarchy.md          — experiment dependency graph and roadmap
   architecture.md                  — system architecture and key decisions
   workplan.md                      — implementation plan (modules A–F, mini-roadmap)
-  scale_consistency_verification_protocol — SC baseline experiment protocol
-  handoff_v1.5_to_v1.6             — handoff from v1.5 to v1.6
+  handoff.md                       — project transfer document
   glossary.md                      — project glossary
 experiments/
   ARTIFACT_INVENTORY.md            — artifact inventory from Claude/ChatGPT dialogs
@@ -54,6 +55,19 @@ experiments/
   phase1_halo/                     — Validation plan §A (A1+A2+A3): halo/overlap hardening
   phase2_probe_seam/               — Validation plan §B (B1+B2): probe + seam metric
 ```
+
+## Recommended Reading Order
+
+For a new project participant:
+
+1. **`docs_eng/target_problem_definition_v1.1.md`** — why the project exists, what counts as success
+2. **`docs_eng/concept_v1.6.md`** — canonical concept (all validated decisions)
+3. **`docs_eng/glossary.md`** — project terminology
+4. **`docs_eng/architecture.md`** — architecture and components
+5. **`docs_eng/experiment_results.md`** — Exp0.1–Exp0.8 results with numbers
+6. **`docs_eng/experiment_hierarchy.md`** — dependency graph and roadmap
+7. **`docs_eng/handoff.md`** — project transfer (status + first task)
+8. **`docs_eng/workplan.md`** — implementation plan
 
 ## Technologies
 

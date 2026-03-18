@@ -15,17 +15,17 @@
 ### Валидированные компоненты (менять нельзя без веских причин):
 
 1. **Adaptive refinement** — selective tile refinement > random selection
-2. **Halo** — cosine feathering, overlap ≥ 3 элемента, обязателен
+2. **Halo** — cosine feathering, overlap ≥ 3 элемента, обязателен (**NB:** валидирован только на 2D pixel grids; требуется кросс-пространственная проверка — см. known gaps)
 3. **Двухстадийный гейт** — residual-first с fallback на utility-weighted combo
 4. **Budget governor** — EMA-контроллер strictness, обязателен
 5. **Probe** — 5–10% бюджета на exploration, обязателен
 6. **SeamScore** — `Jumpout / (Jumpin + eps)`, production-ready
 
-### Что отвергнуто:
+### Что отложено (deferred — требует повторной проверки с иным подходом):
 
-- Phase schedule (смена весов p по шагам) — не даёт выигрыша
-- Morton layout — overhead превышает выигрыш
-- Block-sparse layout — то же
+- Phase schedule (смена весов ρ по шагам) — не даёт выигрыша в текущей формулировке
+- Morton layout — overhead на сортировку превышает выигрыш в текущей реализации
+- Block-sparse layout — плохой expansion ratio в текущей конфигурации
 
 ---
 
@@ -41,7 +41,8 @@
 
 | Документ | Содержание |
 |---|---|
-| `docs/concept_v1.5.md` | Каноническая концепция, все валидированные решения |
+| `docs/concept_v1.6.md` | Каноническая концепция, все валидированные решения |
+| `docs/glossary.md` | Глоссарий терминов проекта |
 | `docs/experiment_results.md` | Подробные результаты Exp0.1–Exp0.8 с числами |
 | `docs/experiment_hierarchy.md` | Граф зависимостей, приоритеты P0–P4, roadmap |
 | `docs/architecture.md` | Архитектура системы, компоненты, стек |
@@ -59,6 +60,8 @@
 4. **Форматные соглашения** — как именовать эксперименты, куда писать результаты, какой формат логов ожидается.
 
 5. **Jupyter Notebooks** — рабочие тетрадки экспериментов не включены.
+
+6. **Кросс-пространственная валидация Halo** — Halo (cosine feathering, ≥3 элемента) тестировался только на 2D pixel grids (CIFAR, 128×128, tile=16). SeamScore валидирован на 4 типах пространств (scalar grid, vector grid, irregular graph, tree hierarchy), но Halo — нет. Для подтверждения статуса «обязательного инварианта» в произвольных пространствах необходима валидация хотя бы на тех же 4 типах.
 
 ---
 

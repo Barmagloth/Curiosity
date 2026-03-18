@@ -15,17 +15,17 @@ A series of 8 experiments (Exp0.1–Exp0.8) is complete and validated. Adaptive 
 ### Validated Components (do not change without strong reasons):
 
 1. **Adaptive refinement** — selective tile refinement > random selection
-2. **Halo** — cosine feathering, overlap ≥ 3 elements, mandatory
+2. **Halo** — cosine feathering, overlap ≥ 3 elements, mandatory (**NB:** validated only on 2D pixel grids; cross-space validation required — see known gaps)
 3. **Two-stage gate** — residual-first with fallback to utility-weighted combo
 4. **Budget governor** — EMA strictness controller, mandatory
 5. **Probe** — 5–10% budget for exploration, mandatory
 6. **SeamScore** — `Jumpout / (Jumpin + eps)`, production-ready
 
-### What Was Rejected:
+### What Was Deferred (requires re-evaluation with a different approach):
 
-- Phase schedule (changing ρ weights by step) — no gain
-- Morton layout — overhead exceeds gain
-- Block-sparse layout — same
+- Phase schedule (changing ρ weights by step) — no gain in current formulation
+- Morton layout — sorting overhead exceeds gain in current implementation
+- Block-sparse layout — poor expansion ratio in current configuration
 
 ---
 
@@ -41,7 +41,8 @@ A series of 8 experiments (Exp0.1–Exp0.8) is complete and validated. Adaptive 
 
 | Document | Contents |
 |---|---|
-| `docs/concept_v1.5.md` | Canonical concept, all validated decisions |
+| `docs/concept_v1.6.md` | Canonical concept, all validated decisions |
+| `docs/glossary.md` | Project glossary |
 | `docs/experiment_results.md` | Detailed Exp0.1–Exp0.8 results with numbers |
 | `docs/experiment_hierarchy.md` | Dependency graph, P0–P4 priorities, roadmap |
 | `docs/architecture.md` | System architecture, components, stack |
@@ -60,6 +61,8 @@ A series of 8 experiments (Exp0.1–Exp0.8) is complete and validated. Adaptive 
 4. **Formatting conventions** — how to name experiments, where to write results, expected log format.
 
 5. **Jupyter Notebooks** — experiment workbooks are not included.
+
+6. **Cross-space Halo validation** — Halo (cosine feathering, ≥3 elements) was tested only on 2D pixel grids (CIFAR, 128×128, tile=16). SeamScore was validated on 4 space types (scalar grid, vector grid, irregular graph, tree hierarchy), but Halo was not. To confirm its "mandatory invariant" status in arbitrary spaces, validation on at least those same 4 space types is needed.
 
 ---
 
