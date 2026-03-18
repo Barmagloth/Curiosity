@@ -3,7 +3,7 @@
 This document fixes why the project exists, what counts as success, and against what to compare.
 Without this, "quality-per-cost" is fog in a cylinder.
 
-Related to: `concept_v1.7.md` (how it is built), `experiment_hierarchy.md` (what is being tested).
+Related to: `concept_v1.8.md` (how it is built), `experiment_hierarchy.md` (what is being tested).
 
 ---
 
@@ -51,7 +51,7 @@ Tasks with heterogeneous information density in arbitrary computational spaces:
 
 **Cross-space validation principle:** all claims of domain-agnostic generality must be verified on at least 4 space types (scalar grid, vector grid, irregular graph, tree hierarchy). Results on a single type are not sufficient.
 
-**Halo limitation:** cosine feathering is applicable only to spaces with boundary parallelism ≥ 3 and no context leakage. Not applicable to tree/forest topologies (see concept_v1.7.md §6).
+**Halo limitation:** cosine feathering is applicable only to spaces with boundary parallelism ≥ 3 and no context leakage. Not applicable to tree/forest topologies (see concept_v1.8.md §6).
 
 ### Success criteria
 | Metric | Requirement |
@@ -96,9 +96,9 @@ Track B begins only after passing all five criteria.
 
 | Criterion | What is checked |
 |---|---|
-| **Invariant pass** | All mandatory invariants are satisfied: halo (with topology-dependent applicability rule), probe, governor, scale-consistency (D_parent < τ_parent). Cross-space validation passed. None is violated systematically. |
+| **Invariant pass** | All mandatory invariants are satisfied: halo (with topology-dependent applicability rule), probe, governor, scale-consistency (D_parent < τ_parent), determinism (DET-1). Cross-space validation passed. None is violated systematically. |
 | **Overhead profile** | Real overhead of the control system is measured. It does not eat the gain from adaptive refinement. Cost-fair comparison shows positive result. |
-| **Stability pass** | System is stable: governor does not oscillate, split decisions are reproducible, results are stable between runs. |
+| **Stability pass** | System is deterministic at fixed seed (DET-1: bitwise tree match). Statistically stable across seeds (DET-2: CV of metrics < τ_cv). Governor does not oscillate. |
 | **One validated benchmark** | At least one benchmark where adaptive > same-budget random > coarse, with confirmed numbers and fixed protocol. |
 | **Attribution diagnostics** | It is clear what each module contributes. Ablation or attribution shows contribution of halo, probe, governor, ρ individually. No "black box". |
 
@@ -138,7 +138,7 @@ Use the built mechanism as an instrument to study whether the refinement tree gi
 Determined after reaching Instrument Readiness Gate, based on which downstream consumer is most natural for the built instrument.
 
 ### Status
-**Research goal, not current.** Open questions are fixed in `concept_v1.7.md` §13.
+**Research goal, not current.** Open questions are fixed in `concept_v1.8.md` §13.
 
 ---
 

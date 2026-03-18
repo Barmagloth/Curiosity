@@ -136,7 +136,7 @@ Project-specific terms without which the documentation reads like gibberish. Org
 
 ## Scale-Consistency (v1.7)
 
-**Scale-Consistency Invariant** — the requirement that step_delta does not redefine the semantics of the parent scale. Formally: `||R(step_delta)|| / (||step_delta|| + epsilon) < tau_rel`. Measures what fraction of step_delta energy is low-frequency (lf_frac). Closes the open question from v1.5 "how not to break features." See concept_v1.7.md, section 8, for details.
+**Scale-Consistency Invariant** — the requirement that step_delta does not redefine the semantics of the parent scale. Formally: `||R(step_delta)|| / (||step_delta|| + epsilon) < tau_rel`. Measures what fraction of step_delta energy is low-frequency (lf_frac). Closes the open question from v1.5 "how not to break features." See concept_v1.8.md, section 8, for details.
 
 **R (coarse-graining operator)** — `gaussian blur (sigma=3.0) + decimation`. Projects the signal from fine to coarse scale. Fixed before experiments — an architectural choice.
 
@@ -150,9 +150,25 @@ Project-specific terms without which the documentation reads like gibberish. Org
 
 **τ_parent** — a data-driven threshold for D_parent, set by the baseline experiment. May depend on level L.
 
-**Step_delta tolerance** — the permissible fraction of parent_coarse that step_delta may alter when projected to the parent scale. Operationally determined by τ_parent. Two-sided risk: too tight → loss of legitimate features; too loose → hierarchy drift. Automatic choice mechanism is an open question. See concept_v1.7.md, section 8.9.
+**Step_delta tolerance** — the permissible fraction of parent_coarse that step_delta may alter when projected to the parent scale. Operationally determined by τ_parent. Two-sided risk: too tight → loss of legitimate features; too loose → hierarchy drift. Automatic choice mechanism is an open question. See concept_v1.8.md, section 8.9.
 
 **Scale-stable fixed point** — a node where simultaneously: (1) gain < τ_gain, (2) D_parent < τ_parent, (3) stable for K steps. A local refinement stopping criterion. Probe remains mandatory as a safeguard.
+
+---
+
+## Determinism and Reproducibility (v1.8)
+
+**DET-1 (Seed determinism)** — Hard Constraint: identical data + ρ + seed + budget = identical tree (bitwise match). Precondition for testability (Track A). Three components: canonical traversal order, deterministic probe, governor isolation.
+
+**DET-2 (Cross-seed stability)** — Soft Constraint: across different seeds, metrics (PSNR, cost, compliance, SeamScore) are statistically stable. CV < τ_cv for each metric. Precondition for reproducibility (Track B).
+
+**Canonical traversal order** — fixed tile traversal order for resolving tie-breaks when ρ values are equal. Implemented via Z-order/Morton index. Eliminates dependence on hash table iteration order and thread races.
+
+**Deterministic probe** — probe with seed = f(tile_coordinates, depth_level, global_seed). Pseudo-random but reproducible given a fixed seed.
+
+**Governor isolation** — requirement that EMA accumulation and governor decisions do not depend on the processing order of sibling branches. Processing in canonical order, EMA update strictly after the full step.
+
+**CV (Coefficient of Variation)** — standard deviation / mean. A measure of relative metric variability across seeds.
 
 ---
 

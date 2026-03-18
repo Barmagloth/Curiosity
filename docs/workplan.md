@@ -128,9 +128,10 @@
 4. Дерево + гистерезис (split/merge без дрожи).
 5. Политика пересчёта (new/changed/boundary) + измерение выигрыша.
 6. Delta + boundary stitching (overlap/blend, чтобы не было швов).
-7. Scale-Consistency baseline (R/Up, D_parent/D_hf, separability, τ_parent).
-8. Scale-Consistency enforcement (damp/reject/strictness + интеграция в ρ).
-9. Оптимизации (батчинг, ядра, GPU-специфика) — только после стабилизации.
+7. **Детерминизм** (canonical traversal order, deterministic probe, governor isolation → побитовая воспроизводимость при фиксированном seed + статистическая устойчивость по seeds).
+8. Scale-Consistency baseline (R/Up, D_parent/D_hf, separability, τ_parent).
+9. Scale-Consistency enforcement (damp/reject/strictness + интеграция в ρ).
+10. Оптимизации (батчинг, ядра, GPU-специфика) — только после стабилизации.
 
 ---
 

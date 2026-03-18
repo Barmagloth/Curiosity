@@ -43,7 +43,7 @@ Phase 0 (parallel validation) complete. Halo — applicability rule derived. D_p
 
 | Document | Contents |
 |---|---|
-| `docs/concept_v1.7.md` | Canonical concept, all validated decisions |
+| `docs/concept_v1.8.md` | Canonical concept, all validated decisions |
 | `docs/glossary.md` | Project glossary |
 | `docs/experiment_results.md` | Detailed Exp0.1–Exp0.8 results with numbers |
 | `docs/experiment_hierarchy.md` | Dependency graph, P0–P4 priorities, roadmap |

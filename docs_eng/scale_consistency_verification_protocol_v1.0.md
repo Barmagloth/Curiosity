@@ -2,7 +2,7 @@
 
 Scale-Consistency Invariant verification protocol for the Curiosity project.
 
-This document is procedural. Conceptual justification is in `concept_v1.7.md`, section 8.
+This document is procedural. Conceptual justification is in `concept_v1.8.md`, section 8.
 
 **Protocol status (updated after Phase 0):**
 - Steps 0–4: ✅ **COMPLETE**. SC-baseline passed, D_parent validated.

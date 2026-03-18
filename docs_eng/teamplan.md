@@ -60,7 +60,7 @@ Four streams, all independent of each other:
 
 | Stream | Executor | Task | Dependencies |
 |--------|----------|------|--------------|
-| **S1: P0 completion** | Executor A | Exp0.9b (end-to-end if compact survives), Exp0.9h (halo determinism on GPU) | P0 Phase 1 |
+| **S1: P0 completion + DET** | Executor A | Exp0.9b (end-to-end if compact survives), DET-1 (seed determinism — absorbs 0.9h). DET-2 (cross-seed stability, 20 seeds). | P0 Phase 1 |
 | **S2: P1-B1 compression** | Executor B | Segment compression (degree-2 + signature-stable + length cap). Compression ratio > 50%, overhead < 10%. | P1-B2 (Phase 1) + P0 layout |
 | **S3: P2b (conditional)** | Executor C | Online percentile estimation for adaptive threshold. Only if P2a showed narrow ridge. Otherwise — assists other streams. | P2a result |
 | **S4: SC-enforce** | Executor D | Damp delta / reject split when D_parent > τ_parent. Integration of enforcement into the pipeline. | SC-baseline pass |
@@ -125,7 +125,7 @@ Phase 0: S1(env) ──→ Phase 1: S1(P0) ──→ Phase 2: S2(P1-B1) ──�
 - `docs/experiment_hierarchy.md` — dependency graph, kill criteria
 - `docs/workplan.md` — modules A–F
 - `docs/scale_consistency_verification_protocol_v1.0.md` — SC protocol
-- `docs/concept_v1.7.md` — canonical concept (current)
+- `docs/concept_v1.8.md` — canonical concept (current)
 - `experiments/phase2_probe_seam/` — code for reuse in Halo cross-space
 - `experiments/exp07_gate/`, `experiments/exp08_schedule/` — code for P2a sweep
 

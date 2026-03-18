@@ -155,11 +155,12 @@
 4. Tree + hysteresis (split/merge without jitter).
 5. Recomputation policy (new/changed/boundary) + gain measurement.
 6. Step_delta + boundary stitching (overlap/blend for seamless output).
-7. Scale-Consistency baseline (R/Up, D_parent/D_hf, separability, τ_parent).
-8. Scale-Consistency enforcement (damp/reject/strictness + integration into ρ).
-9. (R, Up) sensitivity probe (Exp0.10, after step 7).
-10. Semantic observables logging (non-binding, parallel with steps 7–9).
-11. Optimizations (batching, kernels, GPU specifics) — only after stabilization.
+7. **Determinism** (canonical traversal order, deterministic probe, governor isolation → bitwise reproducibility at fixed seed + statistical stability across seeds).
+8. Scale-Consistency baseline (R/Up, D_parent/D_hf, separability, τ_parent).
+9. Scale-Consistency enforcement (damp/reject/strictness + integration into ρ).
+10. (R, Up) sensitivity probe (Exp0.10, after step 8).
+11. Semantic observables logging (non-binding, parallel with steps 8–10).
+12. Optimizations (batching, kernels, GPU specifics) — only after stabilization.
 
 ---
 

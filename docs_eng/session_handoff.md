@@ -54,7 +54,7 @@ Per the plan in docs/teamplan.md, "Phase 1" section. Barmagloth is the architect
 
 | File | Why to read |
 |------|------------|
-| docs/concept_v1.7.md | Canonical concept (current) |
+| docs/concept_v1.8.md | Canonical concept (current) |
 | docs/teamplan.md | Team work plan with completion marks |
 | docs/experiment_hierarchy.md | Dependency graph, priorities, roadmap |
 | docs/experiment_results.md | All experiment numbers |

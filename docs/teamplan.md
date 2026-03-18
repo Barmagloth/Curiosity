@@ -60,7 +60,7 @@
 
 | Поток | Исполнитель | Задача | Зависимости |
 |-------|-------------|--------|-------------|
-| **S1: P0 завершение** | Executor A | Exp0.9b (end-to-end если compact жив), Exp0.9h (halo determinism на GPU) | P0 Фаза 1 |
+| **S1: P0 завершение + DET** | Executor A | Exp0.9b (end-to-end если compact жив), DET-1 (seed determinism — поглощает 0.9h). DET-2 (cross-seed stability, 20 seeds). | P0 Фаза 1 |
 | **S2: P1-B1 compression** | Executor B | Segment compression (degree-2 + signature-stable + length cap). Compression ratio > 50%, overhead < 10%. | P1-B2 (Фаза 1) + P0 layout |
 | **S3: P2b (условно)** | Executor C | Online percentile estimation для adaptive threshold. Только если P2a показал narrow ridge. Иначе — помогает другим потокам. | P2a результат |
 | **S4: SC-enforce** | Executor D | Damp delta / reject split при D_parent > τ_parent. Интеграция enforcement в pipeline. | SC-baseline pass |
@@ -125,7 +125,7 @@
 - `docs/experiment_hierarchy.md` — граф зависимостей, kill criteria
 - `docs/workplan.md` — модули A–F
 - `docs/scale_consistency_verification_protocol_v1.0.md` — протокол SC
-- `docs/concept_v1.7.md` — каноническая концепция (актуальная)
+- `docs/concept_v1.8.md` — каноническая концепция (актуальная)
 - `experiments/phase2_probe_seam/` — код для переиспользования в Halo cross-space
 - `experiments/exp07_gate/`, `experiments/exp08_schedule/` — код для P2a sweep
 

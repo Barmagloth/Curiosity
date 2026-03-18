@@ -1,8 +1,10 @@
-# Curiosity — Иерархия экспериментов (v2.0)
+# Curiosity — Иерархия экспериментов (v2.1)
 
 Документ фиксирует актуальный статус, зависимости и порядок экспериментов.
 
 Обновлено после Phase 0 (параллельная валидация: halo cross-space, SC-baseline, D_parent fix).
+
+v2.1: добавлен уровень DET (детерминизм и воспроизводимость) — кросс-инфраструктурное требование.
 
 ---
 
@@ -68,11 +70,36 @@ P0. Layout (grid vs compact на GPU)
 │         метрики: VRAM, wall-clock, #kernels, SeamScore identity
 ├── 0.9c:  масштабирование (если compact жив)
 │         sweep по M, clustered + random
-└── 0.9h:  halo overlap детерминизм на GPU
-          overlapping writes → порядок accumulation
+└── 0.9h:  ⟶ ПОГЛОЩЁН DET-1 (см. ниже)
 ```
 
 **Выход P0:** фиксированный layout для всего дальнейшего. Либо grid (скорее всего), либо compact (если O(k) буферы спасают).
+
+### DET. Детерминизм и воспроизводимость (v1.8)
+
+Кросс-инфраструктурное требование. Без DET-1 невозможен stability pass (Instrument Readiness Gate). Без DET-2 невозможен Track B.
+
+```
+DET. Детерминизм
+├── DET-1: Seed determinism (Hard Constraint)
+│         Два прогона, идентичные входы + seed → побитовое совпадение дерева.
+│         CPU и GPU отдельно.
+│         Компоненты: canonical traversal order (Z-order tie-break),
+│                     deterministic probe (seed = f(coords, level, global_seed)),
+│                     governor isolation (EMA update after full step).
+│         Kill criterion: любое расхождение = fail.
+│         Поглощает 0.9h (halo overlap determinism) как частный случай.
+│
+└── DET-2: Cross-seed stability (Soft Constraint)
+          N=20 seeds × 4 пространства × 2 бюджета.
+          Метрики: PSNR, cost, compliance, SeamScore.
+          Kill criterion: CV > 0.10 для любой метрики = fail.
+          (τ_cv=0.10 предварительный, уточняется по baseline.)
+```
+
+**Зависимости:** DET-1 зависит от P0 (layout определяет порядок обхода). DET-2 зависит от DET-1 (детерминизм — предусловие осмысленного измерения устойчивости).
+
+**Выход DET:** подтверждение тестируемости (DET-1) и воспроизводимости (DET-2). Без этого Instrument Readiness Gate не проходится.
 
 ---
 
@@ -265,33 +292,39 @@ P4. "Не сломать фичи"
 
 ```
 P0 (layout GPU)
+ ├──→ DET-1 (seed determinism) ──→ DET-2 (cross-seed stability)
+ │         │
  ├──→ P1 (компрессия дерева)  ──→ P3 (семантика дерева)
  │                                       │
  ├──→ P2 (автонастройка ρ)               ├──→ C-pre
  │                                        │
  └──→ SC-baseline (✅ SC-0..SC-4) ──→ SC-5 ──→ SC-enforce ──→ P4 ("не сломать фичи")
-                                           зависит от P0 + P1 + P2 + P3 + SC
+                                           зависит от P0 + DET + P1 + P2 + P3 + SC
 ```
 
-**Критический путь:** P0 → P1 → P3 → P4.
+**Критический путь:** P0 → DET-1 → P1 → P3 → P4.
 
-**Параллельные ветки:** P2, SC-baseline — обе идут параллельно P1, все нужны до P4.
+**Параллельные ветки:** P2, SC-baseline — обе идут параллельно P1, все нужны до P4. DET-2 параллельно P1 (после DET-1).
+
+**Gate-блокеры:** DET-1 блокирует stability pass. DET-2 блокирует Track B.
 
 ---
 
 # Рабочий порядок
 
 1. **P0: 0.9b0** — buffer-scaling probe, kill/go для compact
-2. **P0: 0.9b/0.9c/0.9h** — если compact жив; иначе фиксируем grid
-3. **P1-B2** — dirty-сигнатуры (параллельно с P0 GPU-частью на CPU)
-4. **P2a** — sensitivity sweep порогов гейта, **5 сцен × 4 пространства** (код готов, параллельно с P1)
-5. **SC-5** — установка data-driven τ_parent[L] (SC-0..SC-4 ✅ завершены; параллельно с P1)
-6. **P1-B1** — segment compression (после B2)
-7. **P1-B3** — anchors + rebuild (после B1+B2)
-8. **SC-enforce** — enforcement scale-consistency (после SC-5)
-9. **P3a/P3b** — семантика дерева (после P1)
-10. **C-pre** — кластерность профилей (после P3, дёшево)
-11. **P4** — "не сломать фичи" (после всего + SC)
+2. **P0: 0.9b/0.9c** — если compact жив; иначе фиксируем grid
+3. **DET-1** — seed determinism (canonical order, deterministic probe, governor isolation). Поглощает 0.9h. Блокер для stability pass.
+4. **P1-B2** — dirty-сигнатуры (параллельно с DET-1 на CPU)
+5. **DET-2** — cross-seed stability (20 seeds × 4 пространства × 2 бюджета). Параллельно с P1.
+6. **P2a** — sensitivity sweep порогов гейта, **5 сцен × 4 пространства** (код готов, параллельно с P1)
+7. **SC-5** — установка data-driven τ_parent[L] (SC-0..SC-4 ✅ завершены; параллельно с P1)
+8. **P1-B1** — segment compression (после B2)
+9. **P1-B3** — anchors + rebuild (после B1+B2)
+10. **SC-enforce** — enforcement scale-consistency (после SC-5)
+11. **P3a/P3b** — семантика дерева (после P1)
+12. **C-pre** — кластерность профилей (после P3, дёшево)
+13. **P4** — "не сломать фичи" (после всего + SC + DET)
 
 ---
 
@@ -332,16 +365,18 @@ P0 (layout GPU)
 |-----|---------|----------|-------------|
 | 1 | P0 | buffer-scaling probe (kill/go compact) | exp10 |
 | 2 | P0 | end-to-end pipeline grid vs compact | exp10a/b/c |
-| 3 | P1-B2 | dirty-сигнатуры | exp11 |
-| 4 | P2a | sensitivity sweep порогов гейта (5 сцен × 4 пространства) | exp12 |
-| 5 | SC-5 | установка data-driven τ_parent[L] (SC-0..SC-4 ✅) | exp12a |
-| 6 | P1-B1 | segment compression | exp13 |
-| 7 | P1-B3 | anchors + rebuild | exp14 |
-| 8 | SC-enforce | enforcement scale-consistency | exp14a |
+| 3 | DET-1 | seed determinism (canonical order, det. probe, governor isolation). Поглощает 0.9h | exp10d |
+| 4 | P1-B2 | dirty-сигнатуры | exp11 |
+| 5 | DET-2 | cross-seed stability (20 seeds × 4 пространства × 2 бюджета) | exp11a |
+| 6 | P2a | sensitivity sweep порогов гейта (5 сцен × 4 пространства) | exp12 |
+| 7 | SC-5 | установка data-driven τ_parent[L] (SC-0..SC-4 ✅) | exp12a |
+| 8 | P1-B1 | segment compression | exp13 |
+| 9 | P1-B3 | anchors + rebuild | exp14 |
+| 10 | SC-enforce | enforcement scale-consistency | exp14a |
 | — | SC-σ | fine-grained σ sweep × tile_size × 4 пространства (низкий приоритет) | exp14b |
-| 9 | P3a/b | семантика дерева | exp15 |
-| 10 | C-pre | кластерность профилей | exp16 |
-| 11 | P4 | «не сломать фичи» | exp17 |
+| 11 | P3a/b | семантика дерева | exp15 |
+| 12 | C-pre | кластерность профилей | exp16 |
+| 13 | P4 | «не сломать фичи» | exp17 |
 
 Номера предварительные. Если между шагами возникнет незапланированный
 эксперимент — он получает следующий свободный номер.
@@ -350,11 +385,11 @@ P0 (layout GPU)
 
 # Instrument Readiness Gate
 
-Все эксперименты P0–P4 + SC относятся к **Track A** (построение инструмента). Переход к **Track B** (исследование структуры дерева) — только после прохождения Instrument Readiness Gate:
+Все эксперименты P0–P4 + SC + DET относятся к **Track A** (построение инструмента). Переход к **Track B** (исследование структуры дерева) — только после прохождения Instrument Readiness Gate:
 
-1. **Invariant pass** — все обязательные инварианты выполняются
+1. **Invariant pass** — все обязательные инварианты выполняются (включая DET-1: seed determinism)
 2. **Overhead profile** — overhead не съедает выигрыш
-3. **Stability pass** — система устойчива между прогонами
+3. **Stability pass** — DET-1 (побитовое совпадение при фиксированном seed) + DET-2 (CV метрик < τ_cv по seeds)
 4. **One validated benchmark** — adaptive > random > coarse с подтверждёнными числами
 5. **Attribution diagnostics** — вклад каждого модуля измерен (ablation)
 

@@ -10,7 +10,7 @@ This document describes the system's key components and architectural decisions.
 State space X (arbitrary nature)
        |
        v
-[Root coarse] — initial coarse approximation (see concept_v1.7.md §1.2 for terminology)
+[Root coarse] — initial coarse approximation (see concept_v1.8.md §1.2 for terminology)
        |
        v
 [Informativeness function ρ(x)] — determines where to refine
@@ -166,7 +166,7 @@ Computed over edge strips (bands at tile boundaries).
 
 **Thresholds:** τ_parent is data-driven from the baseline experiment, may depend on level L.
 
-**Note on step_delta tolerance:** τ_parent effectively defines step_delta tolerance — the permissible fraction of parent_coarse alterable by step_delta. This balances two risks: too tight → loss of legitimate features; too loose → hierarchy drift. Optimal trade-off is data-dependent. See concept_v1.7.md §8.9.
+**Note on step_delta tolerance:** τ_parent effectively defines step_delta tolerance — the permissible fraction of parent_coarse alterable by step_delta. This balances two risks: too tight → loss of legitimate features; too loose → hierarchy drift. Optimal trade-off is data-dependent. See concept_v1.8.md §8.9.
 
 **Cross-space validation (Phase 0):**
 

@@ -1,8 +1,10 @@
-# Curiosity — Conceptual Document (v1.7)
+# Curiosity — Conceptual Document (v1.8)
 
 This document captures the current project logic so that the line of reasoning can be reconstructed a year from now without external context.
 
 Updated after theoretical analysis following experiments Exp0.1–Exp0.8, and Phase 0 results (cross-space validation).
+
+v1.8: added determinism invariants (section 8A) and reproducibility requirements.
 
 Changes relative to v1.6:
 - Section 6 (Halo): added topology-based applicability rule
@@ -418,6 +420,65 @@ See **Exp0.10: (R, Up) Sensitivity Probe** in `experiment_hierarchy.md`. Depende
 
 ---
 
+# 8A. Determinism and Reproducibility (new section, v1.8)
+
+## 8A.1 Motivation
+
+In v1.3 there existed an invariant: "The tree is built by a stable rule." By v1.7 it was lost — replaced by other invariants without explicit inheritance.
+
+Without formalized determinism:
+* **Testability** (Track A): impossible to catch regressions if the "correct" tree looks different every time. A code change is indistinguishable from statistical noise.
+* **Reproducibility** (Track B): results that cannot be repeated under fixed conditions are not amenable to scientific analysis.
+* **Content-addressable cache**: route hashing loses effectiveness with unstable paths (content cache is unaffected, but route reuse is).
+
+## 8A.2 Two Levels of Requirements
+
+### Level 1: Seed Determinism (Hard Constraint)
+
+**Invariant:** identical data + ρ + seed + budget = identical tree (bitwise match).
+
+Three mandatory components:
+
+1. **Canonical traversal order (tie-break).** When ρ values are equal, split order is determined by canonical tile index (Z-order / Morton). Lower index goes first. No dependence on hash table iteration order or thread races.
+
+2. **Deterministic probe.** Probe seed = f(tile_coordinates, depth_level, global_seed). Pseudo-random but reproducible. Exploration is predictable given a fixed seed.
+
+3. **Governor isolation from processing order.** EMA accumulation and governor decisions do not depend on the order of processing sibling branches. Processing in canonical order, EMA update strictly after the full step.
+
+**Enforcement:** Unit tests: two runs with identical inputs → bitwise tree match. Any divergence = fail.
+
+### Level 2: Cross-Seed Statistical Stability (Soft Constraint)
+
+**Invariant:** across different seeds, metrics (PSNR, cost, compliance, SeamScore) are statistically stable.
+
+Formally: for N ≥ 10 seeds, coefficient of variation CV(metric) < τ_cv (τ_cv set data-driven from baseline).
+
+Different seeds produce different trees — that is normal. But metrics must be stable. If one ρ with seed=42 yields PSNR 30 dB and with seed=43 yields 25 dB — the system is unstable and conclusions drawn from it are invalid.
+
+**Already partially in place:** 10–20 seeds in experiment protocols, Holm-Bonferroni corrections. Formalization requires only recording as an invariant and defining τ_cv.
+
+## 8A.3 Relationship with Other Mechanisms
+
+| Mechanism | Source of Non-determinism | Solution |
+|---|---|---|
+| Probe | Stochastic tile selection | seed = f(coords, level, global_seed) |
+| Governor (EMA) | Processing order affects accumulation | Canonical order + update after full step |
+| Split at equal ρ | Dependence on traversal implementation | Tie-break by Z-order/Morton index |
+| Halo overlap on GPU | Overlapping writes during parallel accumulation | Exp0.9h (absorbed into DET-1) |
+| Two-stage gate | Expert evaluation order | Fixed order, no data dependence |
+
+## 8A.4 Experimental Validation
+
+Two experiments (see experiment_hierarchy.md):
+
+1. **DET-1: Seed determinism.** Two runs, identical inputs, one seed → bitwise tree match. CPU and GPU separately. Kill criterion: any divergence = fail.
+
+2. **DET-2: Cross-seed stability.** N=20 seeds, 4 spaces, 2 budgets. Measure CV for PSNR, cost, compliance, SeamScore. Kill criterion: CV > 0.10 for any metric = fail (threshold preliminary, refined from baseline).
+
+DET-1 is a precondition for Track A (Instrument Readiness Gate, stability pass). DET-2 is a precondition for Track B.
+
+---
+
 # 9. Boundaries
 
 A boundary is a zone of informativeness decay.
@@ -444,6 +505,8 @@ Halo is applied on both sides of a boundary (subject to the applicability rule, 
 7. ρ defines map semantics; combination via two-stage gate.
 8. **Scale-consistency:** step_delta does not redefine the semantics of the parent scale. `‖R(step_delta)‖ / (‖step_delta‖ + ε) < τ_rel`. Pair (R, Up) is fixed. Thresholds are data-driven.
 9. **Cross-space validation:** any claim about "arbitrary spaces" must be validated on ≥4 space types (scalar grid, vector grid, irregular graph, tree hierarchy). A result on a single type is NOT sufficient.
+10. **Seed determinism:** identical data + ρ + seed + budget = identical tree. Canonical traversal order (Z-order tie-break), deterministic probe (seed from coordinates), governor isolation from processing order. (Section 8A.)
+11. **Cross-seed statistical stability:** metrics are stable across seeds (CV < τ_cv). Different trees are acceptable, different conclusions are not. (Section 8A.)
 
 ---
 
@@ -457,12 +520,14 @@ Curiosity is a system that:
 4. Manages budget consciously (governor), not declaratively.
 5. Adapts the informativeness function to conditions (two-stage gate), rather than relying on a single sensor.
 6. **Does not destroy the semantics of the parent scale during refinement (scale-consistency).**
+7. **Is reproducible under fixed conditions and statistically stable across seeds.**
 
-Two conservation laws:
+Three conservation laws:
 * budget conservation → budget governor
 * scale consistency → D_parent constraint + enforcement
+* process determinism → canonical order + deterministic probe + governor isolation
 
-Formally: refinement must be boundary-aware, must include controlled exploration, must be budget-governed, and must preserve scale-consistent representation.
+Formally: refinement must be boundary-aware, must include controlled exploration, must be budget-governed, must preserve scale-consistent representation, and must be deterministic given fixed inputs.
 
 ---
 

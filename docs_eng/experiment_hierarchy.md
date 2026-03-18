@@ -1,6 +1,8 @@
-# Curiosity — Experiment Hierarchy (v2.0)
+# Curiosity — Experiment Hierarchy (v2.1)
 
 This document captures the current status, dependencies, and execution order of experiments.
+
+v2.1: added DET level (determinism and reproducibility) — cross-infrastructure requirement.
 
 Updated after Phase 0 (parallel validation: halo cross-space, SC-baseline, D_parent fix).
 
@@ -68,11 +70,36 @@ P0. Layout (grid vs compact on GPU)
 │         metrics: VRAM, wall-clock, #kernels, SeamScore identity
 ├── 0.9c:  scaling (if compact survives)
 │         sweep over M, clustered + random
-└── 0.9h:  halo overlap determinism on GPU
-          overlapping writes → accumulation order
+└── 0.9h:  ⟶ ABSORBED INTO DET-1 (see below)
 ```
 
 **P0 output:** fixed layout for everything downstream. Either grid (most likely) or compact (if O(k) buffers save it).
+
+### DET. Determinism and Reproducibility (v1.8)
+
+Cross-infrastructure requirement. Without DET-1, stability pass (Instrument Readiness Gate) cannot be achieved. Without DET-2, Track B is blocked.
+
+```
+DET. Determinism
+├── DET-1: Seed determinism (Hard Constraint)
+│         Two runs, identical inputs + seed → bitwise tree match.
+│         CPU and GPU separately.
+│         Components: canonical traversal order (Z-order tie-break),
+│                     deterministic probe (seed = f(coords, level, global_seed)),
+│                     governor isolation (EMA update after full step).
+│         Kill criterion: any divergence = fail.
+│         Absorbs 0.9h (halo overlap determinism) as a special case.
+│
+└── DET-2: Cross-seed stability (Soft Constraint)
+          N=20 seeds × 4 spaces × 2 budgets.
+          Metrics: PSNR, cost, compliance, SeamScore.
+          Kill criterion: CV > 0.10 for any metric = fail.
+          (τ_cv=0.10 is preliminary, refined from baseline.)
+```
+
+**Dependencies:** DET-1 depends on P0 (layout determines traversal order). DET-2 depends on DET-1 (determinism is a precondition for meaningful stability measurement).
+
+**DET output:** confirmed testability (DET-1) and reproducibility (DET-2). Without this, Instrument Readiness Gate cannot be passed.
 
 ---
 
@@ -287,33 +314,39 @@ If the contract is not met — freeze is indefinite.
 
 ```
 P0 (GPU layout)
+ ├──→ DET-1 (seed determinism) ──→ DET-2 (cross-seed stability)
+ │         │
  ├──→ P1 (tree compression)  ──→ P3 (tree semantics)
  │                                       │
  ├──→ P2 (ρ auto-tuning)                ├──→ C-pre
  │                                        │
  └──→ SC-baseline (✅ SC-0..SC-4) ──→ SC-5 ──→ SC-enforce ──→ P4 ("don't break features")
-                                              depends on P0 + P1 + P2 + P3 + SC
+                                              depends on P0 + DET + P1 + P2 + P3 + SC
 ```
 
-**Critical path:** P0 → P1 → P3 → P4.
+**Critical path:** P0 → DET-1 → P1 → P3 → P4.
 
-**Parallel branches:** P2 and SC-baseline — both run in parallel with P1, all are needed before P4.
+**Parallel branches:** P2 and SC-baseline — both run in parallel with P1, all are needed before P4. DET-2 parallel with P1 (after DET-1).
+
+**Gate blockers:** DET-1 blocks stability pass. DET-2 blocks Track B.
 
 ---
 
 # Working Order
 
 1. **P0: 0.9b0** — buffer-scaling probe, kill/go for compact
-2. **P0: 0.9b/0.9c/0.9h** — if compact survives; otherwise lock in grid
-3. **P1-B2** — dirty signatures (parallel with P0 GPU part, runs on CPU)
-4. **P2a** — sensitivity sweep of gate thresholds, **5 scenes × 4 space types** (code ready, parallel with P1)
-5. **SC-5** — set data-driven τ_parent[L] (SC-0..SC-4 ✅ complete; parallel with P1)
-6. **P1-B1** — segment compression (after B2)
-7. **P1-B3** — anchors + rebuild (after B1+B2)
-8. **SC-enforce** — enforcement of scale-consistency (after SC-5)
-9. **P3a/P3b** — tree semantics (after P1)
-10. **C-pre** — profile cluster check (after P3, cheap)
-11. **P4** — "don't break features" (after everything + SC)
+2. **P0: 0.9b/0.9c** — if compact survives; otherwise lock in grid
+3. **DET-1** — seed determinism (canonical order, deterministic probe, governor isolation). Absorbs 0.9h. Blocker for stability pass.
+4. **P1-B2** — dirty signatures (parallel with DET-1, runs on CPU)
+5. **DET-2** — cross-seed stability (20 seeds × 4 spaces × 2 budgets). Parallel with P1.
+6. **P2a** — sensitivity sweep of gate thresholds, **5 scenes × 4 space types** (code ready, parallel with P1)
+7. **SC-5** — set data-driven τ_parent[L] (SC-0..SC-4 ✅ complete; parallel with P1)
+8. **P1-B1** — segment compression (after B2)
+9. **P1-B3** — anchors + rebuild (after B1+B2)
+10. **SC-enforce** — enforcement of scale-consistency (after SC-5)
+11. **P3a/P3b** — tree semantics (after P1)
+12. **C-pre** — profile cluster check (after P3, cheap)
+13. **P4** — "don't break features" (after everything + SC + DET)
 
 ---
 
@@ -354,16 +387,18 @@ sub-experiments within levels (B1–B3 in P1). Result: confusion.
 |------|---------|-------------|-------------|
 | 1 | P0 | buffer-scaling probe (kill/go compact) | exp10 |
 | 2 | P0 | end-to-end pipeline grid vs compact | exp10a/b/c |
-| 3 | P1-B2 | dirty signatures | exp11 |
-| 4 | P2a | sensitivity sweep of gate thresholds (5 scenes × 4 spaces) | exp12 |
-| 5 | SC-5 | set data-driven τ_parent[L] (SC-0..SC-4 ✅) | exp12a |
-| 6 | P1-B1 | segment compression | exp13 |
-| 7 | P1-B3 | anchors + rebuild | exp14 |
-| 8 | SC-enforce | enforcement of scale-consistency | exp14a |
+| 3 | DET-1 | seed determinism (canonical order, det. probe, governor isolation). Absorbs 0.9h | exp10d |
+| 4 | P1-B2 | dirty signatures | exp11 |
+| 5 | DET-2 | cross-seed stability (20 seeds × 4 spaces × 2 budgets) | exp11a |
+| 6 | P2a | sensitivity sweep of gate thresholds (5 scenes × 4 spaces) | exp12 |
+| 7 | SC-5 | set data-driven τ_parent[L] (SC-0..SC-4 ✅) | exp12a |
+| 8 | P1-B1 | segment compression | exp13 |
+| 9 | P1-B3 | anchors + rebuild | exp14 |
+| 10 | SC-enforce | enforcement of scale-consistency | exp14a |
 | — | SC-σ | fine-grained σ sweep × tile_size × 4 spaces (low priority) | exp14b |
-| 9 | P3a/b | tree semantics | exp15 |
-| 10 | C-pre | profile cluster check | exp16 |
-| 11 | P4 | "don't break features" | exp17 |
+| 11 | P3a/b | tree semantics | exp15 |
+| 12 | C-pre | profile cluster check | exp16 |
+| 13 | P4 | "don't break features" | exp17 |
 
 Numbers are provisional. If an unplanned experiment arises between steps,
 it gets the next free number.
@@ -372,11 +407,11 @@ it gets the next free number.
 
 # Instrument Readiness Gate
 
-All experiments P0–P4 + SC belong to **Track A** (building the instrument). Transition to **Track B** (researching tree structure) requires passing the Instrument Readiness Gate:
+All experiments P0–P4 + SC + DET belong to **Track A** (building the instrument). Transition to **Track B** (researching tree structure) requires passing the Instrument Readiness Gate:
 
-1. **Invariant pass** — all mandatory invariants hold
+1. **Invariant pass** — all mandatory invariants hold (including DET-1: seed determinism)
 2. **Overhead profile** — overhead does not consume the gain
-3. **Stability pass** — system is stable across runs
+3. **Stability pass** — DET-1 (bitwise match at fixed seed) + DET-2 (CV of metrics < τ_cv across seeds)
 4. **One validated benchmark** — adaptive > random > coarse with confirmed numbers
 5. **Attribution diagnostics** — each module's contribution measured (ablation)
 
