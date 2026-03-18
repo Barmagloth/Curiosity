@@ -2,7 +2,18 @@
 
 Протокол верификации Scale-Consistency Invariant для проекта Curiosity.
 
-Этот документ — процедурный. Концептуальное обоснование — в `curiosity_concept_v1.6.md`, раздел 8.
+Этот документ — процедурный. Концептуальное обоснование — в `concept_v1.7.md`, раздел 8.
+
+**Статус протокола (обновлено после Phase 0):**
+- Шаги 0–4: ✅ **ЗАВЕРШЕНЫ**. SC-baseline пройден, D_parent валидирован.
+- Шаг 5: 🔓 **ОТКРЫТ** — установка data-driven τ_parent[L].
+- Шаг 6: 🔓 **ОТКРЫТ** — enforcement.
+
+**Изменения по результатам Phase 0:**
+- R: gaussian blur σ=1.0 → **σ=3.0** (σ=1.0 был недостаточно агрессивным LP-фильтром)
+- D_parent: `‖R(δ)‖ / (α·‖coarse‖ + β)` → **`‖R(δ)‖ / (‖δ‖ + ε)`** (lf_frac — операционно корректная нормализация)
+- Negative baseline: coarse_shift генератор исправлен — per-pixel sign flip → spatially coherent sign fields
+- Валидация: пройдена на 4 типах пространств (scalar grid, vector grid, irregular graph, tree hierarchy)
 
 ---
 
@@ -18,11 +29,13 @@
 
 | Параметр | Значение | Обоснование |
 |---|---|---|
-| R | gaussian blur + decimation | Линейный, GPU-дешёвый, согласован с coarse+delta |
-| Up | bilinear upsampling | Стабильный, интерпретируемый, без внесения чужой семантики |
-| α | 1.0 (стартовое) | Нормировка к coarse |
-| β | small constant (например, 1e-4 · mean(‖coarse‖)) | Защита от деления на ноль |
-| ε | small constant (аналогично β) | Стабилизатор в D_hf |
+| R | gaussian blur **σ=3.0** + decimation | Линейный, GPU-дешёвый, согласован с coarse+delta. ~~σ=1.0~~ → σ=3.0 по результатам Phase 0 (σ=1.0 недостаточно подавлял positive delta, AUC=0.685→0.811) |
+| Up | bilinear upsampling | Стабильный, интерпретируемый, без внесения чужей семантики |
+| ε | small constant (1e-4 · mean(‖delta‖)) | Стабилизатор в D_parent и D_hf |
+
+**~~Старые параметры (deprecated):~~**
+| ~~α~~ | ~~1.0~~ | ~~Нормировка к coarse~~ | Убран — знаменатель заменён на ‖δ‖ |
+| ~~β~~ | ~~1e-4·mean(‖coarse‖)~~ | ~~Защита от деления на ноль~~ | Заменён на ε |
 
 **Пара (R, Up) не меняется в ходе одного цикла верификации.** Если нужно проверить другую пару — это отдельный цикл.
 
@@ -52,7 +65,7 @@
 Случаи, где инвариант намеренно нарушен:
 
 - **LF drift:** к корректному delta добавить синусоиду низкой частоты (масштаб > tile_size)
-- **Coarse shift:** delta намеренно смещает coarse-среднее региона на 10–30%
+- **Coarse shift:** delta намеренно смещает coarse-среднее региона на 10–30%. **NB:** генератор должен использовать spatially coherent sign fields, не per-pixel random sign flip (последний самогасится под R, создавая искусственно слабую violation — исправлено в Phase 0, см. `experiments/sc_baseline/baselines_v2.py`)
 - **Random LF delta:** delta = случайный низкочастотный шум, не связанный с GT
 - **Semant-wrong:** delta переворачивает знак coarse в регионе (экстремальный случай)
 
@@ -65,15 +78,21 @@
 Для каждого (узел, уровень, тип) вычислить:
 
 ```python
-# R = gaussian_blur_then_downsample
+# R = gaussian_blur(sigma=3.0) + downsample
 # Up = bilinear_upsample_to_original_size
 
 R_delta = R(delta)                        # coarse-проекция delta
 P_LF_delta = Up(R_delta)                  # LF-компонента delta в исходном масштабе
 delta_HF = delta - P_LF_delta             # HF-остаток
 
-D_parent = norm(R_delta) / (alpha * norm(coarse) + beta)
-D_hf     = norm(delta_HF) / (norm(delta) + eps)
+# Обновлённая формула (Phase 0, lf_frac normalization):
+D_parent = norm(R_delta) / (norm(delta) + eps)   # "какая доля энергии delta — низкочастотная?"
+D_hf     = norm(delta_HF) / (norm(delta) + eps)  # "какая доля энергии delta — высокочастотная?"
+
+# DEPRECATED (v1.0 original):
+# D_parent = norm(R_delta) / (alpha * norm(coarse) + beta)
+# Причина замены: знаменатель α·‖coarse‖+β одинаков для всех delta на одном тайле →
+# нулевой дискриминативный сигнал, CV=3.3 в распределении D_parent.
 ```
 
 Сохранять: `(D_parent, D_hf, level, structure_type, case_type: pos/neg, neg_type)`
@@ -175,9 +194,9 @@ AUC считается с учётом ориентации. Для D_hf "positi
 После валидации и установки порогов:
 
 ```python
-def check_scale_consistency(delta, coarse, level):
-    R_delta = R(delta)
-    D_parent = norm(R_delta) / (alpha * norm(coarse) + beta)
+def check_scale_consistency(delta, level):
+    R_delta = R(delta)  # R = gaussian_blur(sigma=3.0) + downsample
+    D_parent = norm(R_delta) / (norm(delta) + eps)
 
     if D_parent > tau_parent[level]:
         return "REJECT"  # damp delta, reject split, increase local strictness
@@ -203,7 +222,7 @@ if D_parent > tau_warn AND gain < tau_gain_min:
 
 | Механизм | Что защищает | Ортогональность |
 |---|---|---|
-| Halo | Локальные границы тайлов (геометрия) | Не пересекается со scale-consistency |
+| Halo | Локальные границы тайлов (геометрия). **NB:** применим только при boundary parallelism ≥ 3 и без context leakage (grid/graph: да, tree: нет) | Не пересекается со scale-consistency |
 | SeamScore | Boundary artifacts внутри уровня | Не пересекается с D_parent |
 | D_parent / D_hf | Межмасштабный семантический drift | Не пересекается с halo/seam |
 | Probe | Защита от ложных fixed points | Дополняет scale-stable stop criterion |

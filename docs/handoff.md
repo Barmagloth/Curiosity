@@ -49,7 +49,7 @@
 | `docs/experiment_hierarchy.md` | Граф зависимостей, приоритеты P0–P4, roadmap |
 | `docs/architecture.md` | Архитектура системы, компоненты, стек |
 | `docs/teamplan.md` | План работы команды |
-| `docs/environment.md` | Параметры окружения, настройка среды |
+| `docs/environment_1.md` | Параметры окружения, настройка среды |
 
 ---
 

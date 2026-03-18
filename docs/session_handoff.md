@@ -58,7 +58,7 @@
 | docs/teamplan.md | План работы команды с отметками о выполнении |
 | docs/experiment_hierarchy.md | Граф зависимостей, приоритеты, roadmap |
 | docs/experiment_results.md | Все числа экспериментов |
-| docs/environment.md | Как активировать окружение |
+| docs/environment_1.md | Как активировать окружение |
 | experiments/halo_crossspace/results/APPLICABILITY_RULE.md | Правило применимости Halo |
 | experiments/sc_baseline/results/CROSSSPACE_SC_REPORT.md | Финальные результаты SC |
 

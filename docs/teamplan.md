@@ -16,7 +16,7 @@
 
 | Поток | Исполнитель | Задача | Тип | Зависимости |
 |-------|-------------|--------|-----|-------------|
-| **S1: Окружение** | Executor A | Поднять ROCm + PyTorch на AMD GPU. Проверить совместимость существующего кода (exp07, exp08). Написать `environment.md` с версиями. | Инфраструктура | Нет — стартует сразу |
+| **S1: Окружение** | Executor A | Поднять ROCm + PyTorch на AMD GPU. Проверить совместимость существующего кода (exp07, exp08). Написать `environment_1.md` с версиями. | Инфраструктура | Нет — стартует сразу |
 | **S2: Halo cross-space** | Executor B | Расширить `phase2_probe_seam/exp_seam_crossspace.py` — валидировать Halo (cosine feathering, ≥3 элемента) на всех 4 типах пространств (scalar grid, vector grid, irregular graph, tree hierarchy). CPU-only. | Валидация | Нет — переиспользует код phase2 |
 | **S3: P2a sweep design** | Executor C | Реализовать sensitivity sweep порогов (instability_threshold, FSR_threshold) по 5 сценам (clean/noise/blur/spatvar/jpeg) **× 4 типа пространств** (scalar grid, vector grid, irregular graph, tree hierarchy). CPU-only, переиспользует код exp07/exp08 + phase2 cross-space инфраструктуру. | Эксперимент | Нет — данные и код есть |
 | **S4: SC-baseline scaffold** | Executor D | Реализовать каркас SC-baseline по протоколу `scale_consistency_verification_protocol_v1.0.md`: SC-0 (idempotence R), SC-1 (positive/negative baselines), SC-2 (D_parent, D_hf вычисление). CPU-only. | Код + валидация | Нет — протокол готов |

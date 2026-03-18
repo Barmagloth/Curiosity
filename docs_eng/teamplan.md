@@ -16,7 +16,7 @@ Four streams, all independent of each other:
 
 | Stream | Executor | Task | Type | Dependencies |
 |--------|----------|------|------|--------------|
-| **S1: Environment** | Executor A | Set up ROCm + PyTorch on AMD GPU. Verify compatibility of existing code (exp07, exp08). Write `environment.md` with versions. | Infrastructure | None — starts immediately |
+| **S1: Environment** | Executor A | Set up ROCm + PyTorch on AMD GPU. Verify compatibility of existing code (exp07, exp08). Write `environment_1.md` with versions. | Infrastructure | None — starts immediately |
 | **S2: Halo cross-space** | Executor B | Extend `phase2_probe_seam/exp_seam_crossspace.py` — validate Halo (cosine feathering, ≥3 elements) across all 4 space types (scalar grid, vector grid, irregular graph, tree hierarchy). CPU-only. | Validation | None — reuses phase2 code |
 | **S3: P2a sweep design** | Executor C | Implement sensitivity sweep of thresholds (instability_threshold, FSR_threshold) across 5 scenes (clean/noise/blur/spatvar/jpeg) **× 4 space types** (scalar grid, vector grid, irregular graph, tree hierarchy). CPU-only, reuses exp07/exp08 code + phase2 cross-space infrastructure. | Experiment | None — data and code are available |
 | **S4: SC-baseline scaffold** | Executor D | Implement the SC-baseline scaffold per the `scale_consistency_verification_protocol_v1.0.md` protocol: SC-0 (idempotence R), SC-1 (positive/negative baselines), SC-2 (D_parent, D_hf computation). CPU-only. | Code + validation | None — protocol is ready |

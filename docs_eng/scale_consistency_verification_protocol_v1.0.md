@@ -2,7 +2,18 @@
 
 Scale-Consistency Invariant verification protocol for the Curiosity project.
 
-This document is procedural. Conceptual justification is in `curiosity_concept_v1.6.md`, section 8.
+This document is procedural. Conceptual justification is in `concept_v1.7.md`, section 8.
+
+**Protocol status (updated after Phase 0):**
+- Steps 0–4: ✅ **COMPLETE**. SC-baseline passed, D_parent validated.
+- Step 5: 🔓 **OPEN** — data-driven τ_parent[L] setting.
+- Step 6: 🔓 **OPEN** — enforcement.
+
+**Changes from Phase 0 results:**
+- R: gaussian blur σ=1.0 → **σ=3.0** (σ=1.0 was insufficiently aggressive as LP filter)
+- D_parent: `‖R(δ)‖ / (α·‖coarse‖ + β)` → **`‖R(δ)‖ / (‖δ‖ + ε)`** (lf_frac — operationally correct normalization)
+- Negative baseline: coarse_shift generator fixed — per-pixel sign flip → spatially coherent sign fields
+- Validation: passed on 4 space types (scalar grid, vector grid, irregular graph, tree hierarchy)
 
 ---
 
@@ -18,11 +29,13 @@ Before any experiments, fix and commit:
 
 | Parameter | Value | Justification |
 |---|---|---|
-| R | gaussian blur + decimation | Linear, GPU-cheap, aligned with parent_coarse + step_delta |
+| R | gaussian blur **σ=3.0** + decimation | Linear, GPU-cheap, aligned with coarse+delta. ~~σ=1.0~~ → σ=3.0 per Phase 0 results (σ=1.0 insufficiently suppressed positive delta, AUC=0.685→0.811) |
 | Up | bilinear upsampling | Stable, interpretable, without introducing foreign semantics |
-| α | 1.0 (initial) | Normalization to parent_coarse |
-| β | small constant (e.g., 1e-4 · mean(‖parent_coarse‖)) | Protection against division by zero |
-| ε | small constant (analogous to β) | Stabilizer in D_hf |
+| ε | small constant (1e-4 · mean(‖delta‖)) | Stabilizer in D_parent and D_hf |
+
+**~~Deprecated parameters:~~**
+| ~~α~~ | ~~1.0~~ | ~~Normalization to coarse~~ | Removed — denominator replaced with ‖δ‖ |
+| ~~β~~ | ~~1e-4·mean(‖coarse‖)~~ | ~~Division by zero protection~~ | Replaced by ε |
 
 **The pair (R, Up) does not change during one verification cycle.** If a different pair needs to be checked — this is a separate cycle.
 
@@ -52,7 +65,7 @@ Both types are needed; do not mix into one sample until distribution compatibili
 Cases where the invariant is intentionally violated:
 
 - **LF drift:** add a low-frequency sinusoid (scale > tile_size) to correct step_delta
-- **Parent_coarse shift:** step_delta intentionally shifts the parent_coarse-mean of the region by 10–30%
+- **Parent_coarse shift:** step_delta intentionally shifts the parent_coarse-mean of the region by 10–30%. **NB:** generator must use spatially coherent sign fields, not per-pixel random sign flip (the latter self-cancels under R, creating artificially weak violation — fixed in Phase 0, see `experiments/sc_baseline/baselines_v2.py`)
 - **Random LF step_delta:** step_delta = random low-frequency noise unrelated to GT
 - **Semant-wrong:** step_delta flips the sign of parent_coarse in the region (extreme case)
 
@@ -72,8 +85,14 @@ R_delta = R(step_delta)                   # coarse-projection of step_delta
 P_LF_delta = Up(R_delta)                  # LF-component of step_delta in original scale
 delta_HF = step_delta - P_LF_delta        # HF-remainder
 
-D_parent = norm(R_delta) / (alpha * norm(parent_coarse) + beta)
-D_hf     = norm(delta_HF) / (norm(step_delta) + eps)
+# Updated formula (Phase 0, lf_frac normalization):
+D_parent = norm(R_delta) / (norm(step_delta) + eps)   # "what fraction of delta energy is low-frequency?"
+D_hf     = norm(delta_HF) / (norm(step_delta) + eps)  # "what fraction of delta energy is high-frequency?"
+
+# DEPRECATED (v1.0 original):
+# D_parent = norm(R_delta) / (alpha * norm(parent_coarse) + beta)
+# Reason: denominator α·‖coarse‖+β is identical for all deltas on same tile →
+# zero discriminative signal, CV=3.3 in D_parent distribution.
 ```
 
 Save: `(D_parent, D_hf, level, structure_type, case_type: pos/neg, neg_type)`
@@ -175,9 +194,9 @@ This is a second pass, not the first.
 After validation and threshold setting:
 
 ```python
-def check_scale_consistency(step_delta, parent_coarse, level):
-    R_delta = R(step_delta)
-    D_parent = norm(R_delta) / (alpha * norm(parent_coarse) + beta)
+def check_scale_consistency(step_delta, level):
+    R_delta = R(step_delta)  # R = gaussian_blur(sigma=3.0) + downsample
+    D_parent = norm(R_delta) / (norm(step_delta) + eps)
 
     if D_parent > tau_parent[level]:
         return "REJECT"  # damp step_delta, reject split, increase local strictness
@@ -203,7 +222,7 @@ if D_parent > tau_warn AND gain < tau_gain_min:
 
 | Mechanism | What it protects | Orthogonality |
 |---|---|---|
-| Halo | Local tile boundaries (geometry) | Does not intersect with scale-consistency |
+| Halo | Local tile boundaries (geometry). **NB:** applicable only with boundary parallelism ≥ 3 and no context leakage (grid/graph: yes, tree: no) | Does not intersect with scale-consistency |
 | SeamScore | Boundary artifacts within level | Does not intersect with D_parent |
 | D_parent / D_hf | Cross-scale semantic drift | Does not intersect with halo/seam |
 | Probe | Protection against false fixed points | Complements scale-stable stop criterion |

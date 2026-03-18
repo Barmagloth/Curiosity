@@ -49,7 +49,7 @@ Phase 0 (parallel validation) complete. Halo — applicability rule derived. D_p
 | `docs/experiment_hierarchy.md` | Dependency graph, P0–P4 priorities, roadmap |
 | `docs/architecture.md` | System architecture, components, stack |
 | `docs/teamplan.md` | Team work plan |
-| `docs/environment.md` | Environment parameters, setup |
+| `docs/environment_1.md` | Environment parameters, setup |
 
 ---
 

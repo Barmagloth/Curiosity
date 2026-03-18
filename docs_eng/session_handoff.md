@@ -58,7 +58,7 @@ Per the plan in docs/teamplan.md, "Phase 1" section. Barmagloth is the architect
 | docs/teamplan.md | Team work plan with completion marks |
 | docs/experiment_hierarchy.md | Dependency graph, priorities, roadmap |
 | docs/experiment_results.md | All experiment numbers |
-| docs/environment.md | How to activate the environment |
+| docs/environment_1.md | How to activate the environment |
 | experiments/halo_crossspace/results/APPLICABILITY_RULE.md | Halo applicability rule |
 | experiments/sc_baseline/results/CROSSSPACE_SC_REPORT.md | Final SC results |
 
