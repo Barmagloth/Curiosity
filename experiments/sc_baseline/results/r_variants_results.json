@@ -1,0 +1,458 @@
+{
+  "baseline": {
+    "D_parent": {
+      "global_auc": 0.6850855359504913,
+      "cohens_d": 0.2329057326288259,
+      "pos_mean": 0.3852985419414127,
+      "neg_mean": 0.8410134060026518,
+      "pos_median": 0.18878622535288075,
+      "neg_median": 0.4442094511265724,
+      "by_level": {
+        "1": {
+          "auc": 0.669921875,
+          "cohens_d": 0.4304725033540218
+        },
+        "2": {
+          "auc": 0.7374471028645834,
+          "cohens_d": 0.7333112697737787
+        },
+        "3": {
+          "auc": 0.6766255696614584,
+          "cohens_d": 0.21228456833068846
+        }
+      },
+      "by_neg_type": {
+        "coarse_shift": {
+          "auc": 0.5751517620937263,
+          "cohens_d": 0.06314046701099478
+        },
+        "lf_drift": {
+          "auc": 0.8145756566515495,
+          "cohens_d": 0.5321293930956887
+        },
+        "random_lf": {
+          "auc": 0.4141067885487529,
+          "cohens_d": 0.14100796141655386
+        },
+        "semant_wrong": {
+          "auc": 0.9365079365079365,
+          "cohens_d": 0.5557928087824126
+        }
+      },
+      "quantile_sep_count": 3,
+      "quantile_sep_total": 3,
+      "global_auc_pass": false,
+      "cohens_d_pass": false,
+      "depth_auc_pass": true,
+      "quantile_sep_pass": true,
+      "overall_pass": false
+    },
+    "D_hf": {
+      "global_auc": 0.8054529537509448,
+      "cohens_d": 1.3444829390709414,
+      "pos_mean": 0.709233636998223,
+      "neg_mean": 0.34146280245361715
+    },
+    "sc0_pass": true,
+    "sc0_err": 0.08244384763309107
+  },
+  "lanczos": {
+    "D_parent": {
+      "global_auc": 0.6685673835506425,
+      "cohens_d": 0.1918136620694444,
+      "pos_mean": 0.5125685014757883,
+      "neg_mean": 1.0023416471398627,
+      "pos_median": 0.20561220478475722,
+      "neg_median": 0.5522405319771297,
+      "by_level": {
+        "1": {
+          "auc": 0.63671875,
+          "cohens_d": 0.28356019662137777
+        },
+        "2": {
+          "auc": 0.6989542643229167,
+          "cohens_d": 0.5664000790950002
+        },
+        "3": {
+          "auc": 0.6642176310221355,
+          "cohens_d": 0.18260958529619792
+        }
+      },
+      "by_neg_type": {
+        "coarse_shift": {
+          "auc": 0.573950066137566,
+          "cohens_d": 0.06369144218199871
+        },
+        "lf_drift": {
+          "auc": 0.8041176540060468,
+          "cohens_d": 0.5207347238196708
+        },
+        "random_lf": {
+          "auc": 0.3864795918367347,
+          "cohens_d": 0.18933838649964269
+        },
+        "semant_wrong": {
+          "auc": 0.9097222222222222,
+          "cohens_d": 0.33384924734826327
+        }
+      },
+      "quantile_sep_count": 3,
+      "quantile_sep_total": 3,
+      "global_auc_pass": false,
+      "cohens_d_pass": false,
+      "depth_auc_pass": false,
+      "quantile_sep_pass": true,
+      "overall_pass": false
+    },
+    "D_hf": {
+      "global_auc": 0.804801173941799,
+      "cohens_d": 1.2254721371360942,
+      "pos_mean": 0.5803119492173937,
+      "neg_mean": 0.2653945145390324
+    },
+    "sc0_pass": true,
+    "sc0_err": 0.048973024534615946
+  },
+  "area": {
+    "D_parent": {
+      "global_auc": 0.6690634152966742,
+      "cohens_d": 0.18726558588931447,
+      "pos_mean": 0.5243700658994227,
+      "neg_mean": 1.022208134268014,
+      "pos_median": 0.2020258570607434,
+      "neg_median": 0.564622859370893,
+      "by_level": {
+        "1": {
+          "auc": 0.6402994791666666,
+          "cohens_d": 0.330905183473747
+        },
+        "2": {
+          "auc": 0.70013427734375,
+          "cohens_d": 0.5896773708652405
+        },
+        "3": {
+          "auc": 0.6644770304361979,
+          "cohens_d": 0.17778077929542285
+        }
+      },
+      "by_neg_type": {
+        "coarse_shift": {
+          "auc": 0.574750212585034,
+          "cohens_d": 0.06104256315469968
+        },
+        "lf_drift": {
+          "auc": 0.8094499952758881,
+          "cohens_d": 0.5175092689330403
+        },
+        "random_lf": {
+          "auc": 0.38927567554799697,
+          "cohens_d": 0.18368994196583216
+        },
+        "semant_wrong": {
+          "auc": 0.9027777777777778,
+          "cohens_d": 0.30289364609952063
+        }
+      },
+      "quantile_sep_count": 3,
+      "quantile_sep_total": 3,
+      "global_auc_pass": false,
+      "cohens_d_pass": false,
+      "depth_auc_pass": false,
+      "quantile_sep_pass": true,
+      "overall_pass": false
+    },
+    "D_hf": {
+      "global_auc": 0.8078445353835979,
+      "cohens_d": 1.2627840111183188,
+      "pos_mean": 0.599853334035655,
+      "neg_mean": 0.2746734467941141
+    },
+    "sc0_pass": true,
+    "sc0_err": 0.06781261040505296
+  },
+  "wavelet": {
+    "D_parent": {
+      "global_auc": 0.6690634152966742,
+      "cohens_d": 0.18726558588931447,
+      "pos_mean": 0.5243700658994227,
+      "neg_mean": 1.022208134268014,
+      "pos_median": 0.2020258570607434,
+      "neg_median": 0.564622859370893,
+      "by_level": {
+        "1": {
+          "auc": 0.6402994791666666,
+          "cohens_d": 0.330905183473747
+        },
+        "2": {
+          "auc": 0.70013427734375,
+          "cohens_d": 0.5896773708652405
+        },
+        "3": {
+          "auc": 0.6644770304361979,
+          "cohens_d": 0.17778077929542285
+        }
+      },
+      "by_neg_type": {
+        "coarse_shift": {
+          "auc": 0.574750212585034,
+          "cohens_d": 0.06104256315469968
+        },
+        "lf_drift": {
+          "auc": 0.8094499952758881,
+          "cohens_d": 0.5175092689330403
+        },
+        "random_lf": {
+          "auc": 0.38927567554799697,
+          "cohens_d": 0.18368994196583216
+        },
+        "semant_wrong": {
+          "auc": 0.9027777777777778,
+          "cohens_d": 0.30289364609952063
+        }
+      },
+      "quantile_sep_count": 3,
+      "quantile_sep_total": 3,
+      "global_auc_pass": false,
+      "cohens_d_pass": false,
+      "depth_auc_pass": false,
+      "quantile_sep_pass": true,
+      "overall_pass": false
+    },
+    "D_hf": {
+      "global_auc": 0.7958917942176871,
+      "cohens_d": 1.1589384587640652,
+      "pos_mean": 0.5895930419466661,
+      "neg_mean": 0.27850912082783325
+    },
+    "sc0_pass": true,
+    "sc0_err": 0.0
+  },
+  "gauss_s0.5": {
+    "D_parent": {
+      "global_auc": 0.6593915343915344,
+      "cohens_d": 0.16676582463652617,
+      "pos_mean": 0.5781590042522374,
+      "neg_mean": 1.0398022058240461,
+      "pos_median": 0.25910484767250175,
+      "neg_median": 0.5634682933403736,
+      "by_level": {
+        "1": {
+          "auc": 0.6389973958333334,
+          "cohens_d": 0.35148334892269506
+        },
+        "2": {
+          "auc": 0.7010701497395833,
+          "cohens_d": 0.568004410215808
+        },
+        "3": {
+          "auc": 0.6519050598144531,
+          "cohens_d": 0.15623440790617715
+        }
+      },
+      "by_neg_type": {
+        "coarse_shift": {
+          "auc": 0.5863420020786092,
+          "cohens_d": 0.0677228862940926
+        },
+        "lf_drift": {
+          "auc": 0.7998482379062736,
+          "cohens_d": 0.48156015687069026
+        },
+        "random_lf": {
+          "auc": 0.3555425642479214,
+          "cohens_d": 0.2122367049639593
+        },
+        "semant_wrong": {
+          "auc": 0.8958333333333334,
+          "cohens_d": 0.2563653593109198
+        }
+      },
+      "quantile_sep_count": 3,
+      "quantile_sep_total": 3,
+      "global_auc_pass": false,
+      "cohens_d_pass": false,
+      "depth_auc_pass": false,
+      "quantile_sep_pass": true,
+      "overall_pass": false
+    },
+    "D_hf": {
+      "global_auc": 0.8169724052815571,
+      "cohens_d": 1.3743121771868068,
+      "pos_mean": 0.7045973859470951,
+      "neg_mean": 0.3204647539571519
+    },
+    "sc0_pass": true,
+    "sc0_err": 0.09221458743504837
+  },
+  "gauss_s2.0": {
+    "D_parent": {
+      "global_auc": 0.7411349088246411,
+      "cohens_d": 0.5022148387252316,
+      "pos_mean": 0.14911478833759445,
+      "neg_mean": 0.5837579683593845,
+      "pos_median": 0.06435457470293142,
+      "neg_median": 0.28769708439594455,
+      "by_level": {
+        "1": {
+          "auc": 0.6988932291666667,
+          "cohens_d": 0.523013796068983
+        },
+        "2": {
+          "auc": 0.7820231119791667,
+          "cohens_d": 0.9478427802261561
+        },
+        "3": {
+          "auc": 0.7485338846842446,
+          "cohens_d": 0.4591940535498466
+        }
+      },
+      "by_neg_type": {
+        "coarse_shift": {
+          "auc": 0.5576430224867726,
+          "cohens_d": 0.07905825592105517
+        },
+        "lf_drift": {
+          "auc": 0.8486128826530612,
+          "cohens_d": 0.750242816272434
+        },
+        "random_lf": {
+          "auc": 0.5771329365079365,
+          "cohens_d": 0.20226567593892159
+        },
+        "semant_wrong": {
+          "auc": 0.9811507936507936,
+          "cohens_d": 2.593630067539126
+        }
+      },
+      "quantile_sep_count": 3,
+      "quantile_sep_total": 3,
+      "global_auc_pass": false,
+      "cohens_d_pass": true,
+      "depth_auc_pass": true,
+      "quantile_sep_pass": true,
+      "overall_pass": false
+    },
+    "D_hf": {
+      "global_auc": 0.8027712821239606,
+      "cohens_d": 1.3191203421844069,
+      "pos_mean": 0.8350014828363492,
+      "neg_mean": 0.4257375880431642
+    },
+    "sc0_pass": true,
+    "sc0_err": 0.07004378377370317
+  },
+  "gauss_s3.0": {
+    "D_parent": {
+      "global_auc": 0.811423788265306,
+      "cohens_d": 0.634913783751366,
+      "pos_mean": 0.061820923053372404,
+      "neg_mean": 0.5327268229741827,
+      "pos_median": 0.01413439013211579,
+      "neg_median": 0.24281742610011875,
+      "by_level": {
+        "1": {
+          "auc": 0.7080078124999999,
+          "cohens_d": 0.5893481525814368
+        },
+        "2": {
+          "auc": 0.8189697265625,
+          "cohens_d": 1.1027817043650618
+        },
+        "3": {
+          "auc": 0.8459815979003906,
+          "cohens_d": 0.5947541415961939
+        }
+      },
+      "by_neg_type": {
+        "coarse_shift": {
+          "auc": 0.5516050170068028,
+          "cohens_d": 0.08201107961259017
+        },
+        "lf_drift": {
+          "auc": 0.928234835600907,
+          "cohens_d": 0.8794357241470241
+        },
+        "random_lf": {
+          "auc": 0.7718076814058957,
+          "cohens_d": 0.6720532749627036
+        },
+        "semant_wrong": {
+          "auc": 0.9940476190476191,
+          "cohens_d": 7.222382431614053
+        }
+      },
+      "quantile_sep_count": 3,
+      "quantile_sep_total": 3,
+      "global_auc_pass": true,
+      "cohens_d_pass": true,
+      "depth_auc_pass": true,
+      "quantile_sep_pass": true,
+      "overall_pass": true
+    },
+    "D_hf": {
+      "global_auc": 0.8095415249433107,
+      "cohens_d": 1.329668763535688,
+      "pos_mean": 0.9188831493595516,
+      "neg_mean": 0.47895971135477466
+    },
+    "sc0_pass": true,
+    "sc0_err": 0.07270406546967097
+  },
+  "wavelet_bl": {
+    "D_parent": {
+      "global_auc": 0.6690634152966742,
+      "cohens_d": 0.18726558588931447,
+      "pos_mean": 0.5243700658994227,
+      "neg_mean": 1.022208134268014,
+      "pos_median": 0.2020258570607434,
+      "neg_median": 0.564622859370893,
+      "by_level": {
+        "1": {
+          "auc": 0.6402994791666666,
+          "cohens_d": 0.330905183473747
+        },
+        "2": {
+          "auc": 0.70013427734375,
+          "cohens_d": 0.5896773708652405
+        },
+        "3": {
+          "auc": 0.6644770304361979,
+          "cohens_d": 0.17778077929542285
+        }
+      },
+      "by_neg_type": {
+        "coarse_shift": {
+          "auc": 0.574750212585034,
+          "cohens_d": 0.06104256315469968
+        },
+        "lf_drift": {
+          "auc": 0.8094499952758881,
+          "cohens_d": 0.5175092689330403
+        },
+        "random_lf": {
+          "auc": 0.38927567554799697,
+          "cohens_d": 0.18368994196583216
+        },
+        "semant_wrong": {
+          "auc": 0.9027777777777778,
+          "cohens_d": 0.30289364609952063
+        }
+      },
+      "quantile_sep_count": 3,
+      "quantile_sep_total": 3,
+      "global_auc_pass": false,
+      "cohens_d_pass": false,
+      "depth_auc_pass": false,
+      "quantile_sep_pass": true,
+      "overall_pass": false
+    },
+    "D_hf": {
+      "global_auc": 0.8078445353835979,
+      "cohens_d": 1.2627840111183188,
+      "pos_mean": 0.599853334035655,
+      "neg_mean": 0.2746734467941141
+    },
+    "sc0_pass": true,
+    "sc0_err": 0.06781261040505296
+  }
+}

@@ -1,0 +1,158 @@
+{
+  "original_metrics": [
+    {
+      "space": "T1_scalar_grid",
+      "boundary_width": 8.0,
+      "surface_volume_ratio": 0.5,
+      "min_cut_per_tile_pair": 8.0,
+      "avg_cross_degree": 1.0,
+      "halo_ratio": 2.02
+    },
+    {
+      "space": "T2_vector_grid",
+      "boundary_width": 8.0,
+      "surface_volume_ratio": 0.5,
+      "min_cut_per_tile_pair": 8.0,
+      "avg_cross_degree": 1.0,
+      "halo_ratio": 1.57
+    },
+    {
+      "space": "T3_irregular_graph",
+      "boundary_width": 94.0,
+      "surface_volume_ratio": 0.27485380116959063,
+      "min_cut_per_tile_pair": 11.0,
+      "avg_cross_degree": 2.3404255319148937,
+      "halo_ratio": 1.82
+    },
+    {
+      "space": "T4_tree_hierarchy",
+      "boundary_width": 2.0,
+      "surface_volume_ratio": 0.03225806451612903,
+      "min_cut_per_tile_pair": 1.0,
+      "avg_cross_degree": 1.0,
+      "halo_ratio": 0.56
+    }
+  ],
+  "sweep_results": [
+    {
+      "boundary_edges": 1,
+      "median_ratio": 1.5627188877386557,
+      "mean_ratio": 1.569657180127912,
+      "q25": 1.4685342517721056,
+      "q75": 1.6382503484434348,
+      "frac_above_1": 1.0
+    },
+    {
+      "boundary_edges": 2,
+      "median_ratio": 1.1712126834999284,
+      "mean_ratio": 1.1703319264528316,
+      "q25": 1.1381247961605683,
+      "q75": 1.2014909822638518,
+      "frac_above_1": 1.0
+    },
+    {
+      "boundary_edges": 3,
+      "median_ratio": 0.864354017136359,
+      "mean_ratio": 0.8651175359782213,
+      "q25": 0.8353603875108159,
+      "q75": 0.8917765324657256,
+      "frac_above_1": 0.0
+    },
+    {
+      "boundary_edges": 4,
+      "median_ratio": 1.0357657407997114,
+      "mean_ratio": 1.0403030507151771,
+      "q25": 1.0064337468998943,
+      "q75": 1.067813750180415,
+      "frac_above_1": 0.7666666666666667
+    },
+    {
+      "boundary_edges": 5,
+      "median_ratio": 1.354458123063056,
+      "mean_ratio": 1.3368128439810694,
+      "q25": 1.2460528145651415,
+      "q75": 1.402204606821056,
+      "frac_above_1": 1.0
+    },
+    {
+      "boundary_edges": 6,
+      "median_ratio": 1.1083145858404129,
+      "mean_ratio": 1.1331790084295257,
+      "q25": 1.070407924883723,
+      "q75": 1.1878885630663891,
+      "frac_above_1": 1.0
+    },
+    {
+      "boundary_edges": 8,
+      "median_ratio": 1.0026782760017756,
+      "mean_ratio": 1.0020273004828675,
+      "q25": 0.9354650178665322,
+      "q75": 1.0638140430749388,
+      "frac_above_1": 0.5333333333333333
+    },
+    {
+      "boundary_edges": 10,
+      "median_ratio": 1.0449061484303663,
+      "mean_ratio": 1.0372535008895298,
+      "q25": 0.9919709932986948,
+      "q75": 1.065113196920758,
+      "frac_above_1": 0.7
+    },
+    {
+      "boundary_edges": 12,
+      "median_ratio": 1.0050677028293193,
+      "mean_ratio": 1.0015688408200738,
+      "q25": 0.9655253915710906,
+      "q75": 1.0327727120516899,
+      "frac_above_1": 0.5333333333333333
+    },
+    {
+      "boundary_edges": 15,
+      "median_ratio": 1.0397162821567947,
+      "mean_ratio": 1.0448914860076222,
+      "q25": 1.00300198521798,
+      "q75": 1.0834692670039214,
+      "frac_above_1": 0.7666666666666667
+    },
+    {
+      "boundary_edges": 20,
+      "median_ratio": 0.9844971761107144,
+      "mean_ratio": 0.9919769944311599,
+      "q25": 0.9520265181580724,
+      "q75": 1.0139846656186253,
+      "frac_above_1": 0.4666666666666667
+    },
+    {
+      "boundary_edges": 25,
+      "median_ratio": 0.9753510896454063,
+      "mean_ratio": 0.9796274912418214,
+      "q25": 0.9528659510520406,
+      "q75": 1.0074430877257077,
+      "frac_above_1": 0.3
+    },
+    {
+      "boundary_edges": 30,
+      "median_ratio": 0.8939714611116346,
+      "mean_ratio": 0.899521061653413,
+      "q25": 0.8826509083483365,
+      "q75": 0.9174472988579992,
+      "frac_above_1": 0.0
+    },
+    {
+      "boundary_edges": 40,
+      "median_ratio": 0.9837122035245108,
+      "mean_ratio": 0.9866964865810816,
+      "q25": 0.9608800921358556,
+      "q75": 1.0108322542914014,
+      "frac_above_1": 0.3333333333333333
+    }
+  ],
+  "predictor": {
+    "log_model_a": -0.126283510131057,
+    "log_model_b": 1.3611555934442614,
+    "r_squared": 0.3876228207542566,
+    "breakeven_edges": Infinity,
+    "threshold_15x": Infinity,
+    "empirical_crossover": 3.791346005772894
+  }
+}
