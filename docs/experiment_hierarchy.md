@@ -186,6 +186,26 @@ SC-baseline. Scale-Consistency Verification
 
 Полный протокол: `docs/scale_consistency_verification_protocol_v1.0.md`.
 
+### SC-σ sweep. Оптимизация параметра σ оператора R
+
+```
+SC-σ. Fine-grained sweep параметра σ
+├── σ sweep: [1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 5.0]
+│       на каждом σ: полный SC-3 (AUC, Cohen's d, per-negative-type)
+├── tile_size sweep: σ × tile_size ∈ {8, 16, 32, 64}
+│       вопрос: σ_opt зависит от tile_size? Есть ли σ/tile_size ≈ const?
+├── cross-space: σ sweep × 4 типа пространств
+│       вопрос: σ_opt одинаков для всех пространств или space-dependent?
+└── вывод: формула/правило для выбора σ, или фиксированный σ_opt
+```
+
+**Known limitation текущего σ=3.0:** выбрано как наименьшее целое в грубом sweep [0.5, 1.0, 2.0, 3.0]. Fine-grained поиск не проводился. Возможно σ=2.5 достаточно, или σ=4.0 лучше. Оптимум может зависеть от tile_size и типа пространства.
+
+**Зависимости:** нет (можно запускать параллельно с чем угодно, переиспользует код sc_baseline).
+**Приоритет:** низкий (σ=3.0 проходит kill criteria; оптимизация — не блокер).
+
+---
+
 ### SC-enforce. Enforcement (после SC-baseline)
 
 ```
@@ -318,6 +338,7 @@ P0 (layout GPU)
 | 6 | P1-B1 | segment compression | exp13 |
 | 7 | P1-B3 | anchors + rebuild | exp14 |
 | 8 | SC-enforce | enforcement scale-consistency | exp14a |
+| — | SC-σ | fine-grained σ sweep × tile_size × 4 пространства (низкий приоритет) | exp14b |
 | 9 | P3a/b | семантика дерева | exp15 |
 | 10 | C-pre | кластерность профилей | exp16 |
 | 11 | P4 | «не сломать фичи» | exp17 |

@@ -186,6 +186,26 @@ SC-baseline. Scale-Consistency Verification
 
 Full protocol: `docs/scale_consistency_verification_protocol_v1.0.md`.
 
+### SC-σ sweep. Optimization of R operator σ parameter
+
+```
+SC-σ. Fine-grained sweep of σ parameter
+├── σ sweep: [1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 5.0]
+│       at each σ: full SC-3 (AUC, Cohen's d, per-negative-type)
+├── tile_size sweep: σ × tile_size ∈ {8, 16, 32, 64}
+│       question: does σ_opt depend on tile_size? Is σ/tile_size ≈ const?
+├── cross-space: σ sweep × 4 space types
+│       question: is σ_opt the same across spaces or space-dependent?
+└── output: formula/rule for σ selection, or fixed σ_opt
+```
+
+**Known limitation of current σ=3.0:** chosen as smallest integer in coarse sweep [0.5, 1.0, 2.0, 3.0]. Fine-grained search not performed. σ=2.5 may suffice, or σ=4.0 may be better. Optimum may depend on tile_size and space type.
+
+**Dependencies:** none (can run in parallel with anything, reuses sc_baseline code).
+**Priority:** low (σ=3.0 passes kill criteria; optimization is not a blocker).
+
+---
+
 ### SC-enforce. Enforcement (after SC-baseline)
 
 ```
@@ -340,6 +360,7 @@ sub-experiments within levels (B1–B3 in P1). Result: confusion.
 | 6 | P1-B1 | segment compression | exp13 |
 | 7 | P1-B3 | anchors + rebuild | exp14 |
 | 8 | SC-enforce | enforcement of scale-consistency | exp14a |
+| — | SC-σ | fine-grained σ sweep × tile_size × 4 spaces (low priority) | exp14b |
 | 9 | P3a/b | tree semantics | exp15 |
 | 10 | C-pre | profile cluster check | exp16 |
 | 11 | P4 | "don't break features" | exp17 |

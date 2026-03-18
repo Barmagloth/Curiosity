@@ -287,7 +287,7 @@ Meaning: step_delta should be invisible from the level above. Refinement can add
 
 For the invariant to work, a consistent pair **(R, Up)** must be fixed:
 
-* **R** — coarse-graining operator: `low-pass filter + decimation`. Choice: gaussian blur σ=3.0 + decimation (linear, GPU-cheap, consistent with parent_coarse + step_delta). **Updated v1.7:** σ increased from 1.0 to 3.0 — σ=1.0 was insufficiently aggressive as LP filter, positive deltas retained energy after R.
+* **R** — coarse-graining operator: `low-pass filter + decimation`. Choice: gaussian blur σ=3.0 + decimation (linear, GPU-cheap, consistent with parent_coarse + step_delta). **Updated v1.7:** σ increased from 1.0 to 3.0 — σ=1.0 was insufficiently aggressive as LP filter, positive deltas retained energy after R. **Known limitation:** σ=3.0 was chosen as the smallest integer value passing kill criteria in a coarse sweep [0.5, 1.0, 2.0, 3.0]. Fine-grained sweep not conducted; optimal σ may depend on tile_size and space type. A dedicated experiment (SC-σ sweep) is planned.
 * **Up** — LF-component restoration operator in delta space: `bilinear upsampling`. This is **not** the inverse of R (it does not exist), but a projection of the coarse component back into the original scale.
 
 Pair (R, Up) is fixed before the first experiment. Different pairs give different tree physics and different fixed points. The choice is architectural, not technical.
