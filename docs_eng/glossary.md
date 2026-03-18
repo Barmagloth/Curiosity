@@ -76,7 +76,7 @@ Project-specific terms without which the documentation reads like gibberish. Org
 
 ## Boundaries and Seams
 
-**Halo** — the overlap zone between tiles. A mandatory component: without halo, hard insertion of a refined tile creates a step at the boundary, which the Laplacian catches as a false HF signal. Minimum size: 3 cells. Implemented as cosine feathering relative to parent coarse.
+**Halo** — the overlap zone between tiles. A mandatory component: without halo, hard insertion of a refined tile creates a step at the boundary, which the Laplacian catches as a false HF signal. Minimum size: 3 cells. Implemented as cosine feathering relative to parent coarse. Applicability rule: boundary parallelism >= 3 AND no context leakage. Grid/graph: always applied. Tree/forest: never applied (context leakage makes halo harmful).
 
 **Cosine feathering** — a method for smooth transition between refined and coarse tiles. Weight changes smoothly via cosine function from 1 (tile center) to 0 (boundary), instead of a sharp cutoff.
 
@@ -124,9 +124,9 @@ Project-specific terms without which the documentation reads like gibberish. Org
 
 **LCA (Lowest Common Ancestor)** — the nearest common ancestor of two nodes in the tree. LCA distance = a measure of similarity between two paths. The closer the LCA is to the root, the farther apart the paths are.
 
-**Morton layout** — a data packing method using Z-curve (space-filling curve). Rejected: sort overhead consumes the benefit. Dead.
+**Morton layout** — a data packing method using Z-curve (space-filling curve). Deferred: sort overhead consumes the benefit in current implementation.
 
-**Block-sparse layout** — sparse block-based storage. Rejected: expansion ratio makes it inefficient. Dead.
+**Block-sparse layout** — sparse block-based storage. Deferred: expansion ratio makes it inefficient in current configuration.
 
 **Compact layout** — compact storage of only active cells. The sole surviving candidate (vs. grid). Exp0.9b0 — kill/go test.
 
@@ -136,15 +136,15 @@ Project-specific terms without which the documentation reads like gibberish. Org
 
 ## Scale-Consistency (v1.6)
 
-**Scale-Consistency Invariant** — the requirement that step_delta does not redefine the semantics of the parent scale. Formally: `‖R(step_delta)‖ / (α·‖parent_coarse‖ + β) < τ_rel`. Closes the open question from v1.5 "how not to break features." See concept_v1.6.md, section 8, for details.
+**Scale-Consistency Invariant** — the requirement that step_delta does not redefine the semantics of the parent scale. Formally: `||R(step_delta)|| / (||step_delta|| + epsilon) < tau_rel`. Measures what fraction of step_delta energy is low-frequency (lf_frac). Closes the open question from v1.5 "how not to break features." See concept_v1.7.md, section 8, for details.
 
-**R (coarse-graining operator)** — `gaussian blur + decimation`. Projects the signal from fine to coarse scale. Fixed before experiments — an architectural choice.
+**R (coarse-graining operator)** — `gaussian blur (sigma=3.0) + decimation`. Projects the signal from fine to coarse scale. Fixed before experiments — an architectural choice.
 
 **Up (restoration operator)** — `bilinear upsampling`. Projects the coarse component back to the original scale. This is **not** the inverse of R.
 
 **Pair (R, Up)** — a fixed pair of operators for measuring scale-consistency. Different pairs yield different tree physics. Does not change during a single verification cycle.
 
-**D_parent** — a metric for step_delta leakage into the parent scale: `D_parent = ‖R(step_delta)‖ / (α·‖parent_coarse‖ + β)`. Higher = worse. The primary enforcement signal.
+**D_parent** — a metric for step_delta leakage into the parent scale: `D_parent = ||R(step_delta)|| / (||step_delta|| + epsilon)`. "lf_frac" normalization: measures what fraction of step_delta energy is low-frequency. R=gauss sigma=3.0. Higher = worse. The primary enforcement signal. Validated on 4 space types (AUC 0.824–1.000).
 
 **D_hf** — a metric for high-frequency purity of step_delta: `D_hf = ‖step_delta - Up(R(step_delta))‖ / (‖step_delta‖ + ε)`. Higher = better (step_delta lives in the HF subspace). A diagnostic signal, not a hard constraint.
 
@@ -240,3 +240,13 @@ The order is strict: no jumping ahead without closing dependencies.
 **Matryoshka invariant** — the requirement that the representation at any "matryoshka" (nested refinement) level is a valid input for the downstream consumer. Not just visually smooth, but functionally correct. The Scale-Consistency Invariant (v1.6) is the formalization of this requirement at the level of individual nodes. Tested in P4.
 
 **Depth-dependent representation (deferred)** — the hypothesis that different tree levels may require qualitatively different features (step_delta of different types at different scales). Current architecture uses a uniform representation at all levels. Deferred consciously: (1) requires a working instrument first (Track A); (2) target requirements for each level cannot be specified in advance — the approach is presumed iterative. Investigate after Track A.
+
+---
+
+## Cross-Space Validation and Topological Concepts
+
+**Cross-space validation** — the principle that any claim about working in "arbitrary spaces" must be tested on >= 4 space types (scalar grid, vector grid, irregular graph, tree hierarchy). Without this, the claim is a declaration, not a fact.
+
+**Context leakage** — when halo expansion bleeds into unrelated tiles. A critical problem for tree topology: in a tree, structural "neighbors" can be semantically distant, and extending halo to them is harmful rather than helpful.
+
+**Boundary parallelism** — the number of independent cross-edges at a tile boundary. For halo to work correctly, boundary parallelism >= 3 is required. In grid/graph this is naturally satisfied; in tree/forest it is not.

@@ -2,7 +2,7 @@
 
 Документ фиксирует актуальный статус, зависимости и порядок экспериментов.
 
-Обновлено после Phase 1–2 (halo, probe, seam metric) и Exp0.9a sandbox (layout).
+Обновлено после Phase 0 (параллельная валидация: halo cross-space, SC-baseline, D_parent fix).
 
 ---
 
@@ -21,6 +21,9 @@
 | `exp08_schedule/` | Schedule + governor + probe | — | ✅ Закрыт |
 | `phase2_probe_seam/` | Probe + SeamScore validation | §B (B1+B2) | ✅ Закрыт |
 | `exp09a_layout_sandbox/` | Layout: grid vs compact (microbench) | §C (C3/Exp0.9a) | ✅ Частично |
+| `halo_crossspace/` | Halo applicability across space types | Phase 0 | ✅ Закрыт (правило выведено) |
+| `sc_baseline/` | Scale-consistency D_parent/D_hf verification | Phase 0 (SC-0..SC-4) | ✅ Закрыт (SC-5 open) |
+| `p2a_sensitivity/` | Sensitivity sweep порогов гейта | P2a | 🔓 Код готов, не запущен |
 | *(будущее)* | Layout GPU end-to-end | §C → P0 (0.9b0+) | 🔓 Открыт |
 
 **Примечание:** §A/B/C — секции плана валидации, написанного между Exp0.3 и Phase 1.
@@ -39,8 +42,9 @@
 | — | Governor (EMA) для бюджета | **Да**, StdCost −50%, penalty −85% | Exp0.8 |
 | 2 | Комбинированная интересность нужна? | **Да, при деградации сигнала.** Двухстадийный гейт | Exp0.4–0.7b |
 | 3 | Phase schedule по глубине? | **Нет** при текущих условиях | Exp0.8v5 |
-| — | Morton layout | **Мёртв** (sort overhead, zero compute benefit) | 0.9a sandbox |
-| — | Block-sparse layout | **Мёртв** (expansion ratio) | 0.9a sandbox |
+| — | Halo cross-space applicability | **Правило выведено** (grid/graph: да, tree: нет). boundary parallelism >= 3 AND no context leakage | Phase 0 |
+| — | Morton layout | **Отложен (deferred)** (sort overhead, zero compute benefit) | 0.9a sandbox |
+| — | Block-sparse layout | **Отложен (deferred)** (expansion ratio) | 0.9a sandbox |
 | — | Детерминизм non-overlapping writes | **Чисто** (bitwise match) | 0.9a sandbox |
 
 ---
@@ -162,18 +166,23 @@ P3. Семантика дерева
 
 ```
 SC-baseline. Scale-Consistency Verification
-├── SC-0: фиксация пары (R, Up), проверка идемпотентности R
-├── SC-1: подготовка positive (strong + empirical) и negative baseline
-├── SC-2: вычисление D_parent, D_hf по всем случаям
-├── SC-3: анализ separability (AUC, effect size, quantile separation)
+├── SC-0: фиксация пары (R, Up), проверка идемпотентности R              ✅ COMPLETE
+├── SC-1: подготовка positive (strong + empirical) и negative baseline    ✅ COMPLETE
+├── SC-2: вычисление D_parent, D_hf по всем случаям                      ✅ COMPLETE
+├── SC-3: анализ separability (AUC, effect size, quantile separation)     ✅ COMPLETE
 │         глобально + по уровням + по типам структуры
-├── SC-4: kill criterion — если separability < порогов → пересмотр метрик/(R,Up)
-└── SC-5: установка data-driven τ_parent[L] (если acceptance пройден)
+├── SC-4: kill criterion — PASSED с обновлённой формулой D_parent
+│         (R=gauss σ=3.0, lf_frac normalization, AUC=0.853, d=1.491)     ✅ COMPLETE
+└── SC-5: установка data-driven τ_parent[L] — нужна data-driven настройка порогов
 ```
 
-**Kill criterion:** Global ROC-AUC ≥ 0.75, Depth-conditioned AUC ≥ 0.65, Effect size ≥ medium (d ≥ 0.5). Если не проходит — менять метрики, **не** подгонять пороги.
+**Kill criterion:** Global ROC-AUC >= 0.75, Depth-conditioned AUC >= 0.65, Effect size >= medium (d >= 0.5). Если не проходит — менять метрики, **не** подгонять пороги.
 
-**Выход SC-baseline:** валидированные пороги τ_parent[L] или решение о пересмотре конструкции метрик.
+**SC-4 результат:** PASSED. Обновлённая формула D_parent: `||R(delta)|| / (||delta|| + epsilon)`, R=gauss sigma=3.0. AUC=0.853, d=1.491. Cross-space: T1=1.000, T2=1.000, T3=1.000, T4=0.824 (все >= 0.75).
+
+**SC-5 статус:** tau_parent нуждается в data-driven threshold setting.
+
+**Выход SC-baseline:** валидированные пороги tau_parent[L] или решение о пересмотре конструкции метрик.
 
 Полный протокол: `docs/scale_consistency_verification_protocol_v1.0.md`.
 

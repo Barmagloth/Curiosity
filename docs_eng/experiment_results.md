@@ -96,15 +96,69 @@ Series Exp0.1–Exp0.8 is complete. Below is a summary of each experiment with k
 
 ---
 
+## Halo Cross-Space Validation (Phase 0)
+
+**Question:** Does Halo (cosine feathering, overlap >= 3) work beyond 2D pixel grids?
+
+**Results:**
+
+| Space | Improvement | p-value | Verdict |
+|---|---|---|---|
+| T1 scalar grid | 2.02x | 3.81e-06 | Pass |
+| T2 vector grid | 1.57x | 3.81e-06 | Pass |
+| T3 irregular graph | 1.82x | 9.54e-06 | Pass |
+| T4 tree hierarchy | 0.56x (WORSE) | 0.99 | Fail |
+
+**Conclusion:** Halo works on grid/graph, fails on tree. Applicability rule derived: boundary parallelism >= 3 AND no context leakage. Grid/graph: always. Tree/forest: never.
+
+---
+
+## SC-baseline (Phase 0)
+
+**Question:** Do D_parent and D_hf metrics separate positive and negative cases?
+
+**Results (original formula):**
+
+| Metric | AUC | Effect size (d) | Verdict |
+|---|---|---|---|
+| D_hf | 0.806 | 1.34 | Pass |
+| D_parent (original) | 0.685 | 0.233 | Fail |
+
+**Results (updated D_parent formula: R sigma=3.0 + lf_frac):**
+
+| Metric | AUC | Effect size (d) | Verdict |
+|---|---|---|---|
+| D_parent (fixed) | 0.853 | 1.491 | Pass |
+
+**Cross-space validation of D_parent (fixed):**
+
+| Space | AUC |
+|---|---|
+| T1 scalar grid | 1.000 |
+| T2 vector grid | 1.000 |
+| T3 irregular graph | 1.000 |
+| T4 tree hierarchy | 0.824 |
+
+All spaces pass threshold (AUC >= 0.75).
+
+**Fix:** coarse_shift generator corrected to spatially coherent sign fields.
+
+**Conclusion:** D_parent with updated formula `||R(delta)|| / (||delta|| + epsilon)` (R=gauss sigma=3.0) is validated. The formula measures what fraction of delta energy is low-frequency (lf_frac).
+
+---
+
 ## Summary Table
 
 | Component | Status | Requirement Level |
 |---|---|---|
 | Adaptive refinement | Confirmed | System core |
-| Halo (boundary blending) | Confirmed | Mandatory (≥3 px) |
+| Halo (boundary blending) | Confirmed | Mandatory (>=3 px); grid/graph only |
 | Probe (exploration) | Confirmed | Mandatory (5–10% budget) |
 | Two-stage gate | Confirmed | Mandatory under noise/degradation |
 | EMA budget governor | Confirmed | Mandatory |
 | SeamScore metric | Validated | Stable within current validation scope |
+| Halo cross-space | Validated | Grid/graph: yes. Tree: no. Rule derived |
+| SC-baseline (D_hf) | Confirmed | AUC=0.806, d=1.34 |
+| SC-baseline (D_parent fixed) | Confirmed | AUC=0.853, d=1.491; cross-space 0.824–1.000 |
 | Phase schedule | Not confirmed | Deferred |
 | Morton/block-sparse layout | Preliminarily unfavorable | Per 0.9a microbench; P0 open |

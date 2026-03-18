@@ -2,7 +2,7 @@
 
 This document captures the current status, dependencies, and execution order of experiments.
 
-Updated after Phase 1–2 (halo, probe, seam metric) and Exp0.9a sandbox (layout).
+Updated after Phase 0 (parallel validation: halo cross-space, SC-baseline, D_parent fix).
 
 ---
 
@@ -21,6 +21,9 @@ Updated after Phase 1–2 (halo, probe, seam metric) and Exp0.9a sandbox (layout
 | `exp08_schedule/` | Schedule + governor + probe | — | ✅ Closed |
 | `phase2_probe_seam/` | Probe + SeamScore validation | §B (B1+B2) | ✅ Closed |
 | `exp09a_layout_sandbox/` | Layout: grid vs compact (microbench) | §C (C3/Exp0.9a) | ✅ Partial |
+| `halo_crossspace/` | Halo applicability across space types | Phase 0 | ✅ Closed (rule derived) |
+| `sc_baseline/` | Scale-consistency D_parent/D_hf verification | Phase 0 (SC-0..SC-4) | ✅ Closed (SC-5 open) |
+| `p2a_sensitivity/` | Sensitivity sweep of gate thresholds | P2a | 🔓 Code ready, not run |
 | *(future)* | Layout GPU end-to-end | §C → P0 (0.9b0+) | 🔓 Open |
 
 **Note:** §A/B/C are sections of the validation plan written between Exp0.3 and Phase 1.
@@ -39,8 +42,9 @@ In §B, "B1/B2" = probe scenes. In P1 below, "B1/B2/B3" = tree compression. Diff
 | — | Governor (EMA) for budget | **Yes**, StdCost −50%, penalty −85% | Exp0.8 |
 | 2 | Is combined interestingness needed? | **Yes, under signal degradation.** Two-stage gate | Exp0.4–0.7b |
 | 3 | Phase schedule by depth? | **No** under current conditions | Exp0.8v5 |
-| — | Morton layout | **Dead** (sort overhead, zero compute benefit) | 0.9a sandbox |
-| — | Block-sparse layout | **Dead** (expansion ratio) | 0.9a sandbox |
+| — | Halo cross-space applicability | **Rule derived** (grid/graph: yes, tree: no). boundary parallelism >= 3 AND no context leakage | Phase 0 |
+| — | Morton layout | **Deferred** (sort overhead, zero compute benefit) | 0.9a sandbox |
+| — | Block-sparse layout | **Deferred** (expansion ratio) | 0.9a sandbox |
 | — | Non-overlapping writes determinism | **Clean** (bitwise match) | 0.9a sandbox |
 
 ---
@@ -162,18 +166,23 @@ Partially formalizes the meta-question from v1.5 "how not to break features." De
 
 ```
 SC-baseline. Scale-Consistency Verification
-├── SC-0: fix pair (R, Up), verify R idempotence
-├── SC-1: prepare positive (strong + empirical) and negative baselines
-├── SC-2: compute D_parent, D_hf across all cases
-├── SC-3: analyze separability (AUC, effect size, quantile separation)
+├── SC-0: fix pair (R, Up), verify R idempotence                          ✅ COMPLETE
+├── SC-1: prepare positive (strong + empirical) and negative baselines    ✅ COMPLETE
+├── SC-2: compute D_parent, D_hf across all cases                        ✅ COMPLETE
+├── SC-3: analyze separability (AUC, effect size, quantile separation)    ✅ COMPLETE
 │         globally + by depth + by structure type
-├── SC-4: kill criterion — if separability < thresholds → review metrics/(R,Up)
-└── SC-5: set data-driven τ_parent[L] (if acceptance passes)
+├── SC-4: kill criterion — PASSED with updated D_parent formula
+│         (R=gauss sigma=3.0, lf_frac normalization, AUC=0.853, d=1.491) ✅ COMPLETE
+└── SC-5: set data-driven tau_parent[L] — needs data-driven threshold setting
 ```
 
-**Kill criterion:** Global ROC-AUC ≥ 0.75, Depth-conditioned AUC ≥ 0.65, Effect size ≥ medium (d ≥ 0.5). If not met — change metrics, **do not** tweak thresholds.
+**Kill criterion:** Global ROC-AUC >= 0.75, Depth-conditioned AUC >= 0.65, Effect size >= medium (d >= 0.5). If not met — change metrics, **do not** tweak thresholds.
 
-**SC-baseline output:** validated thresholds τ_parent[L] or decision to revise metric construction.
+**SC-4 result:** PASSED. Updated D_parent formula: `||R(delta)|| / (||delta|| + epsilon)`, R=gauss sigma=3.0. AUC=0.853, d=1.491. Cross-space: T1=1.000, T2=1.000, T3=1.000, T4=0.824 (all >= 0.75).
+
+**SC-5 status:** tau_parent needs data-driven threshold setting.
+
+**SC-baseline output:** validated thresholds tau_parent[L] or decision to revise metric construction.
 
 Full protocol: `docs/scale_consistency_verification_protocol_v1.0.md`.
 

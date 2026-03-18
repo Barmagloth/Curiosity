@@ -4,13 +4,13 @@
 
 Проект Curiosity завершил серию Exp0.1–0.8. Впереди P0–P4 + SC-baseline + кросс-пространственная валидация Halo. Задача — распределить работу на 4+ параллельных исполнителя при условии, что Barmagloth выступает архитектором (принимает решения на развилках, ревьюит результаты, не пишет код).
 
-**Ограничение**: GPU — AMD (нет CUDA), нужен ROCm + PyTorch. Часть задач может стартовать на CPU.
+**Ограничение**: GPU — AMD Radeon 780M (нет CUDA). Используется DirectML + PyTorch (Python 3.12). CPU venv на Python 3.13.
 
 ---
 
 ## Потоки работы (Streams)
 
-### Фаза 0: Немедленный старт (Неделя 1–2)
+### ✅ Фаза 0: ЗАВЕРШЕНА (18 марта 2026)
 
 Четыре потока, все независимы друг от друга:
 
@@ -21,7 +21,18 @@
 | **S3: P2a sweep design** | Executor C | Реализовать sensitivity sweep порогов (instability_threshold, FSR_threshold) по 5 сценам (clean/noise/blur/spatvar/jpeg) **× 4 типа пространств** (scalar grid, vector grid, irregular graph, tree hierarchy). CPU-only, переиспользует код exp07/exp08 + phase2 cross-space инфраструктуру. | Эксперимент | Нет — данные и код есть |
 | **S4: SC-baseline scaffold** | Executor D | Реализовать каркас SC-baseline по протоколу `scale_consistency_verification_protocol_v1.0.md`: SC-0 (idempotence R), SC-1 (positive/negative baselines), SC-2 (D_parent, D_hf вычисление). CPU-only. | Код + валидация | Нет — протокол готов |
 
-**Развилки для архитектора (конец Фазы 0):**
+**Результаты Фазы 0:**
+- S1: CPU venv (Python 3.13) + GPU venv (Python 3.12 + DirectML, Radeon 780M, 2-3× speedup at 2048+)
+- S2: Halo FAIL на деревьях (0.56×). Правило: parallelism ≥ 3 AND no context leakage. Grid/graph: ok. Tree: never.
+- S3: P2a sweep код готов (20K конфигураций), ещё не запущен
+- S4: SC-baseline пройден. D_parent обновлён: ‖R(δ)‖ / (‖δ‖ + ε), R=σ3.0. AUC 0.824–1.000 на 4 пространствах.
+
+**Дополнительно выполнено (вне плана):**
+- coarse_shift генератор исправлен (spatially coherent sign fields)
+- D_parent combo sweep: 66 комбинаций протестировано
+- abs_vs_signed auxiliary отвергнут (контрпродуктивен с исправленным генератором)
+
+**Развилки для архитектора (конец Фазы 0):** ✅ Все решены
 - S2 результат: Halo работает на всех 4 пространствах → статус «обязательный инвариант» подтверждён. Если нет → решение о модификации Halo.
 - S1 результат: ROCm работает → переход к GPU-экспериментам. Если нет → fallback на облако / WSL + CUDA.
 
@@ -34,7 +45,7 @@
 | **S1: P0 — Exp0.9b0** | Executor A | Buffer-scaling probe: O(k) vs O(M) overhead. Grid vs compact. Kill compact если overhead > 20%. Требует GPU. | Эксперимент (GPU) | S1 Фаза 0 (окружение) |
 | **S2: P1-B2 прототип** | Executor B | Dirty signatures: 12-bit signature (seam_risk + uncert + mass), debounce, AUC > 0.8. CPU-прототип, позже перенос на GPU. | Код + эксперимент | Нет (CPU) |
 | **S3: P2a выполнение** | Executor C | Запуск sensitivity sweep (из Фазы 0) на 5 сцен × 4 пространства. Определить: ridge width > 30% → ручные пороги ок; < 10% → нужен P2b. **Важно:** если ridge width различается между пространствами — это само по себе значимый результат, требующий решения архитектора. | Эксперимент | S3 Фаза 0 (код готов) |
-| **S4: SC-baseline выполнение** | Executor D | SC-0 через SC-3: вычислить D_parent/D_hf, проверить separability (AUC ≥ 0.75, Cohen's d ≥ 0.5). | Валидация | S4 Фаза 0 (каркас) |
+| **S4: SC-baseline завершение** | Executor D | SC-0..SC-4 пройдены. Осталось: SC-5 — установить data-driven τ_parent[L]. Подготовить SC-enforce (Фаза 2). | Валидация | S4 Фаза 0 (каркас) ✅ |
 | **S5: Deferred revisit** | Executor E | Re-investigation Morton layout / block-sparse / phase schedule с иным подходом. Литобзор + новые идеи. Не эксперимент — research note с предложениями. | Исследование | Нет |
 
 **Развилки для архитектора (конец Фазы 1):**
@@ -96,7 +107,12 @@
 
 | Когда | Что решать | Входные данные |
 |-------|-----------|---------------|
-| Конец Фазы 0 | ROCm ok? Halo кросс-пространственный? | S1, S2 отчёты |
+| Конец Фазы 0 | ✅ Решено | Результат |
+|---|---|---|
+| ROCm? | CPU + DirectML (ROCm не поддерживает Windows iGPU) |
+| Halo кросс-пространственный? | Частично: grid/graph да, tree нет. Правило выведено. |
+| D_parent fail? | Исправлен: σ=3.0 + lf_frac normalization |
+| coarse_shift? | Генератор исправлен на spatially coherent |
 | Конец Фазы 1 | Layout (grid/compact)? P2b нужен? SC pass? Morton/schedule возврат? | P0, P2a, SC, S5 отчёты |
 | Конец Фазы 2 | SC-enforce работает? Compression достаточна? | S2, S4 отчёты |
 | Конец Фазы 3 | Дерево семантично? C unfreezes? | P3a, P3b отчёты |
@@ -109,7 +125,7 @@
 - `docs/experiment_hierarchy.md` — граф зависимостей, kill criteria
 - `docs/workplan.md` — модули A–F
 - `docs/scale_consistency_verification_protocol_v1.0.md` — протокол SC
-- `docs/concept_v1.6.md` — каноническая концепция
+- `docs/concept_v1.7.md` — каноническая концепция (актуальная)
 - `experiments/phase2_probe_seam/` — код для переиспользования в Halo cross-space
 - `experiments/exp07_gate/`, `experiments/exp08_schedule/` — код для P2a sweep
 

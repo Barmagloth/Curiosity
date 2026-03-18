@@ -4,13 +4,13 @@
 
 The Curiosity project has completed the Exp0.1–0.8 series. Ahead are P0–P4 + SC-baseline + cross-space Halo validation. The goal is to distribute work across 4+ parallel executors, with Barmagloth acting as architect (makes decisions at forks, reviews results, does not write code).
 
-**Constraint**: GPU is AMD (no CUDA), ROCm + PyTorch required. Some tasks can start on CPU-only.
+**Constraint**: GPU is AMD Radeon 780M (no CUDA). Uses DirectML + PyTorch (Python 3.12). CPU venv on Python 3.13.
 
 ---
 
 ## Streams of Work (Streams)
 
-### Phase 0: Immediate Start (Week 1–2)
+### ✅ Phase 0: COMPLETED (March 18, 2026)
 
 Four streams, all independent of each other:
 
@@ -21,7 +21,18 @@ Four streams, all independent of each other:
 | **S3: P2a sweep design** | Executor C | Implement sensitivity sweep of thresholds (instability_threshold, FSR_threshold) across 5 scenes (clean/noise/blur/spatvar/jpeg) **× 4 space types** (scalar grid, vector grid, irregular graph, tree hierarchy). CPU-only, reuses exp07/exp08 code + phase2 cross-space infrastructure. | Experiment | None — data and code are available |
 | **S4: SC-baseline scaffold** | Executor D | Implement the SC-baseline scaffold per the `scale_consistency_verification_protocol_v1.0.md` protocol: SC-0 (idempotence R), SC-1 (positive/negative baselines), SC-2 (D_parent, D_hf computation). CPU-only. | Code + validation | None — protocol is ready |
 
-**Forks for the architect (end of Phase 0):**
+**Phase 0 Results:**
+- S1: CPU venv (Python 3.13) + GPU venv (Python 3.12 + DirectML, Radeon 780M, 2-3× speedup at 2048+)
+- S2: Halo FAIL on trees (0.56×). Rule: parallelism ≥ 3 AND no context leakage. Grid/graph: ok. Tree: never.
+- S3: P2a sweep code ready (20K configurations), not yet executed
+- S4: SC-baseline passed. D_parent updated: ‖R(δ)‖ / (‖δ‖ + ε), R=σ3.0. AUC 0.824–1.000 across 4 spaces.
+
+**Additionally completed (out of plan):**
+- coarse_shift generator fixed (spatially coherent sign fields)
+- D_parent combo sweep: 66 combinations tested
+- abs_vs_signed auxiliary rejected (counterproductive with fixed generator)
+
+**Forks for the architect (end of Phase 0):** ✅ All resolved
 - S2 result: Halo works across all 4 spaces → "mandatory invariant" status confirmed. If not → decision on Halo modification.
 - S1 result: ROCm works → proceed to GPU experiments. If not → fallback to cloud / WSL + CUDA.
 
@@ -34,7 +45,7 @@ Four streams, all independent of each other:
 | **S1: P0 — Exp0.9b0** | Executor A | Buffer-scaling probe: O(k) vs O(M) overhead. Grid vs compact. Kill compact if overhead > 20%. Requires GPU. | Experiment (GPU) | S1 Phase 0 (environment) |
 | **S2: P1-B2 prototype** | Executor B | Dirty signatures: 12-bit signature (seam_risk + uncert + mass), debounce, AUC > 0.8. CPU prototype, later ported to GPU. | Code + experiment | None (CPU) |
 | **S3: P2a execution** | Executor C | Run sensitivity sweep (from Phase 0) across 5 scenes × 4 spaces. Determine: ridge width > 30% → manual thresholds ok; < 10% → P2b needed. **Important:** if ridge width differs across spaces — this is itself a significant result requiring an architect decision. | Experiment | S3 Phase 0 (code ready) |
-| **S4: SC-baseline execution** | Executor D | SC-0 through SC-3: compute D_parent/D_hf, verify separability (AUC ≥ 0.75, Cohen's d ≥ 0.5). | Validation | S4 Phase 0 (scaffold) |
+| **S4: SC-baseline completion** | Executor D | SC-0..SC-4 passed. Remaining: SC-5 — set data-driven τ_parent[L]. Prepare SC-enforce (Phase 2). | Validation | S4 Phase 0 (scaffold) ✅ |
 | **S5: Deferred revisit** | Executor E | Re-investigation of Morton layout / block-sparse / phase schedule with a different approach. Literature review + new ideas. Not an experiment — a research note with proposals. | Research | None |
 
 **Forks for the architect (end of Phase 1):**
@@ -96,7 +107,12 @@ Phase 0: S1(env) ──→ Phase 1: S1(P0) ──→ Phase 2: S2(P1-B1) ──�
 
 | When | What to decide | Input data |
 |------|---------------|------------|
-| End of Phase 0 | ROCm ok? Halo cross-space? | S1, S2 reports |
+| End of Phase 0 | ✅ Resolved | Result |
+|---|---|---|
+| ROCm? | CPU + DirectML (ROCm does not support Windows iGPU) |
+| Halo cross-space? | Partially: grid/graph yes, tree no. Rule derived. |
+| D_parent fail? | Fixed: σ=3.0 + lf_frac normalization |
+| coarse_shift? | Generator fixed to spatially coherent |
 | End of Phase 1 | Layout (grid/compact)? P2b needed? SC pass? Morton/schedule return? | P0, P2a, SC, S5 reports |
 | End of Phase 2 | SC-enforce works? Compression sufficient? | S2, S4 reports |
 | End of Phase 3 | Tree is semantic? C unfreezes? | P3a, P3b reports |
@@ -109,7 +125,7 @@ Phase 0: S1(env) ──→ Phase 1: S1(P0) ──→ Phase 2: S2(P1-B1) ──�
 - `docs/experiment_hierarchy.md` — dependency graph, kill criteria
 - `docs/workplan.md` — modules A–F
 - `docs/scale_consistency_verification_protocol_v1.0.md` — SC protocol
-- `docs/concept_v1.6.md` — canonical concept
+- `docs/concept_v1.7.md` — canonical concept (current)
 - `experiments/phase2_probe_seam/` — code for reuse in Halo cross-space
 - `experiments/exp07_gate/`, `experiments/exp08_schedule/` — code for P2a sweep
 

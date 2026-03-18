@@ -6,7 +6,7 @@ Document for a new project participant (human or AI orchestrator). Contains ever
 
 ## Status in One Sentence
 
-A series of 8 experiments (Exp0.1–Exp0.8) is complete and validated. Adaptive refinement works. The system is ready to move to the next level — real data structures and GPU optimizations.
+Phase 0 (parallel validation) complete. Halo — applicability rule derived. D_parent — formula updated and validated on 4 space types. Environment configured (CPU + DirectML GPU). Ready for Phase 1 (P0 GPU layout).
 
 ---
 
@@ -15,15 +15,16 @@ A series of 8 experiments (Exp0.1–Exp0.8) is complete and validated. Adaptive 
 ### Validated Components (do not change without strong reasons):
 
 1. **Adaptive refinement** — selective tile refinement > random selection
-2. **Halo** — cosine feathering, overlap ≥ 3 elements, mandatory (**NB:** validated only on 2D pixel grids; cross-space validation required — see known gaps)
+2. **Halo** — cosine feathering, overlap >= 3 elements, mandatory. Applicability rule: boundary parallelism >= 3 AND no context leakage. Grid/graph: always. Tree/forest: never.
 3. **Two-stage gate** — residual-first with fallback to utility-weighted combo
 4. **Budget governor** — EMA strictness controller, mandatory
 5. **Probe** — 5–10% budget for exploration, mandatory
 6. **SeamScore** — `Jumpout / (Jumpin + eps)`, production-ready
+7. **D_parent (scale-consistency)** — `||R(delta)|| / (||delta|| + epsilon)`, R=gauss sigma=3.0. Validated on 4 space types (AUC 0.824–1.000).
 
 ### What Was Deferred (requires re-evaluation with a different approach):
 
-- Phase schedule (changing ρ weights by step) — no gain in current formulation
+- Phase schedule (changing rho weights by step) — no gain in current formulation
 - Morton layout — sorting overhead exceeds gain in current implementation
 - Block-sparse layout — poor expansion ratio in current configuration
 
@@ -34,6 +35,7 @@ A series of 8 experiments (Exp0.1–Exp0.8) is complete and validated. Adaptive 
 **Type:** Buffer-scaling probe
 **Priority:** P0 (highest)
 **Kill criteria:** defined (see experiment_hierarchy.md)
+**Environment:** ready (DirectML on Radeon 780M)
 
 ---
 
@@ -41,12 +43,13 @@ A series of 8 experiments (Exp0.1–Exp0.8) is complete and validated. Adaptive 
 
 | Document | Contents |
 |---|---|
-| `docs/concept_v1.6.md` | Canonical concept, all validated decisions |
+| `docs/concept_v1.7.md` | Canonical concept, all validated decisions |
 | `docs/glossary.md` | Project glossary |
 | `docs/experiment_results.md` | Detailed Exp0.1–Exp0.8 results with numbers |
 | `docs/experiment_hierarchy.md` | Dependency graph, P0–P4 priorities, roadmap |
 | `docs/architecture.md` | System architecture, components, stack |
-| `docs/workplan.md` | Implementation plan, modules A–F |
+| `docs/teamplan.md` | Team work plan |
+| `docs/environment.md` | Environment parameters, setup |
 
 ---
 
@@ -56,13 +59,11 @@ A series of 8 experiments (Exp0.1–Exp0.8) is complete and validated. Adaptive 
 
 2. **Raw data/results** — specific numbers exist in documentation, but raw data tables and experiment logs are not saved in the repository.
 
-3. **Environment specs** — Python/PyTorch/CUDA versions, hardware (GPU), project directory structure.
-
 4. **Formatting conventions** — how to name experiments, where to write results, expected log format.
 
 5. **Jupyter Notebooks** — experiment workbooks are not included.
 
-6. **Cross-space Halo validation** — Halo (cosine feathering, ≥3 elements) was tested only on 2D pixel grids (CIFAR, 128×128, tile=16). SeamScore was validated on 4 space types (scalar grid, vector grid, irregular graph, tree hierarchy), but Halo was not. To confirm its "mandatory invariant" status in arbitrary spaces, validation on at least those same 4 space types is needed.
+7. **P2a sweep is ready (code) but has not been run.**
 
 ---
 

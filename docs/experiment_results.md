@@ -96,15 +96,69 @@
 
 ---
 
+## Halo Cross-Space Validation (Phase 0)
+
+**Вопрос:** Работает ли Halo (cosine feathering, overlap >= 3) за пределами 2D pixel grids?
+
+**Результаты:**
+
+| Пространство | Improvement | p-value | Вердикт |
+|---|---|---|---|
+| T1 scalar grid | 2.02x | 3.81e-06 | Pass |
+| T2 vector grid | 1.57x | 3.81e-06 | Pass |
+| T3 irregular graph | 1.82x | 9.54e-06 | Pass |
+| T4 tree hierarchy | 0.56x (WORSE) | 0.99 | Fail |
+
+**Вывод:** Halo работает на grid/graph, проваливается на tree. Выведено правило применимости: boundary parallelism >= 3 AND no context leakage. Grid/graph: всегда. Tree/forest: никогда.
+
+---
+
+## SC-baseline (Phase 0)
+
+**Вопрос:** Разделяют ли метрики D_parent и D_hf положительные и отрицательные случаи?
+
+**Результаты (исходная формула):**
+
+| Метрика | AUC | Effect size (d) | Вердикт |
+|---|---|---|---|
+| D_hf | 0.806 | 1.34 | Pass |
+| D_parent (original) | 0.685 | 0.233 | Fail |
+
+**Результаты (обновлённая формула D_parent: R sigma=3.0 + lf_frac):**
+
+| Метрика | AUC | Effect size (d) | Вердикт |
+|---|---|---|---|
+| D_parent (fixed) | 0.853 | 1.491 | Pass |
+
+**Кросс-пространственная валидация D_parent (fixed):**
+
+| Пространство | AUC |
+|---|---|
+| T1 scalar grid | 1.000 |
+| T2 vector grid | 1.000 |
+| T3 irregular graph | 1.000 |
+| T4 tree hierarchy | 0.824 |
+
+Все пространства проходят порог (AUC >= 0.75).
+
+**Исправление:** coarse_shift generator исправлен на spatially coherent sign fields.
+
+**Вывод:** D_parent с обновлённой формулой `||R(delta)|| / (||delta|| + epsilon)` (R=gauss sigma=3.0) валидирован. Формула измеряет, какая доля энергии delta является низкочастотной (lf_frac).
+
+---
+
 ## Сводная таблица
 
 | Компонент | Статус | Обязательность |
 |---|---|---|
 | Adaptive refinement | Подтверждён | Ядро системы |
-| Halo (boundary blending) | Подтверждён | Обязателен (≥3 px) |
+| Halo (boundary blending) | Подтверждён | Обязателен (>=3 px); grid/graph only |
 | Probe (exploration) | Подтверждён | Обязателен (5–10% бюджета) |
 | Двухстадийный гейт | Подтверждён | Обязателен при шуме/деградации |
 | EMA budget governor | Подтверждён | Обязателен |
 | SeamScore метрика | Валидирована | Стабильна в текущем scope валидации |
+| Halo cross-space | Валидирован | Grid/graph: да. Tree: нет. Правило выведено |
+| SC-baseline (D_hf) | Подтверждён | AUC=0.806, d=1.34 |
+| SC-baseline (D_parent fixed) | Подтверждён | AUC=0.853, d=1.491; cross-space 0.824–1.000 |
 | Phase schedule | Не подтверждён | Отложен |
 | Morton/block-sparse layout | Предварительно невыгоден | По итогам 0.9a microbench; P0 открыт |
