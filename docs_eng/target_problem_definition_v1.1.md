@@ -3,7 +3,7 @@
 This document fixes why the project exists, what counts as success, and against what to compare.
 Without this, "quality-per-cost" is fog in a cylinder.
 
-Related to: `curiosity_concept_v1.6.md` (how it is built), `experiment_hierarchy.md` (what is being tested).
+Related to: `concept_v1.7.md` (how it is built), `experiment_hierarchy.md` (what is being tested).
 
 ---
 
@@ -41,11 +41,17 @@ For tasks with locally heterogeneous information density, build an adaptive refi
 - does not destroy the validity of representation under heterogeneous refinement depth (scale-consistency).
 
 ### Domain
-Tasks with spatially heterogeneous structure:
-- 2D/3D fields with sharp boundaries and flat regions
+Tasks with heterogeneous information density in arbitrary computational spaces:
+- 2D/3D scalar and vector fields with sharp boundaries and flat regions
 - Images with multiscale structure
+- Irregular graphs with cluster structure (k-NN, spatial graphs)
+- Tree hierarchies (routing structures, decision trees)
 - Volumetric / sparse scenes
 - Multiscale signals with local anomalies
+
+**Cross-space validation principle:** all claims of domain-agnostic generality must be verified on at least 4 space types (scalar grid, vector grid, irregular graph, tree hierarchy). Results on a single type are not sufficient.
+
+**Halo limitation:** cosine feathering is applicable only to spaces with boundary parallelism ≥ 3 and no context leakage. Not applicable to tree/forest topologies (see concept_v1.7.md §6).
 
 ### Success criteria
 | Metric | Requirement |
@@ -79,8 +85,8 @@ The following metrics are logged during Track A experiments but **do not** affec
 These are **observational**, not prescriptive. Track A is evaluated by reconstruction, cost, and invariant compliance — not by tree semantics.
 
 ### Status
-**Active goal.** Exp0.1–Exp0.8 closed, basic invariants confirmed.
-Next step — Exp0.9b0 and baseline for scale-consistency.
+**Active goal.** Exp0.1–Exp0.8 closed, basic invariants confirmed. Phase 0 (parallel validation) complete: Halo applicability rule derived, SC-baseline (D_parent/D_hf) validated on 4 space types, environment configured.
+Next step — Phase 1: Exp0.9b0 (P0 GPU layout), P2a sweep, SC-5 (τ_parent).
 
 ---
 
@@ -90,7 +96,7 @@ Track B begins only after passing all five criteria.
 
 | Criterion | What is checked |
 |---|---|
-| **Invariant pass** | All mandatory invariants are satisfied: halo, probe, governor, scale-consistency. None is violated systematically. |
+| **Invariant pass** | All mandatory invariants are satisfied: halo (with topology-dependent applicability rule), probe, governor, scale-consistency (D_parent < τ_parent). Cross-space validation passed. None is violated systematically. |
 | **Overhead profile** | Real overhead of the control system is measured. It does not eat the gain from adaptive refinement. Cost-fair comparison shows positive result. |
 | **Stability pass** | System is stable: governor does not oscillate, split decisions are reproducible, results are stable between runs. |
 | **One validated benchmark** | At least one benchmark where adaptive > same-budget random > coarse, with confirmed numbers and fixed protocol. |
@@ -132,7 +138,7 @@ Use the built mechanism as an instrument to study whether the refinement tree gi
 Determined after reaching Instrument Readiness Gate, based on which downstream consumer is most natural for the built instrument.
 
 ### Status
-**Research goal, not current.** Open questions are fixed in `curiosity_concept_v1.6.md` §13.
+**Research goal, not current.** Open questions are fixed in `concept_v1.7.md` §13.
 
 ---
 
@@ -160,7 +166,7 @@ Without this, there is nothing to generalize.
 |---|---|
 | Specific downstream task for Track B | Not chosen. Chosen after Readiness Gate. |
 | Feature consistency metric (downstream) | Not defined. D_parent is a proxy, not a direct measure. |
-| Applicability to non-spatial domains (graphs, latent) | Theoretically stated, experimentally not verified. Fixed as Track C. |
+| Applicability to non-spatial domains (graphs, latent) | Partially verified: SeamScore, D_parent/D_hf validated on 4 space types (scalar grid, vector grid, irregular graph, tree hierarchy). Halo — limited applicability (grid/graph: yes, tree: no). Fixed as Track C. |
 | Generality beyond spatial data | Long-term ambition. Entry condition — successful Track B. |
 
 ---
