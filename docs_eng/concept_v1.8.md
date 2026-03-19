@@ -6,12 +6,19 @@ Updated after theoretical analysis following experiments Exp0.1–Exp0.8, and Ph
 
 v1.8: added determinism invariants (section 8A) and reproducibility requirements.
 
+v1.8.3: Layout Selection Invariant — layout choice as a function of three space properties, not a type name.
+
 Changes relative to v1.6:
 - Section 6 (Halo): added topology-based applicability rule
 - Section 8 (SC): updated D_parent formula (lf_frac), R=gauss σ=3.0
 - Section 8: added cross-space validation results for SC
 - Section 11: added cross-space validation invariant
 - Section 13: updated experimental status
+
+Changes in v1.8.3:
+- Section 2.1: added Layout Selection Invariant (three axes: isotropy, metric gap, dynamic density)
+- Section 11: added invariant #12 (layout is determined by space properties)
+- Section 12: added fourth conservation law (layout–topology correspondence)
 
 ---
 
@@ -97,6 +104,24 @@ The structure must be GPU-friendly (flat packing, no pointer chasing).
 - irregular_graph / scale-free → blocked layout rejected (cbr=0.66); A_bitset fallback (exp10i)
 
 For graphs: fixed-size blocks are NOT a universal abstraction. Compute-path is healthy (Contour B 100%), data representation is sick (padding 50-97%). Graphs split into two classes based on presence of spatial structure.
+
+**Layout Selection Invariant (v1.8.3)**
+
+The table above is a precomputed cache of a fundamental law: layout is determined by a vector of space properties, not by its type name. Three axes:
+
+**Axis 1 — Topological isotropy I(X).** A measure of local structure homogeneity. Formalization: entropy of the degree distribution H(D) = −Σ P(k) log P(k). When I = 0 (H(D) = 0, regular grid) direct addressing (D_direct) is optimal — memory offsets are fully predictable. As I grows, indirect addressing becomes unavoidable.
+
+**Axis 2 — Metric gap M(X, L).** A measure of divergence between topological distance and physical addressing. Formalization: Kendall rank correlation τ between BFS-rank of neighbors and the difference of their linear addresses in the chosen linearization L. Crucially: M is a property of the pair (topology, linearization), not of topology in isolation. The same graph under Morton ordering has high τ, under random numbering — low τ. When τ → 1 block packing (D_blocked) is effective (a cache line covers neighbors). When τ → 0 any attempt at local packing turns into padding waste.
+
+Corollary: cbr (cross-block ratio, exp10i) is an empirical projection of M(X, L) onto a specific blocking scheme.
+
+**Axis 3 — Dynamic density p.** The only axis that depends not on space structure but on algorithm state. Occupancy p = k/N (fraction of active tiles). When p > p* the overhead of sparsity support (tile_map, block_map) exceeds the cost of computing over the entire universe (A_bitset). When p < p* the emptiness is too expensive to drag through the ALU.
+
+Refinement: p* depends on (operator_weight, absolute_scale). The threshold p* ≈ 0.40 is stable across domain sizes in exp10j (2–4096 nodes), but amortization of tile_map overhead requires sufficient absolute N. On very small domains tile_map overhead never pays off regardless of p (exp10h: trees with 15–585 nodes → 0/108 FAIL). The stability of p* ≈ 0.40 is likely due to hardware quantization (warp size = 32, memory transactions = 128 bytes) — the continuous cost function collapses into discrete steps at the silicon level. Experimentally this is a hypothesis, not a fact.
+
+**Law:** layout = argmin C(I, M, p), where C is the integral cost (addressing + padding + compute waste). The current policy table contains tabulated values of C for known space classes. When a new space type appears, it suffices to compute (I, M, p) and find the nearest table row, rather than writing a new if-branch.
+
+Runtime profiler is NOT planned: in the current scope space types are known statically. Dynamic dispatch is Track C territory, not before.
 
 **Alternative interpretation (theoretical, not experimentally validated):**
 A tree can be viewed as a trajectory of RG-flow (renormalization group flow). Nodes are system states at different scales; edges are coarse-graining operations. Fixed points of the flow are domains where further refinement ceases to change the effective description. This interpretation currently does not affect architecture, but motivates the Scale-Consistency Invariant (section 8).
@@ -518,6 +543,7 @@ Halo is applied on both sides of a boundary (subject to the applicability rule, 
 9. **Cross-space validation:** any claim about "arbitrary spaces" must be validated on ≥4 space types (scalar grid, vector grid, irregular graph, tree hierarchy). A result on a single type is NOT sufficient.
 10. **Seed determinism:** identical data + ρ + seed + budget = identical tree. Canonical traversal order (Z-order tie-break), deterministic probe (seed from coordinates), governor isolation from processing order. (Section 8A.)
 11. **Cross-seed statistical stability:** metrics are stable across seeds (CV < τ_cv). Different trees are acceptable, different conclusions are not. (Section 8A.)
+12. **Layout–topology correspondence:** memory layout format is determined by the space property vector [I(X), M(X,L), p], not by the type name. I = degree entropy (isotropy), M = Kendall rank correlation between topological and physical distance (metric gap), p = occupancy (dynamic density). The current policy table is a precomputed cache for known classes. (Section 2.1.)
 
 ---
 
@@ -532,13 +558,15 @@ Curiosity is a system that:
 5. Adapts the informativeness function to conditions (two-stage gate), rather than relying on a single sensor.
 6. **Does not destroy the semantics of the parent scale during refinement (scale-consistency).**
 7. **Is reproducible under fixed conditions and statistically stable across seeds.**
+8. **Selects memory layout by space properties (layout–topology correspondence), not by type name.**
 
-Three conservation laws:
+Four conservation laws:
 * budget conservation → budget governor
 * scale consistency → D_parent constraint + enforcement
 * process determinism → canonical order + deterministic probe + governor isolation
+* layout–topology correspondence → layout = f(I, M, p); policy table = precomputed cache
 
-Formally: refinement must be boundary-aware, must include controlled exploration, must be budget-governed, must preserve scale-consistent representation, and must be deterministic given fixed inputs.
+Formally: refinement must be boundary-aware, must include controlled exploration, must be budget-governed, must preserve scale-consistent representation, must be deterministic given fixed inputs, and must select memory layout by topological properties of the space.
 
 ---
 
