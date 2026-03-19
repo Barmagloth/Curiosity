@@ -4,68 +4,71 @@
 
 ## Где мы
 
-Проект Curiosity. Фаза 0 (параллельная валидация + настройка окружения) **завершена**. Все результаты закоммичены и запушены в main.
+Проект Curiosity. Фаза 0 **завершена** (18 марта 2026). Фаза 1 **спланирована, не начата**.
 
-## Что было сделано в этой сессии
+Рабочий ПК: **PC 2** (NVIDIA RTX 2070, 8 GB, CUDA 12.8). Рабочая директория: `R:\Projects\Curiosity`.
 
-### Документация
-- Исправлены broken references в handoff.md (concept_v1.5→v1.6→v1.7)
-- Добавлен рекомендованный порядок чтения в README
-- Создан teamplan.md (RU + ENG) — план параллельной работы команды
-- Добавлен .gitignore
+## Что читать (в этом порядке)
 
-### Фаза 0 — эксперименты и код
-1. **Окружение**: .venv (CPU, Python 3.13) + .venv-gpu (DirectML, Python 3.12, AMD Radeon 780M)
-2. **Halo cross-space**: Halo работает на grid/graph, FAIL на tree (0.56×)
-   - Правило: boundary parallelism ≥ 3 AND no context leakage
-   - Код: experiments/halo_crossspace/
+| # | Файл | Зачем |
+|---|------|-------|
+| 1 | `docs/phase1_plan.md` | **План Фазы 1** — 6 потоков, worker assignment, kill criteria, reuse map |
+| 2 | `docs/concept_v1.8.md` | Каноническая концепция (актуальная) |
+| 3 | `docs/experiment_hierarchy.md` | Граф зависимостей, приоритеты, нумерация exp10+ |
+| 4 | `docs/teamplan.md` | План с отметкой Фаза 0 ✅, описание Фаз 1-4 |
+| 5 | `docs/environment_2.md` | Как активировать .venv-gpu на PC 2 (CUDA) |
+
+## Что было сделано ранее (Фаза 0)
+
+### Эксперименты
+1. **Окружение**: PC 1 (AMD Radeon 780M, DirectML) + PC 2 (RTX 2070, CUDA 12.8)
+2. **Halo cross-space**: grid/graph OK, tree FAIL (0.56×). Правило: parallelism ≥ 3 AND no leakage.
 3. **P2a sweep**: код готов (20K конфигураций), НЕ ЗАПУЩЕН
-   - Код: experiments/p2a_sensitivity/
-4. **SC-baseline**: D_hf pass, D_parent pass (после фиксов)
-   - Финальная формула: D_parent = ‖R(δ)‖ / (‖δ‖ + ε), R = gauss σ=3.0
-   - Cross-space: T1=1.000, T2=1.000, T3=1.000, T4=0.824
-   - coarse_shift генератор исправлен (coherent sign fields)
-   - Код: experiments/sc_baseline/
+4. **SC-baseline**: D_parent = ‖R(δ)‖ / (‖δ‖ + ε), R = gauss σ=3.0. AUC 0.824–1.000 на 4 пространствах.
 
 ### Ключевые архитектурные решения
-- Halo: НЕ универсальный инвариант. Применяется только при parallelism≥3 + no leakage.
-- D_parent: формула изменена. Старая (α·‖coarse‖+β в знаменателе) — нулевой дискриминативный сигнал.
+- Halo: НЕ универсальный инвариант — правило по топологии.
+- D_parent: формула обновлена (lf_frac).
 - Morton/block-sparse/phase schedule: ОТЛОЖЕНЫ (deferred), не отвергнуты.
-- Кросс-пространственная валидация: обязательна для любых утверждений об "arbitrary spaces" (4 типа: scalar grid, vector grid, irregular graph, tree hierarchy).
 
-## Что делать дальше — Фаза 1
+## Что делать — Фаза 1
 
-По плану в docs/teamplan.md, раздел "Фаза 1". Barmagloth — архитектор, исполнители — AI-агенты.
+**Детальный план:** `docs/phase1_plan.md`
 
-### Потоки Фазы 1 (параллельные):
-1. **P0: Exp0.9b0** — Buffer-scaling probe на GPU (DirectML). Grid vs compact. Kill compact если overhead >20%. Использовать .venv-gpu.
-2. **P1-B2**: Dirty signatures прототип (CPU). 12-bit signature, debounce, AUC>0.8.
-3. **P2a**: ЗАПУСК sensitivity sweep (код уже готов в experiments/p2a_sensitivity/). 5 сцен × 4 пространства.
-4. **SC-baseline завершение**: SC-5 — установить data-driven τ_parent[L]. Подготовить SC-enforce.
-5. **Deferred revisit**: Research note по Morton/block-sparse/phase schedule с новыми подходами.
+Запустить параллельных воркеров:
+- **Worker A** (GPU): S1 exp10_buffer_scaling → S1b exp10d_seed_determinism
+- **Worker B** (CPU): S2 exp11_dirty_signatures
+- **Worker C** (CPU): S3 запуск p2a_sensitivity (код готов!)
+- **Worker D** (CPU): S4 exp12a_tau_parent
+- **Worker E**: S5 deferred revisit (низший приоритет)
 
-### Развилки для архитектора (конец Фазы 1):
+### Критический путь
+```
+P0 (exp10) → DET-1 (exp10d) → Phase 2
+```
+
+### Развилки для архитектора (конец Фазы 1)
 - P0: grid или compact?
-- P2a: ridge width — manual ok или нужен adaptive?
-- P2a cross-space: ridge одинаков или различается между пространствами?
+- P2a: ridge width — manual ok или нужен adaptive? Одинаков между пространствами?
+- SC-5: pass/fail?
 - Deferred: возвращать Morton/block-sparse/schedule?
 
-## Ключевые файлы для ориентации
+## Окружение
 
-| Файл | Зачем читать |
-|------|-------------|
-| docs/concept_v1.8.md | Каноническая концепция (актуальная) |
-| docs/teamplan.md | План работы команды с отметками о выполнении |
-| docs/experiment_hierarchy.md | Граф зависимостей, приоритеты, roadmap |
-| docs/experiment_results.md | Все числа экспериментов |
-| docs/environment_1.md | Как активировать окружение |
-| experiments/halo_crossspace/results/APPLICABILITY_RULE.md | Правило применимости Halo |
-| experiments/sc_baseline/results/CROSSSPACE_SC_REPORT.md | Финальные результаты SC |
+```bash
+# Активация venv (PC 2):
+R:\Projects\Curiosity\.venv-gpu\Scripts\activate
+# Python 3.12.11, PyTorch 2.10.0+cu128, CUDA 12.8
+
+# Git auth:
+gh auth setup-git
+# Токен: R:\Projects\.gh_tkn
+```
 
 ## Принципы
 
-- **Кросс-пространственная валидация** — обязательна (4 типа пространств)
+- **Кросс-пространственная валидация** — 4 типа пространств обязательно
 - **Kill criteria до запуска** — каждый эксперимент
 - **Holm-Bonferroni** — при множественных сравнениях
 - **10–20 seeds** — для воспроизводимости
-- **Git author**: Barmagloth <>
+- **Barmagloth = архитектор** — принимает решения на развилках, не пишет код
