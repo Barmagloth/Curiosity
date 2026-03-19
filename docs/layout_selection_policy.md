@@ -31,6 +31,38 @@ Regular grids use D_direct unconditionally — no metrics needed.
 | Peak step memory | | Maximum GPU allocation during compute step (bytes). |
 | Workspace overhead | | `peak_step - resident`. Operator temporary allocations. |
 
+### 2.1 When and how to compute metrics
+
+Layout selection happens **after** the gate decides which tiles are active, **before** compute.
+The pipeline stage order is: `ρ(x) → gate → active set → layout selection → build layout → compute`.
+
+**N** (universe size) — static, known from space definition:
+- scalar/vector grid: `side^d` (e.g. 256×256 = 65536)
+- tree level l: `branching^l`
+- graph: `len(nodes)`
+
+**k** (active count) — known after gate decision:
+- `k = sum(active_mask)` or `k = len(active_ids)`
+- zero additional cost: the gate already produced the active set
+
+**p = k / N** — computed from the above. No measurement needed, just division.
+
+**p_l** (trees) — same as p, but per level. The tree already knows which nodes
+are active at each level after the gate pass.
+
+**cbr** (graphs) — requires one pass over edges after partitioning:
+`cbr = count(edges where block[src] != block[dst]) / total_edges`.
+Computed once when partition is built, not per step.
+
+**pw** (graphs) — computed from block occupancy after partitioning:
+`pw = 1 - (total_active_in_blocks / (n_active_blocks * block_size))`.
+
+**Resident / peak / workspace** — measured during profiling (exp10g protocol),
+not during production. Used for calibration, not for runtime decisions.
+
+**Runtime cost of layout selection:** effectively zero. It is a comparison of p
+against a precomputed threshold — one `if` statement per level or per graph.
+
 ## 3. Decision procedure
 
 ```
