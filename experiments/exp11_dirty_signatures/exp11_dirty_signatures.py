@@ -416,6 +416,13 @@ def run_trial(space_name, seed):
             restrict_fn, prolong_fn, coarse_ref,
             rng_seed=seed * 1000)
 
+    # Compute baseline unit_error for each unit (unperturbed state).
+    # unit_error measures MSE against ground truth, so structural changes
+    # that shift state away from GT produce large error increases.
+    baseline_errors = {}
+    for uid in units:
+        baseline_errors[uid] = space.unit_error(base_state, uid)
+
     for scenario_name, label, event_step in scenarios:
         # Fresh RNG per scenario so results are independent and reproducible.
         # Use a deterministic offset per scenario (not hash, which is randomised
@@ -429,8 +436,10 @@ def run_trial(space_name, seed):
         per_unit_first_trigger = {}   # unit_id -> step
         all_trigger_steps = []
 
-        # Track max signature distance from baseline per unit
-        max_baseline_dist = {}        # uid -> max hamming distance from baseline
+        # Track max unit_error change from baseline per unit.
+        # Structural changes cause persistent error increases (state moves
+        # away from GT); noise causes small transient fluctuations.
+        max_error_change = {}         # uid -> max |error - baseline_error|
 
         for step in range(N_STEPS):
             # Apply scenario perturbation
@@ -456,26 +465,28 @@ def run_trial(space_name, seed):
                     per_unit_first_trigger[uid] = step
                     all_trigger_steps.append(step)
 
-                # Track distance from baseline signature
-                bdist = DebounceTracker._hamming12(baseline_sigs[uid], sig)
-                cdist = DebounceTracker._component_diff(baseline_sigs[uid], sig)
-                dist = bdist + cdist   # combined distance metric
-                prev = max_baseline_dist.get(uid, 0)
-                if dist > prev:
-                    max_baseline_dist[uid] = dist
+                # Track unit_error deviation from baseline
+                err = space.unit_error(state_perturbed, uid)
+                delta_err = abs(err - baseline_errors[uid])
+                prev = max_error_change.get(uid, 0.0)
+                if delta_err > prev:
+                    max_error_change[uid] = delta_err
 
         # Aggregate
         any_trigger = len(per_unit_first_trigger) > 0
         blast = len(per_unit_first_trigger)
 
-        # Score: use the maximum baseline distance across all units as the
-        # primary decision variable.  Structural events cause large persistent
-        # deviations from baseline; noise causes small transient deviations.
-        # Also include debounce trigger count as a secondary signal.
-        max_dist = max(max_baseline_dist.values(), default=0)
-        # Mean distance across all units (captures breadth of change)
-        mean_dist = (sum(max_baseline_dist.values()) / max(len(max_baseline_dist), 1))
-        score = float(max_dist) + 0.5 * mean_dist + 0.1 * blast
+        # Score: mean max-error-change across all units.
+        # unit_error measures MSE vs ground truth, so structural changes
+        # (which shift state away from GT) produce large, persistent error
+        # increases.  Noise (small random perturbation) produces tiny error
+        # changes that wash out.  This replaces the previous signature-
+        # distance metric which was inverted (noise caused larger signature
+        # jumps than structural changes due to the uncert component's
+        # sensitivity to ranking shuffles).
+        mean_error_change = (
+            sum(max_error_change.values()) / max(len(max_error_change), 1))
+        score = float(mean_error_change)
 
         if scenario_name == "structural" and event_step is not None:
             if per_unit_first_trigger:

@@ -1,49 +1,49 @@
 {
-  "verdict": "FAIL",
+  "verdict": "PASS",
   "auc_per_space": {
-    "scalar_grid": 0.0,
-    "vector_grid": 0.37,
-    "irregular_graph": 0.99,
-    "tree_hierarchy": 0.1225
+    "scalar_grid": 1.0,
+    "vector_grid": 1.0,
+    "irregular_graph": 1.0,
+    "tree_hierarchy": 1.0
   },
   "ci_per_space": {
     "scalar_grid": [
-      0.0,
-      0.0
+      1.0,
+      1.0
     ],
     "vector_grid": [
-      0.1705,
-      0.5979
+      1.0,
+      1.0
     ],
     "irregular_graph": [
-      0.955,
+      1.0,
       1.0
     ],
     "tree_hierarchy": [
-      0.0185,
-      0.2778
+      1.0,
+      1.0
     ]
   },
   "holm_bonferroni": {
     "scalar_grid": {
-      "p_raw": 1.0,
-      "p_adjusted": 1.0,
-      "reject": false
-    },
-    "vector_grid": {
-      "p_raw": 0.878224,
-      "p_adjusted": 1.0,
-      "reject": false
-    },
-    "irregular_graph": {
       "p_raw": 0.0002,
       "p_adjusted": 0.0008,
       "reject": true
     },
+    "vector_grid": {
+      "p_raw": 0.0002,
+      "p_adjusted": 0.0006,
+      "reject": true
+    },
+    "irregular_graph": {
+      "p_raw": 0.0002,
+      "p_adjusted": 0.0004,
+      "reject": true
+    },
     "tree_hierarchy": {
-      "p_raw": 1.0,
-      "p_adjusted": 1.0,
-      "reject": false
+      "p_raw": 0.0002,
+      "p_adjusted": 0.0002,
+      "reject": true
     }
   },
   "blast_radius": {

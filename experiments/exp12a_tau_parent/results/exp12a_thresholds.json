@@ -1,32 +1,105 @@
 {
-  "method": "f1_optimal",
+  "method": "youden_j",
+  "scope": "per-space per-level",
   "thresholds": {
-    "L1": 0.0783974311786752,
-    "L2": 0.2611302373245256,
-    "L3": 0.18475797869574853
+    "T1_scalar_L1": 0.4595182259879824,
+    "T1_scalar_L2": 0.3697403482943881,
+    "T1_scalar_L3": 0.3673409098280379,
+    "T2_vector_L1": 0.4192140266139487,
+    "T2_vector_L2": 0.24874085082987835,
+    "T2_vector_L3": 0.18475797869574853,
+    "T3_graph_L1": 0.0783974311786752,
+    "T3_graph_L2": 0.14305319723869012,
+    "T3_graph_L3": 0.25345380548411767,
+    "T4_tree_L1": 0.1883642776178587,
+    "T4_tree_L2": 0.3325864425957199,
+    "T4_tree_L3": 0.5634590122871984
   },
   "metrics": {
-    "L1": {
-      "method": "f1_optimal",
-      "accuracy": 0.75,
+    "T1_scalar_L1": {
+      "method": "youden_j",
+      "accuracy": 1.0,
       "sensitivity": 1.0,
-      "specificity": 0.25,
-      "f1": 0.8421052631578948
+      "specificity": 1.0,
+      "f1": 1.0
     },
-    "L2": {
-      "method": "f1_optimal",
-      "accuracy": 0.8722222222222222,
-      "sensitivity": 0.9333333333333333,
-      "specificity": 0.75,
-      "f1": 0.9068825910931174
-    },
-    "L3": {
-      "method": "f1_optimal",
-      "accuracy": 0.9166666666666666,
+    "T1_scalar_L2": {
+      "method": "youden_j",
+      "accuracy": 1.0,
       "sensitivity": 1.0,
-      "specificity": 0.75,
-      "f1": 0.9411764705882353
+      "specificity": 1.0,
+      "f1": 1.0
+    },
+    "T1_scalar_L3": {
+      "method": "youden_j",
+      "accuracy": 1.0,
+      "sensitivity": 1.0,
+      "specificity": 1.0,
+      "f1": 1.0
+    },
+    "T2_vector_L1": {
+      "method": "youden_j",
+      "accuracy": 0.8222222222222222,
+      "sensitivity": 0.7333333333333333,
+      "specificity": 1.0,
+      "f1": 0.846153846153846
+    },
+    "T2_vector_L2": {
+      "method": "youden_j",
+      "accuracy": 1.0,
+      "sensitivity": 1.0,
+      "specificity": 1.0,
+      "f1": 1.0
+    },
+    "T2_vector_L3": {
+      "method": "youden_j",
+      "accuracy": 1.0,
+      "sensitivity": 1.0,
+      "specificity": 1.0,
+      "f1": 1.0
+    },
+    "T3_graph_L1": {
+      "method": "youden_j",
+      "accuracy": 1.0,
+      "sensitivity": 1.0,
+      "specificity": 1.0,
+      "f1": 1.0
+    },
+    "T3_graph_L2": {
+      "method": "youden_j",
+      "accuracy": 1.0,
+      "sensitivity": 1.0,
+      "specificity": 1.0,
+      "f1": 1.0
+    },
+    "T3_graph_L3": {
+      "method": "youden_j",
+      "accuracy": 1.0,
+      "sensitivity": 1.0,
+      "specificity": 1.0,
+      "f1": 1.0
+    },
+    "T4_tree_L1": {
+      "method": "youden_j",
+      "accuracy": 0.7666666666666667,
+      "sensitivity": 0.65,
+      "specificity": 1.0,
+      "f1": 0.787878787878788
+    },
+    "T4_tree_L2": {
+      "method": "youden_j",
+      "accuracy": 0.7888888888888889,
+      "sensitivity": 0.7333333333333333,
+      "specificity": 0.9,
+      "f1": 0.822429906542056
+    },
+    "T4_tree_L3": {
+      "method": "youden_j",
+      "accuracy": 0.8,
+      "sensitivity": 0.7,
+      "specificity": 1.0,
+      "f1": 0.8235294117647058
     }
   },
-  "kill_criterion_passed": false
+  "kill_criterion_passed": true
 }

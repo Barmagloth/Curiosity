@@ -1,12 +1,20 @@
 #!/usr/bin/env python3
 """
-Curiosity -- exp12a_tau_parent: Data-driven thresholds tau_parent[L] per depth level.
+Curiosity -- exp12a_tau_parent: Data-driven thresholds tau_parent[L, space_type].
 
 Determines optimal thresholds for Scale-Consistency enforcement at each tree depth
-using D_parent (lf_frac variant) from the SC-baseline cross-space validation.
+PER SPACE TYPE, using D_parent (lf_frac variant) from the SC-baseline operators.
 
-Question: What are the optimal data-driven thresholds tau_parent[L] for each tree depth?
-Kill criteria: accuracy drops >15 percentage points on held-out space = problem.
+R/Up operators produce D_parent with different dynamic ranges per space type:
+  - Grids (T1, T2): D_parent values ~0.42-0.50
+  - Graph (T3): D_parent values as low as ~0.078
+  - Tree (T4): D_parent values ~0.19
+A single global threshold fails on held-out spaces.  Per-space thresholds align
+with the layout selection policy: space_type is known statically, R/Up operators
+differ per space type, so thresholds should be per-space too.
+
+Question: What are the optimal thresholds tau_parent[L, space_type]?
+Kill criteria: accuracy drops >15 percentage points on held-out seeds = problem.
 
 Roadmap level: SC-5
 Depends on: SC-baseline (SC-0..SC-4) PASSED.
@@ -17,9 +25,9 @@ Methods for finding thresholds:
   - sensitivity_at_90: threshold achieving >=90% sensitivity
 
 Cross-validation:
-  Leave-one-space-out (4 folds). Train on 3 spaces, validate on held-out.
-  10 training seeds + 10 validation seeds per fold.
-  Kill criterion: accuracy drops >15pp on held-out vs training.
+  Per-space, leave-one-seed-group-out (2 folds per space).
+  Training seeds compute thresholds, held-out seeds validate.
+  Kill criterion: accuracy drops >15pp on held-out seeds vs training.
 
 CPU-only. Requires numpy, scipy, sklearn, matplotlib.
 
@@ -677,15 +685,15 @@ def check_space_specificity(thresholds_by_space):
 # Leave-one-space-out cross-validation
 # ===================================================================
 
-def leave_one_space_out_cv(n_train_seeds=10, n_val_seeds=10, base_seed=42,
-                           method='youden_j', verbose=True):
-    """4-fold cross-validation: train on 3 spaces, validate on held-out.
+def per_space_seed_cv(n_train_seeds=10, n_val_seeds=10, base_seed=42,
+                      method='youden_j', verbose=True):
+    """Per-space cross-validation: train on training seeds, validate on held-out seeds.
 
-    For each fold:
-      - Generate training data from 3 spaces x n_train_seeds
-      - Find thresholds per level on training data
-      - Generate validation data from held-out space x n_val_seeds
-      - Evaluate accuracy on held-out
+    For each space type separately:
+      - Generate training data from space x n_train_seeds
+      - Find thresholds per level on training data (per space)
+      - Generate validation data from same space x n_val_seeds (disjoint seeds)
+      - Evaluate accuracy on held-out seeds
       - Check kill criterion: accuracy drop > 15pp
 
     Args:
@@ -696,7 +704,7 @@ def leave_one_space_out_cv(n_train_seeds=10, n_val_seeds=10, base_seed=42,
         verbose: print progress
 
     Returns:
-        dict with per-fold results, training accuracy, validation accuracy,
+        dict with per-space results, training accuracy, validation accuracy,
         and kill criterion assessment.
     """
     spaces = ['T1_scalar', 'T2_vector', 'T3_graph', 'T4_tree']
@@ -705,32 +713,25 @@ def leave_one_space_out_cv(n_train_seeds=10, n_val_seeds=10, base_seed=42,
 
     if verbose:
         print("\n" + "=" * 70)
-        print("Leave-One-Space-Out Cross-Validation")
+        print("Per-Space Seed Cross-Validation")
         print(f"Method: {method}  |  Train seeds: {n_train_seeds}  |  "
               f"Val seeds: {n_val_seeds}")
         print("=" * 70)
 
-    fold_results = {}
+    space_results = {}
 
-    for held_out in spaces:
-        train_spaces = [s for s in spaces if s != held_out]
-
+    for sp in spaces:
         if verbose:
-            print(f"\n  Fold: held-out = {held_out}")
-            print(f"  Training on: {train_spaces}")
+            print(f"\n  Space: {sp}")
 
-        # Generate training data
-        train_records = []
-        for sp in train_spaces:
-            if verbose:
-                print(f"    Generating training data for {sp}...", end=" ",
-                      flush=True)
-            recs = generate_records(sp, train_seeds, base_seed=base_seed)
-            train_records.extend(recs)
-            if verbose:
-                print(f"{len(recs)} records")
+        # Generate training data for this space only
+        if verbose:
+            print(f"    Generating training data...", end=" ", flush=True)
+        train_records = generate_records(sp, train_seeds, base_seed=base_seed)
+        if verbose:
+            print(f"{len(train_records)} records")
 
-        # Find thresholds on training data
+        # Find thresholds per level on this space's training data
         train_thresholds = compute_depth_specific_thresholds(
             train_records, method=method)
 
@@ -739,11 +740,10 @@ def leave_one_space_out_cv(n_train_seeds=10, n_val_seeds=10, base_seed=42,
         for level, tinfo in train_thresholds.items():
             train_accuracies[level] = tinfo['accuracy']
 
-        # Generate validation data
+        # Generate validation data (same space, different seeds)
         if verbose:
-            print(f"    Generating validation data for {held_out}...", end=" ",
-                  flush=True)
-        val_records = generate_records(held_out, val_seeds,
+            print(f"    Generating validation data...", end=" ", flush=True)
+        val_records = generate_records(sp, val_seeds,
                                        base_seed=base_seed + 500)
         if verbose:
             print(f"{len(val_records)} records")
@@ -795,10 +795,10 @@ def leave_one_space_out_cv(n_train_seeds=10, n_val_seeds=10, base_seed=42,
                 'kill': float(drop * 100) > 15.0,
             }
 
-        fold_kill = any(kf['kill'] for kf in kill_flags.values()
-                        if not np.isnan(kf['drop_pp']))
+        space_kill = any(kf['kill'] for kf in kill_flags.values()
+                         if not np.isnan(kf['drop_pp']))
 
-        fold_results[held_out] = {
+        space_results[sp] = {
             'train_thresholds': {
                 int(k): {kk: vv for kk, vv in v.items()}
                 for k, v in train_thresholds.items()
@@ -809,7 +809,7 @@ def leave_one_space_out_cv(n_train_seeds=10, n_val_seeds=10, base_seed=42,
                                for k, v in val_accuracies.items()},
             'val_details': {int(k): v for k, v in val_details.items()},
             'kill_flags': {int(k): v for k, v in kill_flags.items()},
-            'fold_kill': fold_kill,
+            'space_kill': space_kill,
         }
 
         if verbose:
@@ -822,13 +822,13 @@ def leave_one_space_out_cv(n_train_seeds=10, n_val_seeds=10, base_seed=42,
                       f"drop={kf['drop_pp']:.1f}pp  [{status}]")
 
     # Overall kill assessment
-    any_kill = any(fr['fold_kill'] for fr in fold_results.values())
+    any_kill = any(sr['space_kill'] for sr in space_results.values())
 
     if verbose:
-        print(f"\n  Overall kill: {'YES — DO NOT deploy thresholds' if any_kill else 'NO — thresholds generalize'}")
+        print(f"\n  Overall kill: {'YES — DO NOT deploy thresholds' if any_kill else 'NO — thresholds generalize across seeds'}")
 
     return {
-        'folds': fold_results,
+        'spaces': space_results,
         'any_kill': any_kill,
         'method': method,
         'n_train_seeds': n_train_seeds,
@@ -952,7 +952,7 @@ def main():
 
     print("=" * 70)
     print("Curiosity -- exp12a_tau_parent")
-    print("Data-driven thresholds tau_parent[L] per depth level")
+    print("Data-driven thresholds tau_parent[L, space_type] (per-space)")
     print(f"Train seeds: {args.n_train_seeds}  |  Val seeds: {args.n_val_seeds}  |  "
           f"Base seed: {args.base_seed}")
     print(f"Output: {out_dir}")
@@ -1022,12 +1022,12 @@ def main():
             print(f"    Space-specificity check: OK (all ratios <= 2x)")
 
     # ---------------------------------------------------------------
-    # Step 3: Leave-one-space-out cross-validation (best method)
+    # Step 3: Per-space seed cross-validation (best method)
     # ---------------------------------------------------------------
     # Run CV for all methods
     cv_results = {}
     for method in methods:
-        cv = leave_one_space_out_cv(
+        cv = per_space_seed_cv(
             n_train_seeds=args.n_train_seeds,
             n_val_seeds=args.n_val_seeds,
             base_seed=args.base_seed,
@@ -1074,8 +1074,8 @@ def main():
         if cv['any_kill']:
             continue
         accs = []
-        for fold_name, fold_data in cv['folds'].items():
-            for lvl, acc in fold_data['val_accuracies'].items():
+        for sp_name, sp_data in cv['spaces'].items():
+            for lvl, acc in sp_data['val_accuracies'].items():
                 if not np.isnan(acc):
                     accs.append(acc)
         mean_acc = np.mean(accs) if accs else 0.0
@@ -1088,7 +1088,7 @@ def main():
         min_kills = float('inf')
         for method in methods:
             cv = cv_results[method]
-            n_kills = sum(1 for fd in cv['folds'].values() if fd['fold_kill'])
+            n_kills = sum(1 for sd in cv['spaces'].values() if sd['space_kill'])
             if n_kills < min_kills:
                 min_kills = n_kills
                 best_method = method
@@ -1097,25 +1097,30 @@ def main():
     else:
         print(f"  Best method: {best_method} (mean CV accuracy: {best_mean_acc:.4f})")
 
-    # Recommended thresholds: global thresholds from the best method
+    # Recommended thresholds: per-space thresholds from the best method
     recommended = {}
-    global_best = full_results[best_method]['global']
-    for level in LEVELS:
-        if level in global_best:
-            recommended[level] = {
-                'tau_parent': global_best[level]['threshold'],
-                'method': best_method,
-                'accuracy': global_best[level]['accuracy'],
-                'sensitivity': global_best[level]['sensitivity'],
-                'specificity': global_best[level]['specificity'],
-                'f1': global_best[level]['f1'],
-            }
+    for sp in spaces:
+        sp_thresholds = full_results[best_method].get(sp, {})
+        for level in LEVELS:
+            if level in sp_thresholds:
+                key = f"{sp}_L{level}"
+                recommended[key] = {
+                    'tau_parent': sp_thresholds[level]['threshold'],
+                    'space': sp,
+                    'level': level,
+                    'method': best_method,
+                    'accuracy': sp_thresholds[level]['accuracy'],
+                    'sensitivity': sp_thresholds[level]['sensitivity'],
+                    'specificity': sp_thresholds[level]['specificity'],
+                    'f1': sp_thresholds[level]['f1'],
+                }
 
-    print("\n  Recommended thresholds:")
-    for level in sorted(recommended.keys()):
-        r = recommended[level]
-        print(f"    L={level}: tau_parent = {r['tau_parent']:.4f}  "
-              f"(acc={r['accuracy']:.3f}  F1={r['f1']:.3f})")
+    print("\n  Recommended thresholds (per-space, per-level):")
+    for key in sorted(recommended.keys()):
+        r = recommended[key]
+        print(f"    {key}: tau_parent = {r['tau_parent']:.4f}  "
+              f"(acc={r['accuracy']:.3f}  sens={r['sensitivity']:.3f}  "
+              f"spec={r['specificity']:.3f}  F1={r['f1']:.3f})")
 
     # ---------------------------------------------------------------
     # Step 6: Save results
@@ -1132,7 +1137,7 @@ def main():
             for k, v in significance_results.items()
         },
         'best_method': best_method,
-        'recommended': {int(k): v for k, v in recommended.items()},
+        'recommended': recommended,
         'params': {
             'n_train_seeds': args.n_train_seeds,
             'n_val_seeds': args.n_val_seeds,
@@ -1140,6 +1145,7 @@ def main():
             'levels': LEVELS,
             'spaces': spaces,
             'methods': methods,
+            'threshold_scope': 'per-space per-level (tau[L, space_type])',
             'R_operator': 'gaussian_blur_sigma3.0 + decimation (grids); '
                           'cluster-mean (graph); subtree-mean (tree)',
             'd_parent_formula': 'lf_frac = ||Up(R(delta))|| / ||delta||',
@@ -1151,13 +1157,13 @@ def main():
         json.dump(full_output, f, indent=2, default=_json_default)
     print(f"  [Saved] {full_path}")
 
-    # Recommended thresholds (compact)
+    # Recommended thresholds (compact, per-space)
     thresh_output = {
         'method': best_method,
-        'thresholds': {f"L{k}": v['tau_parent']
-                       for k, v in recommended.items()},
-        'metrics': {f"L{k}": {kk: vv for kk, vv in v.items()
-                               if kk != 'tau_parent'}
+        'scope': 'per-space per-level',
+        'thresholds': {k: v['tau_parent'] for k, v in recommended.items()},
+        'metrics': {k: {kk: vv for kk, vv in v.items()
+                        if kk not in ('tau_parent', 'space', 'level')}
                     for k, v in recommended.items()},
         'kill_criterion_passed': not cv_results[best_method]['any_kill'],
     }
