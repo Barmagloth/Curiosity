@@ -52,26 +52,28 @@ Gate Phase 1→2: PASSED (grid fixed + DET-1). P0 переоткрыт для la
 | B (packed Morton) | +825% to +1503% | -30% (sparse) to +243% | **KILLED** — binary search lookup. Storage idea жива. |
 | C (paged) | +5352% to +9769% | mixed | **KILLED** — окончательно |
 
-## Что делать — Фаза 1c (exp10f)
+## Что делать — Фаза 1c (exp10g)
 
-Проверить B's packed-tile storage с альтернативными lookup:
-- **Cuckoo hash** на tile keys — O(1) lookup вместо O(log k) binary search
-- **Direct tile-level index** — маленький массив tile_id → slot, только для active set
-- **Pre-built neighbour lists** — для halo access без lookup вообще
+exp10f результат: D passes Contour A, fails Contour B (peak VRAM from conv2d workspace). E archived as contingency.
+
+Текущий статус кандидатов:
+- **A** = operational default (grid+bitset, быстрее grid на 27-31%)
+- **D** = passes Contour A, pending Contour B resolution via exp10g
+- **E** = archived fallback with resurrection triggers
+
+**exp10g — dual-mode benchmark:** manual stencil (layout cost) vs conv2d (operator cost).
+Цель: разделить layout cost и operator cost, resolves D's Contour B failure.
 
 Kill criteria: те же (>20% overhead vs grid per pattern class).
 
-Если exp10f даёт выигрыш и по времени и по VRAM → новый layout.
-Если нет → фиксируем A (grid+bitset) как финальный layout.
-
 ### Критический путь
 ```
-exp10f (packed lookup) → layout decision → Phase 2
+exp10g (dual benchmark) → layout decision → Phase 2
 ```
 
-### Развилки для архитектора (конец Фазы 1b)
-- Какой layout выиграл? (может быть hybrid: разные layouts для разных паттернов)
-- Нужен ли hybrid switch с hysteresis?
+### Развилки для архитектора (конец Фазы 1c)
+- exp10g: manual stencil vs conv2d — что доминирует в VRAM?
+- D rehabilitated or killed?
 - exp11: переделывать signatures или принять ограничение?
 - exp12a: L1 без enforcement или доработка?
 

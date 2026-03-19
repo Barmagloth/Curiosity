@@ -24,41 +24,46 @@ Critical path: **P0 (layout) → DET-1 (determinism) → Phase 2**.
 
 ---
 
-## Phase 1b: exp10e — Tile-Sparse Layout Candidates (NEW)
+## Phase 1b: Layout Investigation — exp10e → exp10f → exp10g
 
 **Motivation:** exp10 showed compute on O(k) is 18.5% faster than O(M). The failure was
 in dense bookkeeping (element-level reverse_map[M] at int32). Tile-sparse without global
 reverse_map may win both on time AND VRAM.
 
+### exp10e — Tile-Sparse Layout Candidates (CLOSED)
+
 **Folder:** `experiments/exp10e_tile_sparse/`
 
-**Three candidates:**
+**Results:**
+- A (bitset): **ALIVE** — time -27..31%, VRAM +18%. Execution layout, not memory layout.
+- B (packed Morton + binary search): **KILLED** by time (+1700%). Storage idea lives on.
+- C (paged): **KILLED** (+5000-30000%). Dead permanently.
 
-A. **Dense grid + bitset mask** — improved baseline (bitset = 8x smaller than byte mask)
-B. **Packed active tiles + sorted Morton keys** — tile_keys[k] + tiles[k,Ht,Wt,C], lookup via binary search on Morton codes, O(k_support) not O(M)
-C. **Paged sparse tiles** — macroblock pages (e.g. 8x8 tiles), page table + dense intra-page, two-level addressing
+### exp10f — Packed Tiles + Alternative Lookup (CLOSED)
 
-**Key principles:**
-- Tile-sparse, dense intra-tile. No element-level reverse_map.
-- Lookup only on active/support set O(k), not full space O(M)
-- Scatter at commit boundaries (batch), not per-operation
-- Kill criteria per pattern class: clustered, random, checkerboard separately
-- Hybrid switch viable: layout selection based on occupancy + clusteriness
+**Folder:** `experiments/exp10f_packed_lookup/`
 
-**Sweep parameters:**
-- Occupancy: [5%, 10%, 20%, 30%, 50%, 70%]
-- Patterns: random, clustered, checkerboard
-- Sides: [64, 128, 256, 512]
-- Tile sizes: [4x4, 8x8, 16x16] (for paged: page sizes [4x4, 8x8 tiles])
-- 10 seeds, Holm-Bonferroni
+**Results:**
+- D: passes Contour A, fails Contour B (peak VRAM from conv2d workspace).
+- E: archived as contingency with resurrection triggers.
+
+### exp10g — Dual-Mode Benchmark (OPEN)
+
+**Folder:** `experiments/exp10g_dual_benchmark/`
+
+**Goal:** Manual stencil (layout cost) vs conv2d (operator cost). Separates layout overhead
+from operator overhead. Resolves D's Contour B failure.
 
 **Kill criteria (per candidate, per pattern class):**
 - vs grid baseline: overhead >20% in VRAM → kill for that pattern class
 - vs grid baseline: overhead >20% in wall-clock → kill for that pattern class
-- If ALL pattern classes killed → candidate dead
-- If clustered wins but checkerboard loses → candidate alive (hybrid territory)
 
-**Outputs:** `exp10e_summary.json`, plots, `README.md` with per-candidate per-pattern verdict.
+**Current status:**
+- A = operational default
+- D = pending Contour B resolution via exp10g
+- E = archived fallback
+
+**Critical path:** exp10g → layout decision → Phase 2
 
 ---
 

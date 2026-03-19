@@ -1,12 +1,10 @@
 # exp10f_packed_lookup
 
-**Question:** Can packed tile storage with direct tile_map lookup beat grid on both time AND VRAM?
+**Question:** Can packed tile storage with direct tile_map lookup beat grid?
 **Motivation:** exp10e-B showed packed storage saves VRAM (-30%) but binary search killed time (+1700%).
               Replace binary search with O(1) tile_map[tile_id] -> slot.
-**Kill criteria:** Per pattern class -- overhead >20% vs grid in wall-clock OR VRAM (peak_vram)
-**Competitive criteria:** Must not be embarrassingly worse than A_bitset on time
 **Roadmap level:** P0 (0.9b2)
-**Status:** closed -- formal KILL (peak VRAM), but see measurement caveat below
+**Status:** D passes Contour A (architecture), fails Contour B (operational peak). A remains default.
 
 ## Candidates
 - D_direct_onfly: packed tiles + tile_map + on-the-fly halo lookup
@@ -16,53 +14,66 @@
 
 ## Results (54 configs: sides [64,128,256] x 6 sparsities x 3 patterns x 10 seeds)
 
-| Candidate | Time vs grid | Peak VRAM vs grid | Formal verdict |
-|-----------|-------------|-------------------|----------------|
-| A_bitset (ref) | -20% | +18% | ALIVE |
-| D_direct_onfly | **-82%** | +230% | KILLED (VRAM) |
-| D_direct_prebuilt | **-82%** | +196% | KILLED (VRAM) |
-| E_hash_onfly | **-82%** | +228% | KILLED (VRAM) |
-| E_hash_prebuilt | **-82%** | +197% | KILLED (VRAM) |
+| Candidate | Time vs grid | Resident memory | Peak VRAM vs grid |
+|-----------|-------------|-----------------|-------------------|
+| A_bitset (ref) | -20% | ~= grid (336KB) | +18% |
+| D_direct_onfly | **-82%** | **5.5x smaller** (60KB) | +230% |
+| D_direct_prebuilt | **-82%** | **5.5x smaller** | +196% |
+| E_hash_onfly | -82% (= D) | ~= D | +228% |
+| E_hash_prebuilt | -82% (= D) | ~= D | +197% |
 
-## Critical measurement caveat
+## Dual-contour verdict
 
-**Peak VRAM (torch.cuda.max_memory_allocated) != resident memory footprint.**
+### Contour A — Architectural viability
+Candidate alive if: runtime win + resident footprint < dense baseline + build cost reasonable + deterministic.
 
-Resident memory breakdown for clustered 256x256 sp=0.05:
-- Grid:    data=262KB + mask=64KB = **328KB** resident. Peak VRAM = 886KB.
-- D_direct: tiles=55KB + tile_map=4KB + ids=1KB = **60KB** resident. Peak VRAM = 1020KB.
-- A_bitset: data=262KB + bitset=8KB + cache=64KB = **336KB** resident. Peak VRAM = 1138KB.
+| Candidate | Runtime | Resident | Build | Deterministic | Contour A |
+|-----------|---------|----------|-------|---------------|-----------|
+| A_bitset | ✅ -20% | ❌ ~= grid | ✅ 0 | ✅ | **PASS** |
+| D_direct | ✅ -82% | ✅ 5.5x smaller | ✅ 0.4ms | ✅ | **PASS** |
+| E_hash | ✅ -82% | ✅ ~= D | ❌ 2-15ms (10-30x D) | ⚠️ harder | **DOMINATED by D** |
 
-**D's resident footprint is 5.5x smaller than grid.** But peak VRAM captures temporary
-allocations from conv2d on the packed tensor. Conv2d internally allocates workspace buffers
-proportional to input. Grid's peak also includes temporaries, but its higher baseline data
-makes the ratio look better.
+### Contour B — Operational viability (peak-step memory within GPU budget)
+Candidate goes to default only if peak-step memory also within budget.
 
-The VRAM kill criterion triggered on peak allocation, not on what the layout actually stores.
+| Candidate | Peak VRAM vs grid | Contour B |
+|-----------|-------------------|-----------|
+| A_bitset | +18% | **PASS** → operational default |
+| D_direct | +196-230% | **FAIL** (conv2d workspace overhead) |
+| E_hash | +197-228% | **FAIL** (same + dominated by D) |
 
-## Compute analysis
+### Summary
+- **A_bitset:** operational default (passes both contours)
+- **D_direct:** architecturally sound, operationally blocked by workspace overhead.
+  Status: ALIVE pending exp10g (dual-mode benchmark to separate layout vs operator cost)
+- **E_hash:** archived as contingency fallback. Dominated by D at current scale.
 
-D and E are 5x faster than grid (0.07-0.12ms vs 0.45ms). Direct tile_map lookup is
-effectively free — no measurable difference vs hash. Hash is architecturally more complex
-with zero compute benefit at current scale.
+## E resurrection triggers (DO NOT resurrect without at least one):
+1. tile_map occupies >25-30% of packed tile data (universe too large for direct)
+2. Tile universe becomes sparse/irregular enough that direct indexing is unnatural
+3. Multi-level/global sparse addressing where dense array too large or empty
+4. Hash build/runtime after optimization drops to ≤2x D build, ≤15% D runtime penalty
 
-## Build cost
+## Memory measurement note
 
-- D: 0.4-0.5ms (tensorized, fast)
-- E: 2-15ms (hash construction, 10-30x slower)
-Both are >> compute time (0.07ms), but build happens once per epoch, not per kernel.
+Three numbers needed for fair comparison:
+1. **Resident layout bytes** — persistent storage after build, before compute
+2. **Peak step bytes** — max during compute
+3. **Workspace overhead** — peak_step - resident (operator temporaries)
 
-## What this means
+Clustered 256x256 sp=0.05 breakdown:
+- Grid: resident=328KB, peak=886KB, workspace=558KB
+- D: resident=60KB, peak=1020KB, workspace=960KB
+- A: resident=336KB, peak=1138KB, workspace=802KB
 
-1. **Lookup problem is SOLVED.** Direct tile_map = O(1), no overhead vs grid.
-2. **Storage problem is SOLVED.** Resident 60KB vs 328KB (5.5x saving).
-3. **Measurement problem remains.** Peak VRAM from PyTorch allocator is not
-   the right metric for comparing layouts with different tensor shapes.
-4. **Hash adds nothing** over direct index at this scale. As architect predicted.
+D pays higher workspace tax because conv2d on packed [k,H,W,C] tensor allocates
+temporaries proportional to input. Grid's workspace is also large but masked by
+its already-large resident baseline.
 
-## Follow-up needed
+## Follow-up: exp10g
 
-The right metric is resident_bytes (what the layout stores persistently),
-not peak_vram_bytes (what PyTorch allocator touches during compute).
-Re-evaluate with resident-only metric, or with compute kernel that doesn't
-allocate temporaries (e.g., manual stencil instead of F.conv2d).
+Dual-mode benchmark to resolve D's Contour B status:
+- **Mode 1 (layout benchmark):** manual stencil kernel, no conv2d temporaries.
+  Tests pure layout economics: build + gather/scatter + addressing + resident.
+- **Mode 2 (operator benchmark):** conv2d or real refinement operator.
+  Tests practical peak-step cost and GPU envelope compatibility.
