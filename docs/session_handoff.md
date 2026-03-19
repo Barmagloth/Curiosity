@@ -31,27 +31,49 @@
 - D_parent: формула обновлена (lf_frac).
 - Morton/block-sparse/phase schedule: ОТЛОЖЕНЫ (deferred), не отвергнуты.
 
-## Что делать — Фаза 1
+## Фаза 1 — Результаты (19 марта 2026)
 
-**Детальный план:** `docs/phase1_plan.md`
+| Stream | Результат |
+|--------|-----------|
+| S1 exp10 | KILL compact-with-reverse-map (VRAM +38.6%). Grid — baseline. Но убита реализация, не принцип sparse. |
+| S1b exp10d | DET-1 PASS (240/240 побитовое совпадение CPU+CUDA) |
+| S2 exp11 | FAIL 3/4 spaces. Архитектурная проблема. |
+| S3 P2a | PASS — ridge 100%. Ручные пороги ok. P2b не нужен. |
+| S4 exp12a | Thresholds найдены. L1 specificity низкая. |
+| S5 deferred | Research note done. |
 
-Запустить параллельных воркеров:
-- **Worker A** (GPU): S1 exp10_buffer_scaling → S1b exp10d_seed_determinism
-- **Worker B** (CPU): S2 exp11_dirty_signatures
-- **Worker C** (CPU): S3 запуск p2a_sensitivity (код готов!)
-- **Worker D** (CPU): S4 exp12a_tau_parent
-- **Worker E**: S5 deferred revisit (низший приоритет)
+Gate Phase 1→2: PASSED (grid fixed + DET-1). P0 переоткрыт для layout investigation.
+
+## Фаза 1b — exp10e результаты (19 марта 2026)
+
+| Candidate | Time vs grid | VRAM vs grid | Verdict |
+|-----------|-------------|--------------|---------|
+| A (bitset) | **-27% to -31%** | +18% median | **ALIVE** — execution layout, не memory layout |
+| B (packed Morton) | +825% to +1503% | -30% (sparse) to +243% | **KILLED** — binary search lookup. Storage idea жива. |
+| C (paged) | +5352% to +9769% | mixed | **KILLED** — окончательно |
+
+## Что делать — Фаза 1c (exp10f)
+
+Проверить B's packed-tile storage с альтернативными lookup:
+- **Cuckoo hash** на tile keys — O(1) lookup вместо O(log k) binary search
+- **Direct tile-level index** — маленький массив tile_id → slot, только для active set
+- **Pre-built neighbour lists** — для halo access без lookup вообще
+
+Kill criteria: те же (>20% overhead vs grid per pattern class).
+
+Если exp10f даёт выигрыш и по времени и по VRAM → новый layout.
+Если нет → фиксируем A (grid+bitset) как финальный layout.
 
 ### Критический путь
 ```
-P0 (exp10) → DET-1 (exp10d) → Phase 2
+exp10f (packed lookup) → layout decision → Phase 2
 ```
 
-### Развилки для архитектора (конец Фазы 1)
-- P0: grid или compact?
-- P2a: ridge width — manual ok или нужен adaptive? Одинаков между пространствами?
-- SC-5: pass/fail?
-- Deferred: возвращать Morton/block-sparse/schedule?
+### Развилки для архитектора (конец Фазы 1b)
+- Какой layout выиграл? (может быть hybrid: разные layouts для разных паттернов)
+- Нужен ли hybrid switch с hysteresis?
+- exp11: переделывать signatures или принять ограничение?
+- exp12a: L1 без enforcement или доработка?
 
 ## Окружение
 

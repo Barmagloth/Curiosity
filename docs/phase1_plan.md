@@ -8,27 +8,67 @@ Critical path: **P0 (layout) → DET-1 (determinism) → Phase 2**.
 
 ---
 
-## Streams (6 total, 4 parallel + 2 sequential)
+## Phase 1 Results (19 March 2026)
 
-### S1: P0 — exp10_buffer_scaling (GPU, CRITICAL PATH)
+| Stream | Result | Status |
+|--------|--------|--------|
+| S1 exp10 | KILL compact-with-reverse-map (VRAM +38.6%). Grid baseline. | ✅ Closed |
+| S1b exp10d | DET-1 PASS (240/240 bitwise match CPU+CUDA) | ✅ Closed |
+| S2 exp11 | FAIL 3/4 spaces (AUC 0.0-0.37). Architecture issue. | ❌ Needs redesign |
+| S3 P2a | PASS — ridge 100%, MANUAL_OK. P2b NOT needed. | ✅ Closed |
+| S4 exp12a | Thresholds found. L1 specificity low. | ⚠️ Partial |
+| S5 deferred | Research note done. | ✅ Closed |
 
-**Question:** Grid vs compact layout on GPU. Kill compact if overhead >20%.
+**Gate Phase 1 → Phase 2:** PASSED (grid fixed + DET-1 passed).
+**But:** P0 reopened — exp10 killed a specific implementation, not the principle.
 
-**Folder:** `experiments/exp10_buffer_scaling/`
+---
 
-**Reuse:**
-- `experiments/exp09a_layout_sandbox/exp09a_sandbox.py` — layout construction (build_fixed_grid, build_compact, make_mask). Port to CUDA tensors.
+## Phase 1b: exp10e — Tile-Sparse Layout Candidates (NEW)
 
-**Key implementation:**
-- `SyntheticKernel` — PyTorch CUDA kernel: gather/compute/scatter on both grid (O(M) buffers) and compact (O(k) buffers)
-- `measure_vram()` — via `torch.cuda.max_memory_allocated()`
-- `run_buffer_probe(side, sparsity, pattern, n_seeds, device)` — run both layouts, measure wall-clock (median of 20 repeats, 5 warmup) and peak VRAM
-- Cross-space validation: 4 types (scalar grid, vector grid, graph, tree)
-- 10-20 seeds, Holm-Bonferroni
+**Motivation:** exp10 showed compute on O(k) is 18.5% faster than O(M). The failure was
+in dense bookkeeping (element-level reverse_map[M] at int32). Tile-sparse without global
+reverse_map may win both on time AND VRAM.
 
-**Kill criteria:** compact overhead >20% (wall-clock OR VRAM) → kill compact, fix grid.
+**Folder:** `experiments/exp10e_tile_sparse/`
 
-**Outputs:** `exp10_summary.json`, `exp10_buffer_scaling.png`, `exp10_vram_profile.png`, `README.md` with verdict.
+**Three candidates:**
+
+A. **Dense grid + bitset mask** — improved baseline (bitset = 8x smaller than byte mask)
+B. **Packed active tiles + sorted Morton keys** — tile_keys[k] + tiles[k,Ht,Wt,C], lookup via binary search on Morton codes, O(k_support) not O(M)
+C. **Paged sparse tiles** — macroblock pages (e.g. 8x8 tiles), page table + dense intra-page, two-level addressing
+
+**Key principles:**
+- Tile-sparse, dense intra-tile. No element-level reverse_map.
+- Lookup only on active/support set O(k), not full space O(M)
+- Scatter at commit boundaries (batch), not per-operation
+- Kill criteria per pattern class: clustered, random, checkerboard separately
+- Hybrid switch viable: layout selection based on occupancy + clusteriness
+
+**Sweep parameters:**
+- Occupancy: [5%, 10%, 20%, 30%, 50%, 70%]
+- Patterns: random, clustered, checkerboard
+- Sides: [64, 128, 256, 512]
+- Tile sizes: [4x4, 8x8, 16x16] (for paged: page sizes [4x4, 8x8 tiles])
+- 10 seeds, Holm-Bonferroni
+
+**Kill criteria (per candidate, per pattern class):**
+- vs grid baseline: overhead >20% in VRAM → kill for that pattern class
+- vs grid baseline: overhead >20% in wall-clock → kill for that pattern class
+- If ALL pattern classes killed → candidate dead
+- If clustered wins but checkerboard loses → candidate alive (hybrid territory)
+
+**Outputs:** `exp10e_summary.json`, plots, `README.md` with per-candidate per-pattern verdict.
+
+---
+
+## Original Streams (for reference)
+
+### S1: P0 — exp10_buffer_scaling (CLOSED)
+
+**Result:** KILL compact-with-global-reverse-map. Grid is baseline.
+Compact 18.5% faster (time), but +38.6% VRAM. 75/75 configs exceed VRAM kill threshold.
+What was killed: dense bookkeeping, not sparse compute principle.
 
 ---
 
