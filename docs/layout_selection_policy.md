@@ -18,7 +18,8 @@
 
 ## 2. Metrics
 
-All layout decisions require these measurements:
+Conditional layout decisions (trees, graphs) require these measurements.
+Regular grids use D_direct unconditionally — no metrics needed.
 
 | Metric | Symbol | Definition |
 |--------|--------|------------|
