@@ -4,7 +4,7 @@
 
 Phase 0 COMPLETE (18 March 2026). Phase 1 starts now. Working directory: `R:\Projects\Curiosity`. GPU: RTX 2070, CUDA 12.8, venv at `.venv-gpu` (see `docs/environment_2.md`).
 
-Critical path: **P0 (layout) → DET-1 (determinism) → Phase 2**.
+Critical path: **P0 (layout) -> DET-1 (determinism) -> Phase 2**. P0 layout CLOSED (19 March 2026).
 
 ---
 
@@ -47,23 +47,69 @@ reverse_map may win both on time AND VRAM.
 - D: passes Contour A, fails Contour B (peak VRAM from conv2d workspace).
 - E: archived as contingency with resurrection triggers.
 
-### exp10g — Dual-Mode Benchmark (OPEN)
+### exp10g — Dual-Mode Benchmark (CLOSED)
 
 **Folder:** `experiments/exp10g_dual_benchmark/`
 
-**Goal:** Manual stencil (layout cost) vs conv2d (operator cost). Separates layout overhead
+**Goal:** Manual stencil (Contour A) vs conv2d (Contour B). Separates layout overhead
 from operator overhead. Resolves D's Contour B failure.
 
-**Kill criteria (per candidate, per pattern class):**
-- vs grid baseline: overhead >20% in VRAM → kill for that pattern class
-- vs grid baseline: overhead >20% in wall-clock → kill for that pattern class
+**Results:** D_direct PASS both contours. -54% to -80% time, -36% to -86% peak VRAM vs grid baseline.
 
-**Current status:**
-- A = operational default
-- D = pending Contour B resolution via exp10g
-- E = archived fallback
+### exp10h — Cross-Space D_direct (CLOSED)
 
-**Critical path:** exp10g → layout decision → Phase 2
+**Folder:** `experiments/exp10h_cross_space/`
+
+**Results:**
+- vector_grid: 72/72 PASS both contours. D_direct confirmed for vector grids.
+- tree_hierarchy: 0/108 FAIL. Trees too small to amortize per-level tile_map overhead.
+- Diagnosis: NOT an architecture rejection. Break-even exists at large N_l + low occupancy.
+
+### exp10i — Block Addressing for Graphs (CLOSED)
+
+**Folder:** `experiments/exp10i_graph_blocks/`
+
+**Results:**
+- Spatial graphs (random_geometric, grid_graph): conditionally viable with spatial partition, cbr<0.30.
+- Scale-free graphs (barabasi-albert): REJECTED, cbr=0.66. Fixed blocks do not work for scale-free topology.
+
+### exp10j — Per-Level Break-Even for Trees (CLOSED)
+
+**Folder:** `experiments/exp10j_tree_perlevel/`
+
+**Results:**
+- matmul operator: D_direct wins when occupancy < 37.5-40% at ANY level size.
+- stencil operator: D_direct saves memory but NEVER wins on time.
+- Contour B: 45% PASS.
+- Policy: use D_direct per-level only when operator is compute-heavy (matmul-like) AND occupancy < 40%.
+
+**Critical path:** P0 LAYOUT CLOSED -> Phase 2
+
+---
+
+## P0 LAYOUT — ЗАКРЫТ (финальная сводка)
+
+### Layout policy по типам пространств
+
+| Space Type | Layout | Status | Evidence |
+|------------|--------|--------|----------|
+| scalar_grid | D_direct (packed tiles + tile_map) | Production | exp10g: both contours PASS |
+| vector_grid | D_direct (packed tiles + tile_map) | Production | exp10h: 72/72 PASS |
+| tree_hierarchy | Hybrid: D_direct per-level where occupancy < 40% + heavy compute; A_bitset otherwise | Validated | exp10j: break-even found |
+| irregular_graph / spatial | D_blocked (block addressing) conditional | Conditional | exp10i: spatial partition, cbr<0.30 |
+| irregular_graph / scale-free | A_bitset (dense grid + bitset mask) fallback | Fallback only | exp10i: blocks rejected, cbr=0.66 |
+
+### Killed permanently
+- Element-level reverse_map[M] (exp10: VRAM +38.6%)
+- Binary search on GPU (exp10e-B: +1700%)
+- Paged sparse tiles (exp10e-C: +9000%)
+- Hash as primary lookup (exp10f-E: dominated by D_direct)
+- Fixed blocks for scale-free graphs (exp10i: cbr 0.64-0.99)
+
+### Possible follow-ups (NOT in current phase)
+- Graphs: variable-size/adaptive blocks for spatial subclass; graph-native sparse (CSR/COO) for scale-free
+- Trees: stencil path optimization (current manual stencil too slow) — low priority
+- All: DET-2 cross-seed stability not yet verified
 
 ---
 
@@ -189,17 +235,23 @@ Workers B, C, D, E start immediately. Worker A starts S1 (critical path), then S
 
 ---
 
-## Gate: Phase 1 → Phase 2
+## Gate: Phase 1 -> Phase 2
 
-- P0 layout FIXED (grid or compact)
-- DET-1 PASSED (bitwise match)
+- P0 layout CLOSED — full layout policy per space type (see table above)
+- DET-1 PASSED (240/240 bitwise match)
 
-## Architect Decisions (end of Phase 1)
+## Architect Decisions (end of Phase 1) — resolved
 
-- Grid or compact? (S1)
-- P2b needed? Ridge same across spaces? (S3)
-- SC-5 pass/fail? (S4)
-- Unfreeze Morton/block-sparse/schedule? (S5)
+- Layout: D_direct for grids (scalar + vector), hybrid for trees, D_blocked conditional for spatial graphs, A_bitset fallback for scale-free (S1 -> exp10 series)
+- P2b needed? No — ridge 100% (S3)
+- SC-5: thresholds found, L1 specificity low — needs architect decision (S4)
+- Morton/block-sparse: Morton killed (binary search +1700%), block addressing viable only for spatial graphs (S5, exp10e, exp10i)
+
+## Open questions for Phase 2
+
+- exp11: redesign dirty signatures or accept limitation? (FAIL 3/4 spaces)
+- exp12a: L1 without enforcement or rework? (specificity low)
+- DET-2 cross-seed stability: needed before Phase 2?
 
 ## Shared Conventions
 

@@ -1,0 +1,5649 @@
+{
+  "experiment": "exp10h_cross_space",
+  "device": "cuda",
+  "dtype": "torch.float32",
+  "n_seeds": 10,
+  "kill_threshold": 0.2,
+  "vector_grid": {
+    "config": {
+      "sides": [
+        64,
+        128,
+        256
+      ],
+      "channels": [
+        3,
+        8,
+        16
+      ],
+      "sparsities": [
+        0.05,
+        0.1,
+        0.3,
+        0.5
+      ],
+      "patterns": [
+        "random",
+        "clustered"
+      ],
+      "tile_size": 8
+    },
+    "results": [
+      {
+        "space": "vector_grid",
+        "side": 64,
+        "channels": 3,
+        "sparsity": 0.05,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 102400.0,
+          "peak_vram_bytes": 208896.0,
+          "wall_clock_us": 721.2249911390245,
+          "build_cost_us": 220.14998830854893
+        },
+        "D_direct": {
+          "resident_bytes": 97792.0,
+          "peak_vram_bytes": 146432.0,
+          "wall_clock_us": 217.8750146413222,
+          "build_cost_us": 2742.2500133980066
+        },
+        "time_overhead_frac": -0.6979,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 64,
+        "channels": 3,
+        "sparsity": 0.05,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 102400.0,
+          "peak_vram_bytes": 208896.0,
+          "wall_clock_us": 717.6999788498506,
+          "build_cost_us": 207.50000840052962
+        },
+        "D_direct": {
+          "resident_bytes": 69632.0,
+          "peak_vram_bytes": 90112.0,
+          "wall_clock_us": 222.15000353753567,
+          "build_cost_us": 1495.8499814383686
+        },
+        "time_overhead_frac": -0.6905,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 64,
+        "channels": 3,
+        "sparsity": 0.1,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 102400.0,
+          "peak_vram_bytes": 214528.0,
+          "wall_clock_us": 714.8500008042902,
+          "build_cost_us": 212.14998560026288
+        },
+        "D_direct": {
+          "resident_bytes": 98816.0,
+          "peak_vram_bytes": 148480.0,
+          "wall_clock_us": 219.77500000502914,
+          "build_cost_us": 2780.5000136140734
+        },
+        "time_overhead_frac": -0.6926,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 64,
+        "channels": 3,
+        "sparsity": 0.1,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 102400.0,
+          "peak_vram_bytes": 214528.0,
+          "wall_clock_us": 710.9750004019588,
+          "build_cost_us": 207.35000725835562
+        },
+        "D_direct": {
+          "resident_bytes": 80384.0,
+          "peak_vram_bytes": 111616.0,
+          "wall_clock_us": 224.40000611823052,
+          "build_cost_us": 1978.2000163104385
+        },
+        "time_overhead_frac": -0.6844,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 64,
+        "channels": 3,
+        "sparsity": 0.3,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 102400.0,
+          "peak_vram_bytes": 237568.0,
+          "wall_clock_us": 689.1500088386238,
+          "build_cost_us": 207.45000801980495
+        },
+        "D_direct": {
+          "resident_bytes": 98816.0,
+          "peak_vram_bytes": 148480.0,
+          "wall_clock_us": 226.39997769147158,
+          "build_cost_us": 2755.950001301244
+        },
+        "time_overhead_frac": -0.6715,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 64,
+        "channels": 3,
+        "sparsity": 0.3,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 102400.0,
+          "peak_vram_bytes": 237568.0,
+          "wall_clock_us": 711.9499932741746,
+          "build_cost_us": 206.70003141276538
+        },
+        "D_direct": {
+          "resident_bytes": 92672.0,
+          "peak_vram_bytes": 136192.0,
+          "wall_clock_us": 219.34999676886946,
+          "build_cost_us": 2585.000009275973
+        },
+        "time_overhead_frac": -0.6919,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 64,
+        "channels": 3,
+        "sparsity": 0.5,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 102400.0,
+          "peak_vram_bytes": 260096.0,
+          "wall_clock_us": 714.6249845391139,
+          "build_cost_us": 215.750013012439
+        },
+        "D_direct": {
+          "resident_bytes": 98816.0,
+          "peak_vram_bytes": 148480.0,
+          "wall_clock_us": 224.64999346993864,
+          "build_cost_us": 2724.1999632678926
+        },
+        "time_overhead_frac": -0.6856,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 64,
+        "channels": 3,
+        "sparsity": 0.5,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 102400.0,
+          "peak_vram_bytes": 260096.0,
+          "wall_clock_us": 715.7000072766095,
+          "build_cost_us": 206.55003027059138
+        },
+        "D_direct": {
+          "resident_bytes": 97792.0,
+          "peak_vram_bytes": 146432.0,
+          "wall_clock_us": 224.62500783149153,
+          "build_cost_us": 2747.6999966893345
+        },
+        "time_overhead_frac": -0.6861,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 64,
+        "channels": 8,
+        "sparsity": 0.05,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 266240.0,
+          "peak_vram_bytes": 540672.0,
+          "wall_clock_us": 713.7999928090721,
+          "build_cost_us": 208.25001411139965
+        },
+        "D_direct": {
+          "resident_bytes": 259584.0,
+          "peak_vram_bytes": 388096.0,
+          "wall_clock_us": 224.6999938506633,
+          "build_cost_us": 2818.5999835841358
+        },
+        "time_overhead_frac": -0.6852,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 64,
+        "channels": 8,
+        "sparsity": 0.05,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 266240.0,
+          "peak_vram_bytes": 540672.0,
+          "wall_clock_us": 713.6499771149829,
+          "build_cost_us": 207.79998158104718
+        },
+        "D_direct": {
+          "resident_bytes": 184832.0,
+          "peak_vram_bytes": 238592.0,
+          "wall_clock_us": 210.64998873043805,
+          "build_cost_us": 1484.5499827060848
+        },
+        "time_overhead_frac": -0.7048,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 64,
+        "channels": 8,
+        "sparsity": 0.1,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 266240.0,
+          "peak_vram_bytes": 550400.0,
+          "wall_clock_us": 722.1499836305156,
+          "build_cost_us": 216.04998619295657
+        },
+        "D_direct": {
+          "resident_bytes": 262656.0,
+          "peak_vram_bytes": 394240.0,
+          "wall_clock_us": 226.2000198243186,
+          "build_cost_us": 2813.3500018157065
+        },
+        "time_overhead_frac": -0.6868,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 64,
+        "channels": 8,
+        "sparsity": 0.1,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 266240.0,
+          "peak_vram_bytes": 550400.0,
+          "wall_clock_us": 710.6749981176108,
+          "build_cost_us": 210.4500017594546
+        },
+        "D_direct": {
+          "resident_bytes": 213504.0,
+          "peak_vram_bytes": 295936.0,
+          "wall_clock_us": 220.5500059062615,
+          "build_cost_us": 1982.349989702925
+        },
+        "time_overhead_frac": -0.6897,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 64,
+        "channels": 8,
+        "sparsity": 0.3,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 266240.0,
+          "peak_vram_bytes": 589824.0,
+          "wall_clock_us": 719.9249957920983,
+          "build_cost_us": 208.3999861497432
+        },
+        "D_direct": {
+          "resident_bytes": 262656.0,
+          "peak_vram_bytes": 394240.0,
+          "wall_clock_us": 217.17500931117684,
+          "build_cost_us": 2818.9000149723142
+        },
+        "time_overhead_frac": -0.6983,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 64,
+        "channels": 8,
+        "sparsity": 0.3,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 266240.0,
+          "peak_vram_bytes": 589824.0,
+          "wall_clock_us": 730.2250014618039,
+          "build_cost_us": 221.950002014637
+        },
+        "D_direct": {
+          "resident_bytes": 246272.0,
+          "peak_vram_bytes": 361472.0,
+          "wall_clock_us": 211.87499805819243,
+          "build_cost_us": 2529.09999107942
+        },
+        "time_overhead_frac": -0.7098,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 64,
+        "channels": 8,
+        "sparsity": 0.5,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 266240.0,
+          "peak_vram_bytes": 628736.0,
+          "wall_clock_us": 718.7249866547063,
+          "build_cost_us": 212.40001660771668
+        },
+        "D_direct": {
+          "resident_bytes": 262656.0,
+          "peak_vram_bytes": 394240.0,
+          "wall_clock_us": 223.34999812301248,
+          "build_cost_us": 2878.7000046577305
+        },
+        "time_overhead_frac": -0.6892,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 64,
+        "channels": 8,
+        "sparsity": 0.5,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 266240.0,
+          "peak_vram_bytes": 628736.0,
+          "wall_clock_us": 681.9499976700172,
+          "build_cost_us": 206.55000116676092
+        },
+        "D_direct": {
+          "resident_bytes": 259584.0,
+          "peak_vram_bytes": 388096.0,
+          "wall_clock_us": 223.85000193025917,
+          "build_cost_us": 2771.800005575642
+        },
+        "time_overhead_frac": -0.6718,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 64,
+        "channels": 16,
+        "sparsity": 0.05,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 528384.0,
+          "peak_vram_bytes": 1072128.0,
+          "wall_clock_us": 693.8750011613593,
+          "build_cost_us": 220.4999909736216
+        },
+        "D_direct": {
+          "resident_bytes": 518656.0,
+          "peak_vram_bytes": 775680.0,
+          "wall_clock_us": 228.99999748915434,
+          "build_cost_us": 2726.2999792583287
+        },
+        "time_overhead_frac": -0.67,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 64,
+        "channels": 16,
+        "sparsity": 0.05,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 528384.0,
+          "peak_vram_bytes": 1072128.0,
+          "wall_clock_us": 715.1499739848077,
+          "build_cost_us": 212.350016226992
+        },
+        "D_direct": {
+          "resident_bytes": 369152.0,
+          "peak_vram_bytes": 476672.0,
+          "wall_clock_us": 223.04996673483402,
+          "build_cost_us": 1443.1000163313001
+        },
+        "time_overhead_frac": -0.6881,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 64,
+        "channels": 16,
+        "sparsity": 0.1,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 528384.0,
+          "peak_vram_bytes": 1088512.0,
+          "wall_clock_us": 730.8500207727775,
+          "build_cost_us": 220.44999059289694
+        },
+        "D_direct": {
+          "resident_bytes": 524800.0,
+          "peak_vram_bytes": 787968.0,
+          "wall_clock_us": 222.250004298985,
+          "build_cost_us": 2888.6500222142786
+        },
+        "time_overhead_frac": -0.6959,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 64,
+        "channels": 16,
+        "sparsity": 0.1,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 528384.0,
+          "peak_vram_bytes": 1088512.0,
+          "wall_clock_us": 726.399986888282,
+          "build_cost_us": 211.7999829351902
+        },
+        "D_direct": {
+          "resident_bytes": 426496.0,
+          "peak_vram_bytes": 591360.0,
+          "wall_clock_us": 227.37499966751784,
+          "build_cost_us": 2018.5499743092805
+        },
+        "time_overhead_frac": -0.687,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 64,
+        "channels": 16,
+        "sparsity": 0.3,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 528384.0,
+          "peak_vram_bytes": 1154048.0,
+          "wall_clock_us": 726.2999861268327,
+          "build_cost_us": 220.44999059289694
+        },
+        "D_direct": {
+          "resident_bytes": 524800.0,
+          "peak_vram_bytes": 787968.0,
+          "wall_clock_us": 221.2000108556822,
+          "build_cost_us": 2841.300010913983
+        },
+        "time_overhead_frac": -0.6954,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 64,
+        "channels": 16,
+        "sparsity": 0.3,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 528384.0,
+          "peak_vram_bytes": 1154048.0,
+          "wall_clock_us": 714.774985681288,
+          "build_cost_us": 208.99999071843922
+        },
+        "D_direct": {
+          "resident_bytes": 492032.0,
+          "peak_vram_bytes": 722432.0,
+          "wall_clock_us": 227.77501726523042,
+          "build_cost_us": 2508.800011128187
+        },
+        "time_overhead_frac": -0.6813,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 64,
+        "channels": 16,
+        "sparsity": 0.5,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 528384.0,
+          "peak_vram_bytes": 1219072.0,
+          "wall_clock_us": 723.8499965751544,
+          "build_cost_us": 215.00000730156898
+        },
+        "D_direct": {
+          "resident_bytes": 524800.0,
+          "peak_vram_bytes": 787968.0,
+          "wall_clock_us": 228.04999025538564,
+          "build_cost_us": 2823.89999483712
+        },
+        "time_overhead_frac": -0.6849,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 64,
+        "channels": 16,
+        "sparsity": 0.5,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 528384.0,
+          "peak_vram_bytes": 1219072.0,
+          "wall_clock_us": 724.0000122692436,
+          "build_cost_us": 216.7999919038266
+        },
+        "D_direct": {
+          "resident_bytes": 518656.0,
+          "peak_vram_bytes": 775680.0,
+          "wall_clock_us": 216.59999038092792,
+          "build_cost_us": 2746.6499886941165
+        },
+        "time_overhead_frac": -0.7008,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 128,
+        "channels": 3,
+        "sparsity": 0.05,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 409600.0,
+          "peak_vram_bytes": 828416.0,
+          "wall_clock_us": 720.6999725895002,
+          "build_cost_us": 211.15000708959997
+        },
+        "D_direct": {
+          "resident_bytes": 387840.0,
+          "peak_vram_bytes": 578560.0,
+          "wall_clock_us": 216.02500055450946,
+          "build_cost_us": 9684.000018751249
+        },
+        "time_overhead_frac": -0.7003,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 128,
+        "channels": 3,
+        "sparsity": 0.05,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 409600.0,
+          "peak_vram_bytes": 828416.0,
+          "wall_clock_us": 736.5000201389194,
+          "build_cost_us": 209.00001982226968
+        },
+        "D_direct": {
+          "resident_bytes": 250368.0,
+          "peak_vram_bytes": 303616.0,
+          "wall_clock_us": 220.3499898314476,
+          "build_cost_us": 3434.250014834106
+        },
+        "time_overhead_frac": -0.7008,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 128,
+        "channels": 3,
+        "sparsity": 0.1,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 409600.0,
+          "peak_vram_bytes": 851456.0,
+          "wall_clock_us": 739.4499989459291,
+          "build_cost_us": 222.60000696405768
+        },
+        "D_direct": {
+          "resident_bytes": 394240.0,
+          "peak_vram_bytes": 591360.0,
+          "wall_clock_us": 226.00000374950469,
+          "build_cost_us": 10226.600017631426
+        },
+        "time_overhead_frac": -0.6944,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 128,
+        "channels": 3,
+        "sparsity": 0.1,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 409600.0,
+          "peak_vram_bytes": 851456.0,
+          "wall_clock_us": 729.5999967027456,
+          "build_cost_us": 219.2499814555049
+        },
+        "D_direct": {
+          "resident_bytes": 289536.0,
+          "peak_vram_bytes": 381952.0,
+          "wall_clock_us": 214.45000311359763,
+          "build_cost_us": 5397.350003477186
+        },
+        "time_overhead_frac": -0.7061,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 128,
+        "channels": 3,
+        "sparsity": 0.3,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 409600.0,
+          "peak_vram_bytes": 943104.0,
+          "wall_clock_us": 723.9999977173284,
+          "build_cost_us": 217.2499953303486
+        },
+        "D_direct": {
+          "resident_bytes": 394240.0,
+          "peak_vram_bytes": 591360.0,
+          "wall_clock_us": 229.97500491328537,
+          "build_cost_us": 10105.649998877198
+        },
+        "time_overhead_frac": -0.6824,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 128,
+        "channels": 3,
+        "sparsity": 0.3,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 409600.0,
+          "peak_vram_bytes": 943104.0,
+          "wall_clock_us": 744.3250069627538,
+          "build_cost_us": 208.85001868009567
+        },
+        "D_direct": {
+          "resident_bytes": 353792.0,
+          "peak_vram_bytes": 510464.0,
+          "wall_clock_us": 229.124998440966,
+          "build_cost_us": 8356.40000877902
+        },
+        "time_overhead_frac": -0.6922,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 128,
+        "channels": 3,
+        "sparsity": 0.5,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 409600.0,
+          "peak_vram_bytes": 1034240.0,
+          "wall_clock_us": 734.450004529208,
+          "build_cost_us": 213.3000234607607
+        },
+        "D_direct": {
+          "resident_bytes": 394240.0,
+          "peak_vram_bytes": 591360.0,
+          "wall_clock_us": 228.92499691806734,
+          "build_cost_us": 9947.649989044294
+        },
+        "time_overhead_frac": -0.6883,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 128,
+        "channels": 3,
+        "sparsity": 0.5,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 409600.0,
+          "peak_vram_bytes": 1034240.0,
+          "wall_clock_us": 516.4749891264364,
+          "build_cost_us": 80.80000407062471
+        },
+        "D_direct": {
+          "resident_bytes": 379136.0,
+          "peak_vram_bytes": 561152.0,
+          "wall_clock_us": 169.52501027844846,
+          "build_cost_us": 8831.79999073036
+        },
+        "time_overhead_frac": -0.6718,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 128,
+        "channels": 8,
+        "sparsity": 0.05,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 1064960.0,
+          "peak_vram_bytes": 2155520.0,
+          "wall_clock_us": 456.6999996313825,
+          "build_cost_us": 97.14998304843903
+        },
+        "D_direct": {
+          "resident_bytes": 1032192.0,
+          "peak_vram_bytes": 1539584.0,
+          "wall_clock_us": 125.97496970556676,
+          "build_cost_us": 9980.349976103753
+        },
+        "time_overhead_frac": -0.7242,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 128,
+        "channels": 8,
+        "sparsity": 0.05,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 1064960.0,
+          "peak_vram_bytes": 2155520.0,
+          "wall_clock_us": 452.64999789651483,
+          "build_cost_us": 93.70001498609781
+        },
+        "D_direct": {
+          "resident_bytes": 665600.0,
+          "peak_vram_bytes": 806400.0,
+          "wall_clock_us": 127.0749926334247,
+          "build_cost_us": 3652.149986010045
+        },
+        "time_overhead_frac": -0.7193,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 128,
+        "channels": 8,
+        "sparsity": 0.1,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 1064960.0,
+          "peak_vram_bytes": 2194944.0,
+          "wall_clock_us": 466.35001490358263,
+          "build_cost_us": 90.59999138116837
+        },
+        "D_direct": {
+          "resident_bytes": 1049600.0,
+          "peak_vram_bytes": 1574400.0,
+          "wall_clock_us": 127.1499932045117,
+          "build_cost_us": 10474.79998669587
+        },
+        "time_overhead_frac": -0.7274,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 128,
+        "channels": 8,
+        "sparsity": 0.1,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 1064960.0,
+          "peak_vram_bytes": 2194944.0,
+          "wall_clock_us": 473.5000111395493,
+          "build_cost_us": 91.09999518841505
+        },
+        "D_direct": {
+          "resident_bytes": 770048.0,
+          "peak_vram_bytes": 1015296.0,
+          "wall_clock_us": 127.22500832751393,
+          "build_cost_us": 5596.099974354729
+        },
+        "time_overhead_frac": -0.7313,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 128,
+        "channels": 8,
+        "sparsity": 0.3,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 1064960.0,
+          "peak_vram_bytes": 2352128.0,
+          "wall_clock_us": 454.0499940048903,
+          "build_cost_us": 95.89997353032231
+        },
+        "D_direct": {
+          "resident_bytes": 1049600.0,
+          "peak_vram_bytes": 1574400.0,
+          "wall_clock_us": 128.85000614915043,
+          "build_cost_us": 10608.699987642467
+        },
+        "time_overhead_frac": -0.7162,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 128,
+        "channels": 8,
+        "sparsity": 0.3,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 1064960.0,
+          "peak_vram_bytes": 2352128.0,
+          "wall_clock_us": 447.67497456632555,
+          "build_cost_us": 99.84997450374067
+        },
+        "D_direct": {
+          "resident_bytes": 941056.0,
+          "peak_vram_bytes": 1357312.0,
+          "wall_clock_us": 127.54999625030905,
+          "build_cost_us": 8432.850008830428
+        },
+        "time_overhead_frac": -0.7151,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 128,
+        "channels": 8,
+        "sparsity": 0.5,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 1064960.0,
+          "peak_vram_bytes": 2508800.0,
+          "wall_clock_us": 465.72499559260905,
+          "build_cost_us": 96.8000094871968
+        },
+        "D_direct": {
+          "resident_bytes": 1049600.0,
+          "peak_vram_bytes": 1574400.0,
+          "wall_clock_us": 126.69998977798969,
+          "build_cost_us": 10600.600013276562
+        },
+        "time_overhead_frac": -0.728,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 128,
+        "channels": 8,
+        "sparsity": 0.5,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 1064960.0,
+          "peak_vram_bytes": 2508800.0,
+          "wall_clock_us": 463.9249964384362,
+          "build_cost_us": 89.44998262450099
+        },
+        "D_direct": {
+          "resident_bytes": 1008640.0,
+          "peak_vram_bytes": 1492480.0,
+          "wall_clock_us": 126.19997141882777,
+          "build_cost_us": 9496.650018263608
+        },
+        "time_overhead_frac": -0.728,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 128,
+        "channels": 16,
+        "sparsity": 0.05,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 2113536.0,
+          "peak_vram_bytes": 4279296.0,
+          "wall_clock_us": 523.9999882178381,
+          "build_cost_us": 87.25002408027649
+        },
+        "D_direct": {
+          "resident_bytes": 2063360.0,
+          "peak_vram_bytes": 3078144.0,
+          "wall_clock_us": 124.8250191565603,
+          "build_cost_us": 10143.949970370159
+        },
+        "time_overhead_frac": -0.7618,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 128,
+        "channels": 16,
+        "sparsity": 0.05,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 2113536.0,
+          "peak_vram_bytes": 4279296.0,
+          "wall_clock_us": 544.1749817691743,
+          "build_cost_us": 93.00000965595245
+        },
+        "D_direct": {
+          "resident_bytes": 1330176.0,
+          "peak_vram_bytes": 1611776.0,
+          "wall_clock_us": 123.54999489616603,
+          "build_cost_us": 3791.750001255423
+        },
+        "time_overhead_frac": -0.773,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 128,
+        "channels": 16,
+        "sparsity": 0.1,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 2113536.0,
+          "peak_vram_bytes": 4344832.0,
+          "wall_clock_us": 528.1999910948798,
+          "build_cost_us": 88.40000373311341
+        },
+        "D_direct": {
+          "resident_bytes": 2098176.0,
+          "peak_vram_bytes": 3147776.0,
+          "wall_clock_us": 124.25001477822661,
+          "build_cost_us": 10400.999977719039
+        },
+        "time_overhead_frac": -0.7648,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 128,
+        "channels": 16,
+        "sparsity": 0.1,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 2113536.0,
+          "peak_vram_bytes": 4344832.0,
+          "wall_clock_us": 432.9999937908724,
+          "build_cost_us": 92.24997484125197
+        },
+        "D_direct": {
+          "resident_bytes": 1539072.0,
+          "peak_vram_bytes": 2029568.0,
+          "wall_clock_us": 126.70001888182014,
+          "build_cost_us": 5473.09999819845
+        },
+        "time_overhead_frac": -0.7074,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 128,
+        "channels": 16,
+        "sparsity": 0.3,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 2113536.0,
+          "peak_vram_bytes": 4606976.0,
+          "wall_clock_us": 456.7249707179144,
+          "build_cost_us": 97.10001177154481
+        },
+        "D_direct": {
+          "resident_bytes": 2098176.0,
+          "peak_vram_bytes": 3147776.0,
+          "wall_clock_us": 125.34997949842364,
+          "build_cost_us": 10838.599991984665
+        },
+        "time_overhead_frac": -0.7255,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 128,
+        "channels": 16,
+        "sparsity": 0.3,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 2113536.0,
+          "peak_vram_bytes": 4606976.0,
+          "wall_clock_us": 512.6500182086602,
+          "build_cost_us": 93.00000965595245
+        },
+        "D_direct": {
+          "resident_bytes": 1881088.0,
+          "peak_vram_bytes": 2713600.0,
+          "wall_clock_us": 127.0749926334247,
+          "build_cost_us": 8440.899982815608
+        },
+        "time_overhead_frac": -0.7521,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 128,
+        "channels": 16,
+        "sparsity": 0.5,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 2113536.0,
+          "peak_vram_bytes": 4868608.0,
+          "wall_clock_us": 513.4999955771491,
+          "build_cost_us": 90.04998719319701
+        },
+        "D_direct": {
+          "resident_bytes": 2098176.0,
+          "peak_vram_bytes": 3147776.0,
+          "wall_clock_us": 126.67498958762735,
+          "build_cost_us": 10476.999974343926
+        },
+        "time_overhead_frac": -0.7533,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 128,
+        "channels": 16,
+        "sparsity": 0.5,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 2113536.0,
+          "peak_vram_bytes": 4868608.0,
+          "wall_clock_us": 532.3999939719215,
+          "build_cost_us": 91.04999480769038
+        },
+        "D_direct": {
+          "resident_bytes": 2016256.0,
+          "peak_vram_bytes": 2983936.0,
+          "wall_clock_us": 127.49998131766915,
+          "build_cost_us": 9533.699980238453
+        },
+        "time_overhead_frac": -0.7605,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 256,
+        "channels": 3,
+        "sparsity": 0.05,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 1638400.0,
+          "peak_vram_bytes": 3305984.0,
+          "wall_clock_us": 455.1250021904707,
+          "build_cost_us": 427.0000208634883
+        },
+        "D_direct": {
+          "resident_bytes": 1548800.0,
+          "peak_vram_bytes": 2307584.0,
+          "wall_clock_us": 124.09999908413738,
+          "build_cost_us": 36733.00001537427
+        },
+        "time_overhead_frac": -0.7273,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 256,
+        "channels": 3,
+        "sparsity": 0.05,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 1638400.0,
+          "peak_vram_bytes": 3305984.0,
+          "wall_clock_us": 455.7000065688044,
+          "build_cost_us": 443.3500289451331
+        },
+        "D_direct": {
+          "resident_bytes": 954624.0,
+          "peak_vram_bytes": 1119232.0,
+          "wall_clock_us": 126.22498616110533,
+          "build_cost_us": 10477.80000953935
+        },
+        "time_overhead_frac": -0.723,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 256,
+        "channels": 3,
+        "sparsity": 0.1,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 1638400.0,
+          "peak_vram_bytes": 3397632.0,
+          "wall_clock_us": 442.62500887271017,
+          "build_cost_us": 450.94999950379133
+        },
+        "D_direct": {
+          "resident_bytes": 1576448.0,
+          "peak_vram_bytes": 2362880.0,
+          "wall_clock_us": 126.20000052265823,
+          "build_cost_us": 38178.54999215342
+        },
+        "time_overhead_frac": -0.7149,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 256,
+        "channels": 3,
+        "sparsity": 0.1,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 1638400.0,
+          "peak_vram_bytes": 3397632.0,
+          "wall_clock_us": 461.07500384096056,
+          "build_cost_us": 473.6499977298081
+        },
+        "D_direct": {
+          "resident_bytes": 1037568.0,
+          "peak_vram_bytes": 1285120.0,
+          "wall_clock_us": 127.79999815393239,
+          "build_cost_us": 14050.350000616163
+        },
+        "time_overhead_frac": -0.7228,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 256,
+        "channels": 3,
+        "sparsity": 0.3,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 1638400.0,
+          "peak_vram_bytes": 3764736.0,
+          "wall_clock_us": 445.65000280272216,
+          "build_cost_us": 437.4999844003469
+        },
+        "D_direct": {
+          "resident_bytes": 1576960.0,
+          "peak_vram_bytes": 2363904.0,
+          "wall_clock_us": 127.05002154689282,
+          "build_cost_us": 38332.34999910928
+        },
+        "time_overhead_frac": -0.7149,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 256,
+        "channels": 3,
+        "sparsity": 0.3,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 1638400.0,
+          "peak_vram_bytes": 3764736.0,
+          "wall_clock_us": 468.87500502634794,
+          "build_cost_us": 426.7000185791403
+        },
+        "D_direct": {
+          "resident_bytes": 1302784.0,
+          "peak_vram_bytes": 1815552.0,
+          "wall_clock_us": 125.550024677068,
+          "build_cost_us": 26046.350016258657
+        },
+        "time_overhead_frac": -0.7322,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 256,
+        "channels": 3,
+        "sparsity": 0.5,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 1638400.0,
+          "peak_vram_bytes": 4131328.0,
+          "wall_clock_us": 448.47499520983547,
+          "build_cost_us": 446.24999281950295
+        },
+        "D_direct": {
+          "resident_bytes": 1576960.0,
+          "peak_vram_bytes": 2363904.0,
+          "wall_clock_us": 126.67500413954258,
+          "build_cost_us": 38833.600003272295
+        },
+        "time_overhead_frac": -0.7175,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 256,
+        "channels": 3,
+        "sparsity": 0.5,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 1638400.0,
+          "peak_vram_bytes": 4131328.0,
+          "wall_clock_us": 457.5000348268077,
+          "build_cost_us": 439.3499984871596
+        },
+        "D_direct": {
+          "resident_bytes": 1455104.0,
+          "peak_vram_bytes": 2120192.0,
+          "wall_clock_us": 126.57500337809324,
+          "build_cost_us": 32483.799965120852
+        },
+        "time_overhead_frac": -0.7233,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 256,
+        "channels": 8,
+        "sparsity": 0.05,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 4259840.0,
+          "peak_vram_bytes": 8614400.0,
+          "wall_clock_us": 707.5250177877024,
+          "build_cost_us": 94.80002336204052
+        },
+        "D_direct": {
+          "resident_bytes": 4123648.0,
+          "peak_vram_bytes": 6150656.0,
+          "wall_clock_us": 127.34998017549515,
+          "build_cost_us": 36549.89998904057
+        },
+        "time_overhead_frac": -0.82,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 256,
+        "channels": 8,
+        "sparsity": 0.05,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 4259840.0,
+          "peak_vram_bytes": 8614400.0,
+          "wall_clock_us": 653.4499989356846,
+          "build_cost_us": 95.24999768473208
+        },
+        "D_direct": {
+          "resident_bytes": 2538496.0,
+          "peak_vram_bytes": 2976256.0,
+          "wall_clock_us": 126.20001507457346,
+          "build_cost_us": 10023.700015153736
+        },
+        "time_overhead_frac": -0.8069,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 256,
+        "channels": 8,
+        "sparsity": 0.1,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 4259840.0,
+          "peak_vram_bytes": 8771584.0,
+          "wall_clock_us": 716.6750001488253,
+          "build_cost_us": 94.10001803189516
+        },
+        "D_direct": {
+          "resident_bytes": 4198400.0,
+          "peak_vram_bytes": 6295040.0,
+          "wall_clock_us": 126.40001659747213,
+          "build_cost_us": 37620.300019625574
+        },
+        "time_overhead_frac": -0.8236,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 256,
+        "channels": 8,
+        "sparsity": 0.1,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 4259840.0,
+          "peak_vram_bytes": 8771584.0,
+          "wall_clock_us": 415.10000301059335,
+          "build_cost_us": 87.79997006058693
+        },
+        "D_direct": {
+          "resident_bytes": 2759680.0,
+          "peak_vram_bytes": 3418624.0,
+          "wall_clock_us": 125.27499347925186,
+          "build_cost_us": 13323.400024091825
+        },
+        "time_overhead_frac": -0.6982,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 256,
+        "channels": 8,
+        "sparsity": 0.3,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 4259840.0,
+          "peak_vram_bytes": 9400832.0,
+          "wall_clock_us": 727.4499948835,
+          "build_cost_us": 92.75000775232911
+        },
+        "D_direct": {
+          "resident_bytes": 4198400.0,
+          "peak_vram_bytes": 6296064.0,
+          "wall_clock_us": 126.77501945290715,
+          "build_cost_us": 37586.1500215251
+        },
+        "time_overhead_frac": -0.8257,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 256,
+        "channels": 8,
+        "sparsity": 0.3,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 4259840.0,
+          "peak_vram_bytes": 9400832.0,
+          "wall_clock_us": 735.0749947363511,
+          "build_cost_us": 92.40000508725643
+        },
+        "D_direct": {
+          "resident_bytes": 3468288.0,
+          "peak_vram_bytes": 4862464.0,
+          "wall_clock_us": 124.67500346247107,
+          "build_cost_us": 25552.900013281032
+        },
+        "time_overhead_frac": -0.8304,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 256,
+        "channels": 8,
+        "sparsity": 0.5,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 4259840.0,
+          "peak_vram_bytes": 10029568.0,
+          "wall_clock_us": 780.7249930920079,
+          "build_cost_us": 94.74996477365494
+        },
+        "D_direct": {
+          "resident_bytes": 4198400.0,
+          "peak_vram_bytes": 6296064.0,
+          "wall_clock_us": 127.52501061186194,
+          "build_cost_us": 37700.15001646243
+        },
+        "time_overhead_frac": -0.8367,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 256,
+        "channels": 8,
+        "sparsity": 0.5,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 4259840.0,
+          "peak_vram_bytes": 10029568.0,
+          "wall_clock_us": 778.2999891787767,
+          "build_cost_us": 95.10002564638853
+        },
+        "D_direct": {
+          "resident_bytes": 3885056.0,
+          "peak_vram_bytes": 5963264.0,
+          "wall_clock_us": 127.65002611558884,
+          "build_cost_us": 32903.00001390278
+        },
+        "time_overhead_frac": -0.836,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 256,
+        "channels": 16,
+        "sparsity": 0.05,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 8454144.0,
+          "peak_vram_bytes": 17249792.0,
+          "wall_clock_us": 549.9249964486808,
+          "build_cost_us": 97.1999834291637
+        },
+        "D_direct": {
+          "resident_bytes": 8253440.0,
+          "peak_vram_bytes": 12512256.0,
+          "wall_clock_us": 125.25000784080476,
+          "build_cost_us": 36230.89997563511
+        },
+        "time_overhead_frac": -0.7722,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 256,
+        "channels": 16,
+        "sparsity": 0.05,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 8454144.0,
+          "peak_vram_bytes": 17108480.0,
+          "wall_clock_us": 581.0250004287809,
+          "build_cost_us": 90.64999176189303
+        },
+        "D_direct": {
+          "resident_bytes": 5074944.0,
+          "peak_vram_bytes": 5952512.0,
+          "wall_clock_us": 126.57500337809324,
+          "build_cost_us": 9991.099999751896
+        },
+        "time_overhead_frac": -0.7822,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 256,
+        "channels": 16,
+        "sparsity": 0.1,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 8454144.0,
+          "peak_vram_bytes": 17374720.0,
+          "wall_clock_us": 862.5999907962978,
+          "build_cost_us": 98.74999523162842
+        },
+        "D_direct": {
+          "resident_bytes": 8388608.0,
+          "peak_vram_bytes": 12581888.0,
+          "wall_clock_us": 144.22500680666417,
+          "build_cost_us": 37596.34998277761
+        },
+        "time_overhead_frac": -0.8328,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 256,
+        "channels": 16,
+        "sparsity": 0.1,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 8454144.0,
+          "peak_vram_bytes": 17370624.0,
+          "wall_clock_us": 2048.4000124270096,
+          "build_cost_us": 172.55000420846045
+        },
+        "D_direct": {
+          "resident_bytes": 5529600.0,
+          "peak_vram_bytes": 6853632.0,
+          "wall_clock_us": 126.42498768400401,
+          "build_cost_us": 13872.95001768507
+        },
+        "time_overhead_frac": -0.9383,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 256,
+        "channels": 16,
+        "sparsity": 0.3,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 8454144.0,
+          "peak_vram_bytes": 18419200.0,
+          "wall_clock_us": 638.3749860106036,
+          "build_cost_us": 86.29998774267733
+        },
+        "D_direct": {
+          "resident_bytes": 8392704.0,
+          "peak_vram_bytes": 12588032.0,
+          "wall_clock_us": 126.25001545529813,
+          "build_cost_us": 37425.59999227524
+        },
+        "time_overhead_frac": -0.8022,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 256,
+        "channels": 16,
+        "sparsity": 0.3,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 8454144.0,
+          "peak_vram_bytes": 18593280.0,
+          "wall_clock_us": 2134.2249965528026,
+          "build_cost_us": 169.54998136498034
+        },
+        "D_direct": {
+          "resident_bytes": 6944768.0,
+          "peak_vram_bytes": 9692160.0,
+          "wall_clock_us": 245.02500309608877,
+          "build_cost_us": 25637.7000187058
+        },
+        "time_overhead_frac": -0.8852,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 256,
+        "channels": 16,
+        "sparsity": 0.5,
+        "pattern": "random",
+        "grid_baseline": {
+          "resident_bytes": 8454144.0,
+          "peak_vram_bytes": 19467264.0,
+          "wall_clock_us": 563.9500013785437,
+          "build_cost_us": 89.15000944398344
+        },
+        "D_direct": {
+          "resident_bytes": 8392704.0,
+          "peak_vram_bytes": 12588032.0,
+          "wall_clock_us": 126.67500413954258,
+          "build_cost_us": 37804.14999346249
+        },
+        "time_overhead_frac": -0.7754,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      },
+      {
+        "space": "vector_grid",
+        "side": 256,
+        "channels": 16,
+        "sparsity": 0.5,
+        "pattern": "clustered",
+        "grid_baseline": {
+          "resident_bytes": 8454144.0,
+          "peak_vram_bytes": 19776512.0,
+          "wall_clock_us": 1357.450004434213,
+          "build_cost_us": 130.05000073462725
+        },
+        "D_direct": {
+          "resident_bytes": 7766016.0,
+          "peak_vram_bytes": 11617280.0,
+          "wall_clock_us": 221.22502559795976,
+          "build_cost_us": 32372.299989219755
+        },
+        "time_overhead_frac": -0.837,
+        "contour_A": "PASS",
+        "contour_B": "PASS"
+      }
+    ],
+    "contour_A_pass": 72,
+    "contour_A_total": 72,
+    "contour_B_pass": 72,
+    "contour_B_total": 72
+  },
+  "tree_hierarchy": {
+    "config": {
+      "max_depths": [
+        3,
+        4,
+        5
+      ],
+      "branching_factors": [
+        2,
+        4,
+        8
+      ],
+      "feature_dims": [
+        4,
+        8,
+        16
+      ],
+      "sparsities": [
+        0.1,
+        0.3,
+        0.5,
+        0.7
+      ]
+    },
+    "results": [
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 2,
+        "feat_dim": 4,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 6144.0,
+          "peak_vram_bytes": 9728.0,
+          "wall_clock_us": 486.44999333191663,
+          "build_cost_us": 185.2000132203102,
+          "per_level_resident": [
+            21.0,
+            42.0,
+            84.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 576.8250121036544,
+          "build_cost_us": 782.9999667592347,
+          "cross_level_lookup_us": 125.02502067945898,
+          "per_level_resident": [
+            20.0,
+            24.0,
+            32.0
+          ]
+        },
+        "total_resident_base": 147.0,
+        "total_resident_d": 76.0,
+        "time_overhead_frac": 0.1858,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 2,
+        "feat_dim": 4,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 6144.0,
+          "peak_vram_bytes": 9728.0,
+          "wall_clock_us": 504.52499999664724,
+          "build_cost_us": 207.65000954270363,
+          "per_level_resident": [
+            21.0,
+            42.0,
+            84.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 579.6750338049605,
+          "build_cost_us": 815.4000097420067,
+          "cross_level_lookup_us": 125.72498235385865,
+          "per_level_resident": [
+            20.0,
+            24.0,
+            32.0
+          ]
+        },
+        "total_resident_base": 147.0,
+        "total_resident_d": 76.0,
+        "time_overhead_frac": 0.149,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 2,
+        "feat_dim": 4,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 6144.0,
+          "peak_vram_bytes": 9728.0,
+          "wall_clock_us": 534.2000076780096,
+          "build_cost_us": 223.24998280964792,
+          "per_level_resident": [
+            21.0,
+            42.0,
+            84.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 600.500003201887,
+          "build_cost_us": 866.3499902468175,
+          "cross_level_lookup_us": 125.2999936696142,
+          "per_level_resident": [
+            20.0,
+            24.0,
+            48.0
+          ]
+        },
+        "total_resident_base": 147.0,
+        "total_resident_d": 92.0,
+        "time_overhead_frac": 0.1241,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 2,
+        "feat_dim": 4,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 6144.0,
+          "peak_vram_bytes": 9728.0,
+          "wall_clock_us": 532.0750060491264,
+          "build_cost_us": 220.74999287724495,
+          "per_level_resident": [
+            21.0,
+            42.0,
+            84.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 586.1999961780384,
+          "build_cost_us": 835.899991216138,
+          "cross_level_lookup_us": 124.57501725293696,
+          "per_level_resident": [
+            20.0,
+            24.0,
+            64.0
+          ]
+        },
+        "total_resident_base": 147.0,
+        "total_resident_d": 108.0,
+        "time_overhead_frac": 0.1017,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 2,
+        "feat_dim": 8,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 6144.0,
+          "peak_vram_bytes": 9728.0,
+          "wall_clock_us": 518.6250054975972,
+          "build_cost_us": 220.3499898314476,
+          "per_level_resident": [
+            37.0,
+            74.0,
+            148.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 576.6749964095652,
+          "build_cost_us": 833.7999752257019,
+          "cross_level_lookup_us": 122.60000221431255,
+          "per_level_resident": [
+            36.0,
+            40.0,
+            48.0
+          ]
+        },
+        "total_resident_base": 259.0,
+        "total_resident_d": 124.0,
+        "time_overhead_frac": 0.1119,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 2,
+        "feat_dim": 8,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 6144.0,
+          "peak_vram_bytes": 9728.0,
+          "wall_clock_us": 520.6999921938404,
+          "build_cost_us": 222.4999770987779,
+          "per_level_resident": [
+            37.0,
+            74.0,
+            148.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 572.4499933421612,
+          "build_cost_us": 839.8500212933868,
+          "cross_level_lookup_us": 123.89998300932348,
+          "per_level_resident": [
+            36.0,
+            40.0,
+            48.0
+          ]
+        },
+        "total_resident_base": 259.0,
+        "total_resident_d": 124.0,
+        "time_overhead_frac": 0.0994,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 2,
+        "feat_dim": 8,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 6144.0,
+          "peak_vram_bytes": 9728.0,
+          "wall_clock_us": 527.750002220273,
+          "build_cost_us": 224.94999575428665,
+          "per_level_resident": [
+            37.0,
+            74.0,
+            148.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 597.8249973850325,
+          "build_cost_us": 844.0499950665981,
+          "cross_level_lookup_us": 126.45000242628157,
+          "per_level_resident": [
+            36.0,
+            40.0,
+            80.0
+          ]
+        },
+        "total_resident_base": 259.0,
+        "total_resident_d": 156.0,
+        "time_overhead_frac": 0.1328,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 2,
+        "feat_dim": 8,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 6144.0,
+          "peak_vram_bytes": 9728.0,
+          "wall_clock_us": 553.100006072782,
+          "build_cost_us": 228.2499917782843,
+          "per_level_resident": [
+            37.0,
+            74.0,
+            148.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 600.8749915054068,
+          "build_cost_us": 903.6000119522214,
+          "cross_level_lookup_us": 125.34997949842364,
+          "per_level_resident": [
+            36.0,
+            40.0,
+            112.0
+          ]
+        },
+        "total_resident_base": 259.0,
+        "total_resident_d": 188.0,
+        "time_overhead_frac": 0.0864,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 2,
+        "feat_dim": 16,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 6144.0,
+          "peak_vram_bytes": 9728.0,
+          "wall_clock_us": 515.1499935891479,
+          "build_cost_us": 223.7000153400004,
+          "per_level_resident": [
+            69.0,
+            138.0,
+            276.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 586.4749982720241,
+          "build_cost_us": 850.2000127919018,
+          "cross_level_lookup_us": 121.32500705774873,
+          "per_level_resident": [
+            68.0,
+            72.0,
+            80.0
+          ]
+        },
+        "total_resident_base": 483.0,
+        "total_resident_d": 220.0,
+        "time_overhead_frac": 0.1385,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 2,
+        "feat_dim": 16,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 6144.0,
+          "peak_vram_bytes": 9728.0,
+          "wall_clock_us": 537.4250031309202,
+          "build_cost_us": 221.70000011101365,
+          "per_level_resident": [
+            69.0,
+            138.0,
+            276.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 586.8250009370968,
+          "build_cost_us": 838.6499830521643,
+          "cross_level_lookup_us": 123.52498015388846,
+          "per_level_resident": [
+            68.0,
+            72.0,
+            80.0
+          ]
+        },
+        "total_resident_base": 483.0,
+        "total_resident_d": 220.0,
+        "time_overhead_frac": 0.0919,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 2,
+        "feat_dim": 16,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 6144.0,
+          "peak_vram_bytes": 9728.0,
+          "wall_clock_us": 509.0749909868464,
+          "build_cost_us": 218.50000484846532,
+          "per_level_resident": [
+            69.0,
+            138.0,
+            276.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 565.0000093737617,
+          "build_cost_us": 819.4000401999801,
+          "cross_level_lookup_us": 120.74998812749982,
+          "per_level_resident": [
+            68.0,
+            72.0,
+            144.0
+          ]
+        },
+        "total_resident_base": 483.0,
+        "total_resident_d": 284.0,
+        "time_overhead_frac": 0.1099,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 2,
+        "feat_dim": 16,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 6144.0,
+          "peak_vram_bytes": 9728.0,
+          "wall_clock_us": 533.2999862730503,
+          "build_cost_us": 225.19996855407953,
+          "per_level_resident": [
+            69.0,
+            138.0,
+            276.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 595.7750254310668,
+          "build_cost_us": 848.3500278089195,
+          "cross_level_lookup_us": 126.62498920690268,
+          "per_level_resident": [
+            68.0,
+            72.0,
+            208.0
+          ]
+        },
+        "total_resident_base": 483.0,
+        "total_resident_d": 348.0,
+        "time_overhead_frac": 0.1171,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 4,
+        "feat_dim": 4,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 6144.0,
+          "peak_vram_bytes": 9728.0,
+          "wall_clock_us": 542.7250143839046,
+          "build_cost_us": 227.45001479052007,
+          "per_level_resident": [
+            21.0,
+            84.0,
+            336.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 595.7750108791515,
+          "build_cost_us": 844.8500011581928,
+          "cross_level_lookup_us": 128.22503049392253,
+          "per_level_resident": [
+            20.0,
+            32.0,
+            96.0
+          ]
+        },
+        "total_resident_base": 441.0,
+        "total_resident_d": 148.0,
+        "time_overhead_frac": 0.0977,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 4,
+        "feat_dim": 4,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 6144.0,
+          "peak_vram_bytes": 9728.0,
+          "wall_clock_us": 522.3500047577545,
+          "build_cost_us": 229.14999863132834,
+          "per_level_resident": [
+            21.0,
+            84.0,
+            336.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 615.9500044304878,
+          "build_cost_us": 847.8499948978424,
+          "cross_level_lookup_us": 127.57499644067138,
+          "per_level_resident": [
+            20.0,
+            32.0,
+            144.0
+          ]
+        },
+        "total_resident_base": 441.0,
+        "total_resident_d": 196.0,
+        "time_overhead_frac": 0.1792,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 4,
+        "feat_dim": 4,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 6144.0,
+          "peak_vram_bytes": 9728.0,
+          "wall_clock_us": 511.72498206142336,
+          "build_cost_us": 225.70003056898713,
+          "per_level_resident": [
+            21.0,
+            84.0,
+            336.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 583.4749899804592,
+          "build_cost_us": 841.5000047534704,
+          "cross_level_lookup_us": 126.90000585280359,
+          "per_level_resident": [
+            20.0,
+            48.0,
+            192.0
+          ]
+        },
+        "total_resident_base": 441.0,
+        "total_resident_d": 260.0,
+        "time_overhead_frac": 0.1402,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 4,
+        "feat_dim": 4,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 6144.0,
+          "peak_vram_bytes": 9728.0,
+          "wall_clock_us": 513.3999948156998,
+          "build_cost_us": 221.85000125318766,
+          "per_level_resident": [
+            21.0,
+            84.0,
+            336.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 583.0750014865771,
+          "build_cost_us": 823.0499806813896,
+          "cross_level_lookup_us": 124.09999908413738,
+          "per_level_resident": [
+            20.0,
+            64.0,
+            240.0
+          ]
+        },
+        "total_resident_base": 441.0,
+        "total_resident_d": 324.0,
+        "time_overhead_frac": 0.1357,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 4,
+        "feat_dim": 8,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 6144.0,
+          "peak_vram_bytes": 9728.0,
+          "wall_clock_us": 517.5249825697392,
+          "build_cost_us": 214.80003488250077,
+          "per_level_resident": [
+            37.0,
+            148.0,
+            592.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 586.5750135853887,
+          "build_cost_us": 828.6500233225524,
+          "cross_level_lookup_us": 124.14999946486205,
+          "per_level_resident": [
+            36.0,
+            48.0,
+            128.0
+          ]
+        },
+        "total_resident_base": 777.0,
+        "total_resident_d": 212.0,
+        "time_overhead_frac": 0.1334,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 4,
+        "feat_dim": 8,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 6144.0,
+          "peak_vram_bytes": 9728.0,
+          "wall_clock_us": 525.874987943098,
+          "build_cost_us": 217.65002747997642,
+          "per_level_resident": [
+            37.0,
+            148.0,
+            592.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 586.3499973202124,
+          "build_cost_us": 870.1999904587865,
+          "cross_level_lookup_us": 125.87499804794788,
+          "per_level_resident": [
+            36.0,
+            48.0,
+            224.0
+          ]
+        },
+        "total_resident_base": 777.0,
+        "total_resident_d": 308.0,
+        "time_overhead_frac": 0.115,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 4,
+        "feat_dim": 8,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 6144.0,
+          "peak_vram_bytes": 9728.0,
+          "wall_clock_us": 521.2249961914495,
+          "build_cost_us": 218.05003052577376,
+          "per_level_resident": [
+            37.0,
+            148.0,
+            592.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 599.0000063320622,
+          "build_cost_us": 858.8999917265028,
+          "cross_level_lookup_us": 126.2500009033829,
+          "per_level_resident": [
+            36.0,
+            80.0,
+            320.0
+          ]
+        },
+        "total_resident_base": 777.0,
+        "total_resident_d": 436.0,
+        "time_overhead_frac": 0.1492,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 4,
+        "feat_dim": 8,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 6144.0,
+          "peak_vram_bytes": 9728.0,
+          "wall_clock_us": 512.9749915795401,
+          "build_cost_us": 219.6999848820269,
+          "per_level_resident": [
+            37.0,
+            148.0,
+            592.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 581.6000048071146,
+          "build_cost_us": 834.9499839823693,
+          "cross_level_lookup_us": 124.9000197276473,
+          "per_level_resident": [
+            36.0,
+            112.0,
+            416.0
+          ]
+        },
+        "total_resident_base": 777.0,
+        "total_resident_d": 564.0,
+        "time_overhead_frac": 0.1338,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 4,
+        "feat_dim": 16,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 6656.0,
+          "peak_vram_bytes": 10240.0,
+          "wall_clock_us": 514.2999725649133,
+          "build_cost_us": 222.400005441159,
+          "per_level_resident": [
+            69.0,
+            276.0,
+            1104.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 8192.0,
+          "peak_vram_bytes": 11776.0,
+          "wall_clock_us": 559.29999507498,
+          "build_cost_us": 817.4000249709934,
+          "cross_level_lookup_us": 120.77501742169261,
+          "per_level_resident": [
+            68.0,
+            80.0,
+            192.0
+          ]
+        },
+        "total_resident_base": 1449.0,
+        "total_resident_d": 340.0,
+        "time_overhead_frac": 0.0875,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 4,
+        "feat_dim": 16,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 6656.0,
+          "peak_vram_bytes": 10240.0,
+          "wall_clock_us": 564.1000025207177,
+          "build_cost_us": 228.99999748915434,
+          "per_level_resident": [
+            69.0,
+            276.0,
+            1104.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 8192.0,
+          "peak_vram_bytes": 11776.0,
+          "wall_clock_us": 598.8750053802505,
+          "build_cost_us": 876.2499783188105,
+          "cross_level_lookup_us": 127.54998169839382,
+          "per_level_resident": [
+            68.0,
+            80.0,
+            384.0
+          ]
+        },
+        "total_resident_base": 1449.0,
+        "total_resident_d": 532.0,
+        "time_overhead_frac": 0.0616,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 4,
+        "feat_dim": 16,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 6656.0,
+          "peak_vram_bytes": 10240.0,
+          "wall_clock_us": 540.9250006778166,
+          "build_cost_us": 227.7999883517623,
+          "per_level_resident": [
+            69.0,
+            276.0,
+            1104.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 8192.0,
+          "peak_vram_bytes": 11776.0,
+          "wall_clock_us": 600.950006628409,
+          "build_cost_us": 847.8999952785671,
+          "cross_level_lookup_us": 128.50001803599298,
+          "per_level_resident": [
+            68.0,
+            144.0,
+            576.0
+          ]
+        },
+        "total_resident_base": 1449.0,
+        "total_resident_d": 788.0,
+        "time_overhead_frac": 0.111,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 4,
+        "feat_dim": 16,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 7168.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 522.474991157651,
+          "build_cost_us": 227.5500155519694,
+          "per_level_resident": [
+            69.0,
+            276.0,
+            1104.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 9216.0,
+          "peak_vram_bytes": 13312.0,
+          "wall_clock_us": 578.7749978480861,
+          "build_cost_us": 857.9999848734587,
+          "cross_level_lookup_us": 124.97500574681908,
+          "per_level_resident": [
+            68.0,
+            208.0,
+            768.0
+          ]
+        },
+        "total_resident_base": 1449.0,
+        "total_resident_d": 1044.0,
+        "time_overhead_frac": 0.1078,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 8,
+        "feat_dim": 4,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 6656.0,
+          "peak_vram_bytes": 10240.0,
+          "wall_clock_us": 511.5249950904399,
+          "build_cost_us": 225.49997083842754,
+          "per_level_resident": [
+            21.0,
+            168.0,
+            1344.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 8192.0,
+          "peak_vram_bytes": 11776.0,
+          "wall_clock_us": 574.1249915445223,
+          "build_cost_us": 841.2000024691224,
+          "cross_level_lookup_us": 123.52498015388846,
+          "per_level_resident": [
+            20.0,
+            48.0,
+            352.0
+          ]
+        },
+        "total_resident_base": 1533.0,
+        "total_resident_d": 420.0,
+        "time_overhead_frac": 0.1224,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 8,
+        "feat_dim": 4,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 6656.0,
+          "peak_vram_bytes": 10240.0,
+          "wall_clock_us": 511.1250065965578,
+          "build_cost_us": 223.95001724362373,
+          "per_level_resident": [
+            21.0,
+            168.0,
+            1344.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 8192.0,
+          "peak_vram_bytes": 11776.0,
+          "wall_clock_us": 577.1250143880025,
+          "build_cost_us": 845.4000053461641,
+          "cross_level_lookup_us": 125.52500993479043,
+          "per_level_resident": [
+            20.0,
+            64.0,
+            560.0
+          ]
+        },
+        "total_resident_base": 1533.0,
+        "total_resident_d": 644.0,
+        "time_overhead_frac": 0.1291,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 8,
+        "feat_dim": 4,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 6656.0,
+          "peak_vram_bytes": 10240.0,
+          "wall_clock_us": 532.4499943526462,
+          "build_cost_us": 229.24999939277768,
+          "per_level_resident": [
+            21.0,
+            168.0,
+            1344.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 8192.0,
+          "peak_vram_bytes": 11776.0,
+          "wall_clock_us": 610.9749956522137,
+          "build_cost_us": 863.9000006951392,
+          "cross_level_lookup_us": 129.3499954044819,
+          "per_level_resident": [
+            20.0,
+            96.0,
+            768.0
+          ]
+        },
+        "total_resident_base": 1533.0,
+        "total_resident_d": 884.0,
+        "time_overhead_frac": 0.1475,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 8,
+        "feat_dim": 4,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 7168.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 523.224996868521,
+          "build_cost_us": 227.09998302161694,
+          "per_level_resident": [
+            21.0,
+            168.0,
+            1344.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 9216.0,
+          "peak_vram_bytes": 13312.0,
+          "wall_clock_us": 594.5750017417595,
+          "build_cost_us": 841.9500081799924,
+          "cross_level_lookup_us": 126.70001888182014,
+          "per_level_resident": [
+            20.0,
+            128.0,
+            976.0
+          ]
+        },
+        "total_resident_base": 1533.0,
+        "total_resident_d": 1124.0,
+        "time_overhead_frac": 0.1364,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 8,
+        "feat_dim": 8,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 517.8249994060025,
+          "build_cost_us": 217.9000002797693,
+          "per_level_resident": [
+            37.0,
+            296.0,
+            2368.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 9216.0,
+          "peak_vram_bytes": 12800.0,
+          "wall_clock_us": 582.7499990118667,
+          "build_cost_us": 833.7999752257019,
+          "cross_level_lookup_us": 123.6999814864248,
+          "per_level_resident": [
+            36.0,
+            64.0,
+            448.0
+          ]
+        },
+        "total_resident_base": 2701.0,
+        "total_resident_d": 548.0,
+        "time_overhead_frac": 0.1254,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 8,
+        "feat_dim": 8,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 8192.0,
+          "peak_vram_bytes": 12288.0,
+          "wall_clock_us": 507.6749948784709,
+          "build_cost_us": 213.20002269931138,
+          "per_level_resident": [
+            37.0,
+            296.0,
+            2368.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 10240.0,
+          "peak_vram_bytes": 14336.0,
+          "wall_clock_us": 565.0500243064016,
+          "build_cost_us": 809.1499912552536,
+          "cross_level_lookup_us": 122.75000335648656,
+          "per_level_resident": [
+            36.0,
+            96.0,
+            864.0
+          ]
+        },
+        "total_resident_base": 2701.0,
+        "total_resident_d": 996.0,
+        "time_overhead_frac": 0.113,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 8,
+        "feat_dim": 8,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 8192.0,
+          "peak_vram_bytes": 12288.0,
+          "wall_clock_us": 515.3999954927713,
+          "build_cost_us": 214.45000311359763,
+          "per_level_resident": [
+            37.0,
+            296.0,
+            2368.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 10240.0,
+          "peak_vram_bytes": 14336.0,
+          "wall_clock_us": 584.5500127179548,
+          "build_cost_us": 819.1500091925263,
+          "cross_level_lookup_us": 123.64999565761536,
+          "per_level_resident": [
+            36.0,
+            160.0,
+            1280.0
+          ]
+        },
+        "total_resident_base": 2701.0,
+        "total_resident_d": 1476.0,
+        "time_overhead_frac": 0.1342,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 8,
+        "feat_dim": 8,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 8704.0,
+          "peak_vram_bytes": 14336.0,
+          "wall_clock_us": 524.8250236036256,
+          "build_cost_us": 215.24998010136187,
+          "per_level_resident": [
+            37.0,
+            296.0,
+            2368.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 11264.0,
+          "peak_vram_bytes": 16384.0,
+          "wall_clock_us": 594.5749871898443,
+          "build_cost_us": 855.1499922759831,
+          "cross_level_lookup_us": 125.82498311530799,
+          "per_level_resident": [
+            36.0,
+            224.0,
+            1696.0
+          ]
+        },
+        "total_resident_base": 2701.0,
+        "total_resident_d": 1956.0,
+        "time_overhead_frac": 0.1329,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 8,
+        "feat_dim": 16,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 9728.0,
+          "peak_vram_bytes": 13312.0,
+          "wall_clock_us": 523.75000086613,
+          "build_cost_us": 227.35001402907073,
+          "per_level_resident": [
+            69.0,
+            552.0,
+            4416.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 11264.0,
+          "peak_vram_bytes": 14848.0,
+          "wall_clock_us": 597.8499830234796,
+          "build_cost_us": 906.7000064533204,
+          "cross_level_lookup_us": 125.94999861903489,
+          "per_level_resident": [
+            68.0,
+            96.0,
+            640.0
+          ]
+        },
+        "total_resident_base": 5037.0,
+        "total_resident_d": 804.0,
+        "time_overhead_frac": 0.1415,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 8,
+        "feat_dim": 16,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 10752.0,
+          "peak_vram_bytes": 16384.0,
+          "wall_clock_us": 524.2500192252919,
+          "build_cost_us": 224.84996588900685,
+          "per_level_resident": [
+            69.0,
+            552.0,
+            4416.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 13312.0,
+          "peak_vram_bytes": 18432.0,
+          "wall_clock_us": 587.7500079805031,
+          "build_cost_us": 857.8500128351152,
+          "cross_level_lookup_us": 125.82496856339276,
+          "per_level_resident": [
+            68.0,
+            160.0,
+            1472.0
+          ]
+        },
+        "total_resident_base": 5037.0,
+        "total_resident_d": 1700.0,
+        "time_overhead_frac": 0.1211,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 8,
+        "feat_dim": 16,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 11264.0,
+          "peak_vram_bytes": 18432.0,
+          "wall_clock_us": 524.9499954516068,
+          "build_cost_us": 226.6000083182007,
+          "per_level_resident": [
+            69.0,
+            552.0,
+            4416.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 14336.0,
+          "peak_vram_bytes": 20480.0,
+          "wall_clock_us": 576.449980144389,
+          "build_cost_us": 835.149985505268,
+          "cross_level_lookup_us": 125.07497740443796,
+          "per_level_resident": [
+            68.0,
+            288.0,
+            2304.0
+          ]
+        },
+        "total_resident_base": 5037.0,
+        "total_resident_d": 2660.0,
+        "time_overhead_frac": 0.0981,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 3,
+        "branching": 8,
+        "feat_dim": 16,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 12288.0,
+          "peak_vram_bytes": 22528.0,
+          "wall_clock_us": 520.8999937167391,
+          "build_cost_us": 225.800002226606,
+          "per_level_resident": [
+            69.0,
+            552.0,
+            4416.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 16384.0,
+          "peak_vram_bytes": 24576.0,
+          "wall_clock_us": 575.6500031566247,
+          "build_cost_us": 839.2500167246908,
+          "cross_level_lookup_us": 123.29997844062746,
+          "per_level_resident": [
+            68.0,
+            416.0,
+            3136.0
+          ]
+        },
+        "total_resident_base": 5037.0,
+        "total_resident_d": 3620.0,
+        "time_overhead_frac": 0.1051,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 2,
+        "feat_dim": 4,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 769.6749962633476,
+          "build_cost_us": 290.2999985963106,
+          "per_level_resident": [
+            21.0,
+            42.0,
+            84.0,
+            168.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 9728.0,
+          "peak_vram_bytes": 13312.0,
+          "wall_clock_us": 863.575012772344,
+          "build_cost_us": 1110.5500161647797,
+          "cross_level_lookup_us": 172.77500592172146,
+          "per_level_resident": [
+            20.0,
+            24.0,
+            32.0,
+            48.0
+          ]
+        },
+        "total_resident_base": 315.0,
+        "total_resident_d": 124.0,
+        "time_overhead_frac": 0.122,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 2,
+        "feat_dim": 4,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 769.0750062465668,
+          "build_cost_us": 290.9500035457313,
+          "per_level_resident": [
+            21.0,
+            42.0,
+            84.0,
+            168.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 9728.0,
+          "peak_vram_bytes": 13312.0,
+          "wall_clock_us": 867.2249823575839,
+          "build_cost_us": 1125.150010921061,
+          "cross_level_lookup_us": 176.2999891070649,
+          "per_level_resident": [
+            20.0,
+            24.0,
+            32.0,
+            64.0
+          ]
+        },
+        "total_resident_base": 315.0,
+        "total_resident_d": 140.0,
+        "time_overhead_frac": 0.1276,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 2,
+        "feat_dim": 4,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 755.9499936178327,
+          "build_cost_us": 287.84997994080186,
+          "per_level_resident": [
+            21.0,
+            42.0,
+            84.0,
+            168.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 9728.0,
+          "peak_vram_bytes": 13312.0,
+          "wall_clock_us": 856.6499745938927,
+          "build_cost_us": 1103.9499950129539,
+          "cross_level_lookup_us": 175.6999990902841,
+          "per_level_resident": [
+            20.0,
+            24.0,
+            48.0,
+            96.0
+          ]
+        },
+        "total_resident_base": 315.0,
+        "total_resident_d": 188.0,
+        "time_overhead_frac": 0.1332,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 2,
+        "feat_dim": 4,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 784.8250097595155,
+          "build_cost_us": 288.3999841287732,
+          "per_level_resident": [
+            21.0,
+            42.0,
+            84.0,
+            168.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 9728.0,
+          "peak_vram_bytes": 13312.0,
+          "wall_clock_us": 888.3750124368817,
+          "build_cost_us": 1176.4000228140503,
+          "cross_level_lookup_us": 178.29998978413641,
+          "per_level_resident": [
+            20.0,
+            24.0,
+            64.0,
+            128.0
+          ]
+        },
+        "total_resident_base": 315.0,
+        "total_resident_d": 236.0,
+        "time_overhead_frac": 0.1319,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 2,
+        "feat_dim": 8,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 765.0499901501462,
+          "build_cost_us": 280.8499848470092,
+          "per_level_resident": [
+            37.0,
+            74.0,
+            148.0,
+            296.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 9728.0,
+          "peak_vram_bytes": 13312.0,
+          "wall_clock_us": 858.675004565157,
+          "build_cost_us": 1114.4999880343676,
+          "cross_level_lookup_us": 175.74999947100878,
+          "per_level_resident": [
+            36.0,
+            40.0,
+            48.0,
+            64.0
+          ]
+        },
+        "total_resident_base": 555.0,
+        "total_resident_d": 188.0,
+        "time_overhead_frac": 0.1224,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 2,
+        "feat_dim": 8,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 743.9249893650413,
+          "build_cost_us": 273.4999870881438,
+          "per_level_resident": [
+            37.0,
+            74.0,
+            148.0,
+            296.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 9728.0,
+          "peak_vram_bytes": 13312.0,
+          "wall_clock_us": 825.249997433275,
+          "build_cost_us": 1063.500007148832,
+          "cross_level_lookup_us": 168.87499077711254,
+          "per_level_resident": [
+            36.0,
+            40.0,
+            48.0,
+            96.0
+          ]
+        },
+        "total_resident_base": 555.0,
+        "total_resident_d": 220.0,
+        "time_overhead_frac": 0.1093,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 2,
+        "feat_dim": 8,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 764.2249984201044,
+          "build_cost_us": 278.5000251606107,
+          "per_level_resident": [
+            37.0,
+            74.0,
+            148.0,
+            296.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 9728.0,
+          "peak_vram_bytes": 13312.0,
+          "wall_clock_us": 847.2500194329768,
+          "build_cost_us": 1116.9999779667705,
+          "cross_level_lookup_us": 175.37499661557376,
+          "per_level_resident": [
+            36.0,
+            40.0,
+            80.0,
+            160.0
+          ]
+        },
+        "total_resident_base": 555.0,
+        "total_resident_d": 316.0,
+        "time_overhead_frac": 0.1086,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 2,
+        "feat_dim": 8,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 785.0499823689461,
+          "build_cost_us": 294.3500003311783,
+          "per_level_resident": [
+            37.0,
+            74.0,
+            148.0,
+            296.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 9728.0,
+          "peak_vram_bytes": 13312.0,
+          "wall_clock_us": 875.299985636957,
+          "build_cost_us": 1121.699984651059,
+          "cross_level_lookup_us": 178.7499786587432,
+          "per_level_resident": [
+            36.0,
+            40.0,
+            112.0,
+            224.0
+          ]
+        },
+        "total_resident_base": 555.0,
+        "total_resident_d": 412.0,
+        "time_overhead_frac": 0.115,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 2,
+        "feat_dim": 16,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 773.0749930487946,
+          "build_cost_us": 282.29999588802457,
+          "per_level_resident": [
+            69.0,
+            138.0,
+            276.0,
+            552.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 9728.0,
+          "peak_vram_bytes": 13312.0,
+          "wall_clock_us": 860.1749868830666,
+          "build_cost_us": 1103.6499927286059,
+          "cross_level_lookup_us": 172.40000306628644,
+          "per_level_resident": [
+            68.0,
+            72.0,
+            80.0,
+            96.0
+          ]
+        },
+        "total_resident_base": 1035.0,
+        "total_resident_d": 316.0,
+        "time_overhead_frac": 0.1127,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 2,
+        "feat_dim": 16,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 747.7250037482008,
+          "build_cost_us": 279.6999760903418,
+          "per_level_resident": [
+            69.0,
+            138.0,
+            276.0,
+            552.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 9728.0,
+          "peak_vram_bytes": 13312.0,
+          "wall_clock_us": 832.8499970957637,
+          "build_cost_us": 1091.0500132013112,
+          "cross_level_lookup_us": 173.17499441560358,
+          "per_level_resident": [
+            68.0,
+            72.0,
+            80.0,
+            160.0
+          ]
+        },
+        "total_resident_base": 1035.0,
+        "total_resident_d": 380.0,
+        "time_overhead_frac": 0.1138,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 2,
+        "feat_dim": 16,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 762.9499887116253,
+          "build_cost_us": 283.95000845193863,
+          "per_level_resident": [
+            69.0,
+            138.0,
+            276.0,
+            552.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 9728.0,
+          "peak_vram_bytes": 13312.0,
+          "wall_clock_us": 880.3500095382333,
+          "build_cost_us": 1102.2999824490398,
+          "cross_level_lookup_us": 176.60000594332814,
+          "per_level_resident": [
+            68.0,
+            72.0,
+            144.0,
+            288.0
+          ]
+        },
+        "total_resident_base": 1035.0,
+        "total_resident_d": 572.0,
+        "time_overhead_frac": 0.1539,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 2,
+        "feat_dim": 16,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 7680.0,
+          "peak_vram_bytes": 11264.0,
+          "wall_clock_us": 767.4999942537397,
+          "build_cost_us": 286.4000271074474,
+          "per_level_resident": [
+            69.0,
+            138.0,
+            276.0,
+            552.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 9728.0,
+          "peak_vram_bytes": 13312.0,
+          "wall_clock_us": 871.3999995961785,
+          "build_cost_us": 1153.0500196386129,
+          "cross_level_lookup_us": 172.84999194089323,
+          "per_level_resident": [
+            68.0,
+            72.0,
+            208.0,
+            416.0
+          ]
+        },
+        "total_resident_base": 1035.0,
+        "total_resident_d": 764.0,
+        "time_overhead_frac": 0.1354,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 4,
+        "feat_dim": 4,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 8192.0,
+          "peak_vram_bytes": 11776.0,
+          "wall_clock_us": 757.2000176878646,
+          "build_cost_us": 288.75001589767635,
+          "per_level_resident": [
+            21.0,
+            84.0,
+            336.0,
+            1344.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 10240.0,
+          "peak_vram_bytes": 13824.0,
+          "wall_clock_us": 854.4750016881153,
+          "build_cost_us": 1108.5499718319625,
+          "cross_level_lookup_us": 175.72499928064644,
+          "per_level_resident": [
+            20.0,
+            32.0,
+            96.0,
+            352.0
+          ]
+        },
+        "total_resident_base": 1785.0,
+        "total_resident_d": 500.0,
+        "time_overhead_frac": 0.1285,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 4,
+        "feat_dim": 4,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 8192.0,
+          "peak_vram_bytes": 11776.0,
+          "wall_clock_us": 772.6500189164653,
+          "build_cost_us": 286.0999957192689,
+          "per_level_resident": [
+            21.0,
+            84.0,
+            336.0,
+            1344.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 10240.0,
+          "peak_vram_bytes": 13824.0,
+          "wall_clock_us": 885.4000043356791,
+          "build_cost_us": 1112.70000343211,
+          "cross_level_lookup_us": 177.8250007191673,
+          "per_level_resident": [
+            20.0,
+            32.0,
+            144.0,
+            560.0
+          ]
+        },
+        "total_resident_base": 1785.0,
+        "total_resident_d": 756.0,
+        "time_overhead_frac": 0.1459,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 4,
+        "feat_dim": 4,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 8192.0,
+          "peak_vram_bytes": 11776.0,
+          "wall_clock_us": 761.3500056322664,
+          "build_cost_us": 277.94999186880887,
+          "per_level_resident": [
+            21.0,
+            84.0,
+            336.0,
+            1344.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 10240.0,
+          "peak_vram_bytes": 13824.0,
+          "wall_clock_us": 866.075002704747,
+          "build_cost_us": 1107.0500186178833,
+          "cross_level_lookup_us": 177.0000089891255,
+          "per_level_resident": [
+            20.0,
+            48.0,
+            192.0,
+            768.0
+          ]
+        },
+        "total_resident_base": 1785.0,
+        "total_resident_d": 1028.0,
+        "time_overhead_frac": 0.1376,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 4,
+        "feat_dim": 4,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 8704.0,
+          "peak_vram_bytes": 12800.0,
+          "wall_clock_us": 762.8750172443688,
+          "build_cost_us": 278.2999654300511,
+          "per_level_resident": [
+            21.0,
+            84.0,
+            336.0,
+            1344.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 11264.0,
+          "peak_vram_bytes": 15360.0,
+          "wall_clock_us": 854.4249867554754,
+          "build_cost_us": 1085.9000030905008,
+          "cross_level_lookup_us": 175.02499395050108,
+          "per_level_resident": [
+            20.0,
+            64.0,
+            240.0,
+            976.0
+          ]
+        },
+        "total_resident_base": 1785.0,
+        "total_resident_d": 1300.0,
+        "time_overhead_frac": 0.12,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 4,
+        "feat_dim": 8,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 9216.0,
+          "peak_vram_bytes": 12800.0,
+          "wall_clock_us": 742.8749959217384,
+          "build_cost_us": 286.2999972421676,
+          "per_level_resident": [
+            37.0,
+            148.0,
+            592.0,
+            2368.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 11264.0,
+          "peak_vram_bytes": 14848.0,
+          "wall_clock_us": 839.3500029342249,
+          "build_cost_us": 1084.3500203918666,
+          "cross_level_lookup_us": 171.82499868795276,
+          "per_level_resident": [
+            36.0,
+            48.0,
+            128.0,
+            448.0
+          ]
+        },
+        "total_resident_base": 3145.0,
+        "total_resident_d": 660.0,
+        "time_overhead_frac": 0.1299,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 4,
+        "feat_dim": 8,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 9728.0,
+          "peak_vram_bytes": 13824.0,
+          "wall_clock_us": 778.4499903209507,
+          "build_cost_us": 293.25002105906606,
+          "per_level_resident": [
+            37.0,
+            148.0,
+            592.0,
+            2368.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 12288.0,
+          "peak_vram_bytes": 16384.0,
+          "wall_clock_us": 886.1750102369115,
+          "build_cost_us": 1143.350003985688,
+          "cross_level_lookup_us": 175.87500042282045,
+          "per_level_resident": [
+            36.0,
+            48.0,
+            224.0,
+            864.0
+          ]
+        },
+        "total_resident_base": 3145.0,
+        "total_resident_d": 1172.0,
+        "time_overhead_frac": 0.1384,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 4,
+        "feat_dim": 8,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 9728.0,
+          "peak_vram_bytes": 13824.0,
+          "wall_clock_us": 784.9749817978591,
+          "build_cost_us": 287.24997537210584,
+          "per_level_resident": [
+            37.0,
+            148.0,
+            592.0,
+            2368.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 12288.0,
+          "peak_vram_bytes": 16384.0,
+          "wall_clock_us": 874.4249935261905,
+          "build_cost_us": 1114.5500175189227,
+          "cross_level_lookup_us": 174.0000006975606,
+          "per_level_resident": [
+            36.0,
+            80.0,
+            320.0,
+            1280.0
+          ]
+        },
+        "total_resident_base": 3145.0,
+        "total_resident_d": 1716.0,
+        "time_overhead_frac": 0.114,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 4,
+        "feat_dim": 8,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 10240.0,
+          "peak_vram_bytes": 15872.0,
+          "wall_clock_us": 757.8500080853701,
+          "build_cost_us": 287.3499761335552,
+          "per_level_resident": [
+            37.0,
+            148.0,
+            592.0,
+            2368.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 13312.0,
+          "peak_vram_bytes": 18432.0,
+          "wall_clock_us": 851.125005283393,
+          "build_cost_us": 1082.5000063050538,
+          "cross_level_lookup_us": 171.975014382042,
+          "per_level_resident": [
+            36.0,
+            112.0,
+            416.0,
+            1696.0
+          ]
+        },
+        "total_resident_base": 3145.0,
+        "total_resident_d": 2260.0,
+        "time_overhead_frac": 0.1231,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 4,
+        "feat_dim": 16,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 11776.0,
+          "peak_vram_bytes": 15360.0,
+          "wall_clock_us": 760.3999983984977,
+          "build_cost_us": 286.00002406165004,
+          "per_level_resident": [
+            69.0,
+            276.0,
+            1104.0,
+            4416.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 13824.0,
+          "peak_vram_bytes": 17408.0,
+          "wall_clock_us": 865.3499971842393,
+          "build_cost_us": 1121.0499797016382,
+          "cross_level_lookup_us": 176.62499158177525,
+          "per_level_resident": [
+            68.0,
+            80.0,
+            192.0,
+            640.0
+          ]
+        },
+        "total_resident_base": 5865.0,
+        "total_resident_d": 980.0,
+        "time_overhead_frac": 0.138,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 4,
+        "feat_dim": 16,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 12800.0,
+          "peak_vram_bytes": 18432.0,
+          "wall_clock_us": 819.4000110961497,
+          "build_cost_us": 291.4999786298722,
+          "per_level_resident": [
+            69.0,
+            276.0,
+            1104.0,
+            4416.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 15872.0,
+          "peak_vram_bytes": 20992.0,
+          "wall_clock_us": 878.0750067671761,
+          "build_cost_us": 1172.9499965440482,
+          "cross_level_lookup_us": 178.625006810762,
+          "per_level_resident": [
+            68.0,
+            80.0,
+            384.0,
+            1472.0
+          ]
+        },
+        "total_resident_base": 5865.0,
+        "total_resident_d": 2004.0,
+        "time_overhead_frac": 0.0716,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 4,
+        "feat_dim": 16,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 13312.0,
+          "peak_vram_bytes": 20480.0,
+          "wall_clock_us": 763.4749927092344,
+          "build_cost_us": 284.200010355562,
+          "per_level_resident": [
+            69.0,
+            276.0,
+            1104.0,
+            4416.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 16896.0,
+          "peak_vram_bytes": 23040.0,
+          "wall_clock_us": 882.5749828247353,
+          "build_cost_us": 1122.35001870431,
+          "cross_level_lookup_us": 173.7500133458525,
+          "per_level_resident": [
+            68.0,
+            144.0,
+            576.0,
+            2304.0
+          ]
+        },
+        "total_resident_base": 5865.0,
+        "total_resident_d": 3092.0,
+        "time_overhead_frac": 0.156,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 4,
+        "feat_dim": 16,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 14336.0,
+          "peak_vram_bytes": 24576.0,
+          "wall_clock_us": 734.5500052906573,
+          "build_cost_us": 268.5499785002321,
+          "per_level_resident": [
+            69.0,
+            276.0,
+            1104.0,
+            4416.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 19456.0,
+          "peak_vram_bytes": 27648.0,
+          "wall_clock_us": 827.6000153273344,
+          "build_cost_us": 1051.7500340938568,
+          "cross_level_lookup_us": 170.1500004855916,
+          "per_level_resident": [
+            68.0,
+            208.0,
+            768.0,
+            3136.0
+          ]
+        },
+        "total_resident_base": 5865.0,
+        "total_resident_d": 4180.0,
+        "time_overhead_frac": 0.1267,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 8,
+        "feat_dim": 4,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 19456.0,
+          "peak_vram_bytes": 23552.0,
+          "wall_clock_us": 764.175012591295,
+          "build_cost_us": 279.90000671707094,
+          "per_level_resident": [
+            21.0,
+            168.0,
+            1344.0,
+            10752.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 22016.0,
+          "peak_vram_bytes": 26112.0,
+          "wall_clock_us": 873.2250280445442,
+          "build_cost_us": 1120.1000015717,
+          "cross_level_lookup_us": 171.7000122880563,
+          "per_level_resident": [
+            20.0,
+            48.0,
+            352.0,
+            2864.0
+          ]
+        },
+        "total_resident_base": 12285.0,
+        "total_resident_d": 3284.0,
+        "time_overhead_frac": 0.1427,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 8,
+        "feat_dim": 4,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 21504.0,
+          "peak_vram_bytes": 31744.0,
+          "wall_clock_us": 751.4500030083582,
+          "build_cost_us": 279.85000633634627,
+          "per_level_resident": [
+            21.0,
+            168.0,
+            1344.0,
+            10752.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 26112.0,
+          "peak_vram_bytes": 35328.0,
+          "wall_clock_us": 872.5500083528459,
+          "build_cost_us": 1130.7999957352877,
+          "cross_level_lookup_us": 176.44997569732368,
+          "per_level_resident": [
+            20.0,
+            64.0,
+            560.0,
+            4512.0
+          ]
+        },
+        "total_resident_base": 12285.0,
+        "total_resident_d": 5156.0,
+        "time_overhead_frac": 0.1612,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 8,
+        "feat_dim": 4,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 23040.0,
+          "peak_vram_bytes": 38400.0,
+          "wall_clock_us": 740.7250086544082,
+          "build_cost_us": 282.34999626874924,
+          "per_level_resident": [
+            21.0,
+            168.0,
+            1344.0,
+            10752.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 29184.0,
+          "peak_vram_bytes": 41984.0,
+          "wall_clock_us": 835.5500176548958,
+          "build_cost_us": 1067.749981302768,
+          "cross_level_lookup_us": 168.62500342540443,
+          "per_level_resident": [
+            20.0,
+            96.0,
+            768.0,
+            6144.0
+          ]
+        },
+        "total_resident_base": 12285.0,
+        "total_resident_d": 7028.0,
+        "time_overhead_frac": 0.128,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 8,
+        "feat_dim": 4,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 25600.0,
+          "peak_vram_bytes": 48640.0,
+          "wall_clock_us": 743.6750020133331,
+          "build_cost_us": 288.94998831674457,
+          "per_level_resident": [
+            21.0,
+            168.0,
+            1344.0,
+            10752.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 34816.0,
+          "peak_vram_bytes": 53760.0,
+          "wall_clock_us": 833.8750194525346,
+          "build_cost_us": 1105.1000037696213,
+          "cross_level_lookup_us": 170.35000200849026,
+          "per_level_resident": [
+            20.0,
+            128.0,
+            976.0,
+            7776.0
+          ]
+        },
+        "total_resident_base": 12285.0,
+        "total_resident_d": 8900.0,
+        "time_overhead_frac": 0.1213,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 8,
+        "feat_dim": 8,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 29696.0,
+          "peak_vram_bytes": 36864.0,
+          "wall_clock_us": 775.3250101814047,
+          "build_cost_us": 294.45000109262764,
+          "per_level_resident": [
+            37.0,
+            296.0,
+            2368.0,
+            18944.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 33280.0,
+          "peak_vram_bytes": 39424.0,
+          "wall_clock_us": 872.5249936105683,
+          "build_cost_us": 1171.8999885488302,
+          "cross_level_lookup_us": 175.6999990902841,
+          "per_level_resident": [
+            36.0,
+            64.0,
+            448.0,
+            3680.0
+          ]
+        },
+        "total_resident_base": 21645.0,
+        "total_resident_d": 4228.0,
+        "time_overhead_frac": 0.1254,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 8,
+        "feat_dim": 8,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 33280.0,
+          "peak_vram_bytes": 51200.0,
+          "wall_clock_us": 815.1749934768304,
+          "build_cost_us": 288.7000155169517,
+          "per_level_resident": [
+            37.0,
+            296.0,
+            2368.0,
+            18944.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 40960.0,
+          "peak_vram_bytes": 55296.0,
+          "wall_clock_us": 864.949994138442,
+          "build_cost_us": 1110.4000150226057,
+          "cross_level_lookup_us": 175.14999490231276,
+          "per_level_resident": [
+            36.0,
+            96.0,
+            864.0,
+            6976.0
+          ]
+        },
+        "total_resident_base": 21645.0,
+        "total_resident_d": 7972.0,
+        "time_overhead_frac": 0.0611,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 8,
+        "feat_dim": 8,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 36352.0,
+          "peak_vram_bytes": 64000.0,
+          "wall_clock_us": 738.9499951386824,
+          "build_cost_us": 282.7499993145466,
+          "per_level_resident": [
+            37.0,
+            296.0,
+            2368.0,
+            18944.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 47104.0,
+          "peak_vram_bytes": 68096.0,
+          "wall_clock_us": 849.8750103171915,
+          "build_cost_us": 1087.7500171773136,
+          "cross_level_lookup_us": 171.52499640360475,
+          "per_level_resident": [
+            36.0,
+            160.0,
+            1280.0,
+            10240.0
+          ]
+        },
+        "total_resident_base": 21645.0,
+        "total_resident_d": 11716.0,
+        "time_overhead_frac": 0.1501,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 8,
+        "feat_dim": 8,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 40448.0,
+          "peak_vram_bytes": 80384.0,
+          "wall_clock_us": 792.4750243546441,
+          "build_cost_us": 286.7500006686896,
+          "per_level_resident": [
+            37.0,
+            296.0,
+            2368.0,
+            18944.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 55808.0,
+          "peak_vram_bytes": 86016.0,
+          "wall_clock_us": 898.8999907160178,
+          "build_cost_us": 1113.7499823234975,
+          "cross_level_lookup_us": 174.4250039337203,
+          "per_level_resident": [
+            36.0,
+            224.0,
+            1696.0,
+            13504.0
+          ]
+        },
+        "total_resident_base": 21645.0,
+        "total_resident_d": 15460.0,
+        "time_overhead_frac": 0.1343,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 8,
+        "feat_dim": 16,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 49664.0,
+          "peak_vram_bytes": 61440.0,
+          "wall_clock_us": 756.5249979961663,
+          "build_cost_us": 277.84999110735953,
+          "per_level_resident": [
+            69.0,
+            552.0,
+            4416.0,
+            35328.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 54784.0,
+          "peak_vram_bytes": 64000.0,
+          "wall_clock_us": 848.62501535099,
+          "build_cost_us": 1076.9500222522765,
+          "cross_level_lookup_us": 173.24999498669058,
+          "per_level_resident": [
+            68.0,
+            96.0,
+            640.0,
+            5312.0
+          ]
+        },
+        "total_resident_base": 40365.0,
+        "total_resident_d": 6116.0,
+        "time_overhead_frac": 0.1217,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 8,
+        "feat_dim": 16,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 56832.0,
+          "peak_vram_bytes": 90112.0,
+          "wall_clock_us": 762.2749981237575,
+          "build_cost_us": 278.9499703794718,
+          "per_level_resident": [
+            69.0,
+            552.0,
+            4416.0,
+            35328.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 70144.0,
+          "peak_vram_bytes": 94720.0,
+          "wall_clock_us": 853.9999835193157,
+          "build_cost_us": 1084.6999939531088,
+          "cross_level_lookup_us": 174.54999033361673,
+          "per_level_resident": [
+            68.0,
+            160.0,
+            1472.0,
+            11904.0
+          ]
+        },
+        "total_resident_base": 40365.0,
+        "total_resident_d": 13604.0,
+        "time_overhead_frac": 0.1203,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 8,
+        "feat_dim": 16,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 62976.0,
+          "peak_vram_bytes": 115200.0,
+          "wall_clock_us": 762.3749988852069,
+          "build_cost_us": 280.30003886669874,
+          "per_level_resident": [
+            69.0,
+            552.0,
+            4416.0,
+            35328.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 82944.0,
+          "peak_vram_bytes": 120320.0,
+          "wall_clock_us": 852.4500008206815,
+          "build_cost_us": 1095.3499877359718,
+          "cross_level_lookup_us": 174.6749912854284,
+          "per_level_resident": [
+            68.0,
+            288.0,
+            2304.0,
+            18432.0
+          ]
+        },
+        "total_resident_base": 40365.0,
+        "total_resident_d": 21092.0,
+        "time_overhead_frac": 0.1182,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 4,
+        "branching": 8,
+        "feat_dim": 16,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 70144.0,
+          "peak_vram_bytes": 143872.0,
+          "wall_clock_us": 767.4750086152926,
+          "build_cost_us": 284.25001073628664,
+          "per_level_resident": [
+            69.0,
+            552.0,
+            4416.0,
+            35328.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 98304.0,
+          "peak_vram_bytes": 151040.0,
+          "wall_clock_us": 881.8250062176958,
+          "build_cost_us": 1155.1000061444938,
+          "cross_level_lookup_us": 175.1749950926751,
+          "per_level_resident": [
+            68.0,
+            416.0,
+            3136.0,
+            24960.0
+          ]
+        },
+        "total_resident_base": 40365.0,
+        "total_resident_d": 28580.0,
+        "time_overhead_frac": 0.149,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 2,
+        "feat_dim": 4,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 9216.0,
+          "peak_vram_bytes": 12800.0,
+          "wall_clock_us": 1006.2749934149906,
+          "build_cost_us": 347.59999834932387,
+          "per_level_resident": [
+            21.0,
+            42.0,
+            84.0,
+            168.0,
+            336.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 11776.0,
+          "peak_vram_bytes": 15360.0,
+          "wall_clock_us": 1154.5500019565225,
+          "build_cost_us": 1397.3499881103635,
+          "cross_level_lookup_us": 225.97500355914235,
+          "per_level_resident": [
+            20.0,
+            24.0,
+            32.0,
+            48.0,
+            96.0
+          ]
+        },
+        "total_resident_base": 651.0,
+        "total_resident_d": 220.0,
+        "time_overhead_frac": 0.1474,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 2,
+        "feat_dim": 4,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 9216.0,
+          "peak_vram_bytes": 12800.0,
+          "wall_clock_us": 992.8499930538237,
+          "build_cost_us": 346.5999907348305,
+          "per_level_resident": [
+            21.0,
+            42.0,
+            84.0,
+            168.0,
+            336.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 11776.0,
+          "peak_vram_bytes": 15360.0,
+          "wall_clock_us": 1145.3750194050372,
+          "build_cost_us": 1387.5000004190952,
+          "cross_level_lookup_us": 224.80000916402787,
+          "per_level_resident": [
+            20.0,
+            24.0,
+            32.0,
+            64.0,
+            144.0
+          ]
+        },
+        "total_resident_base": 651.0,
+        "total_resident_d": 284.0,
+        "time_overhead_frac": 0.1536,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 2,
+        "feat_dim": 4,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 9216.0,
+          "peak_vram_bytes": 12800.0,
+          "wall_clock_us": 1055.3750034887344,
+          "build_cost_us": 357.45001514442265,
+          "per_level_resident": [
+            21.0,
+            42.0,
+            84.0,
+            168.0,
+            336.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 11776.0,
+          "peak_vram_bytes": 15360.0,
+          "wall_clock_us": 1187.8000077558681,
+          "build_cost_us": 1451.5500224661082,
+          "cross_level_lookup_us": 228.04999025538564,
+          "per_level_resident": [
+            20.0,
+            24.0,
+            48.0,
+            96.0,
+            192.0
+          ]
+        },
+        "total_resident_base": 651.0,
+        "total_resident_d": 380.0,
+        "time_overhead_frac": 0.1255,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 2,
+        "feat_dim": 4,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 9216.0,
+          "peak_vram_bytes": 12800.0,
+          "wall_clock_us": 1012.3749816557392,
+          "build_cost_us": 352.3500054143369,
+          "per_level_resident": [
+            21.0,
+            42.0,
+            84.0,
+            168.0,
+            336.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 11776.0,
+          "peak_vram_bytes": 15360.0,
+          "wall_clock_us": 1135.6500181136653,
+          "build_cost_us": 1448.549999622628,
+          "cross_level_lookup_us": 220.4249904025346,
+          "per_level_resident": [
+            20.0,
+            24.0,
+            64.0,
+            128.0,
+            240.0
+          ]
+        },
+        "total_resident_base": 651.0,
+        "total_resident_d": 476.0,
+        "time_overhead_frac": 0.1218,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 2,
+        "feat_dim": 8,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 9216.0,
+          "peak_vram_bytes": 12800.0,
+          "wall_clock_us": 988.3250022539869,
+          "build_cost_us": 333.70000892318785,
+          "per_level_resident": [
+            37.0,
+            74.0,
+            148.0,
+            296.0,
+            592.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 11776.0,
+          "peak_vram_bytes": 15360.0,
+          "wall_clock_us": 1143.425004556775,
+          "build_cost_us": 1339.3999834079295,
+          "cross_level_lookup_us": 226.39997769147158,
+          "per_level_resident": [
+            36.0,
+            40.0,
+            48.0,
+            64.0,
+            128.0
+          ]
+        },
+        "total_resident_base": 1147.0,
+        "total_resident_d": 316.0,
+        "time_overhead_frac": 0.1569,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 2,
+        "feat_dim": 8,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 9216.0,
+          "peak_vram_bytes": 12800.0,
+          "wall_clock_us": 944.5500036235899,
+          "build_cost_us": 290.0499966926873,
+          "per_level_resident": [
+            37.0,
+            74.0,
+            148.0,
+            296.0,
+            592.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 11776.0,
+          "peak_vram_bytes": 15360.0,
+          "wall_clock_us": 1128.400006564334,
+          "build_cost_us": 1274.599984753877,
+          "cross_level_lookup_us": 222.57499222178012,
+          "per_level_resident": [
+            36.0,
+            40.0,
+            48.0,
+            96.0,
+            224.0
+          ]
+        },
+        "total_resident_base": 1147.0,
+        "total_resident_d": 444.0,
+        "time_overhead_frac": 0.1946,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 2,
+        "feat_dim": 8,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 9216.0,
+          "peak_vram_bytes": 12800.0,
+          "wall_clock_us": 923.0750147253275,
+          "build_cost_us": 283.7000065483153,
+          "per_level_resident": [
+            37.0,
+            74.0,
+            148.0,
+            296.0,
+            592.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 11776.0,
+          "peak_vram_bytes": 15360.0,
+          "wall_clock_us": 1102.0999954780564,
+          "build_cost_us": 1233.549992321059,
+          "cross_level_lookup_us": 217.3249959014356,
+          "per_level_resident": [
+            36.0,
+            40.0,
+            80.0,
+            160.0,
+            320.0
+          ]
+        },
+        "total_resident_base": 1147.0,
+        "total_resident_d": 636.0,
+        "time_overhead_frac": 0.1939,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 2,
+        "feat_dim": 8,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 9216.0,
+          "peak_vram_bytes": 12800.0,
+          "wall_clock_us": 935.1999906357378,
+          "build_cost_us": 289.79999478906393,
+          "per_level_resident": [
+            37.0,
+            74.0,
+            148.0,
+            296.0,
+            592.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 11776.0,
+          "peak_vram_bytes": 15360.0,
+          "wall_clock_us": 1112.2249852633104,
+          "build_cost_us": 1298.5499924980104,
+          "cross_level_lookup_us": 221.27499687485397,
+          "per_level_resident": [
+            36.0,
+            40.0,
+            112.0,
+            224.0,
+            416.0
+          ]
+        },
+        "total_resident_base": 1147.0,
+        "total_resident_d": 828.0,
+        "time_overhead_frac": 0.1893,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 2,
+        "feat_dim": 16,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 9728.0,
+          "peak_vram_bytes": 13312.0,
+          "wall_clock_us": 996.6250217985362,
+          "build_cost_us": 317.1999996993691,
+          "per_level_resident": [
+            69.0,
+            138.0,
+            276.0,
+            552.0,
+            1104.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 12288.0,
+          "peak_vram_bytes": 15872.0,
+          "wall_clock_us": 1140.9499711589888,
+          "build_cost_us": 1323.300035437569,
+          "cross_level_lookup_us": 220.90000857133418,
+          "per_level_resident": [
+            68.0,
+            72.0,
+            80.0,
+            96.0,
+            192.0
+          ]
+        },
+        "total_resident_base": 2139.0,
+        "total_resident_d": 508.0,
+        "time_overhead_frac": 0.1448,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 2,
+        "feat_dim": 16,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 9728.0,
+          "peak_vram_bytes": 13312.0,
+          "wall_clock_us": 987.2249938780442,
+          "build_cost_us": 319.54998848959804,
+          "per_level_resident": [
+            69.0,
+            138.0,
+            276.0,
+            552.0,
+            1104.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 12288.0,
+          "peak_vram_bytes": 15872.0,
+          "wall_clock_us": 1112.1000134153292,
+          "build_cost_us": 1314.6000273991376,
+          "cross_level_lookup_us": 221.64999973028898,
+          "per_level_resident": [
+            68.0,
+            72.0,
+            80.0,
+            160.0,
+            384.0
+          ]
+        },
+        "total_resident_base": 2139.0,
+        "total_resident_d": 764.0,
+        "time_overhead_frac": 0.1265,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 2,
+        "feat_dim": 16,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 9728.0,
+          "peak_vram_bytes": 13312.0,
+          "wall_clock_us": 1008.0249921884388,
+          "build_cost_us": 328.3499972894788,
+          "per_level_resident": [
+            69.0,
+            138.0,
+            276.0,
+            552.0,
+            1104.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 12288.0,
+          "peak_vram_bytes": 15872.0,
+          "wall_clock_us": 1164.8000072455034,
+          "build_cost_us": 1378.8499927613884,
+          "cross_level_lookup_us": 223.99998852051795,
+          "per_level_resident": [
+            68.0,
+            72.0,
+            144.0,
+            288.0,
+            576.0
+          ]
+        },
+        "total_resident_base": 2139.0,
+        "total_resident_d": 1148.0,
+        "time_overhead_frac": 0.1555,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 2,
+        "feat_dim": 16,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 10240.0,
+          "peak_vram_bytes": 14336.0,
+          "wall_clock_us": 993.150009890087,
+          "build_cost_us": 342.7499905228615,
+          "per_level_resident": [
+            69.0,
+            138.0,
+            276.0,
+            552.0,
+            1104.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 13312.0,
+          "peak_vram_bytes": 17408.0,
+          "wall_clock_us": 1158.275015768595,
+          "build_cost_us": 1383.4999699611217,
+          "cross_level_lookup_us": 219.02500884607434,
+          "per_level_resident": [
+            68.0,
+            72.0,
+            208.0,
+            416.0,
+            768.0
+          ]
+        },
+        "total_resident_base": 2139.0,
+        "total_resident_d": 1532.0,
+        "time_overhead_frac": 0.1663,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 4,
+        "feat_dim": 4,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 14336.0,
+          "peak_vram_bytes": 17920.0,
+          "wall_clock_us": 986.074999673292,
+          "build_cost_us": 336.14999847486615,
+          "per_level_resident": [
+            21.0,
+            84.0,
+            336.0,
+            1344.0,
+            5376.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 16896.0,
+          "peak_vram_bytes": 20480.0,
+          "wall_clock_us": 1098.9750153385103,
+          "build_cost_us": 1332.8499917406589,
+          "cross_level_lookup_us": 217.15002367272973,
+          "per_level_resident": [
+            20.0,
+            32.0,
+            96.0,
+            352.0,
+            1440.0
+          ]
+        },
+        "total_resident_base": 7161.0,
+        "total_resident_d": 1940.0,
+        "time_overhead_frac": 0.1145,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 4,
+        "feat_dim": 4,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 15360.0,
+          "peak_vram_bytes": 21504.0,
+          "wall_clock_us": 1016.1249811062589,
+          "build_cost_us": 351.9500023685396,
+          "per_level_resident": [
+            21.0,
+            84.0,
+            336.0,
+            1344.0,
+            5376.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 18944.0,
+          "peak_vram_bytes": 24576.0,
+          "wall_clock_us": 1171.049996628426,
+          "build_cost_us": 1432.1999624371529,
+          "cross_level_lookup_us": 227.75000252295285,
+          "per_level_resident": [
+            20.0,
+            32.0,
+            144.0,
+            560.0,
+            2256.0
+          ]
+        },
+        "total_resident_base": 7161.0,
+        "total_resident_d": 3012.0,
+        "time_overhead_frac": 0.1525,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 4,
+        "feat_dim": 4,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 15872.0,
+          "peak_vram_bytes": 23552.0,
+          "wall_clock_us": 1012.7249988727272,
+          "build_cost_us": 347.90002973750234,
+          "per_level_resident": [
+            21.0,
+            84.0,
+            336.0,
+            1344.0,
+            5376.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 19968.0,
+          "peak_vram_bytes": 26624.0,
+          "wall_clock_us": 1170.299990917556,
+          "build_cost_us": 1389.549986924976,
+          "cross_level_lookup_us": 225.87501734960824,
+          "per_level_resident": [
+            20.0,
+            48.0,
+            192.0,
+            768.0,
+            3072.0
+          ]
+        },
+        "total_resident_base": 7161.0,
+        "total_resident_d": 4100.0,
+        "time_overhead_frac": 0.1556,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 4,
+        "feat_dim": 4,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 17408.0,
+          "peak_vram_bytes": 29184.0,
+          "wall_clock_us": 1013.324988889508,
+          "build_cost_us": 359.3500005081296,
+          "per_level_resident": [
+            21.0,
+            84.0,
+            336.0,
+            1344.0,
+            5376.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 23552.0,
+          "peak_vram_bytes": 33792.0,
+          "wall_clock_us": 1142.7999997977167,
+          "build_cost_us": 1403.6000065971166,
+          "cross_level_lookup_us": 226.25002020504326,
+          "per_level_resident": [
+            20.0,
+            64.0,
+            240.0,
+            976.0,
+            3888.0
+          ]
+        },
+        "total_resident_base": 7161.0,
+        "total_resident_d": 5188.0,
+        "time_overhead_frac": 0.1278,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 4,
+        "feat_dim": 8,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 19968.0,
+          "peak_vram_bytes": 24064.0,
+          "wall_clock_us": 1050.5000100238249,
+          "build_cost_us": 367.450003977865,
+          "per_level_resident": [
+            37.0,
+            148.0,
+            592.0,
+            2368.0,
+            9472.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 23040.0,
+          "peak_vram_bytes": 27136.0,
+          "wall_clock_us": 1202.299987198785,
+          "build_cost_us": 1449.9000099021941,
+          "cross_level_lookup_us": 226.32500622421503,
+          "per_level_resident": [
+            36.0,
+            48.0,
+            128.0,
+            448.0,
+            1856.0
+          ]
+        },
+        "total_resident_base": 12617.0,
+        "total_resident_d": 2516.0,
+        "time_overhead_frac": 0.1445,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 4,
+        "feat_dim": 8,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 21504.0,
+          "peak_vram_bytes": 30720.0,
+          "wall_clock_us": 1009.1000003740191,
+          "build_cost_us": 355.35002825781703,
+          "per_level_resident": [
+            37.0,
+            148.0,
+            592.0,
+            2368.0,
+            9472.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 26624.0,
+          "peak_vram_bytes": 34304.0,
+          "wall_clock_us": 1142.3499963711947,
+          "build_cost_us": 1395.2500012237579,
+          "cross_level_lookup_us": 221.42499801702797,
+          "per_level_resident": [
+            36.0,
+            48.0,
+            224.0,
+            864.0,
+            3488.0
+          ]
+        },
+        "total_resident_base": 12617.0,
+        "total_resident_d": 4660.0,
+        "time_overhead_frac": 0.132,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 4,
+        "feat_dim": 8,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 23040.0,
+          "peak_vram_bytes": 36864.0,
+          "wall_clock_us": 1033.4999824408442,
+          "build_cost_us": 354.50002178549767,
+          "per_level_resident": [
+            37.0,
+            148.0,
+            592.0,
+            2368.0,
+            9472.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 29696.0,
+          "peak_vram_bytes": 40448.0,
+          "wall_clock_us": 1176.2499780161306,
+          "build_cost_us": 1415.6500110402703,
+          "cross_level_lookup_us": 226.55002248939127,
+          "per_level_resident": [
+            36.0,
+            80.0,
+            320.0,
+            1280.0,
+            5120.0
+          ]
+        },
+        "total_resident_base": 12617.0,
+        "total_resident_d": 6836.0,
+        "time_overhead_frac": 0.1381,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 4,
+        "feat_dim": 8,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 25600.0,
+          "peak_vram_bytes": 46592.0,
+          "wall_clock_us": 1017.4249910051003,
+          "build_cost_us": 344.8000061325729,
+          "per_level_resident": [
+            37.0,
+            148.0,
+            592.0,
+            2368.0,
+            9472.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 35328.0,
+          "peak_vram_bytes": 51712.0,
+          "wall_clock_us": 1161.7499840212986,
+          "build_cost_us": 1421.7999705579132,
+          "cross_level_lookup_us": 227.97498968429863,
+          "per_level_resident": [
+            36.0,
+            112.0,
+            416.0,
+            1696.0,
+            6752.0
+          ]
+        },
+        "total_resident_base": 12617.0,
+        "total_resident_d": 9012.0,
+        "time_overhead_frac": 0.1419,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 4,
+        "feat_dim": 16,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 31744.0,
+          "peak_vram_bytes": 38912.0,
+          "wall_clock_us": 987.9000135697424,
+          "build_cost_us": 334.9999897181988,
+          "per_level_resident": [
+            69.0,
+            276.0,
+            1104.0,
+            4416.0,
+            17664.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 35840.0,
+          "peak_vram_bytes": 41984.0,
+          "wall_clock_us": 1097.699991078116,
+          "build_cost_us": 1332.3500170372427,
+          "cross_level_lookup_us": 216.54999000020325,
+          "per_level_resident": [
+            68.0,
+            80.0,
+            192.0,
+            640.0,
+            2688.0
+          ]
+        },
+        "total_resident_base": 23529.0,
+        "total_resident_d": 3668.0,
+        "time_overhead_frac": 0.1111,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 4,
+        "feat_dim": 16,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 34816.0,
+          "peak_vram_bytes": 51712.0,
+          "wall_clock_us": 1031.8499844288453,
+          "build_cost_us": 359.1999993659556,
+          "per_level_resident": [
+            69.0,
+            276.0,
+            1104.0,
+            4416.0,
+            17664.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 43008.0,
+          "peak_vram_bytes": 55808.0,
+          "wall_clock_us": 1174.52499398496,
+          "build_cost_us": 1398.9500293973833,
+          "cross_level_lookup_us": 222.00000239536166,
+          "per_level_resident": [
+            68.0,
+            80.0,
+            384.0,
+            1472.0,
+            5952.0
+          ]
+        },
+        "total_resident_base": 23529.0,
+        "total_resident_d": 7956.0,
+        "time_overhead_frac": 0.1383,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 4,
+        "feat_dim": 16,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 37888.0,
+          "peak_vram_bytes": 64000.0,
+          "wall_clock_us": 1006.8000119645149,
+          "build_cost_us": 350.30001890845597,
+          "per_level_resident": [
+            69.0,
+            276.0,
+            1104.0,
+            4416.0,
+            17664.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 49664.0,
+          "peak_vram_bytes": 68608.0,
+          "wall_clock_us": 1166.575020761229,
+          "build_cost_us": 1427.199982572347,
+          "cross_level_lookup_us": 225.62500089406967,
+          "per_level_resident": [
+            68.0,
+            144.0,
+            576.0,
+            2304.0,
+            9216.0
+          ]
+        },
+        "total_resident_base": 23529.0,
+        "total_resident_d": 12308.0,
+        "time_overhead_frac": 0.1587,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 4,
+        "feat_dim": 16,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 41984.0,
+          "peak_vram_bytes": 79872.0,
+          "wall_clock_us": 981.9500119192526,
+          "build_cost_us": 341.65001125074923,
+          "per_level_resident": [
+            69.0,
+            276.0,
+            1104.0,
+            4416.0,
+            17664.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 59392.0,
+          "peak_vram_bytes": 87040.0,
+          "wall_clock_us": 1126.4750064583495,
+          "build_cost_us": 1360.09999550879,
+          "cross_level_lookup_us": 223.8249871879816,
+          "per_level_resident": [
+            68.0,
+            208.0,
+            768.0,
+            3136.0,
+            12480.0
+          ]
+        },
+        "total_resident_base": 23529.0,
+        "total_resident_d": 16660.0,
+        "time_overhead_frac": 0.1472,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 8,
+        "feat_dim": 4,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 126976.0,
+          "peak_vram_bytes": 152576.0,
+          "wall_clock_us": 1024.1249983664602,
+          "build_cost_us": 343.29999471083283,
+          "per_level_resident": [
+            21.0,
+            168.0,
+            1344.0,
+            10752.0,
+            86016.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 134144.0,
+          "peak_vram_bytes": 155648.0,
+          "wall_clock_us": 1130.3500068606809,
+          "build_cost_us": 1349.750004010275,
+          "cross_level_lookup_us": 223.25001191347837,
+          "per_level_resident": [
+            20.0,
+            48.0,
+            352.0,
+            2864.0,
+            22944.0
+          ]
+        },
+        "total_resident_base": 98301.0,
+        "total_resident_d": 26228.0,
+        "time_overhead_frac": 0.1037,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 8,
+        "feat_dim": 4,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 143360.0,
+          "peak_vram_bytes": 218624.0,
+          "wall_clock_us": 997.3499982152134,
+          "build_cost_us": 326.14998053759336,
+          "per_level_resident": [
+            21.0,
+            168.0,
+            1344.0,
+            10752.0,
+            86016.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 168960.0,
+          "peak_vram_bytes": 230912.0,
+          "wall_clock_us": 1126.4000058872625,
+          "build_cost_us": 1331.5000105649233,
+          "cross_level_lookup_us": 219.0500235883519,
+          "per_level_resident": [
+            20.0,
+            64.0,
+            560.0,
+            4512.0,
+            36048.0
+          ]
+        },
+        "total_resident_base": 98301.0,
+        "total_resident_d": 41204.0,
+        "time_overhead_frac": 0.1294,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 8,
+        "feat_dim": 4,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 159232.0,
+          "peak_vram_bytes": 282112.0,
+          "wall_clock_us": 993.7749855453148,
+          "build_cost_us": 325.1000016462058,
+          "per_level_resident": [
+            21.0,
+            168.0,
+            1344.0,
+            10752.0,
+            86016.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 202240.0,
+          "peak_vram_bytes": 302592.0,
+          "wall_clock_us": 1112.7500183647498,
+          "build_cost_us": 1336.8999643716961,
+          "cross_level_lookup_us": 219.37501151114702,
+          "per_level_resident": [
+            20.0,
+            96.0,
+            768.0,
+            6144.0,
+            49152.0
+          ]
+        },
+        "total_resident_base": 98301.0,
+        "total_resident_d": 56180.0,
+        "time_overhead_frac": 0.1197,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 8,
+        "feat_dim": 4,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 176128.0,
+          "peak_vram_bytes": 349184.0,
+          "wall_clock_us": 1007.9749918077141,
+          "build_cost_us": 366.9000288937241,
+          "per_level_resident": [
+            21.0,
+            168.0,
+            1344.0,
+            10752.0,
+            86016.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 239104.0,
+          "peak_vram_bytes": 380928.0,
+          "wall_clock_us": 1127.9500176897272,
+          "build_cost_us": 1419.1999798640609,
+          "cross_level_lookup_us": 223.4999992651865,
+          "per_level_resident": [
+            20.0,
+            128.0,
+            976.0,
+            7776.0,
+            62256.0
+          ]
+        },
+        "total_resident_base": 98301.0,
+        "total_resident_d": 71156.0,
+        "time_overhead_frac": 0.119,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 8,
+        "feat_dim": 8,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 208384.0,
+          "peak_vram_bytes": 253952.0,
+          "wall_clock_us": 1022.3250137642026,
+          "build_cost_us": 370.6499992404133,
+          "per_level_resident": [
+            37.0,
+            296.0,
+            2368.0,
+            18944.0,
+            151552.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 223232.0,
+          "peak_vram_bytes": 258048.0,
+          "wall_clock_us": 1137.6250186003745,
+          "build_cost_us": 1397.3499881103635,
+          "cross_level_lookup_us": 228.0500193592161,
+          "per_level_resident": [
+            36.0,
+            64.0,
+            448.0,
+            3680.0,
+            29504.0
+          ]
+        },
+        "total_resident_base": 173197.0,
+        "total_resident_d": 33732.0,
+        "time_overhead_frac": 0.1128,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 8,
+        "feat_dim": 8,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 237568.0,
+          "peak_vram_bytes": 371200.0,
+          "wall_clock_us": 1010.2500091306865,
+          "build_cost_us": 369.94999391026795,
+          "per_level_resident": [
+            37.0,
+            296.0,
+            2368.0,
+            18944.0,
+            151552.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 285696.0,
+          "peak_vram_bytes": 386560.0,
+          "wall_clock_us": 1132.6999810989946,
+          "build_cost_us": 1399.300032062456,
+          "cross_level_lookup_us": 227.60000138077885,
+          "per_level_resident": [
+            36.0,
+            96.0,
+            864.0,
+            6976.0,
+            55712.0
+          ]
+        },
+        "total_resident_base": 173197.0,
+        "total_resident_d": 63684.0,
+        "time_overhead_frac": 0.1212,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 8,
+        "feat_dim": 8,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 266752.0,
+          "peak_vram_bytes": 487936.0,
+          "wall_clock_us": 1013.6250057257712,
+          "build_cost_us": 369.70002111047506,
+          "per_level_resident": [
+            37.0,
+            296.0,
+            2368.0,
+            18944.0,
+            151552.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 347136.0,
+          "peak_vram_bytes": 513024.0,
+          "wall_clock_us": 1124.3000044487417,
+          "build_cost_us": 1403.6500069778413,
+          "cross_level_lookup_us": 224.6999938506633,
+          "per_level_resident": [
+            36.0,
+            160.0,
+            1280.0,
+            10240.0,
+            81920.0
+          ]
+        },
+        "total_resident_base": 173197.0,
+        "total_resident_d": 93636.0,
+        "time_overhead_frac": 0.1092,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 8,
+        "feat_dim": 8,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 296960.0,
+          "peak_vram_bytes": 608256.0,
+          "wall_clock_us": 1015.4000192414969,
+          "build_cost_us": 368.15000930801034,
+          "per_level_resident": [
+            37.0,
+            296.0,
+            2368.0,
+            18944.0,
+            151552.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 412160.0,
+          "peak_vram_bytes": 646144.0,
+          "wall_clock_us": 1126.575021771714,
+          "build_cost_us": 1423.2999819796532,
+          "cross_level_lookup_us": 234.2000079806894,
+          "per_level_resident": [
+            36.0,
+            224.0,
+            1696.0,
+            13504.0,
+            108128.0
+          ]
+        },
+        "total_resident_base": 173197.0,
+        "total_resident_d": 123588.0,
+        "time_overhead_frac": 0.1095,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 8,
+        "feat_dim": 16,
+        "sparsity": 0.1,
+        "tree_baseline": {
+          "resident_bytes": 371200.0,
+          "peak_vram_bytes": 456704.0,
+          "wall_clock_us": 1010.5249821208417,
+          "build_cost_us": 366.5500262286514,
+          "per_level_resident": [
+            69.0,
+            552.0,
+            4416.0,
+            35328.0,
+            282624.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 400896.0,
+          "peak_vram_bytes": 462336.0,
+          "wall_clock_us": 1126.650022342801,
+          "build_cost_us": 1383.6500002071261,
+          "cross_level_lookup_us": 230.07499112281948,
+          "per_level_resident": [
+            68.0,
+            96.0,
+            640.0,
+            5312.0,
+            42624.0
+          ]
+        },
+        "total_resident_base": 322989.0,
+        "total_resident_d": 48740.0,
+        "time_overhead_frac": 0.1149,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 8,
+        "feat_dim": 16,
+        "sparsity": 0.3,
+        "tree_baseline": {
+          "resident_bytes": 426496.0,
+          "peak_vram_bytes": 678400.0,
+          "wall_clock_us": 987.1749934973195,
+          "build_cost_us": 359.1999993659556,
+          "per_level_resident": [
+            69.0,
+            552.0,
+            4416.0,
+            35328.0,
+            282624.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 519680.0,
+          "peak_vram_bytes": 699392.0,
+          "wall_clock_us": 1118.7750060344115,
+          "build_cost_us": 1352.999999653548,
+          "cross_level_lookup_us": 218.52500503882766,
+          "per_level_resident": [
+            68.0,
+            160.0,
+            1472.0,
+            11904.0,
+            95040.0
+          ]
+        },
+        "total_resident_base": 322989.0,
+        "total_resident_d": 108644.0,
+        "time_overhead_frac": 0.1333,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 8,
+        "feat_dim": 16,
+        "sparsity": 0.5,
+        "tree_baseline": {
+          "resident_bytes": 481792.0,
+          "peak_vram_bytes": 899584.0,
+          "wall_clock_us": 936.6749873152003,
+          "build_cost_us": 289.6500227507204,
+          "per_level_resident": [
+            69.0,
+            552.0,
+            4416.0,
+            35328.0,
+            282624.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 636928.0,
+          "peak_vram_bytes": 933888.0,
+          "wall_clock_us": 1116.0749854752794,
+          "build_cost_us": 1279.8499665223062,
+          "cross_level_lookup_us": 220.89999401941895,
+          "per_level_resident": [
+            68.0,
+            288.0,
+            2304.0,
+            18432.0,
+            147456.0
+          ]
+        },
+        "total_resident_base": 322989.0,
+        "total_resident_d": 168548.0,
+        "time_overhead_frac": 0.1915,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      },
+      {
+        "space": "tree_hierarchy",
+        "max_depth": 5,
+        "branching": 8,
+        "feat_dim": 16,
+        "sparsity": 0.7,
+        "tree_baseline": {
+          "resident_bytes": 538112.0,
+          "peak_vram_bytes": 1124352.0,
+          "wall_clock_us": 958.5250081727281,
+          "build_cost_us": 296.89999064430594,
+          "per_level_resident": [
+            69.0,
+            552.0,
+            4416.0,
+            35328.0,
+            282624.0
+          ]
+        },
+        "D_tree": {
+          "resident_bytes": 757760.0,
+          "peak_vram_bytes": 1175040.0,
+          "wall_clock_us": 1148.349983850494,
+          "build_cost_us": 1317.0000165700912,
+          "cross_level_lookup_us": 227.17498359270394,
+          "per_level_resident": [
+            68.0,
+            416.0,
+            3136.0,
+            24960.0,
+            199872.0
+          ]
+        },
+        "total_resident_base": 322989.0,
+        "total_resident_d": 228452.0,
+        "time_overhead_frac": 0.198,
+        "contour_A": "FAIL",
+        "contour_B": "FAIL"
+      }
+    ],
+    "contour_A_pass": 0,
+    "contour_A_total": 108,
+    "contour_B_pass": 0,
+    "contour_B_total": 108
+  }
+}
