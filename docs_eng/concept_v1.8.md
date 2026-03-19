@@ -87,6 +87,17 @@ Each root-to-leaf path is a sequence of split decisions.
 
 The structure must be GPU-friendly (flat packing, no pointer chasing).
 
+**Addressing principle (v1.8.1):** addressing must be at the abstraction level of the operation. Refinement operates on tiles — addressing is tile-level, not element-level. Data within a tile is dense (dense intra-tile). Outside — sparse by tiles. A global element-level reverse_map is prohibited (exp10: VRAM +38.6%, constructive failure). Lookup — only on active/support set O(k), not on the entire space O(M).
+
+**Layout policy by space types (v1.8.2, exp10e-j, FINAL):**
+- scalar_grid → D_direct (packed tiles + tile_map) — production layout (exp10g: both contours PASS)
+- vector_grid → D_direct — production layout (exp10h: 72/72 PASS both contours)
+- tree_hierarchy → Hybrid per-level: D_direct where p_l < 0.40 AND operator is compute-heavy (matmul-like); A_bitset elsewhere. Upper levels (small N_l, high occupancy) → A_bitset. Lower levels (large N_l, low occupancy, heavy compute) → D_direct. Stencil ops: D saves memory but NEVER wins time → A_bitset. (exp10j: 158K trials, break-even stable across all branching factors)
+- irregular_graph / spatial → D_blocked conditional (spatial partition, cbr < 0.30) (exp10i)
+- irregular_graph / scale-free → blocked layout rejected (cbr=0.66); A_bitset fallback (exp10i)
+
+For graphs: fixed-size blocks are NOT a universal abstraction. Compute-path is healthy (Contour B 100%), data representation is sick (padding 50-97%). Graphs split into two classes based on presence of spatial structure.
+
 **Alternative interpretation (theoretical, not experimentally validated):**
 A tree can be viewed as a trajectory of RG-flow (renormalization group flow). Nodes are system states at different scales; edges are coarse-graining operations. Fixed points of the flow are domains where further refinement ceases to change the effective description. This interpretation currently does not affect architecture, but motivates the Scale-Consistency Invariant (section 8).
 

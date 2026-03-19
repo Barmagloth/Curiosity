@@ -25,8 +25,18 @@ Updated after Phase 0 (parallel validation: halo cross-space, SC-baseline, D_par
 | `exp09a_layout_sandbox/` | Layout: grid vs compact (microbench) | §C (C3/Exp0.9a) | ✅ Partial |
 | `halo_crossspace/` | Halo applicability across space types | Phase 0 | ✅ Closed (rule derived) |
 | `sc_baseline/` | Scale-consistency D_parent/D_hf verification | Phase 0 (SC-0..SC-4) | ✅ Closed (SC-5 open) |
-| `p2a_sensitivity/` | Sensitivity sweep of gate thresholds | P2a | 🔓 Code ready, not run |
-| *(future)* | Layout GPU end-to-end | §C → P0 (0.9b0+) | 🔓 Open |
+| `p2a_sensitivity/` | Sensitivity sweep of gate thresholds | P2a | ✅ PASS (ridge=100%, MANUAL_OK) |
+| `exp10_buffer_scaling/` | Grid vs compact-with-reverse-map on GPU | P0 (0.9b0) | ✅ KILL compact (VRAM +38.6%). Grid baseline. |
+| `exp10d_seed_determinism/` | Bitwise determinism at fixed seed | DET-1 | ✅ PASS (240/240) |
+| `exp10e_tile_sparse/` | Tile-sparse layouts without global reverse_map | P0 (0.9b1) | ✅ A alive, B/C killed. See exp10f. |
+| `exp10f_packed_lookup/` | Packed tiles + alternative lookup (hash/direct) | P0 (0.9b2) | ⚠️ D passes Contour A, fails Contour B (peak VRAM from conv2d workspace). E archived as contingency. |
+| `exp10g_dual_benchmark/` | Dual-mode benchmark: manual stencil (layout cost) vs conv2d (operator cost). Resolves D's Contour B. | P0 (0.9b3) | ✅ D_direct PASS both contours. -54% to -80% time, -36% to -86% peak VRAM. |
+| `exp10h_cross_space/` | D_direct on vector_grid and tree_hierarchy | P0 (0.9b3) | ✅ vector_grid 72/72 PASS. tree FAIL 0/108 (configs too small → exp10j). |
+| `exp10i_graph_blocks/` | Graph block-based addressing with 3 partition strategies | P0 (0.9b3) | ✅ Spatial graphs conditional (cbr<0.30). Scale-free rejected (cbr=0.66). |
+| `exp10j_tree_perlevel/` | Per-level independent D_direct vs A_bitset benchmark for trees. Finds break-even thresholds per level. | P0 (0.9b3) | ✅ matmul: D wins at p<0.40 any N_l. stencil: D saves memory, never time. Contour B 45% PASS. |
+| `exp11_dirty_signatures/` | 12-bit dirty signature + debounce | P1-B2 | ❌ FAIL 3/4 spaces (architectural issue) |
+| `exp12a_tau_parent/` | Data-driven τ_parent[L] per depth | SC-5 | ⚠️ Partial (L1 specificity low) |
+| `exp_deferred_revisit/` | Research note: Morton/block-sparse/schedule | — | ✅ Done |
 
 **Note:** §A/B/C are sections of the validation plan written between Exp0.3 and Phase 1.
 In §B, "B1/B2" = probe scenes. In P1 below, "B1/B2/B3" = tree compression. Different contexts.
@@ -45,8 +55,11 @@ In §B, "B1/B2" = probe scenes. In P1 below, "B1/B2/B3" = tree compression. Diff
 | 2 | Is combined interestingness needed? | **Yes, under signal degradation.** Two-stage gate | Exp0.4–0.7b |
 | 3 | Phase schedule by depth? | **No** under current conditions | Exp0.8v5 |
 | — | Halo cross-space applicability | **Rule derived** (grid/graph: yes, tree: no). boundary parallelism >= 3 AND no context leakage | Phase 0 |
-| — | Morton layout | **Deferred** (sort overhead, zero compute benefit) | 0.9a sandbox |
-| — | Block-sparse layout | **Deferred** (expansion ratio) | 0.9a sandbox |
+| — | Morton layout (element-level sort) | **Killed** (12-15x overhead, zero compute benefit). But Morton as tile key encoding for lookup is alive, see exp10e | 0.9a sandbox |
+| — | Block-sparse layout (element-level B=8) | **Killed** (expansion ratio). But paged sparse tiles alive as candidate in exp10e | 0.9a sandbox |
+| — | Compact-with-global-reverse-map | **Killed** (VRAM +38.6%). Dense bookkeeping kills sparse compute gains | exp10 |
+| — | P2a: manual gate thresholds | **Ok**, ridge 100%, P2b not needed | P2a sweep |
+| — | DET-1: seed determinism | **PASS** (240/240 bitwise match CPU+CUDA) | exp10d |
 | — | Non-overlapping writes determinism | **Clean** (bitwise match) | 0.9a sandbox |
 
 ---
@@ -57,23 +70,79 @@ In §B, "B1/B2" = probe scenes. In P1 below, "B1/B2/B3" = tree compression. Diff
 
 Without answers to these questions, everything above is decorative.
 
-### P0. GPU Layout: grid vs compact
+### P0. GPU Layout
 
-The only surviving candidate. No upward dependencies — this is the foundation.
+No upward dependencies — this is the foundation.
 
 ```
-P0. Layout (grid vs compact on GPU)
-├── 0.9b0: buffer-scaling probe — O(k) vs O(M) buffers, synthetic kernel
-│         kill/go for compact
-├── 0.9b:  end-to-end pipeline (if compact survives)
-│         grid vs compact, 4 spaces × 2 budgets
-│         metrics: VRAM, wall-clock, #kernels, SeamScore identity
-├── 0.9c:  scaling (if compact survives)
-│         sweep over M, clustered + random
-└── 0.9h:  ⟶ ABSORBED INTO DET-1 (see below)
+P0. GPU Layout
+├── 0.9b0 (exp10): buffer-scaling probe — grid vs compact-with-reverse-map
+│         RESULT: KILL compact (VRAM +38.6%). Grid is baseline.
+│         But: implementation killed, not the sparse principle. Compute O(k) faster than O(M).
+│
+├── 0.9b1 (exp10e): tile-sparse layouts without global reverse_map
+│         RESULT:
+│         A (bitset): ALIVE — time -27..31%, VRAM +18%. Not sparse-memory, but execution layout.
+│         B (packed Morton + binary search): KILLED on time (+1700%). Storage idea alive.
+│         C (paged): KILLED (+5000-30000%). Dead permanently.
+│
+├── 0.9b2 (exp10f): packed tiles + alternative lookup
+│         D passes Contour A, fails Contour B (peak VRAM from conv2d workspace).
+│         E archived as contingency.
+│
+├── 0.9b3 (exp10g): dual-mode benchmark
+│         RESULT: D_direct PASS both contours. -54% to -80% time, -36% to -86% peak VRAM.
+│         Manual stencil (Contour A) + conv2d (Contour B) both pass.
+│
+├── 0.9b3 (exp10h): cross-space D_direct (vector_grid + tree_hierarchy)
+│         RESULT: vector_grid 72/72 PASS both contours. tree 0/108 FAIL.
+│         Tree failure: configs too small, per-level tile_map not amortized → exp10j.
+│
+├── 0.9b3 (exp10i): graph block-based addressing (3 partition strategies)
+│         RESULT: Spatial graphs (random_geometric, grid_graph) conditionally viable
+│         with spatial partition, cbr<0.30. Scale-free (barabasi-albert) REJECTED, cbr=0.66.
+│
+├── 0.9b3 (exp10j): per-level tree break-even (158K trials)
+│         RESULT: matmul op: D wins at p_l<0.375-0.40 for ALL level sizes.
+│         stencil op: D saves memory but NEVER wins on time. Contour B: 45% PASS.
+│         Policy: D_direct per-level only when operator is compute-heavy AND p_l < 0.40.
+│
+├── 0.9b:  end-to-end pipeline (after exp10g)
+│         finalist vs grid, 4 spaces × 2 budgets
+│
+└── 0.9h:  ⟶ ABSORBED INTO DET-1 (✅ PASS)
 ```
 
-**P0 output:** fixed layout for everything downstream. Either grid (most likely) or compact (if O(k) buffers save it).
+**Principle:** addressing at the operation's level of abstraction. Refinement operates on tiles —
+addressing must be tile-level, not element-level. Sparse on the outside, dense inside the tile.
+
+**Current P0 status: CLOSED.**
+
+Final layout policy (all space types resolved):
+
+| Space type | Layout | Status | Evidence |
+|------------|--------|--------|----------|
+| scalar_grid | D_direct (packed tiles + direct tile_map) | Production | exp10g: both contours PASS |
+| vector_grid | D_direct (packed tiles + direct tile_map) | Production | exp10h: 72/72 PASS |
+| tree_hierarchy | Hybrid: D_direct per-level where p_l<0.40 + matmul op; A_bitset elsewhere | Validated | exp10j: break-even found |
+| irregular_graph / spatial | D_blocked (graph block addressing) conditional | Conditional | exp10i: spatial partition, cbr<0.30 |
+| irregular_graph / scale-free | A_bitset (dense grid + bitset mask) fallback | Fallback only | exp10i: blocks rejected, cbr=0.66 |
+
+Layout naming glossary:
+- **D_direct** = packed tiles + direct tile_map (O(1) lookup, no element-level reverse_map)
+- **A_bitset** = dense grid + bitset mask (simple fallback)
+- **D_blocked** = graph block addressing (block_map[block_id] -> slot, spatial graphs only)
+- **E_hash** = hash table lookup (archived, dominated by D_direct)
+
+Killed forever:
+- Element-level reverse_map[M] (exp10: VRAM +38.6%)
+- Binary search lookup on GPU (exp10e-B: +1700%)
+- Paged sparse tiles (exp10e-C: +9000%)
+- Hash as primary lookup (exp10f-E: dominated by D_direct)
+- Fixed-size blocks for scale-free graphs (exp10i: cbr 0.64-0.99)
+
+**P0 output:** layout locked per space type. D_direct is production for grids.
+Hybrid D_direct/A_bitset per-level for trees. D_blocked conditional for spatial graphs.
 
 ### DET. Determinism and Reproducibility (v1.8)
 
