@@ -149,6 +149,29 @@ passes out of 64,080 trials).
 **Contour B (matmul): PARTIAL PASS.** D wins both memory and time in 45.8% of trials, concentrated
 at p_l < 0.40 and larger feature dimensions. The break-even threshold is clear and actionable.
 
+## exp10 series: final layout policy (all space types)
+
+exp10j closes the tree_hierarchy question opened by exp10h (FAIL 0/108). The failure was
+NOT architectural rejection of D_direct for trees — it was configs too small for per-level
+tile_map overhead to amortize. With wider sweeps (128K+ trials), the break-even is clear
+and stable.
+
+| Space type | Layout | Status | Evidence |
+|------------|--------|--------|----------|
+| scalar_grid | D_direct (packed tiles + direct tile_map) | Production | exp10g: both contours PASS |
+| vector_grid | D_direct (packed tiles + direct tile_map) | Production | exp10h: 72/72 PASS |
+| tree_hierarchy | Hybrid: D_direct per-level where p_l<0.40 + matmul op; A_bitset elsewhere | Validated | exp10j: break-even found |
+| irregular_graph / spatial | D_blocked (graph block addressing) conditional | Conditional | exp10i: spatial partition, cbr<0.30 |
+| irregular_graph / scale-free | A_bitset (dense grid + bitset mask) fallback | Fallback only | exp10i: blocks rejected, cbr=0.66 |
+
+### Killed forever (full exp10 series)
+
+- Element-level reverse_map[M] (exp10: VRAM +38.6%)
+- Binary search lookup on GPU (exp10e-B: +1700%)
+- Paged sparse tiles (exp10e-C: +9000%)
+- Hash as primary lookup (exp10f-E: dominated by D_direct)
+- Fixed-size blocks for scale-free graphs (exp10i: cbr 0.64-0.99)
+
 ## Environment
 
 - Python 3.12.11, PyTorch 2.10.0+cu128
