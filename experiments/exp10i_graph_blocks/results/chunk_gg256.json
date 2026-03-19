@@ -1,0 +1,1202 @@
+[
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.05,
+    "block_size": 8,
+    "partition_method": "random_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 777.0999945932999,
+      "build_cost_us": 577.6999751105905
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 165.54999456275254,
+      "build_cost_us": 1162.1000012382865
+    },
+    "time_overhead_frac": -0.787,
+    "cross_block_ratio": 0.9688,
+    "padding_waste": 0.8449,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.05,
+    "block_size": 8,
+    "partition_method": "spatial_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 929.6250063925982,
+      "build_cost_us": 542.4499686341733
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 223.9500026917085,
+      "build_cost_us": 1394.9999993201345
+    },
+    "time_overhead_frac": -0.7591,
+    "cross_block_ratio": 0.3333,
+    "padding_waste": 0.8523,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.05,
+    "block_size": 8,
+    "partition_method": "greedy_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 1120.649991207756,
+      "build_cost_us": 619.3000008352101
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 203.5499783232808,
+      "build_cost_us": 1283.4499939344823
+    },
+    "time_overhead_frac": -0.8184,
+    "cross_block_ratio": 0.3937,
+    "padding_waste": 0.8584,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.05,
+    "block_size": 16,
+    "partition_method": "random_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 824.2500189226121,
+      "build_cost_us": 730.6000334210694
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 188.02500562742352,
+      "build_cost_us": 1174.0499758161604
+    },
+    "time_overhead_frac": -0.7719,
+    "cross_block_ratio": 0.9385,
+    "padding_waste": 0.9097,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.05,
+    "block_size": 16,
+    "partition_method": "spatial_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 1109.2500062659383,
+      "build_cost_us": 725.2499926835299
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 274.07502057030797,
+      "build_cost_us": 1495.4999787732959
+    },
+    "time_overhead_frac": -0.7529,
+    "cross_block_ratio": 0.2,
+    "padding_waste": 0.9097,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.05,
+    "block_size": 16,
+    "partition_method": "greedy_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 1148.9750177133828,
+      "build_cost_us": 711.7500063031912
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 219.04999448452145,
+      "build_cost_us": 1248.5999905038625
+    },
+    "time_overhead_frac": -0.8094,
+    "cross_block_ratio": 0.2719,
+    "padding_waste": 0.9097,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.05,
+    "block_size": 32,
+    "partition_method": "random_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 983.3750082179904,
+      "build_cost_us": 719.3500059656799
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 188.6000100057572,
+      "build_cost_us": 967.3000022303313
+    },
+    "time_overhead_frac": -0.8082,
+    "cross_block_ratio": 0.8771,
+    "padding_waste": 0.9371,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.05,
+    "block_size": 32,
+    "partition_method": "spatial_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 995.4749839380383,
+      "build_cost_us": 653.8500310853124
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 204.12499725352973,
+      "build_cost_us": 1279.5999937225133
+    },
+    "time_overhead_frac": -0.7949,
+    "cross_block_ratio": 0.1333,
+    "padding_waste": 0.9323,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.05,
+    "block_size": 32,
+    "partition_method": "greedy_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 1157.5499956961721,
+      "build_cost_us": 797.5499902386218
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 307.849986711517,
+      "build_cost_us": 1622.4999853875488
+    },
+    "time_overhead_frac": -0.7341,
+    "cross_block_ratio": 0.1833,
+    "padding_waste": 0.942,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.05,
+    "block_size": 64,
+    "partition_method": "random_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 1107.5999937020242,
+      "build_cost_us": 748.799997381866
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 234.64996775146574,
+      "build_cost_us": 1240.0999839883298
+    },
+    "time_overhead_frac": -0.7881,
+    "cross_block_ratio": 0.7521,
+    "padding_waste": 0.9492,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.05,
+    "block_size": 64,
+    "partition_method": "spatial_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 1187.5500058522448,
+      "build_cost_us": 745.6000021193177
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 280.52498237229884,
+      "build_cost_us": 1482.4499958194792
+    },
+    "time_overhead_frac": -0.7638,
+    "cross_block_ratio": 0.0667,
+    "padding_waste": 0.9492,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.05,
+    "block_size": 64,
+    "partition_method": "greedy_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 1301.1749979341403,
+      "build_cost_us": 753.0499715358019
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 298.5749742947519,
+      "build_cost_us": 1637.20001000911
+    },
+    "time_overhead_frac": -0.7705,
+    "cross_block_ratio": 0.1031,
+    "padding_waste": 0.9492,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.1,
+    "block_size": 8,
+    "partition_method": "random_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 2618.149999761954,
+      "build_cost_us": 778.4499903209507
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 287.5250211218372,
+      "build_cost_us": 1770.5499776639044
+    },
+    "time_overhead_frac": -0.8902,
+    "cross_block_ratio": 0.9729,
+    "padding_waste": 0.8242,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.1,
+    "block_size": 8,
+    "partition_method": "spatial_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 2479.050017427653,
+      "build_cost_us": 746.8000112567097
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 360.0000200094655,
+      "build_cost_us": 1913.44998893328
+    },
+    "time_overhead_frac": -0.8548,
+    "cross_block_ratio": 0.3333,
+    "padding_waste": 0.8289,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.1,
+    "block_size": 8,
+    "partition_method": "greedy_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 2498.9749945234507,
+      "build_cost_us": 777.8499857522547
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 347.77502878569067,
+      "build_cost_us": 1858.5499783512205
+    },
+    "time_overhead_frac": -0.8608,
+    "cross_block_ratio": 0.3948,
+    "padding_waste": 0.8289,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.1,
+    "block_size": 16,
+    "partition_method": "random_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 2451.7749989172444,
+      "build_cost_us": 721.8499667942524
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 295.3749935841188,
+      "build_cost_us": 1873.5999765340239
+    },
+    "time_overhead_frac": -0.8795,
+    "cross_block_ratio": 0.9396,
+    "padding_waste": 0.8698,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.1,
+    "block_size": 16,
+    "partition_method": "spatial_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 2396.1749830050394,
+      "build_cost_us": 757.3000038973987
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 353.6000003805384,
+      "build_cost_us": 1813.650014810264
+    },
+    "time_overhead_frac": -0.8524,
+    "cross_block_ratio": 0.2,
+    "padding_waste": 0.8795,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.1,
+    "block_size": 16,
+    "partition_method": "greedy_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 2426.2249935418367,
+      "build_cost_us": 799.4499756023288
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 326.2750105932355,
+      "build_cost_us": 1806.8499921355397
+    },
+    "time_overhead_frac": -0.8655,
+    "cross_block_ratio": 0.276,
+    "padding_waste": 0.8917,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.1,
+    "block_size": 32,
+    "partition_method": "random_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 2508.6999958148226,
+      "build_cost_us": 774.9499927740544
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 285.00000189524144,
+      "build_cost_us": 1842.299971031025
+    },
+    "time_overhead_frac": -0.8864,
+    "cross_block_ratio": 0.8802,
+    "padding_waste": 0.8984,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.1,
+    "block_size": 32,
+    "partition_method": "spatial_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 2330.5749928113073,
+      "build_cost_us": 771.2999940849841
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 296.62498855032027,
+      "build_cost_us": 1792.2500264830887
+    },
+    "time_overhead_frac": -0.8727,
+    "cross_block_ratio": 0.1333,
+    "padding_waste": 0.8984,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.1,
+    "block_size": 32,
+    "partition_method": "greedy_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 2435.7249931199476,
+      "build_cost_us": 758.3000115118921
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 345.3000099398196,
+      "build_cost_us": 1899.249997222796
+    },
+    "time_overhead_frac": -0.8582,
+    "cross_block_ratio": 0.1812,
+    "padding_waste": 0.9041,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.1,
+    "block_size": 64,
+    "partition_method": "random_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 2446.4999878546223,
+      "build_cost_us": 743.4499857481569
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 327.2499889135361,
+      "build_cost_us": 1778.0000052880496
+    },
+    "time_overhead_frac": -0.8662,
+    "cross_block_ratio": 0.7531,
+    "padding_waste": 0.8984,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.1,
+    "block_size": 64,
+    "partition_method": "spatial_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 2473.775006365031,
+      "build_cost_us": 732.4499893002212
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 280.59999749530107,
+      "build_cost_us": 1796.4500293601304
+    },
+    "time_overhead_frac": -0.8866,
+    "cross_block_ratio": 0.0667,
+    "padding_waste": 0.8984,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.1,
+    "block_size": 64,
+    "partition_method": "greedy_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 2446.3500012643635,
+      "build_cost_us": 754.8500143457204
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 290.5750152422115,
+      "build_cost_us": 1780.800026608631
+    },
+    "time_overhead_frac": -0.8812,
+    "cross_block_ratio": 0.1031,
+    "padding_waste": 0.8984,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.3,
+    "block_size": 8,
+    "partition_method": "random_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 9365.200021420605,
+      "build_cost_us": 725.3999938257039
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 367.20000207424164,
+      "build_cost_us": 3318.80000885576
+    },
+    "time_overhead_frac": -0.9608,
+    "cross_block_ratio": 0.974,
+    "padding_waste": 0.6792,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.3,
+    "block_size": 8,
+    "partition_method": "spatial_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 9328.599990112707,
+      "build_cost_us": 740.9499958157539
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 375.9499959414825,
+      "build_cost_us": 3299.199976027012
+    },
+    "time_overhead_frac": -0.9597,
+    "cross_block_ratio": 0.3333,
+    "padding_waste": 0.6681,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.3,
+    "block_size": 8,
+    "partition_method": "greedy_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 9234.650016878732,
+      "build_cost_us": 728.7500193342566
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 387.27500941604376,
+      "build_cost_us": 3532.8999802004546
+    },
+    "time_overhead_frac": -0.9581,
+    "cross_block_ratio": 0.3969,
+    "padding_waste": 0.7083,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.3,
+    "block_size": 16,
+    "partition_method": "random_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 9082.300020963885,
+      "build_cost_us": 716.3000118453056
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 392.15000288095325,
+      "build_cost_us": 3394.9500357266515
+    },
+    "time_overhead_frac": -0.9568,
+    "cross_block_ratio": 0.9396,
+    "padding_waste": 0.6992,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.3,
+    "block_size": 16,
+    "partition_method": "spatial_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 9371.699998155236,
+      "build_cost_us": 763.8499955646694
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 387.9000141751021,
+      "build_cost_us": 3270.550019806251
+    },
+    "time_overhead_frac": -0.9586,
+    "cross_block_ratio": 0.2,
+    "padding_waste": 0.6992,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.3,
+    "block_size": 16,
+    "partition_method": "greedy_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 9400.97497368697,
+      "build_cost_us": 757.8500080853701
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 382.3000006377697,
+      "build_cost_us": 3246.899985242635
+    },
+    "time_overhead_frac": -0.9593,
+    "cross_block_ratio": 0.2729,
+    "padding_waste": 0.7326,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.3,
+    "block_size": 32,
+    "partition_method": "random_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 9278.350000386126,
+      "build_cost_us": 741.1500264424831
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 373.5499922186136,
+      "build_cost_us": 3210.9000021591783
+    },
+    "time_overhead_frac": -0.9597,
+    "cross_block_ratio": 0.8771,
+    "padding_waste": 0.6992,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.3,
+    "block_size": 32,
+    "partition_method": "spatial_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 9444.800001801923,
+      "build_cost_us": 794.4499666336924
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 370.3499969560653,
+      "build_cost_us": 3246.2499802932143
+    },
+    "time_overhead_frac": -0.9608,
+    "cross_block_ratio": 0.1333,
+    "padding_waste": 0.6992,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.3,
+    "block_size": 32,
+    "partition_method": "greedy_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 9263.70000524912,
+      "build_cost_us": 750.2500084228814
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 379.8249817918986,
+      "build_cost_us": 3323.9500189665705
+    },
+    "time_overhead_frac": -0.959,
+    "cross_block_ratio": 0.174,
+    "padding_waste": 0.7326,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.3,
+    "block_size": 64,
+    "partition_method": "random_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 9318.049997091293,
+      "build_cost_us": 758.9000160805881
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 382.0999845629558,
+      "build_cost_us": 3250.1500099897385
+    },
+    "time_overhead_frac": -0.959,
+    "cross_block_ratio": 0.7521,
+    "padding_waste": 0.6992,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.3,
+    "block_size": 64,
+    "partition_method": "spatial_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 9460.499990382232,
+      "build_cost_us": 741.3499988615513
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 372.22499668132514,
+      "build_cost_us": 3226.2500026263297
+    },
+    "time_overhead_frac": -0.9607,
+    "cross_block_ratio": 0.0667,
+    "padding_waste": 0.6992,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.3,
+    "block_size": 64,
+    "partition_method": "greedy_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 9393.2500021765,
+      "build_cost_us": 740.700023015961
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 414.249996538274,
+      "build_cost_us": 3282.4499940034
+    },
+    "time_overhead_frac": -0.9559,
+    "cross_block_ratio": 0.1083,
+    "padding_waste": 0.7594,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.5,
+    "block_size": 8,
+    "partition_method": "random_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 16979.499996523373,
+      "build_cost_us": 733.7499991990626
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 409.82502105180174,
+      "build_cost_us": 4804.750002222136
+    },
+    "time_overhead_frac": -0.9759,
+    "cross_block_ratio": 0.9729,
+    "padding_waste": 0.5,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": false
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.5,
+    "block_size": 8,
+    "partition_method": "spatial_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 16928.099998040125,
+      "build_cost_us": 728.1500147655606
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 412.47502667829394,
+      "build_cost_us": 4929.150018142536
+    },
+    "time_overhead_frac": -0.9756,
+    "cross_block_ratio": 0.3333,
+    "padding_waste": 0.5,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": false
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.5,
+    "block_size": 8,
+    "partition_method": "greedy_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 17489.575009676628,
+      "build_cost_us": 812.2499857563525
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 430.67500519100577,
+      "build_cost_us": 4911.6000009234995
+    },
+    "time_overhead_frac": -0.9754,
+    "cross_block_ratio": 0.3958,
+    "padding_waste": 0.5556,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.5,
+    "block_size": 16,
+    "partition_method": "random_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 17712.47500437312,
+      "build_cost_us": 771.8999986536801
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 407.0249997312203,
+      "build_cost_us": 4801.099974429235
+    },
+    "time_overhead_frac": -0.977,
+    "cross_block_ratio": 0.9385,
+    "padding_waste": 0.5,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": false
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.5,
+    "block_size": 16,
+    "partition_method": "spatial_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 17417.37499833107,
+      "build_cost_us": 739.5500142592937
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 412.4749975744635,
+      "build_cost_us": 5016.500013880432
+    },
+    "time_overhead_frac": -0.9763,
+    "cross_block_ratio": 0.2,
+    "padding_waste": 0.5,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": false
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.5,
+    "block_size": 16,
+    "partition_method": "greedy_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 17396.72500116285,
+      "build_cost_us": 762.3000128660351
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 425.0249912729487,
+      "build_cost_us": 4800.300026545301
+    },
+    "time_overhead_frac": -0.9756,
+    "cross_block_ratio": 0.2729,
+    "padding_waste": 0.5789,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.5,
+    "block_size": 32,
+    "partition_method": "random_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 17201.875016326085,
+      "build_cost_us": 781.8500162102282
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 432.8250070102513,
+      "build_cost_us": 5323.849996784702
+    },
+    "time_overhead_frac": -0.9748,
+    "cross_block_ratio": 0.8729,
+    "padding_waste": 0.5,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": false
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.5,
+    "block_size": 32,
+    "partition_method": "spatial_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 18233.55001397431,
+      "build_cost_us": 788.4500082582235
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 440.60002255719155,
+      "build_cost_us": 5376.700020860881
+    },
+    "time_overhead_frac": -0.9758,
+    "cross_block_ratio": 0.1333,
+    "padding_waste": 0.5,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": false
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.5,
+    "block_size": 32,
+    "partition_method": "greedy_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 17642.900013015606,
+      "build_cost_us": 764.9000035598874
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 437.7250006655231,
+      "build_cost_us": 5259.500001557171
+    },
+    "time_overhead_frac": -0.9752,
+    "cross_block_ratio": 0.1802,
+    "padding_waste": 0.6,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.5,
+    "block_size": 64,
+    "partition_method": "random_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 17667.29999508243,
+      "build_cost_us": 782.1999897714704
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 422.10001265630126,
+      "build_cost_us": 5062.849988462403
+    },
+    "time_overhead_frac": -0.9761,
+    "cross_block_ratio": 0.751,
+    "padding_waste": 0.5,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": false
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.5,
+    "block_size": 64,
+    "partition_method": "spatial_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 16938.374988967553,
+      "build_cost_us": 742.5000076182187
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 413.4000191697851,
+      "build_cost_us": 4977.750009857118
+    },
+    "time_overhead_frac": -0.9756,
+    "cross_block_ratio": 0.0667,
+    "padding_waste": 0.5,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": false
+  },
+  {
+    "graph_type": "grid_graph",
+    "N_nodes": 256,
+    "sparsity": 0.5,
+    "block_size": 64,
+    "partition_method": "greedy_partition",
+    "graph_baseline": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 17117.575014708564,
+      "build_cost_us": 733.4999972954392
+    },
+    "D_graph_blocks": {
+      "resident_bytes": 0.0,
+      "peak_vram_bytes": 0.0,
+      "wall_clock_us": 410.3499959455803,
+      "build_cost_us": 4644.9999790638685
+    },
+    "time_overhead_frac": -0.976,
+    "cross_block_ratio": 0.1094,
+    "padding_waste": 0.55,
+    "contour_A": "FAIL",
+    "contour_B": "FAIL",
+    "padding_warning": true
+  }
+]
