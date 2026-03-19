@@ -162,3 +162,165 @@ All spaces pass threshold (AUC >= 0.75).
 | SC-baseline (D_parent fixed) | Confirmed | AUC=0.853, d=1.491; cross-space 0.824–1.000 |
 | Phase schedule | Not confirmed | Deferred |
 | Morton/block-sparse layout | Preliminarily unfavorable | Per 0.9a microbench; P0 open |
+
+---
+
+## Phase 1 — P0 Layout, Determinism, Sensitivity (March 2026)
+
+---
+
+## Exp10 (exp10_buffer_scaling) — Grid vs Compact Layout on GPU
+
+**Question:** What is better for GPU — full-size grid or compact array with reverse index (reverse_map)?
+
+**Kill criterion:** compact overhead >20% by time OR by VRAM → kill compact.
+
+**Result:** KILL compact. Compute at O(k) is 18.5% faster, but reverse_map[M] on int32 yields +38.6% VRAM. 75/75 configs exceed VRAM threshold. Killed the specific implementation (compact with element-level reverse_map), not the sparse layout principle.
+
+**Conclusion:** Grid locked in as baseline. But compute on compact is faster — meaning sparse with the right lookup is viable.
+
+---
+
+## Exp10d (exp10d_seed_determinism) — Bitwise Determinism (DET-1)
+
+**Question:** Does the system produce bitwise identical results given the same seed?
+
+**Kill criterion:** any divergence = FAIL.
+
+**Result:** PASS 240/240. All 4 space types × 10 seeds × 3 budgets × CPU+CUDA — bitwise match.
+
+**Components:** Canonical traversal order (Z-order tie-break), deterministic probe (SHA-256 seed), governor isolation (EMA commit after full step).
+
+**Conclusion:** DET-1 passed. The system is deterministic.
+
+---
+
+## Exp10e (exp10e_tile_sparse) — Tile-Sparse Candidates
+
+**Question:** Can a tile-sparse layout without global reverse_map beat grid?
+
+**Candidates:**
+- A (bitset): grid + bitset activation mask
+- B (packed Morton): compact tiles + binary search by Morton keys
+- C (paged): paged sparse scheme with macroblocks
+
+**Result:** A alive (-20% time, +18% VRAM). B killed — binary search on GPU = +1700% time. C killed — +9000%.
+
+**Conclusion:** Lookup is the bottleneck. Binary search and page machinery on GPU are dead. Need O(1) lookup.
+
+---
+
+## Exp10f (exp10f_packed_lookup) — Packed Tiles + Direct / Hash Lookup
+
+**Question:** Does O(1) tile_map[id]→slot work instead of binary search?
+
+**Candidates:**
+- D_direct: packed tiles + tile_map (direct int32 index)
+- E_hash: packed tiles + open-addressing hash table
+
+**Result:** D_direct: 5× faster than grid, resident memory 5.5× smaller. E_hash: same speed, but build 10-30× slower. Peak VRAM inflated due to measurement artifact (conv2d temporaries).
+
+**Conclusion:** Lookup solved. Hash not needed for bounded regular domains. E_hash archived as fallback.
+
+---
+
+## Exp10g (exp10g_dual_benchmark) — Dual-Contour Benchmark
+
+**Question:** Does D_direct pass both contours — architectural (stencil) and operational (conv2d)?
+
+**Modes:**
+- Contour A: manual stencil kernel (pure layout check)
+- Contour B: conv2d (real operator path)
+
+**Result:** D_direct PASS both contours. Conv2d: -54% to -80% time, -36% to -86% peak VRAM. Stencil: +5-12% time (within threshold), resident ≤ grid.
+
+**Conclusion:** D_direct (packed tiles + tile_map) is the winner for scalar grid. Exp10f artifact resolved.
+
+---
+
+## Exp10h (exp10h_cross_space) — Cross-Space Validation
+
+**Question:** Does D_direct work on vector_grid and tree_hierarchy?
+
+**Result:**
+- Vector grid: 72/72 PASS both contours. Time -67% to -94%. Scales across channels.
+- Tree hierarchy: 0/108 FAIL. Trees too small (15-585 nodes), tile_map overhead does not pay off. Resident ratio 1.16-1.33×.
+
+**Conclusion:** Vector grid — production. Trees — need per-level analysis on larger configurations.
+
+---
+
+## Exp10i (exp10i_graph_blocks) — Block Addressing for Graphs
+
+**Question:** Do fixed-size blocks work as a layout for irregular graphs?
+
+**Graph types:** random_geometric, grid_graph, barabasi-albert.
+**Partitioning strategies:** random, spatial (Morton), greedy (BFS).
+
+**Result:**
+- Compute fast everywhere (Contour B 100%). Diagnosis: compute healthy, representation sick.
+- random_geometric: Contour A 58% PASS. Spatial partition best cbr=0.31.
+- grid_graph: Contour A 67% PASS. Spatial partition best cbr=0.20.
+- barabasi-albert: Contour A 0% PASS. Best cbr=0.66. Hub nodes break all blocks.
+- Padding waste 50-97% (mean 0.77).
+
+**Conclusion:** Graphs split into two classes. Spatial — blocks conditionally viable. Scale-free — blocks structurally incompatible. Fixed-size blocks are not a universal abstraction for graphs.
+
+---
+
+## Exp10j (exp10j_tree_perlevel) — Per-Level Break-Even for Trees
+
+**Question:** At which tree levels does D_direct beat A_bitset?
+
+**Sweep:** 158,000+ trials. Branching 2-32, depth up to 10, occupancy 0.01-0.70, payload 4-256 bytes, 3 activation patterns, 2 operators.
+
+**Result:**
+- matmul operator: D wins at occupancy < 37.5-40% at ANY level size (from 2 to 4096 nodes). Win rate 59%.
+- stencil operator: D saves memory below the same threshold, but NEVER wins on time (3.3× slower).
+- Activation pattern (random/clustered/frontier) — does not affect the threshold.
+
+**Conclusion:** Trees require hybrid mode. Heavy compute + low occupancy → D_direct per-level. Light compute → A_bitset. Threshold p*≈0.40 is stable.
+
+---
+
+## Exp11 (exp11_dirty_signatures) — Dirty Signatures
+
+**Question:** Can a 12-bit dirty signature + debounce replace full recompute for change detection?
+
+**Result:** FAIL 3/4 spaces. AUC 0.0-0.37 on scalar_grid, vector_grid, tree. Only irregular_graph AUC 0.99.
+
+**Conclusion:** Architectural problem. Signature too coarse for detecting small changes on regular spaces. Requires rework.
+
+---
+
+## Exp12a (exp12a_tau_parent) — Data-Driven τ_parent by Depth
+
+**Question:** Can τ_parent[L] thresholds be found from data instead of manual tuning?
+
+**Result:** Thresholds found. τ decreases with depth as predicted. But L1 specificity is low.
+
+**Conclusion:** Partial success. Thresholds exist and align with theory. L1 enforcement needs refinement.
+
+---
+
+## P2a (p2a_sensitivity) — Gate Threshold Sensitivity Sweep
+
+**Question:** How sensitive is the system to manual thresholds of the two-stage gate?
+
+**Result:** PASS. Ridge width 100% — thresholds are robust. P2b (adaptive tuning) not required.
+
+**Conclusion:** Manual thresholds are ok. Gate is insensitive across a wide range.
+
+---
+
+## Final Layout Policy (result of exp10 series)
+
+Full methodology: `docs/layout_selection_policy.md`
+
+| Space Type | Layout | Status |
+|-----------------|--------|--------|
+| scalar_grid | D_direct (packed tiles + tile_map) | Production |
+| vector_grid | D_direct (packed tiles + tile_map) | Production |
+| tree_hierarchy | Hybrid: D_direct per-level (p<0.40 + heavy compute), A_bitset otherwise | Validated |
+| irregular_graph / spatial | D_blocked (block addressing) conditional | Conditional |
+| irregular_graph / scale-free | A_bitset (dense + bitset) fallback | Fallback |

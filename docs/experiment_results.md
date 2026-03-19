@@ -162,3 +162,165 @@
 | SC-baseline (D_parent fixed) | Подтверждён | AUC=0.853, d=1.491; cross-space 0.824–1.000 |
 | Phase schedule | Не подтверждён | Отложен |
 | Morton/block-sparse layout | Предварительно невыгоден | По итогам 0.9a microbench; P0 открыт |
+
+---
+
+## Phase 1 — P0 Layout, Детерминизм, Чувствительность (март 2026)
+
+---
+
+## Exp10 (exp10_buffer_scaling) — Grid vs compact layout на GPU
+
+**Вопрос:** Что лучше для GPU — полноразмерная сетка (grid) или компактный массив с обратным индексом (reverse_map)?
+
+**Kill criterion:** compact overhead >20% по времени ИЛИ по VRAM → убить compact.
+
+**Результат:** KILL compact. Compute на O(k) быстрее на 18.5%, но reverse_map[M] на int32 даёт +38.6% VRAM. 75/75 конфигов превышают VRAM threshold. Убита конкретная реализация (compact с element-level reverse_map), не принцип sparse layout.
+
+**Вывод:** Grid зафиксирован как baseline. Но compute на compact быстрее — значит sparse с правильным lookup жизнеспособен.
+
+---
+
+## Exp10d (exp10d_seed_determinism) — Побитовый детерминизм (DET-1)
+
+**Вопрос:** Даёт ли система побитово идентичные результаты при одинаковом seed?
+
+**Kill criterion:** любое расхождение = FAIL.
+
+**Результат:** PASS 240/240. Все 4 типа пространств × 10 seeds × 3 бюджета × CPU+CUDA — побитовое совпадение.
+
+**Компоненты:** Canonical traversal order (Z-order tie-break), deterministic probe (SHA-256 seed), governor isolation (EMA commit after full step).
+
+**Вывод:** DET-1 пройден. Система детерминирована.
+
+---
+
+## Exp10e (exp10e_tile_sparse) — Tile-sparse кандидаты
+
+**Вопрос:** Может ли tile-sparse layout без global reverse_map побить grid?
+
+**Кандидаты:**
+- A (bitset): grid + bitset маска активации
+- B (packed Morton): компактные тайлы + бинарный поиск по Morton-ключам
+- C (paged): страничная sparse-схема с macroblocks
+
+**Результат:** A жив (-20% время, +18% VRAM). B убит — бинарный поиск на GPU = +1700% по времени. C убит — +9000%.
+
+**Вывод:** Lookup — узкое место. Бинарный поиск и page machinery на GPU мертвы. Нужен O(1) lookup.
+
+---
+
+## Exp10f (exp10f_packed_lookup) — Packed tiles + прямой / hash lookup
+
+**Вопрос:** Работает ли O(1) tile_map[id]→slot вместо бинарного поиска?
+
+**Кандидаты:**
+- D_direct: packed tiles + tile_map (прямой индекс int32)
+- E_hash: packed tiles + open-addressing hash table
+
+**Результат:** D_direct: 5× быстрее grid, resident memory 5.5× меньше. E_hash: та же скорость, но build в 10-30× дольше. Peak VRAM завышен из-за артефакта измерения (conv2d temporaries).
+
+**Вывод:** Lookup решён. Hash не нужен при bounded regular domains. E_hash архивирован как fallback.
+
+---
+
+## Exp10g (exp10g_dual_benchmark) — Двухконтурный бенчмарк
+
+**Вопрос:** Проходит ли D_direct оба контура — архитектурный (stencil) и операционный (conv2d)?
+
+**Режимы:**
+- Contour A: ручной stencil kernel (чистая проверка layout)
+- Contour B: conv2d (реальный operator path)
+
+**Результат:** D_direct PASS оба контура. Conv2d: -54% до -80% время, -36% до -86% peak VRAM. Stencil: +5-12% время (в пределах threshold), resident ≤ grid.
+
+**Вывод:** D_direct (packed tiles + tile_map) — победитель для scalar grid. Артефакт exp10f устранён.
+
+---
+
+## Exp10h (exp10h_cross_space) — Кросс-пространственная валидация
+
+**Вопрос:** Работает ли D_direct на vector_grid и tree_hierarchy?
+
+**Результат:**
+- Vector grid: 72/72 PASS оба контура. Время -67% до -94%. Масштабируется по каналам.
+- Tree hierarchy: 0/108 FAIL. Деревья слишком маленькие (15-585 узлов), tile_map overhead не окупается. Resident ratio 1.16-1.33×.
+
+**Вывод:** Vector grid — production. Деревья — нужен per-level анализ на больших конфигурациях.
+
+---
+
+## Exp10i (exp10i_graph_blocks) — Блочная адресация для графов
+
+**Вопрос:** Работают ли фиксированные блоки как layout для нерегулярных графов?
+
+**Типы графов:** random_geometric, grid_graph, barabasi-albert.
+**Стратегии разбиения:** random, spatial (Morton), greedy (BFS).
+
+**Результат:**
+- Compute быстрый везде (Contour B 100%). Диагноз: compute healthy, representation sick.
+- random_geometric: Contour A 58% PASS. Spatial partition best cbr=0.31.
+- grid_graph: Contour A 67% PASS. Spatial partition best cbr=0.20.
+- barabasi-albert: Contour A 0% PASS. Best cbr=0.66. Hub-ноды рвут все блоки.
+- Padding waste 50-97% (mean 0.77).
+
+**Вывод:** Графы расщепились на два класса. Пространственные — блоки условно годны. Scale-free — блоки структурно несовместимы. Fixed-size blocks не универсальная абстракция для графов.
+
+---
+
+## Exp10j (exp10j_tree_perlevel) — Per-level break-even для деревьев
+
+**Вопрос:** На каких уровнях дерева D_direct побеждает A_bitset?
+
+**Sweep:** 158 000+ trials. Branching 2-32, depth до 10, occupancy 0.01-0.70, payload 4-256 bytes, 3 паттерна активации, 2 оператора.
+
+**Результат:**
+- matmul operator: D побеждает при occupancy < 37.5-40% на ЛЮБОМ размере уровня (от 2 до 4096 узлов). Win rate 59%.
+- stencil operator: D экономит память ниже того же порога, но НИКОГДА не выигрывает по времени (3.3× медленнее).
+- Паттерн активации (random/clustered/frontier) — не влияет на порог.
+
+**Вывод:** Деревья — гибридный режим. Heavy compute + low occupancy → D_direct per-level. Light compute → A_bitset. Порог p*≈0.40 стабилен.
+
+---
+
+## Exp11 (exp11_dirty_signatures) — Dirty signatures
+
+**Вопрос:** Может ли 12-bit dirty signature + debounce заменить full recompute для определения изменений?
+
+**Результат:** FAIL 3/4 пространств. AUC 0.0-0.37 на scalar_grid, vector_grid, tree. Только irregular_graph AUC 0.99.
+
+**Вывод:** Архитектурная проблема. Signature слишком грубая для детектирования мелких изменений на регулярных пространствах. Требует переработки.
+
+---
+
+## Exp12a (exp12a_tau_parent) — Data-driven τ_parent по глубине
+
+**Вопрос:** Можно ли найти пороги τ_parent[L] из данных вместо ручной настройки?
+
+**Результат:** Thresholds найдены. τ убывает с глубиной как предсказано. Но L1 specificity низкая.
+
+**Вывод:** Частичный успех. Пороги существуют и согласуются с теорией. L1 enforcement требует доработки.
+
+---
+
+## P2a (p2a_sensitivity) — Sensitivity sweep порогов гейта
+
+**Вопрос:** Насколько чувствительна система к ручным порогам двухстадийного гейта?
+
+**Результат:** PASS. Ridge width 100% — пороги устойчивы. P2b (адаптивный подбор) не требуется.
+
+**Вывод:** Ручные пороги ok. Гейт нечувствителен в широком диапазоне.
+
+---
+
+## Финальная layout policy (результат серии exp10)
+
+Полная методика: `docs/layout_selection_policy.md`
+
+| Тип пространства | Layout | Статус |
+|-----------------|--------|--------|
+| scalar_grid | D_direct (packed tiles + tile_map) | Production |
+| vector_grid | D_direct (packed tiles + tile_map) | Production |
+| tree_hierarchy | Гибрид: D_direct per-level (p<0.40 + heavy compute), A_bitset иначе | Validated |
+| irregular_graph / spatial | D_blocked (блочная адресация) conditional | Conditional |
+| irregular_graph / scale-free | A_bitset (dense + bitset) fallback | Fallback |
