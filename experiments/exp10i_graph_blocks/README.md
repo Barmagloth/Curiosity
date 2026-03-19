@@ -5,20 +5,20 @@
               Block partitioning + block_map is the graph analog of tile_map.
 **Kill criteria:** Dual contour + cross_block_ratio < 0.5 + padding_waste < 50%
 **Roadmap level:** P0 (0.9b4)
-**Status:** PARTIAL FAIL (120/288 Contour A, 42%)
+**Status:** closed — compute healthy, representation sick
 
 ## Results (19 March 2026)
 
 **Contour A: 120/288 (42%) | Contour B: 288/288 (100%)**
-Run on CPU (parallel chunked, 6 chunks x 48 configs). Memory contours N/A (CPU).
+Run on CPU (parallel chunked, 6 chunks x 48 configs).
 
 ### Per graph type
 
-| graph_type | Contour A | Viable? |
-|------------|-----------|---------|
-| random_geometric | 56/96 (58%) | YES -- spatial/greedy partition keep cbr < 0.50 |
-| barabasi_albert | 0/96 (0%) | NO -- scale-free structure resists all partitioning |
-| grid_graph | 64/96 (67%) | YES -- spatial partition is best (cbr ~0.20) |
+| graph_type | Contour A | Contour B | Best partition | Best cbr | Verdict |
+|------------|-----------|-----------|----------------|----------|---------|
+| random_geometric | 58% | 100% | spatial (Morton) | 0.31 | Conditionally viable |
+| grid_graph | 67% | 100% | spatial | 0.20 | Conditionally viable |
+| barabasi_albert | **0%** | 100% | greedy | 0.66 | **Rejected** |
 
 ### Cross-block ratio (mean, lower = better)
 
@@ -28,49 +28,59 @@ Run on CPU (parallel chunked, 6 chunks x 48 configs). Memory contours N/A (CPU).
 | barabasi_albert | 0.929 | 0.909 | 0.663 |
 | grid_graph | 0.928 | 0.196 | 0.250 |
 
-### Key findings
+## Diagnosis
 
-1. **Spatial graphs work.** random_geometric and grid_graph achieve low cbr
-   with spatial (Morton order) or greedy (BFS growth) partitioning. Block-based
-   addressing is viable for these topologies.
+**Compute-path is healthy everywhere.** -55% to -99% wall-clock vs baseline. Block
+addressing and packed execution are not the bottleneck. Contour B = 100% means the
+computational machinery works.
 
-2. **Scale-free (BA) graphs fail.** Barabasi-Albert has hub nodes whose edges
-   span many blocks regardless of partition strategy. Even greedy partition only
-   gets cbr ~0.66, well above the 0.50 threshold. Block addressing is not viable
-   for power-law degree distributions.
+**The failure is in data representation.** Padding waste 50-97%. Fixed block_size for
+graphs is the wrong base abstraction. For grids it worked because space is uniform.
+For graphs, density and locality are jagged — one block size lies about the structure.
 
-3. **Padding waste is high everywhere** (mean 0.77). At low sparsity (5-10%
-   active), most block slots are empty. This is intrinsic to fixed-size blocks
-   with sparse activation. Waste is worst at large block_size (0.80 at bs=64).
+**Graphs split into two classes:**
 
-4. **Greedy partition is best for cbr** on spatial graphs (0.18 for RG, 0.25
-   for grid) but causes MORE padding waste than spatial partition because
-   BFS-growth creates unevenly sized effective blocks. Spatial partition
-   (Morton order) is the sweet spot: low cbr AND same padding as random.
+1. **Spatial graphs** (random_geometric, grid_graph): locality exists, blocks capture it.
+   Spatial partition (Morton) is the sweet spot — low cbr AND controlled padding.
+   Block addressing is conditionally viable here.
 
-5. **D_graph_blocks is always faster** than graph_baseline on CPU (negative
-   time overhead). This is because block-structured scatter/gather uses
-   vectorized index_put_ vs the baseline's per-node Python loop. Contour B
-   passes 100%. The speed advantage is from the implementation, not the layout.
+2. **Scale-free / hub-heavy graphs** (barabási-albert): hub nodes blow edges across
+   all block boundaries. cbr = 0.64-0.99 regardless of partition. Block addressing
+   is structurally incompatible with power-law degree distributions.
 
-6. **Block size has modest effect on cbr** (0.70 at bs=8 to 0.48 at bs=64).
-   Larger blocks capture more local neighborhoods but waste more padding.
+## What was NOT disproven
 
-### Verdict
+- Sparse compute on graphs — that works fine (Contour B 100%)
+- Block packing as concept — it fails only for scale-free topologies
+- The principle: "compute healthy, representation sick"
 
-Block-based addressing works for spatial graphs (random_geometric, grid_graph)
-with spatial or greedy partitioning. It fails for scale-free graphs (barabasi_albert).
-Padding waste remains a concern at all configurations.
+## What was disproven
 
-**Next steps:** For spatial graphs, proceed to full D_graph_blocks layout with
-packed storage. For non-spatial irregular graphs, explore alternative approaches
-(e.g., edge-centric storage, CSR-based packing, or hierarchical clustering).
+Fixed-size blocks are NOT a universal abstraction for graphs. They are acceptable
+only for graphs with explicit spatial structure and low cbr. For hub-dominated graph
+families, block addressing is a rejected variant, not a primary path.
 
-## Approach
-- Partition graph nodes into fixed-size blocks
-- block_map[block_id] -> slot (same principle as tile_map)
-- Test 3 partitioning strategies: random, spatial, greedy
-- Test on 3 graph types: random_geometric, barabasi_albert, grid_graph
+## Continue-or-stop criteria for block-graph work
+
+Continue blocked branch ONLY if simultaneously:
+- padding < 40-50% starting point
+- cbr < 0.25-0.30 starting point
+- Contour B peak memory passes
+
+If not met — change representation, don't "optimize a bit more."
+
+## Layout policy (current)
+
+- scalar_grid → D_direct production
+- vector_grid → D_direct production
+- tree_hierarchy → A_bitset fallback (exp10j investigating per-level D_direct)
+- irregular_graph / spatial subclass → D_blocked conditional
+- irregular_graph / scale-free subclass → blocked rejected, A_bitset fallback
+
+## Next directions (NOT in current scope)
+
+For spatial graphs: variable-size / adaptive blocks (not one fixed 8/16/32/64).
+For non-spatial graphs: graph-native sparse (CSR/COO, active frontier, edge-centric).
 
 ## Files
 - `exp10i_graph_blocks.py` -- main experiment (full grid, GPU)
