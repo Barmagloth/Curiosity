@@ -313,6 +313,21 @@ All spaces pass threshold (AUC >= 0.75).
 
 ---
 
+## Exp10k (exp10k_cost_surface) — Cost Surface C(I, M, p)
+
+**Question:** Is layout selection a smooth function of three space properties (isotropy I, metric gap M, density p), or a discrete classification?
+
+**Result:** Boundary smoothness 0.496 — JAGGED. Surface is not smooth.
+
+- Sparse vs dense: **confirmed** — A_bitset = 0 wins out of 810 trials. Sparse always wins.
+- D_direct vs D_blocked: **unresolvable** — ~50% of adjacent grid points switch winner.
+
+**Root cause:** three measurement flaws. (1) H(D) is blind to geometry — cannot distinguish "uniform order" from "uniform chaos". (2) lambda_2 is a global metric, cannot see local cache-line health. (3) Metrics computed on full X, not on active subgraph X_active.
+
+**Conclusion:** Hypothesis v1.8.3 (layout = argmin C(I,M,p)) neither confirmed nor refuted — metrics insufficient. Need: I_active (entropy on X_active), M_local (mean cache miss on X_active edges). Deferred to Track C. Policy table works as empirical classification.
+
+---
+
 ## Final Layout Policy (result of exp10 series)
 
 Full methodology: `docs/layout_selection_policy.md`
