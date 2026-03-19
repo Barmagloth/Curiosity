@@ -1,0 +1,1599 @@
+{
+  "experiment": "exp10k_cost_surface",
+  "device": "cuda",
+  "N": 1024,
+  "feat_dim": 16,
+  "n_seeds": 10,
+  "grid_shape": {
+    "I_values": [
+      0.0,
+      0.5,
+      1.0,
+      1.5,
+      2.0,
+      2.5,
+      3.0,
+      3.5
+    ],
+    "M_values": [
+      0.0,
+      0.2,
+      0.4,
+      0.6,
+      0.8,
+      1.0
+    ],
+    "p_values": [
+      0.01,
+      0.05,
+      0.1,
+      0.2,
+      0.3,
+      0.5,
+      0.7
+    ]
+  },
+  "total_trials": 810,
+  "valid_trials": 810,
+  "error_trials": 0,
+  "grid_summary": {
+    "(0.0, 0.0, 0.01)": {
+      "A_bitset": 16157.15,
+      "D_direct": 1294.95,
+      "D_blocked": 1324.175,
+      "winner": "D_direct",
+      "winner_cost": 1294.95
+    },
+    "(0.0, 0.0, 0.05)": {
+      "A_bitset": 119184.725,
+      "D_direct": 1365.775,
+      "D_blocked": 1328.825,
+      "winner": "D_blocked",
+      "winner_cost": 1328.825
+    },
+    "(0.0, 0.0, 0.1)": {
+      "A_bitset": 204049.3,
+      "D_direct": 1235.15,
+      "D_blocked": 1317.025,
+      "winner": "D_direct",
+      "winner_cost": 1235.15
+    },
+    "(0.0, 0.0, 0.2)": {
+      "A_bitset": 404057.275,
+      "D_direct": 1304.875,
+      "D_blocked": 1352.85,
+      "winner": "D_direct",
+      "winner_cost": 1304.875
+    },
+    "(0.0, 0.0, 0.3)": {
+      "A_bitset": 618415.75,
+      "D_direct": 1326.0749999999998,
+      "D_blocked": 1331.9,
+      "winner": "D_direct",
+      "winner_cost": 1326.0749999999998
+    },
+    "(0.0, 0.0, 0.5)": {
+      "A_bitset": 1068537.55,
+      "D_direct": 1315.8000000000002,
+      "D_blocked": 1306.8,
+      "winner": "D_blocked",
+      "winner_cost": 1306.8
+    },
+    "(0.0, 0.0, 0.7)": {
+      "A_bitset": 1740007.4,
+      "D_direct": 1255.5500000000002,
+      "D_blocked": 1337.4,
+      "winner": "D_direct",
+      "winner_cost": 1255.5500000000002
+    },
+    "(0.0, 0.2, 0.01)": {
+      "A_bitset": 17015.0,
+      "D_direct": 1257.65,
+      "D_blocked": 1225.475,
+      "winner": "D_blocked",
+      "winner_cost": 1225.475
+    },
+    "(0.0, 0.2, 0.05)": {
+      "A_bitset": 86851.925,
+      "D_direct": 1296.0,
+      "D_blocked": 1299.6,
+      "winner": "D_direct",
+      "winner_cost": 1296.0
+    },
+    "(0.0, 0.2, 0.1)": {
+      "A_bitset": 269195.3,
+      "D_direct": 1374.275,
+      "D_blocked": 1329.5,
+      "winner": "D_blocked",
+      "winner_cost": 1329.5
+    },
+    "(0.0, 0.2, 0.2)": {
+      "A_bitset": 507711.225,
+      "D_direct": 1308.125,
+      "D_blocked": 1327.0,
+      "winner": "D_direct",
+      "winner_cost": 1308.125
+    },
+    "(0.0, 0.2, 0.3)": {
+      "A_bitset": 660479.9,
+      "D_direct": 1210.85,
+      "D_blocked": 1313.075,
+      "winner": "D_direct",
+      "winner_cost": 1210.85
+    },
+    "(0.0, 0.8, 0.7)": {
+      "A_bitset": 842172.4,
+      "D_direct": 1149.85,
+      "D_blocked": 1160.95,
+      "winner": "D_direct",
+      "winner_cost": 1149.85
+    },
+    "(0.0, 1.0, 0.01)": {
+      "A_bitset": 13520.2,
+      "D_direct": 1142.0749999999998,
+      "D_blocked": 1162.55,
+      "winner": "D_direct",
+      "winner_cost": 1142.0749999999998
+    },
+    "(0.0, 1.0, 0.05)": {
+      "A_bitset": 64007.825,
+      "D_direct": 1037.85,
+      "D_blocked": 1063.625,
+      "winner": "D_direct",
+      "winner_cost": 1037.85
+    },
+    "(0.0, 1.0, 0.1)": {
+      "A_bitset": 121826.9,
+      "D_direct": 1163.725,
+      "D_blocked": 1158.575,
+      "winner": "D_blocked",
+      "winner_cost": 1158.575
+    },
+    "(0.0, 1.0, 0.2)": {
+      "A_bitset": 242761.0,
+      "D_direct": 1153.8,
+      "D_blocked": 1169.65,
+      "winner": "D_direct",
+      "winner_cost": 1153.8
+    },
+    "(0.0, 1.0, 0.3)": {
+      "A_bitset": 366944.875,
+      "D_direct": 1145.6750000000002,
+      "D_blocked": 1163.5749999999998,
+      "winner": "D_direct",
+      "winner_cost": 1145.6750000000002
+    },
+    "(0.0, 1.0, 0.5)": {
+      "A_bitset": 606608.0,
+      "D_direct": 1151.6,
+      "D_blocked": 1153.125,
+      "winner": "D_direct",
+      "winner_cost": 1151.6
+    },
+    "(0.0, 1.0, 0.7)": {
+      "A_bitset": 1165544.775,
+      "D_direct": 1245.25,
+      "D_blocked": 1207.1,
+      "winner": "D_blocked",
+      "winner_cost": 1207.1
+    },
+    "(0.5, 0.0, 0.01)": {
+      "A_bitset": 16081.05,
+      "D_direct": 1231.375,
+      "D_blocked": 1212.95,
+      "winner": "D_blocked",
+      "winner_cost": 1212.95
+    },
+    "(0.5, 0.0, 0.05)": {
+      "A_bitset": 83614.75,
+      "D_direct": 1232.825,
+      "D_blocked": 1311.4,
+      "winner": "D_direct",
+      "winner_cost": 1232.825
+    },
+    "(0.5, 0.0, 0.1)": {
+      "A_bitset": 177916.075,
+      "D_direct": 1333.225,
+      "D_blocked": 1321.475,
+      "winner": "D_blocked",
+      "winner_cost": 1321.475
+    },
+    "(0.5, 0.0, 0.2)": {
+      "A_bitset": 415968.92500000005,
+      "D_direct": 1303.6750000000002,
+      "D_blocked": 1288.35,
+      "winner": "D_blocked",
+      "winner_cost": 1288.35
+    },
+    "(0.5, 0.0, 0.3)": {
+      "A_bitset": 626929.05,
+      "D_direct": 1331.6,
+      "D_blocked": 1351.5749999999998,
+      "winner": "D_direct",
+      "winner_cost": 1331.6
+    },
+    "(0.5, 0.0, 0.5)": {
+      "A_bitset": 1410744.3250000002,
+      "D_direct": 1315.625,
+      "D_blocked": 1315.975,
+      "winner": "D_direct",
+      "winner_cost": 1315.625
+    },
+    "(0.5, 0.0, 0.7)": {
+      "A_bitset": 1567176.8250000002,
+      "D_direct": 1309.075,
+      "D_blocked": 1338.425,
+      "winner": "D_direct",
+      "winner_cost": 1309.075
+    },
+    "(0.5, 0.2, 0.01)": {
+      "A_bitset": 15521.525000000001,
+      "D_direct": 1178.675,
+      "D_blocked": 1151.0500000000002,
+      "winner": "D_blocked",
+      "winner_cost": 1151.0500000000002
+    },
+    "(0.5, 0.2, 0.05)": {
+      "A_bitset": 96694.65,
+      "D_direct": 1201.525,
+      "D_blocked": 1240.975,
+      "winner": "D_direct",
+      "winner_cost": 1201.525
+    },
+    "(0.5, 0.2, 0.1)": {
+      "A_bitset": 185331.175,
+      "D_direct": 1286.3,
+      "D_blocked": 1326.9250000000002,
+      "winner": "D_direct",
+      "winner_cost": 1286.3
+    },
+    "(0.5, 0.6, 0.5)": {
+      "A_bitset": 600570.325,
+      "D_direct": 1158.4,
+      "D_blocked": 1147.125,
+      "winner": "D_blocked",
+      "winner_cost": 1147.125
+    },
+    "(0.5, 0.6, 0.7)": {
+      "A_bitset": 838599.9,
+      "D_direct": 1170.425,
+      "D_blocked": 1181.9250000000002,
+      "winner": "D_direct",
+      "winner_cost": 1170.425
+    },
+    "(0.5, 0.8, 0.01)": {
+      "A_bitset": 13600.85,
+      "D_direct": 1164.15,
+      "D_blocked": 1168.275,
+      "winner": "D_direct",
+      "winner_cost": 1164.15
+    },
+    "(0.5, 0.8, 0.05)": {
+      "A_bitset": 61102.85,
+      "D_direct": 1170.025,
+      "D_blocked": 1170.6999999999998,
+      "winner": "D_direct",
+      "winner_cost": 1170.025
+    },
+    "(0.5, 0.8, 0.1)": {
+      "A_bitset": 123397.075,
+      "D_direct": 1058.975,
+      "D_blocked": 1115.5,
+      "winner": "D_direct",
+      "winner_cost": 1058.975
+    },
+    "(0.5, 0.8, 0.2)": {
+      "A_bitset": 242552.35,
+      "D_direct": 1177.1999999999998,
+      "D_blocked": 1165.875,
+      "winner": "D_blocked",
+      "winner_cost": 1165.875
+    },
+    "(0.5, 0.8, 0.3)": {
+      "A_bitset": 363971.05000000005,
+      "D_direct": 1150.275,
+      "D_blocked": 1165.4499999999998,
+      "winner": "D_direct",
+      "winner_cost": 1150.275
+    },
+    "(0.5, 0.8, 0.5)": {
+      "A_bitset": 606114.15,
+      "D_direct": 1021.4250000000001,
+      "D_blocked": 1106.725,
+      "winner": "D_direct",
+      "winner_cost": 1021.4250000000001
+    },
+    "(0.5, 0.8, 0.7)": {
+      "A_bitset": 1496410.35,
+      "D_direct": 1173.975,
+      "D_blocked": 1330.25,
+      "winner": "D_direct",
+      "winner_cost": 1173.975
+    },
+    "(0.5, 1.0, 0.01)": {
+      "A_bitset": 17435.075,
+      "D_direct": 1266.1999999999998,
+      "D_blocked": 1291.425,
+      "winner": "D_direct",
+      "winner_cost": 1266.1999999999998
+    },
+    "(0.5, 1.0, 0.05)": {
+      "A_bitset": 84103.85,
+      "D_direct": 1300.175,
+      "D_blocked": 1173.25,
+      "winner": "D_blocked",
+      "winner_cost": 1173.25
+    },
+    "(0.5, 1.0, 0.1)": {
+      "A_bitset": 183505.75,
+      "D_direct": 1338.025,
+      "D_blocked": 1215.6750000000002,
+      "winner": "D_blocked",
+      "winner_cost": 1215.6750000000002
+    },
+    "(0.5, 1.0, 0.2)": {
+      "A_bitset": 457894.875,
+      "D_direct": 1297.8,
+      "D_blocked": 1300.325,
+      "winner": "D_direct",
+      "winner_cost": 1297.8
+    },
+    "(0.5, 1.0, 0.3)": {
+      "A_bitset": 700375.85,
+      "D_direct": 1273.9,
+      "D_blocked": 1320.425,
+      "winner": "D_direct",
+      "winner_cost": 1273.9
+    },
+    "(0.5, 1.0, 0.5)": {
+      "A_bitset": 1070007.475,
+      "D_direct": 1268.475,
+      "D_blocked": 1313.05,
+      "winner": "D_direct",
+      "winner_cost": 1268.475
+    },
+    "(0.5, 1.0, 0.7)": {
+      "A_bitset": 1976888.175,
+      "D_direct": 1252.9,
+      "D_blocked": 1405.175,
+      "winner": "D_direct",
+      "winner_cost": 1252.9
+    },
+    "(1.0, 0.0, 0.01)": {
+      "A_bitset": 18792.475,
+      "D_direct": 1313.6750000000002,
+      "D_blocked": 1327.875,
+      "winner": "D_direct",
+      "winner_cost": 1313.6750000000002
+    },
+    "(1.0, 0.0, 0.05)": {
+      "A_bitset": 73811.225,
+      "D_direct": 1309.875,
+      "D_blocked": 1331.675,
+      "winner": "D_direct",
+      "winner_cost": 1309.875
+    },
+    "(1.0, 0.4, 0.3)": {
+      "A_bitset": 354939.975,
+      "D_direct": 1153.6750000000002,
+      "D_blocked": 1103.725,
+      "winner": "D_blocked",
+      "winner_cost": 1103.725
+    },
+    "(1.0, 0.4, 0.5)": {
+      "A_bitset": 600285.325,
+      "D_direct": 1171.75,
+      "D_blocked": 1183.15,
+      "winner": "D_direct",
+      "winner_cost": 1171.75
+    },
+    "(1.0, 0.4, 0.7)": {
+      "A_bitset": 851937.3,
+      "D_direct": 1164.9,
+      "D_blocked": 1135.525,
+      "winner": "D_blocked",
+      "winner_cost": 1135.525
+    },
+    "(1.0, 0.6, 0.01)": {
+      "A_bitset": 13664.8,
+      "D_direct": 1157.65,
+      "D_blocked": 1159.4250000000002,
+      "winner": "D_direct",
+      "winner_cost": 1157.65
+    },
+    "(1.0, 0.6, 0.05)": {
+      "A_bitset": 62055.825,
+      "D_direct": 1161.525,
+      "D_blocked": 1155.875,
+      "winner": "D_blocked",
+      "winner_cost": 1155.875
+    },
+    "(1.0, 0.6, 0.1)": {
+      "A_bitset": 121398.725,
+      "D_direct": 1156.075,
+      "D_blocked": 1170.2,
+      "winner": "D_direct",
+      "winner_cost": 1156.075
+    },
+    "(1.0, 0.6, 0.2)": {
+      "A_bitset": 239925.525,
+      "D_direct": 1142.85,
+      "D_blocked": 1182.1,
+      "winner": "D_direct",
+      "winner_cost": 1142.85
+    },
+    "(1.0, 0.6, 0.3)": {
+      "A_bitset": 367031.425,
+      "D_direct": 1078.65,
+      "D_blocked": 1090.65,
+      "winner": "D_direct",
+      "winner_cost": 1078.65
+    },
+    "(1.0, 0.6, 0.5)": {
+      "A_bitset": 1055906.7999999998,
+      "D_direct": 1112.95,
+      "D_blocked": 1225.225,
+      "winner": "D_direct",
+      "winner_cost": 1112.95
+    },
+    "(1.0, 0.6, 0.7)": {
+      "A_bitset": 1568160.125,
+      "D_direct": 1308.5,
+      "D_blocked": 1282.3249999999998,
+      "winner": "D_blocked",
+      "winner_cost": 1282.3249999999998
+    },
+    "(1.0, 0.8, 0.01)": {
+      "A_bitset": 17146.949999999997,
+      "D_direct": 1262.025,
+      "D_blocked": 1268.975,
+      "winner": "D_direct",
+      "winner_cost": 1262.025
+    },
+    "(1.0, 0.8, 0.05)": {
+      "A_bitset": 131016.47499999999,
+      "D_direct": 1336.5,
+      "D_blocked": 1330.225,
+      "winner": "D_blocked",
+      "winner_cost": 1330.225
+    },
+    "(1.0, 0.8, 0.1)": {
+      "A_bitset": 174766.225,
+      "D_direct": 1372.025,
+      "D_blocked": 1339.15,
+      "winner": "D_blocked",
+      "winner_cost": 1339.15
+    },
+    "(1.0, 0.8, 0.2)": {
+      "A_bitset": 407668.69999999995,
+      "D_direct": 1325.675,
+      "D_blocked": 1296.95,
+      "winner": "D_blocked",
+      "winner_cost": 1296.95
+    },
+    "(1.0, 0.8, 0.3)": {
+      "A_bitset": 767874.2250000001,
+      "D_direct": 1364.975,
+      "D_blocked": 1294.275,
+      "winner": "D_blocked",
+      "winner_cost": 1294.275
+    },
+    "(1.0, 0.8, 0.5)": {
+      "A_bitset": 1076941.9,
+      "D_direct": 1277.8,
+      "D_blocked": 1284.025,
+      "winner": "D_direct",
+      "winner_cost": 1277.8
+    },
+    "(1.5, 0.2, 0.2)": {
+      "A_bitset": 235887.05,
+      "D_direct": 1096.475,
+      "D_blocked": 1164.625,
+      "winner": "D_direct",
+      "winner_cost": 1096.475
+    },
+    "(1.5, 0.2, 0.3)": {
+      "A_bitset": 361066.35,
+      "D_direct": 1130.1,
+      "D_blocked": 1168.525,
+      "winner": "D_direct",
+      "winner_cost": 1130.1
+    },
+    "(1.5, 0.2, 0.5)": {
+      "A_bitset": 608567.4,
+      "D_direct": 1168.875,
+      "D_blocked": 1155.95,
+      "winner": "D_blocked",
+      "winner_cost": 1155.95
+    },
+    "(1.5, 0.2, 0.7)": {
+      "A_bitset": 838817.8500000001,
+      "D_direct": 1179.2,
+      "D_blocked": 1177.6750000000002,
+      "winner": "D_blocked",
+      "winner_cost": 1177.6750000000002
+    },
+    "(1.5, 0.4, 0.01)": {
+      "A_bitset": 13688.425,
+      "D_direct": 1179.525,
+      "D_blocked": 1172.0,
+      "winner": "D_blocked",
+      "winner_cost": 1172.0
+    },
+    "(1.5, 0.4, 0.05)": {
+      "A_bitset": 61740.274999999994,
+      "D_direct": 1157.525,
+      "D_blocked": 1161.025,
+      "winner": "D_direct",
+      "winner_cost": 1157.525
+    },
+    "(1.5, 0.4, 0.1)": {
+      "A_bitset": 121938.75,
+      "D_direct": 1155.125,
+      "D_blocked": 1127.275,
+      "winner": "D_blocked",
+      "winner_cost": 1127.275
+    },
+    "(1.5, 0.4, 0.2)": {
+      "A_bitset": 247318.34999999998,
+      "D_direct": 1157.2,
+      "D_blocked": 1110.125,
+      "winner": "D_blocked",
+      "winner_cost": 1110.125
+    },
+    "(1.5, 0.4, 0.3)": {
+      "A_bitset": 375143.9,
+      "D_direct": 1070.55,
+      "D_blocked": 1105.15,
+      "winner": "D_direct",
+      "winner_cost": 1070.55
+    },
+    "(1.5, 0.4, 0.5)": {
+      "A_bitset": 1018273.35,
+      "D_direct": 1314.5,
+      "D_blocked": 1323.8,
+      "winner": "D_direct",
+      "winner_cost": 1314.5
+    },
+    "(1.5, 0.4, 0.7)": {
+      "A_bitset": 1543653.375,
+      "D_direct": 1339.6,
+      "D_blocked": 1328.15,
+      "winner": "D_blocked",
+      "winner_cost": 1328.15
+    },
+    "(1.5, 0.6, 0.01)": {
+      "A_bitset": 16915.55,
+      "D_direct": 1293.5,
+      "D_blocked": 1324.7,
+      "winner": "D_direct",
+      "winner_cost": 1293.5
+    },
+    "(1.5, 0.6, 0.05)": {
+      "A_bitset": 87267.775,
+      "D_direct": 1337.025,
+      "D_blocked": 1319.125,
+      "winner": "D_blocked",
+      "winner_cost": 1319.125
+    },
+    "(1.5, 0.6, 0.1)": {
+      "A_bitset": 180046.075,
+      "D_direct": 1351.45,
+      "D_blocked": 1325.6,
+      "winner": "D_blocked",
+      "winner_cost": 1325.6
+    },
+    "(1.5, 0.6, 0.2)": {
+      "A_bitset": 385835.25,
+      "D_direct": 2025.4499999999998,
+      "D_blocked": 1318.85,
+      "winner": "D_blocked",
+      "winner_cost": 1318.85
+    },
+    "(1.5, 0.6, 0.3)": {
+      "A_bitset": 646524.875,
+      "D_direct": 1286.4,
+      "D_blocked": 1314.475,
+      "winner": "D_direct",
+      "winner_cost": 1286.4
+    },
+    "(1.5, 0.6, 0.5)": {
+      "A_bitset": 1241390.875,
+      "D_direct": 1336.75,
+      "D_blocked": 1321.7,
+      "winner": "D_blocked",
+      "winner_cost": 1321.7
+    }
+  },
+  "smoothness_score": 0.4964,
+  "same_winner_pairs": 69,
+  "total_adjacent_pairs": 139,
+  "verdict": "JAGGED -- The cost surface is noisy. Layout selection is a classification problem, not a deterministic law.",
+  "win_counts": {
+    "D_direct": 49,
+    "D_blocked": 32
+  },
+  "n_boundary_transitions": 70,
+  "boundary_points": [
+    {
+      "from": [
+        0.0,
+        0.0,
+        0.01
+      ],
+      "to": [
+        0.5,
+        0.0,
+        0.01
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        0.0,
+        0.0,
+        0.01
+      ],
+      "to": [
+        0.0,
+        0.2,
+        0.01
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        0.0,
+        0.0,
+        0.01
+      ],
+      "to": [
+        0.0,
+        0.0,
+        0.05
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        0.0,
+        0.0,
+        0.05
+      ],
+      "to": [
+        0.5,
+        0.0,
+        0.05
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        0.0,
+        0.0,
+        0.05
+      ],
+      "to": [
+        0.0,
+        0.2,
+        0.05
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        0.0,
+        0.0,
+        0.05
+      ],
+      "to": [
+        0.0,
+        0.0,
+        0.1
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        0.0,
+        0.0,
+        0.1
+      ],
+      "to": [
+        0.5,
+        0.0,
+        0.1
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        0.0,
+        0.0,
+        0.1
+      ],
+      "to": [
+        0.0,
+        0.2,
+        0.1
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        0.0,
+        0.0,
+        0.2
+      ],
+      "to": [
+        0.5,
+        0.0,
+        0.2
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        0.0,
+        0.0,
+        0.3
+      ],
+      "to": [
+        0.0,
+        0.0,
+        0.5
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        0.0,
+        0.0,
+        0.5
+      ],
+      "to": [
+        0.5,
+        0.0,
+        0.5
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        0.0,
+        0.0,
+        0.5
+      ],
+      "to": [
+        0.0,
+        0.0,
+        0.7
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        0.0,
+        0.2,
+        0.01
+      ],
+      "to": [
+        0.0,
+        0.2,
+        0.05
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        0.0,
+        0.2,
+        0.05
+      ],
+      "to": [
+        0.0,
+        0.2,
+        0.1
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        0.0,
+        0.2,
+        0.1
+      ],
+      "to": [
+        0.5,
+        0.2,
+        0.1
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        0.0,
+        0.2,
+        0.1
+      ],
+      "to": [
+        0.0,
+        0.2,
+        0.2
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        0.0,
+        0.8,
+        0.7
+      ],
+      "to": [
+        0.0,
+        1.0,
+        0.7
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        0.0,
+        1.0,
+        0.05
+      ],
+      "to": [
+        0.5,
+        1.0,
+        0.05
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        0.0,
+        1.0,
+        0.05
+      ],
+      "to": [
+        0.0,
+        1.0,
+        0.1
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        0.0,
+        1.0,
+        0.1
+      ],
+      "to": [
+        0.0,
+        1.0,
+        0.2
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        0.0,
+        1.0,
+        0.5
+      ],
+      "to": [
+        0.0,
+        1.0,
+        0.7
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        0.0,
+        1.0,
+        0.7
+      ],
+      "to": [
+        0.5,
+        1.0,
+        0.7
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        0.5,
+        0.0,
+        0.01
+      ],
+      "to": [
+        1.0,
+        0.0,
+        0.01
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        0.5,
+        0.0,
+        0.01
+      ],
+      "to": [
+        0.5,
+        0.0,
+        0.05
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        0.5,
+        0.0,
+        0.05
+      ],
+      "to": [
+        0.5,
+        0.0,
+        0.1
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        0.5,
+        0.0,
+        0.1
+      ],
+      "to": [
+        0.5,
+        0.2,
+        0.1
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        0.5,
+        0.0,
+        0.2
+      ],
+      "to": [
+        0.5,
+        0.0,
+        0.3
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        0.5,
+        0.2,
+        0.01
+      ],
+      "to": [
+        0.5,
+        0.2,
+        0.05
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        0.5,
+        0.6,
+        0.5
+      ],
+      "to": [
+        1.0,
+        0.6,
+        0.5
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        0.5,
+        0.6,
+        0.5
+      ],
+      "to": [
+        0.5,
+        0.8,
+        0.5
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        0.5,
+        0.6,
+        0.5
+      ],
+      "to": [
+        0.5,
+        0.6,
+        0.7
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        0.5,
+        0.6,
+        0.7
+      ],
+      "to": [
+        1.0,
+        0.6,
+        0.7
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        0.5,
+        0.8,
+        0.05
+      ],
+      "to": [
+        1.0,
+        0.8,
+        0.05
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        0.5,
+        0.8,
+        0.05
+      ],
+      "to": [
+        0.5,
+        1.0,
+        0.05
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        0.5,
+        0.8,
+        0.1
+      ],
+      "to": [
+        1.0,
+        0.8,
+        0.1
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        0.5,
+        0.8,
+        0.1
+      ],
+      "to": [
+        0.5,
+        1.0,
+        0.1
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        0.5,
+        0.8,
+        0.1
+      ],
+      "to": [
+        0.5,
+        0.8,
+        0.2
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        0.5,
+        0.8,
+        0.2
+      ],
+      "to": [
+        0.5,
+        1.0,
+        0.2
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        0.5,
+        0.8,
+        0.2
+      ],
+      "to": [
+        0.5,
+        0.8,
+        0.3
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        0.5,
+        0.8,
+        0.3
+      ],
+      "to": [
+        1.0,
+        0.8,
+        0.3
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        0.5,
+        1.0,
+        0.01
+      ],
+      "to": [
+        0.5,
+        1.0,
+        0.05
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        0.5,
+        1.0,
+        0.1
+      ],
+      "to": [
+        0.5,
+        1.0,
+        0.2
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        1.0,
+        0.4,
+        0.3
+      ],
+      "to": [
+        1.5,
+        0.4,
+        0.3
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        1.0,
+        0.4,
+        0.3
+      ],
+      "to": [
+        1.0,
+        0.6,
+        0.3
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        1.0,
+        0.4,
+        0.3
+      ],
+      "to": [
+        1.0,
+        0.4,
+        0.5
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        1.0,
+        0.4,
+        0.5
+      ],
+      "to": [
+        1.0,
+        0.4,
+        0.7
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        1.0,
+        0.6,
+        0.01
+      ],
+      "to": [
+        1.0,
+        0.6,
+        0.05
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        1.0,
+        0.6,
+        0.05
+      ],
+      "to": [
+        1.0,
+        0.6,
+        0.1
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        1.0,
+        0.6,
+        0.1
+      ],
+      "to": [
+        1.5,
+        0.6,
+        0.1
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        1.0,
+        0.6,
+        0.1
+      ],
+      "to": [
+        1.0,
+        0.8,
+        0.1
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        1.0,
+        0.6,
+        0.2
+      ],
+      "to": [
+        1.5,
+        0.6,
+        0.2
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        1.0,
+        0.6,
+        0.2
+      ],
+      "to": [
+        1.0,
+        0.8,
+        0.2
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        1.0,
+        0.6,
+        0.3
+      ],
+      "to": [
+        1.0,
+        0.8,
+        0.3
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        1.0,
+        0.6,
+        0.5
+      ],
+      "to": [
+        1.5,
+        0.6,
+        0.5
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        1.0,
+        0.6,
+        0.5
+      ],
+      "to": [
+        1.0,
+        0.6,
+        0.7
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        1.0,
+        0.8,
+        0.01
+      ],
+      "to": [
+        1.0,
+        0.8,
+        0.05
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        1.0,
+        0.8,
+        0.3
+      ],
+      "to": [
+        1.0,
+        0.8,
+        0.5
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        1.5,
+        0.2,
+        0.2
+      ],
+      "to": [
+        1.5,
+        0.4,
+        0.2
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        1.5,
+        0.2,
+        0.3
+      ],
+      "to": [
+        1.5,
+        0.2,
+        0.5
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        1.5,
+        0.2,
+        0.5
+      ],
+      "to": [
+        1.5,
+        0.4,
+        0.5
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        1.5,
+        0.4,
+        0.01
+      ],
+      "to": [
+        1.5,
+        0.6,
+        0.01
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        1.5,
+        0.4,
+        0.01
+      ],
+      "to": [
+        1.5,
+        0.4,
+        0.05
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        1.5,
+        0.4,
+        0.05
+      ],
+      "to": [
+        1.5,
+        0.6,
+        0.05
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        1.5,
+        0.4,
+        0.05
+      ],
+      "to": [
+        1.5,
+        0.4,
+        0.1
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        1.5,
+        0.4,
+        0.2
+      ],
+      "to": [
+        1.5,
+        0.4,
+        0.3
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        1.5,
+        0.4,
+        0.5
+      ],
+      "to": [
+        1.5,
+        0.6,
+        0.5
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        1.5,
+        0.4,
+        0.5
+      ],
+      "to": [
+        1.5,
+        0.4,
+        0.7
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        1.5,
+        0.6,
+        0.01
+      ],
+      "to": [
+        1.5,
+        0.6,
+        0.05
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    },
+    {
+      "from": [
+        1.5,
+        0.6,
+        0.2
+      ],
+      "to": [
+        1.5,
+        0.6,
+        0.3
+      ],
+      "from_winner": "D_blocked",
+      "to_winner": "D_direct"
+    },
+    {
+      "from": [
+        1.5,
+        0.6,
+        0.3
+      ],
+      "to": [
+        1.5,
+        0.6,
+        0.5
+      ],
+      "from_winner": "D_direct",
+      "to_winner": "D_blocked"
+    }
+  ]
+}

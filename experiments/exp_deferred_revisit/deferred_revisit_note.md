@@ -221,3 +221,96 @@ This could be tested as a variant in the phase schedule experiment (section 4.5)
 ### Decision 4: Kill B=8 block-sparse permanently?
 - **Evidence:** expansion ratio 3-12x at sparsity < 30%, does not align with warp size
 - **Recommendation:** Yes, kill. No further consideration.
+
+---
+
+## 7. Layout Cost Surface C(I, M, p) — Deferred (exp10k)
+
+### 7.1 What was attempted
+
+exp10k tried to verify whether the Layout Selection Invariant (v1.8.3) produces a
+smooth cost surface C(I, M, p) that can be interpolated for unknown space types.
+
+Three axes:
+- **I** = topological isotropy (degree entropy H(D))
+- **M** = metric gap (attempted: Kendall tau, then spectral gap lambda_2)
+- **p** = dynamic density (occupancy k/N)
+
+810 trials across synthetic spaces with controlled (I, M, p). Benchmark: D_direct
+vs D_blocked vs A_bitset, wall-clock as cost.
+
+### 7.2 Result
+
+**Boundary smoothness: 0.496.** Surface is JAGGED. ~50% of adjacent grid points
+switch layout winner. Verdict: not a smooth deterministic law.
+
+However: **A_bitset won 0 out of 810 trials.** The sparse-vs-dense boundary IS
+smooth and absolute. Jaggedness is only in D_direct vs D_blocked comparison.
+
+### 7.3 Why the surface was jagged — three measurement failures
+
+**Failure 1: Isotropy blindness.** H(D) measures degree inequality, not geometry.
+A random 4-regular graph has H(D)=0 (same as a grid) but 100% cache miss rate.
+The metric cannot distinguish "uniform order" from "uniform chaos."
+
+**Failure 2: Macroscopic metric gap.** Both Kendall tau and lambda_2 are global
+metrics. Two perfect clusters connected by one bridge: lambda_2 collapses (signals
+"terrible connectivity"), but GPU warps happily compute inside each cluster at 99.9%
+L1 hit rate. Global topology scalers cannot evaluate local cache-line health.
+
+**Failure 3: Ghost of the void.** I and M were computed on the FULL space X, but
+compute runs on X_active (< 40% of nodes). The induced subgraph of active nodes has
+different entropy, different spectral gap, different cache profile. We evaluated layout
+cost using topology of a space that isn't even loaded into registers.
+
+### 7.4 What needs to happen for a valid test
+
+Two separate experiments, each with corrected metrics:
+
+**Experiment A: Synthetic space classification surface.**
+
+Goal: can we predict optimal layout for an ARBITRARY synthetic space from measurable
+properties?
+
+Corrected metrics (computed on X_active, not X):
+- I_active = H(D | induced subgraph of active nodes)
+- M_local = mean |addr(u) - addr(v)| / cache_line_size for edges within X_active.
+  This is a direct proxy for L1/L2 cache miss rate. Cheap to compute: O(edges_active).
+- p = occupancy (unchanged)
+
+Why these are better:
+- I_active sees the actual degree distribution the GPU processes
+- M_local measures cache-line locality of actual memory accesses, not abstract topology
+- Both are O(edges) to compute, not O(N^3) like eigendecomposition
+
+**Experiment B: Production layout auto-selection.**
+
+Goal: can the Curiosity runtime automatically choose between D_direct, D_blocked,
+and A_bitset based on (I_active, M_local, p) without human classification?
+
+This is only useful if Experiment A produces a smooth surface. If A is jagged,
+auto-selection is impossible and policy table remains the correct approach.
+
+Priority: B depends on A. A is not urgent (policy table works). Both are Track C.
+
+### 7.5 What v1.8.3 should say
+
+The Layout Selection Invariant (v1.8.3) should be labeled as:
+- **Confirmed:** sparse always beats dense (A_bitset = 0 wins in 810 trials)
+- **Hypothesis (unverified):** specific sparse variant selection follows a smooth
+  C(I, M, p) law. Current metrics insufficient. Corrected metrics on X_active needed.
+- **Operational:** policy table works as empirical classification. Does not require
+  the continuous law to be true.
+
+### 7.6 Resurrection triggers
+
+Revisit exp10k when:
+1. A new space type appears that doesn't fit existing policy table categories
+2. Runtime auto-selection becomes a requirement (Track C)
+3. Someone has time and curiosity to build proper X_active-based metrics
+
+### 7.7 Estimated effort
+
+- Experiment A with corrected metrics: 1-2 days (rewrite generator + metrics, rerun sweep)
+- Experiment B: 1 day (add auto-selector to pipeline, test on real workloads)
+- Total: 2-3 days, non-blocking, Track C priority

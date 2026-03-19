@@ -1,0 +1,5462 @@
+[
+ {
+  "I_target": 3.5,
+  "M_target": 0.2,
+  "p_target": 0.5,
+  "seed": 42,
+  "actual_I": 1.7207,
+  "actual_M": 0.0985,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 109056,
+    "wall_clock_us": 600618.35,
+    "peak_vram_bytes": 8704000
+   },
+   "D_direct": {
+    "resident_bytes": 8950272,
+    "wall_clock_us": 1249.75,
+    "peak_vram_bytes": 13748736
+   },
+   "D_blocked": {
+    "resident_bytes": 9245184,
+    "wall_clock_us": 1204.55,
+    "peak_vram_bytes": 14043648
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.2,
+  "p_target": 0.5,
+  "seed": 43,
+  "actual_I": 1.7077,
+  "actual_M": -0.0018,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 581876.7,
+    "peak_vram_bytes": 8703488
+   },
+   "D_direct": {
+    "resident_bytes": 8890368,
+    "wall_clock_us": 1139.35,
+    "peak_vram_bytes": 12810240
+   },
+   "D_blocked": {
+    "resident_bytes": 9132032,
+    "wall_clock_us": 1217.15,
+    "peak_vram_bytes": 13051904
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.2,
+  "p_target": 0.5,
+  "seed": 44,
+  "actual_I": 1.7088,
+  "actual_M": 0.0329,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 592480.65,
+    "peak_vram_bytes": 8705024
+   },
+   "D_direct": {
+    "resident_bytes": 9000960,
+    "wall_clock_us": 1114.9,
+    "peak_vram_bytes": 14542848
+   },
+   "D_blocked": {
+    "resident_bytes": 9340928,
+    "wall_clock_us": 1226.4,
+    "peak_vram_bytes": 14882816
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.2,
+  "p_target": 0.5,
+  "seed": 45,
+  "actual_I": 1.7118,
+  "actual_M": 0.0152,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 596851.05,
+    "peak_vram_bytes": 8706560
+   },
+   "D_direct": {
+    "resident_bytes": 9116160,
+    "wall_clock_us": 1133.35,
+    "peak_vram_bytes": 16347648
+   },
+   "D_blocked": {
+    "resident_bytes": 9558528,
+    "wall_clock_us": 1224.4,
+    "peak_vram_bytes": 16790016
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.2,
+  "p_target": 0.5,
+  "seed": 46,
+  "actual_I": 1.7108,
+  "actual_M": 0.0195,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 603069.3,
+    "peak_vram_bytes": 8704000
+   },
+   "D_direct": {
+    "resident_bytes": 8894976,
+    "wall_clock_us": 1235.05,
+    "peak_vram_bytes": 12882432
+   },
+   "D_blocked": {
+    "resident_bytes": 9140736,
+    "wall_clock_us": 1244.3,
+    "peak_vram_bytes": 13128192
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.2,
+  "p_target": 0.5,
+  "seed": 47,
+  "actual_I": 1.7124,
+  "actual_M": 0.0925,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 588853.9,
+    "peak_vram_bytes": 8702976
+   },
+   "D_direct": {
+    "resident_bytes": 8812032,
+    "wall_clock_us": 1253.0,
+    "peak_vram_bytes": 11582976
+   },
+   "D_blocked": {
+    "resident_bytes": 8984064,
+    "wall_clock_us": 1095.05,
+    "peak_vram_bytes": 11755008
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.2,
+  "p_target": 0.5,
+  "seed": 48,
+  "actual_I": 1.6964,
+  "actual_M": 0.0117,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 623362.95,
+    "peak_vram_bytes": 8704000
+   },
+   "D_direct": {
+    "resident_bytes": 8954880,
+    "wall_clock_us": 1087.25,
+    "peak_vram_bytes": 13820928
+   },
+   "D_blocked": {
+    "resident_bytes": 9253888,
+    "wall_clock_us": 1345.8,
+    "peak_vram_bytes": 14119936
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.2,
+  "p_target": 0.5,
+  "seed": 49,
+  "actual_I": 1.6944,
+  "actual_M": 0.0574,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 601179.15,
+    "peak_vram_bytes": 8705024
+   },
+   "D_direct": {
+    "resident_bytes": 8848896,
+    "wall_clock_us": 1229.05,
+    "peak_vram_bytes": 12160512
+   },
+   "D_blocked": {
+    "resident_bytes": 9053696,
+    "wall_clock_us": 1212.3,
+    "peak_vram_bytes": 12365312
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.2,
+  "p_target": 0.5,
+  "seed": 50,
+  "actual_I": 1.717,
+  "actual_M": -0.0068,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 599375.25,
+    "peak_vram_bytes": 8705024
+   },
+   "D_direct": {
+    "resident_bytes": 8922624,
+    "wall_clock_us": 1031.25,
+    "peak_vram_bytes": 13315584
+   },
+   "D_blocked": {
+    "resident_bytes": 9192960,
+    "wall_clock_us": 1230.65,
+    "peak_vram_bytes": 13585920
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.2,
+  "p_target": 0.5,
+  "seed": 51,
+  "actual_I": 1.7035,
+  "actual_M": 0.0633,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 604813.75,
+    "peak_vram_bytes": 8708096
+   },
+   "D_direct": {
+    "resident_bytes": 8991744,
+    "wall_clock_us": 1236.4,
+    "peak_vram_bytes": 14398464
+   },
+   "D_blocked": {
+    "resident_bytes": 9323520,
+    "wall_clock_us": 1267.65,
+    "peak_vram_bytes": 14730240
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.2,
+  "p_target": 0.7,
+  "seed": 42,
+  "actual_I": 1.7207,
+  "actual_M": 0.086,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 867021.1,
+    "peak_vram_bytes": 8706048
+   },
+   "D_direct": {
+    "resident_bytes": 9094656,
+    "wall_clock_us": 1291.25,
+    "peak_vram_bytes": 15805952
+   },
+   "D_blocked": {
+    "resident_bytes": 9505792,
+    "wall_clock_us": 1262.4,
+    "peak_vram_bytes": 16217088
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.2,
+  "p_target": 0.7,
+  "seed": 43,
+  "actual_I": 1.7077,
+  "actual_M": -0.0055,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 868273.55,
+    "peak_vram_bytes": 8705536
+   },
+   "D_direct": {
+    "resident_bytes": 9036288,
+    "wall_clock_us": 1125.0,
+    "peak_vram_bytes": 14896128
+   },
+   "D_blocked": {
+    "resident_bytes": 9395712,
+    "wall_clock_us": 1250.1,
+    "peak_vram_bytes": 15255552
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.2,
+  "p_target": 0.7,
+  "seed": 44,
+  "actual_I": 1.7088,
+  "actual_M": 0.0141,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 858196.6,
+    "peak_vram_bytes": 8707072
+   },
+   "D_direct": {
+    "resident_bytes": 9165312,
+    "wall_clock_us": 1315.05,
+    "peak_vram_bytes": 16915456
+   },
+   "D_blocked": {
+    "resident_bytes": 9639424,
+    "wall_clock_us": 1243.75,
+    "peak_vram_bytes": 17389568
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.2,
+  "p_target": 0.7,
+  "seed": 45,
+  "actual_I": 1.7118,
+  "actual_M": 0.0077,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 930171.5,
+    "peak_vram_bytes": 8708608
+   },
+   "D_direct": {
+    "resident_bytes": 9326592,
+    "wall_clock_us": 1168.4,
+    "peak_vram_bytes": 19440128
+   },
+   "D_blocked": {
+    "resident_bytes": 9944064,
+    "wall_clock_us": 1248.95,
+    "peak_vram_bytes": 20057600
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.2,
+  "p_target": 0.7,
+  "seed": 46,
+  "actual_I": 1.7108,
+  "actual_M": 0.0164,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 857114.75,
+    "peak_vram_bytes": 8706048
+   },
+   "D_direct": {
+    "resident_bytes": 9017344,
+    "wall_clock_us": 1272.35,
+    "peak_vram_bytes": 14594560
+   },
+   "D_blocked": {
+    "resident_bytes": 9359872,
+    "wall_clock_us": 1223.2,
+    "peak_vram_bytes": 14937088
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.2,
+  "p_target": 0.7,
+  "seed": 47,
+  "actual_I": 1.7124,
+  "actual_M": 0.0857,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 855839.35,
+    "peak_vram_bytes": 8705024
+   },
+   "D_direct": {
+    "resident_bytes": 8952832,
+    "wall_clock_us": 1165.7,
+    "peak_vram_bytes": 13584896
+   },
+   "D_blocked": {
+    "resident_bytes": 9238016,
+    "wall_clock_us": 1197.8,
+    "peak_vram_bytes": 13870080
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.2,
+  "p_target": 0.7,
+  "seed": 48,
+  "actual_I": 1.6964,
+  "actual_M": 0.0148,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 841721.65,
+    "peak_vram_bytes": 8706048
+   },
+   "D_direct": {
+    "resident_bytes": 9100800,
+    "wall_clock_us": 1076.5,
+    "peak_vram_bytes": 15905792
+   },
+   "D_blocked": {
+    "resident_bytes": 9517568,
+    "wall_clock_us": 1160.35,
+    "peak_vram_bytes": 16322560
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.2,
+  "p_target": 0.7,
+  "seed": 49,
+  "actual_I": 1.6944,
+  "actual_M": 0.049,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 861954.45,
+    "peak_vram_bytes": 8707072
+   },
+   "D_direct": {
+    "resident_bytes": 9184256,
+    "wall_clock_us": 2046.8,
+    "peak_vram_bytes": 17218560
+   },
+   "D_blocked": {
+    "resident_bytes": 9675264,
+    "wall_clock_us": 1229.55,
+    "peak_vram_bytes": 17709568
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.2,
+  "p_target": 0.7,
+  "seed": 50,
+  "actual_I": 1.717,
+  "actual_M": -0.0082,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 854951.1,
+    "peak_vram_bytes": 8707072
+   },
+   "D_direct": {
+    "resident_bytes": 9191424,
+    "wall_clock_us": 1272.3,
+    "peak_vram_bytes": 17319936
+   },
+   "D_blocked": {
+    "resident_bytes": 9688576,
+    "wall_clock_us": 1267.6,
+    "peak_vram_bytes": 17817088
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.2,
+  "p_target": 0.7,
+  "seed": 51,
+  "actual_I": 1.7035,
+  "actual_M": 0.06,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 864076.45,
+    "peak_vram_bytes": 8710144
+   },
+   "D_direct": {
+    "resident_bytes": 9152000,
+    "wall_clock_us": 1321.0,
+    "peak_vram_bytes": 16713216
+   },
+   "D_blocked": {
+    "resident_bytes": 9614336,
+    "wall_clock_us": 1264.4,
+    "peak_vram_bytes": 17175552
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.01,
+  "seed": 42,
+  "actual_I": 1.7207,
+  "actual_M": 0.0785,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 13943.6,
+    "peak_vram_bytes": 8698880
+   },
+   "D_direct": {
+    "resident_bytes": 8592896,
+    "wall_clock_us": 1166.6,
+    "peak_vram_bytes": 8602624
+   },
+   "D_blocked": {
+    "resident_bytes": 8598016,
+    "wall_clock_us": 1174.4,
+    "peak_vram_bytes": 8607744
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.01,
+  "seed": 43,
+  "actual_I": 1.7077,
+  "actual_M": -0.0006,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 13343.55,
+    "peak_vram_bytes": 8701440
+   },
+   "D_direct": {
+    "resident_bytes": 8592384,
+    "wall_clock_us": 1164.65,
+    "peak_vram_bytes": 8601088
+   },
+   "D_blocked": {
+    "resident_bytes": 8596992,
+    "wall_clock_us": 1065.15,
+    "peak_vram_bytes": 8605696
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.01,
+  "seed": 44,
+  "actual_I": 1.7088,
+  "actual_M": 0.0522,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 13444.75,
+    "peak_vram_bytes": 8696320
+   },
+   "D_direct": {
+    "resident_bytes": 8592896,
+    "wall_clock_us": 1161.9,
+    "peak_vram_bytes": 8603648
+   },
+   "D_blocked": {
+    "resident_bytes": 8598016,
+    "wall_clock_us": 1158.55,
+    "peak_vram_bytes": 8608768
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.01,
+  "seed": 45,
+  "actual_I": 1.7118,
+  "actual_M": 0.0278,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 14069.5,
+    "peak_vram_bytes": 8696320
+   },
+   "D_direct": {
+    "resident_bytes": 8592384,
+    "wall_clock_us": 1088.5,
+    "peak_vram_bytes": 8600064
+   },
+   "D_blocked": {
+    "resident_bytes": 8596992,
+    "wall_clock_us": 1151.65,
+    "peak_vram_bytes": 8604672
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.01,
+  "seed": 46,
+  "actual_I": 1.7108,
+  "actual_M": 0.0299,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 14144.95,
+    "peak_vram_bytes": 8700416
+   },
+   "D_direct": {
+    "resident_bytes": 8592384,
+    "wall_clock_us": 1138.1,
+    "peak_vram_bytes": 8600064
+   },
+   "D_blocked": {
+    "resident_bytes": 8596992,
+    "wall_clock_us": 911.4,
+    "peak_vram_bytes": 8604672
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.01,
+  "seed": 47,
+  "actual_I": 1.7124,
+  "actual_M": 0.0388,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 12239.8,
+    "peak_vram_bytes": 8697856
+   },
+   "D_direct": {
+    "resident_bytes": 8592896,
+    "wall_clock_us": 982.95,
+    "peak_vram_bytes": 8602624
+   },
+   "D_blocked": {
+    "resident_bytes": 8598016,
+    "wall_clock_us": 1582.55,
+    "peak_vram_bytes": 8607744
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.01,
+  "seed": 48,
+  "actual_I": 1.6964,
+  "actual_M": 0.0317,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 11737.05,
+    "peak_vram_bytes": 8698880
+   },
+   "D_direct": {
+    "resident_bytes": 8592384,
+    "wall_clock_us": 1143.2,
+    "peak_vram_bytes": 8601088
+   },
+   "D_blocked": {
+    "resident_bytes": 8596992,
+    "wall_clock_us": 1152.3,
+    "peak_vram_bytes": 8605696
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.01,
+  "seed": 49,
+  "actual_I": 1.6944,
+  "actual_M": 0.0341,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 12253.5,
+    "peak_vram_bytes": 8699392
+   },
+   "D_direct": {
+    "resident_bytes": 8592384,
+    "wall_clock_us": 1130.7,
+    "peak_vram_bytes": 8600064
+   },
+   "D_blocked": {
+    "resident_bytes": 8596992,
+    "wall_clock_us": 1135.75,
+    "peak_vram_bytes": 8604672
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.01,
+  "seed": 50,
+  "actual_I": 1.717,
+  "actual_M": 0.0186,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 13930.5,
+    "peak_vram_bytes": 8701952
+   },
+   "D_direct": {
+    "resident_bytes": 8592384,
+    "wall_clock_us": 1026.65,
+    "peak_vram_bytes": 8601088
+   },
+   "D_blocked": {
+    "resident_bytes": 8596992,
+    "wall_clock_us": 1143.65,
+    "peak_vram_bytes": 8605696
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.01,
+  "seed": 51,
+  "actual_I": 1.7035,
+  "actual_M": 0.09,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 13603.05,
+    "peak_vram_bytes": 8696832
+   },
+   "D_direct": {
+    "resident_bytes": 8592896,
+    "wall_clock_us": 1015.1,
+    "peak_vram_bytes": 8602624
+   },
+   "D_blocked": {
+    "resident_bytes": 8598016,
+    "wall_clock_us": 1159.0,
+    "peak_vram_bytes": 8607744
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.05,
+  "seed": 42,
+  "actual_I": 1.7207,
+  "actual_M": 0.0769,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 61802.75,
+    "peak_vram_bytes": 8700416
+   },
+   "D_direct": {
+    "resident_bytes": 8607232,
+    "wall_clock_us": 1145.85,
+    "peak_vram_bytes": 8796672
+   },
+   "D_blocked": {
+    "resident_bytes": 8623104,
+    "wall_clock_us": 1178.35,
+    "peak_vram_bytes": 8812544
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.05,
+  "seed": 43,
+  "actual_I": 1.7077,
+  "actual_M": -0.0046,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 62716.85,
+    "peak_vram_bytes": 8701952
+   },
+   "D_direct": {
+    "resident_bytes": 8605696,
+    "wall_clock_us": 1166.9,
+    "peak_vram_bytes": 8774656
+   },
+   "D_blocked": {
+    "resident_bytes": 8620032,
+    "wall_clock_us": 1057.75,
+    "peak_vram_bytes": 8788992
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.05,
+  "seed": 44,
+  "actual_I": 1.7088,
+  "actual_M": 0.0595,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 60631.7,
+    "peak_vram_bytes": 8698880
+   },
+   "D_direct": {
+    "resident_bytes": 8600064,
+    "wall_clock_us": 1049.45,
+    "peak_vram_bytes": 8681472
+   },
+   "D_blocked": {
+    "resident_bytes": 8609280,
+    "wall_clock_us": 1162.95,
+    "peak_vram_bytes": 8690688
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.05,
+  "seed": 45,
+  "actual_I": 1.7118,
+  "actual_M": 0.0275,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 63674.85,
+    "peak_vram_bytes": 8702976
+   },
+   "D_direct": {
+    "resident_bytes": 8604672,
+    "wall_clock_us": 1141.95,
+    "peak_vram_bytes": 8753664
+   },
+   "D_blocked": {
+    "resident_bytes": 8617984,
+    "wall_clock_us": 1137.45,
+    "peak_vram_bytes": 8766976
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.05,
+  "seed": 46,
+  "actual_I": 1.7108,
+  "actual_M": 0.0337,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 59874.35,
+    "peak_vram_bytes": 8700416
+   },
+   "D_direct": {
+    "resident_bytes": 8612352,
+    "wall_clock_us": 1028.7,
+    "peak_vram_bytes": 8875520
+   },
+   "D_blocked": {
+    "resident_bytes": 8632832,
+    "wall_clock_us": 1115.25,
+    "peak_vram_bytes": 8896000
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.05,
+  "seed": 47,
+  "actual_I": 1.7124,
+  "actual_M": 0.0346,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 68018.15,
+    "peak_vram_bytes": 8699904
+   },
+   "D_direct": {
+    "resident_bytes": 8604672,
+    "wall_clock_us": 1043.0,
+    "peak_vram_bytes": 8753664
+   },
+   "D_blocked": {
+    "resident_bytes": 8617984,
+    "wall_clock_us": 1139.75,
+    "peak_vram_bytes": 8766976
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.05,
+  "seed": 48,
+  "actual_I": 1.6964,
+  "actual_M": 0.0346,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 72700.8,
+    "peak_vram_bytes": 8701952
+   },
+   "D_direct": {
+    "resident_bytes": 8611328,
+    "wall_clock_us": 1090.9,
+    "peak_vram_bytes": 8860672
+   },
+   "D_blocked": {
+    "resident_bytes": 8630784,
+    "wall_clock_us": 1092.3,
+    "peak_vram_bytes": 8880128
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.05,
+  "seed": 49,
+  "actual_I": 1.6944,
+  "actual_M": 0.0341,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 60439.45,
+    "peak_vram_bytes": 8702976
+   },
+   "D_direct": {
+    "resident_bytes": 8615424,
+    "wall_clock_us": 1079.4,
+    "peak_vram_bytes": 8926208
+   },
+   "D_blocked": {
+    "resident_bytes": 8638464,
+    "wall_clock_us": 962.65,
+    "peak_vram_bytes": 8949248
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.05,
+  "seed": 50,
+  "actual_I": 1.717,
+  "actual_M": 0.0154,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 59406.0,
+    "peak_vram_bytes": 8701952
+   },
+   "D_direct": {
+    "resident_bytes": 8609792,
+    "wall_clock_us": 833.65,
+    "peak_vram_bytes": 8833024
+   },
+   "D_blocked": {
+    "resident_bytes": 8627712,
+    "wall_clock_us": 2001.9,
+    "peak_vram_bytes": 8850944
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.05,
+  "seed": 51,
+  "actual_I": 1.7035,
+  "actual_M": 0.094,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 67243.25,
+    "peak_vram_bytes": 8700416
+   },
+   "D_direct": {
+    "resident_bytes": 8598528,
+    "wall_clock_us": 1107.6,
+    "peak_vram_bytes": 8666112
+   },
+   "D_blocked": {
+    "resident_bytes": 8606720,
+    "wall_clock_us": 1169.55,
+    "peak_vram_bytes": 8674304
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.1,
+  "seed": 42,
+  "actual_I": 1.7207,
+  "actual_M": 0.074,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 107140.0,
+    "peak_vram_bytes": 8700928
+   },
+   "D_direct": {
+    "resident_bytes": 8631296,
+    "wall_clock_us": 1012.6,
+    "peak_vram_bytes": 9129984
+   },
+   "D_blocked": {
+    "resident_bytes": 8665600,
+    "wall_clock_us": 1044.7,
+    "peak_vram_bytes": 9164288
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.1,
+  "seed": 43,
+  "actual_I": 1.7077,
+  "actual_M": -0.0035,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 113118.55,
+    "peak_vram_bytes": 8700416
+   },
+   "D_direct": {
+    "resident_bytes": 8650752,
+    "wall_clock_us": 1106.0,
+    "peak_vram_bytes": 9432576
+   },
+   "D_blocked": {
+    "resident_bytes": 8702464,
+    "wall_clock_us": 1095.15,
+    "peak_vram_bytes": 9484288
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.1,
+  "seed": 44,
+  "actual_I": 1.7088,
+  "actual_M": 0.0599,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 115397.8,
+    "peak_vram_bytes": 8700928
+   },
+   "D_direct": {
+    "resident_bytes": 8615424,
+    "wall_clock_us": 1169.3,
+    "peak_vram_bytes": 8884736
+   },
+   "D_blocked": {
+    "resident_bytes": 8635904,
+    "wall_clock_us": 850.85,
+    "peak_vram_bytes": 8905216
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.1,
+  "seed": 45,
+  "actual_I": 1.7118,
+  "actual_M": 0.0239,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 136830.9,
+    "peak_vram_bytes": 8704000
+   },
+   "D_direct": {
+    "resident_bytes": 8626688,
+    "wall_clock_us": 1155.5,
+    "peak_vram_bytes": 9057792
+   },
+   "D_blocked": {
+    "resident_bytes": 8656896,
+    "wall_clock_us": 1026.9,
+    "peak_vram_bytes": 9088000
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.1,
+  "seed": 46,
+  "actual_I": 1.7108,
+  "actual_M": 0.0371,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 118481.15,
+    "peak_vram_bytes": 8701952
+   },
+   "D_direct": {
+    "resident_bytes": 8651776,
+    "wall_clock_us": 1183.2,
+    "peak_vram_bytes": 9447424
+   },
+   "D_blocked": {
+    "resident_bytes": 8704512,
+    "wall_clock_us": 1189.6,
+    "peak_vram_bytes": 9500160
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.1,
+  "seed": 47,
+  "actual_I": 1.7124,
+  "actual_M": 0.0376,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 119305.6,
+    "peak_vram_bytes": 8700416
+   },
+   "D_direct": {
+    "resident_bytes": 8618496,
+    "wall_clock_us": 1215.35,
+    "peak_vram_bytes": 8929280
+   },
+   "D_blocked": {
+    "resident_bytes": 8641536,
+    "wall_clock_us": 1893.75,
+    "peak_vram_bytes": 8952320
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.1,
+  "seed": 48,
+  "actual_I": 1.6964,
+  "actual_M": 0.0343,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 123311.85,
+    "peak_vram_bytes": 8700928
+   },
+   "D_direct": {
+    "resident_bytes": 8631296,
+    "wall_clock_us": 1112.65,
+    "peak_vram_bytes": 9129984
+   },
+   "D_blocked": {
+    "resident_bytes": 8665600,
+    "wall_clock_us": 1181.9,
+    "peak_vram_bytes": 9164288
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.1,
+  "seed": 49,
+  "actual_I": 1.6944,
+  "actual_M": 0.0374,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 119154.4,
+    "peak_vram_bytes": 8701952
+   },
+   "D_direct": {
+    "resident_bytes": 8642560,
+    "wall_clock_us": 1172.0,
+    "peak_vram_bytes": 9303040
+   },
+   "D_blocked": {
+    "resident_bytes": 8687104,
+    "wall_clock_us": 1165.95,
+    "peak_vram_bytes": 9347584
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.1,
+  "seed": 50,
+  "actual_I": 1.717,
+  "actual_M": 0.0179,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 119649.5,
+    "peak_vram_bytes": 8702976
+   },
+   "D_direct": {
+    "resident_bytes": 8642560,
+    "wall_clock_us": 1267.45,
+    "peak_vram_bytes": 9303040
+   },
+   "D_blocked": {
+    "resident_bytes": 8687104,
+    "wall_clock_us": 1141.55,
+    "peak_vram_bytes": 9347584
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.1,
+  "seed": 51,
+  "actual_I": 1.7035,
+  "actual_M": 0.094,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 125884.65,
+    "peak_vram_bytes": 8705024
+   },
+   "D_direct": {
+    "resident_bytes": 8652288,
+    "wall_clock_us": 1191.6,
+    "peak_vram_bytes": 9460224
+   },
+   "D_blocked": {
+    "resident_bytes": 8705536,
+    "wall_clock_us": 1160.0,
+    "peak_vram_bytes": 9513472
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.2,
+  "seed": 42,
+  "actual_I": 1.7207,
+  "actual_M": 0.0731,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 244570.5,
+    "peak_vram_bytes": 8701952
+   },
+   "D_direct": {
+    "resident_bytes": 8734720,
+    "wall_clock_us": 1199.45,
+    "peak_vram_bytes": 10647552
+   },
+   "D_blocked": {
+    "resident_bytes": 8855040,
+    "wall_clock_us": 1227.9,
+    "peak_vram_bytes": 10767872
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.2,
+  "seed": 43,
+  "actual_I": 1.7077,
+  "actual_M": -0.0039,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 240102.3,
+    "peak_vram_bytes": 8701440
+   },
+   "D_direct": {
+    "resident_bytes": 8710656,
+    "wall_clock_us": 1214.8,
+    "peak_vram_bytes": 10272768
+   },
+   "D_blocked": {
+    "resident_bytes": 8809472,
+    "wall_clock_us": 1214.3,
+    "peak_vram_bytes": 10371584
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.2,
+  "seed": 44,
+  "actual_I": 1.7088,
+  "actual_M": 0.0585,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 241212.05,
+    "peak_vram_bytes": 8702976
+   },
+   "D_direct": {
+    "resident_bytes": 8688640,
+    "wall_clock_us": 1185.35,
+    "peak_vram_bytes": 9927680
+   },
+   "D_blocked": {
+    "resident_bytes": 8768000,
+    "wall_clock_us": 1160.05,
+    "peak_vram_bytes": 10007040
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.2,
+  "seed": 45,
+  "actual_I": 1.7118,
+  "actual_M": 0.03,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 239879.25,
+    "peak_vram_bytes": 8705024
+   },
+   "D_direct": {
+    "resident_bytes": 8714240,
+    "wall_clock_us": 1164.25,
+    "peak_vram_bytes": 10330112
+   },
+   "D_blocked": {
+    "resident_bytes": 8816640,
+    "wall_clock_us": 1179.4,
+    "peak_vram_bytes": 10432512
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.2,
+  "seed": 46,
+  "actual_I": 1.7108,
+  "actual_M": 0.0413,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 244436.25,
+    "peak_vram_bytes": 8702976
+   },
+   "D_direct": {
+    "resident_bytes": 8712704,
+    "wall_clock_us": 1104.65,
+    "peak_vram_bytes": 10302464
+   },
+   "D_blocked": {
+    "resident_bytes": 8813568,
+    "wall_clock_us": 1183.05,
+    "peak_vram_bytes": 10403328
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.2,
+  "seed": 47,
+  "actual_I": 1.7124,
+  "actual_M": 0.0419,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 242163.35,
+    "peak_vram_bytes": 8701440
+   },
+   "D_direct": {
+    "resident_bytes": 8679424,
+    "wall_clock_us": 1191.8,
+    "peak_vram_bytes": 9784320
+   },
+   "D_blocked": {
+    "resident_bytes": 8750592,
+    "wall_clock_us": 1182.1,
+    "peak_vram_bytes": 9855488
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.2,
+  "seed": 48,
+  "actual_I": 1.6964,
+  "actual_M": 0.044,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 240540.7,
+    "peak_vram_bytes": 8701952
+   },
+   "D_direct": {
+    "resident_bytes": 8736256,
+    "wall_clock_us": 1109.15,
+    "peak_vram_bytes": 10675200
+   },
+   "D_blocked": {
+    "resident_bytes": 8858112,
+    "wall_clock_us": 1203.6,
+    "peak_vram_bytes": 10797056
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.2,
+  "seed": 49,
+  "actual_I": 1.6944,
+  "actual_M": 0.0411,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 243582.3,
+    "peak_vram_bytes": 8702976
+   },
+   "D_direct": {
+    "resident_bytes": 8725504,
+    "wall_clock_us": 1164.6,
+    "peak_vram_bytes": 10503168
+   },
+   "D_blocked": {
+    "resident_bytes": 8837632,
+    "wall_clock_us": 1182.5,
+    "peak_vram_bytes": 10615296
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.2,
+  "seed": 50,
+  "actual_I": 1.717,
+  "actual_M": 0.0186,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 236895.35,
+    "peak_vram_bytes": 8702976
+   },
+   "D_direct": {
+    "resident_bytes": 8758272,
+    "wall_clock_us": 1197.45,
+    "peak_vram_bytes": 11020288
+   },
+   "D_blocked": {
+    "resident_bytes": 8899584,
+    "wall_clock_us": 1182.35,
+    "peak_vram_bytes": 11161600
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.2,
+  "seed": 51,
+  "actual_I": 1.7035,
+  "actual_M": 0.0902,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 250671.2,
+    "peak_vram_bytes": 8706048
+   },
+   "D_direct": {
+    "resident_bytes": 8714240,
+    "wall_clock_us": 1148.85,
+    "peak_vram_bytes": 10330112
+   },
+   "D_blocked": {
+    "resident_bytes": 8816640,
+    "wall_clock_us": 1229.35,
+    "peak_vram_bytes": 10432512
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.3,
+  "seed": 42,
+  "actual_I": 1.7207,
+  "actual_M": 0.0683,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 363327.45,
+    "peak_vram_bytes": 8702464
+   },
+   "D_direct": {
+    "resident_bytes": 8806912,
+    "wall_clock_us": 1210.4,
+    "peak_vram_bytes": 11684864
+   },
+   "D_blocked": {
+    "resident_bytes": 8985600,
+    "wall_clock_us": 1158.0,
+    "peak_vram_bytes": 11863552
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.3,
+  "seed": 43,
+  "actual_I": 1.7077,
+  "actual_M": -0.0152,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 356432.05,
+    "peak_vram_bytes": 8701952
+   },
+   "D_direct": {
+    "resident_bytes": 8782336,
+    "wall_clock_us": 1222.05,
+    "peak_vram_bytes": 11295744
+   },
+   "D_blocked": {
+    "resident_bytes": 8939008,
+    "wall_clock_us": 1155.25,
+    "peak_vram_bytes": 11452416
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.3,
+  "seed": 44,
+  "actual_I": 1.7088,
+  "actual_M": 0.0609,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 364099.4,
+    "peak_vram_bytes": 8703488
+   },
+   "D_direct": {
+    "resident_bytes": 8737792,
+    "wall_clock_us": 1213.4,
+    "peak_vram_bytes": 10603008
+   },
+   "D_blocked": {
+    "resident_bytes": 8855040,
+    "wall_clock_us": 1192.65,
+    "peak_vram_bytes": 10720256
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.3,
+  "seed": 45,
+  "actual_I": 1.7118,
+  "actual_M": 0.0357,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 365371.65,
+    "peak_vram_bytes": 8705536
+   },
+   "D_direct": {
+    "resident_bytes": 8906752,
+    "wall_clock_us": 1236.25,
+    "peak_vram_bytes": 13243904
+   },
+   "D_blocked": {
+    "resident_bytes": 9174016,
+    "wall_clock_us": 1176.45,
+    "peak_vram_bytes": 13511168
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.3,
+  "seed": 46,
+  "actual_I": 1.7108,
+  "actual_M": 0.0448,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 370486.0,
+    "peak_vram_bytes": 8703488
+   },
+   "D_direct": {
+    "resident_bytes": 8774144,
+    "wall_clock_us": 1134.0,
+    "peak_vram_bytes": 11166208
+   },
+   "D_blocked": {
+    "resident_bytes": 8923648,
+    "wall_clock_us": 1231.3,
+    "peak_vram_bytes": 11315712
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.3,
+  "seed": 47,
+  "actual_I": 1.7124,
+  "actual_M": 0.0413,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 360053.65,
+    "peak_vram_bytes": 8701440
+   },
+   "D_direct": {
+    "resident_bytes": 8723968,
+    "wall_clock_us": 1177.15,
+    "peak_vram_bytes": 10386432
+   },
+   "D_blocked": {
+    "resident_bytes": 8828928,
+    "wall_clock_us": 1202.75,
+    "peak_vram_bytes": 10491392
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.3,
+  "seed": 48,
+  "actual_I": 1.6964,
+  "actual_M": 0.0478,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 357699.5,
+    "peak_vram_bytes": 8704000
+   },
+   "D_direct": {
+    "resident_bytes": 8809984,
+    "wall_clock_us": 1792.9,
+    "peak_vram_bytes": 11727872
+   },
+   "D_blocked": {
+    "resident_bytes": 8991232,
+    "wall_clock_us": 1235.45,
+    "peak_vram_bytes": 11909120
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.3,
+  "seed": 49,
+  "actual_I": 1.6944,
+  "actual_M": 0.039,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 391421.05,
+    "peak_vram_bytes": 8703488
+   },
+   "D_direct": {
+    "resident_bytes": 8793088,
+    "wall_clock_us": 1429.7,
+    "peak_vram_bytes": 11468288
+   },
+   "D_blocked": {
+    "resident_bytes": 8959488,
+    "wall_clock_us": 1122.75,
+    "peak_vram_bytes": 11634688
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.3,
+  "seed": 50,
+  "actual_I": 1.717,
+  "actual_M": 0.0263,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 384450.1,
+    "peak_vram_bytes": 8703488
+   },
+   "D_direct": {
+    "resident_bytes": 8848384,
+    "wall_clock_us": 1138.95,
+    "peak_vram_bytes": 12334592
+   },
+   "D_blocked": {
+    "resident_bytes": 9063936,
+    "wall_clock_us": 884.4,
+    "peak_vram_bytes": 12550144
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.3,
+  "seed": 51,
+  "actual_I": 1.7035,
+  "actual_M": 0.0762,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 359512.5,
+    "peak_vram_bytes": 8706560
+   },
+   "D_direct": {
+    "resident_bytes": 8787456,
+    "wall_clock_us": 1227.75,
+    "peak_vram_bytes": 11381248
+   },
+   "D_blocked": {
+    "resident_bytes": 8948736,
+    "wall_clock_us": 1213.7,
+    "peak_vram_bytes": 11542528
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.5,
+  "seed": 42,
+  "actual_I": 1.7207,
+  "actual_M": 0.0542,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 603561.8,
+    "peak_vram_bytes": 8704000
+   },
+   "D_direct": {
+    "resident_bytes": 8950272,
+    "wall_clock_us": 1204.75,
+    "peak_vram_bytes": 13748736
+   },
+   "D_blocked": {
+    "resident_bytes": 9245184,
+    "wall_clock_us": 971.35,
+    "peak_vram_bytes": 14043648
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.5,
+  "seed": 43,
+  "actual_I": 1.7077,
+  "actual_M": -0.0046,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 623787.75,
+    "peak_vram_bytes": 8703488
+   },
+   "D_direct": {
+    "resident_bytes": 8908800,
+    "wall_clock_us": 1234.45,
+    "peak_vram_bytes": 13099008
+   },
+   "D_blocked": {
+    "resident_bytes": 9166848,
+    "wall_clock_us": 1276.05,
+    "peak_vram_bytes": 13357056
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.5,
+  "seed": 44,
+  "actual_I": 1.7088,
+  "actual_M": 0.0583,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 598868.8,
+    "peak_vram_bytes": 8705024
+   },
+   "D_direct": {
+    "resident_bytes": 8982528,
+    "wall_clock_us": 1267.15,
+    "peak_vram_bytes": 14254080
+   },
+   "D_blocked": {
+    "resident_bytes": 9306112,
+    "wall_clock_us": 1246.8,
+    "peak_vram_bytes": 14577664
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.5,
+  "seed": 45,
+  "actual_I": 1.7118,
+  "actual_M": 0.038,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 613827.75,
+    "peak_vram_bytes": 8706560
+   },
+   "D_direct": {
+    "resident_bytes": 9116160,
+    "wall_clock_us": 1279.1,
+    "peak_vram_bytes": 16347648
+   },
+   "D_blocked": {
+    "resident_bytes": 9558528,
+    "wall_clock_us": 1147.3,
+    "peak_vram_bytes": 16790016
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.5,
+  "seed": 46,
+  "actual_I": 1.7108,
+  "actual_M": 0.0224,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 613584.7,
+    "peak_vram_bytes": 8705024
+   },
+   "D_direct": {
+    "resident_bytes": 8894976,
+    "wall_clock_us": 992.5,
+    "peak_vram_bytes": 12882432
+   },
+   "D_blocked": {
+    "resident_bytes": 9140736,
+    "wall_clock_us": 1113.4,
+    "peak_vram_bytes": 13128192
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.5,
+  "seed": 47,
+  "actual_I": 1.7124,
+  "actual_M": 0.0444,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 673591.85,
+    "peak_vram_bytes": 8702976
+   },
+   "D_direct": {
+    "resident_bytes": 8848896,
+    "wall_clock_us": 1180.7,
+    "peak_vram_bytes": 12160512
+   },
+   "D_blocked": {
+    "resident_bytes": 9053696,
+    "wall_clock_us": 1238.25,
+    "peak_vram_bytes": 12365312
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.5,
+  "seed": 48,
+  "actual_I": 1.6964,
+  "actual_M": 0.0477,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 604796.3,
+    "peak_vram_bytes": 8705536
+   },
+   "D_direct": {
+    "resident_bytes": 8954880,
+    "wall_clock_us": 996.4,
+    "peak_vram_bytes": 13820928
+   },
+   "D_blocked": {
+    "resident_bytes": 9253888,
+    "wall_clock_us": 761.65,
+    "peak_vram_bytes": 14119936
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.5,
+  "seed": 49,
+  "actual_I": 1.6944,
+  "actual_M": 0.0498,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 684112.1,
+    "peak_vram_bytes": 8705024
+   },
+   "D_direct": {
+    "resident_bytes": 9014784,
+    "wall_clock_us": 1409.85,
+    "peak_vram_bytes": 14759424
+   },
+   "D_blocked": {
+    "resident_bytes": 9367040,
+    "wall_clock_us": 1359.8,
+    "peak_vram_bytes": 15111680
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.5,
+  "seed": 50,
+  "actual_I": 1.717,
+  "actual_M": 0.0339,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1064195.9,
+    "peak_vram_bytes": 8705024
+   },
+   "D_direct": {
+    "resident_bytes": 9019392,
+    "wall_clock_us": 1033.15,
+    "peak_vram_bytes": 14831616
+   },
+   "D_blocked": {
+    "resident_bytes": 9375744,
+    "wall_clock_us": 1193.4,
+    "peak_vram_bytes": 15187968
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.5,
+  "seed": 51,
+  "actual_I": 1.7035,
+  "actual_M": 0.0655,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1091621.45,
+    "peak_vram_bytes": 8708096
+   },
+   "D_direct": {
+    "resident_bytes": 8991744,
+    "wall_clock_us": 1464.3,
+    "peak_vram_bytes": 14398464
+   },
+   "D_blocked": {
+    "resident_bytes": 9323520,
+    "wall_clock_us": 1233.25,
+    "peak_vram_bytes": 14730240
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.7,
+  "seed": 42,
+  "actual_I": 1.7207,
+  "actual_M": 0.0684,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1699382.0,
+    "peak_vram_bytes": 8706048
+   },
+   "D_direct": {
+    "resident_bytes": 9094656,
+    "wall_clock_us": 1223.75,
+    "peak_vram_bytes": 15805952
+   },
+   "D_blocked": {
+    "resident_bytes": 9505792,
+    "wall_clock_us": 1401.4,
+    "peak_vram_bytes": 16217088
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.7,
+  "seed": 43,
+  "actual_I": 1.7077,
+  "actual_M": -0.0203,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1535944.85,
+    "peak_vram_bytes": 8705536
+   },
+   "D_direct": {
+    "resident_bytes": 9036288,
+    "wall_clock_us": 1417.95,
+    "peak_vram_bytes": 14896128
+   },
+   "D_blocked": {
+    "resident_bytes": 9395712,
+    "wall_clock_us": 1376.7,
+    "peak_vram_bytes": 15255552
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.7,
+  "seed": 44,
+  "actual_I": 1.7088,
+  "actual_M": 0.0672,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1508073.8,
+    "peak_vram_bytes": 8707072
+   },
+   "D_direct": {
+    "resident_bytes": 9165312,
+    "wall_clock_us": 1485.45,
+    "peak_vram_bytes": 16915456
+   },
+   "D_blocked": {
+    "resident_bytes": 9639424,
+    "wall_clock_us": 1452.05,
+    "peak_vram_bytes": 17389568
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.7,
+  "seed": 45,
+  "actual_I": 1.7118,
+  "actual_M": 0.0462,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1719500.25,
+    "peak_vram_bytes": 8708608
+   },
+   "D_direct": {
+    "resident_bytes": 9326592,
+    "wall_clock_us": 1227.25,
+    "peak_vram_bytes": 19440128
+   },
+   "D_blocked": {
+    "resident_bytes": 9944064,
+    "wall_clock_us": 1287.05,
+    "peak_vram_bytes": 20057600
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.7,
+  "seed": 46,
+  "actual_I": 1.7108,
+  "actual_M": 0.0232,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1791602.1,
+    "peak_vram_bytes": 8705536
+   },
+   "D_direct": {
+    "resident_bytes": 9017344,
+    "wall_clock_us": 1368.4,
+    "peak_vram_bytes": 14594560
+   },
+   "D_blocked": {
+    "resident_bytes": 9359872,
+    "wall_clock_us": 1512.15,
+    "peak_vram_bytes": 14937088
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.7,
+  "seed": 47,
+  "actual_I": 1.7124,
+  "actual_M": 0.0488,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1779303.7,
+    "peak_vram_bytes": 8705024
+   },
+   "D_direct": {
+    "resident_bytes": 8952832,
+    "wall_clock_us": 1394.35,
+    "peak_vram_bytes": 13584896
+   },
+   "D_blocked": {
+    "resident_bytes": 9238016,
+    "wall_clock_us": 1353.25,
+    "peak_vram_bytes": 13870080
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.7,
+  "seed": 48,
+  "actual_I": 1.6964,
+  "actual_M": 0.0387,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1722848.85,
+    "peak_vram_bytes": 8707584
+   },
+   "D_direct": {
+    "resident_bytes": 9100800,
+    "wall_clock_us": 1499.95,
+    "peak_vram_bytes": 15905792
+   },
+   "D_blocked": {
+    "resident_bytes": 9517568,
+    "wall_clock_us": 1385.35,
+    "peak_vram_bytes": 16322560
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.7,
+  "seed": 49,
+  "actual_I": 1.6944,
+  "actual_M": 0.0418,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1604009.5,
+    "peak_vram_bytes": 8707072
+   },
+   "D_direct": {
+    "resident_bytes": 9184256,
+    "wall_clock_us": 1209.3,
+    "peak_vram_bytes": 17218560
+   },
+   "D_blocked": {
+    "resident_bytes": 9675264,
+    "wall_clock_us": 1501.4,
+    "peak_vram_bytes": 17709568
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.7,
+  "seed": 50,
+  "actual_I": 1.717,
+  "actual_M": 0.0429,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1321247.6,
+    "peak_vram_bytes": 8707072
+   },
+   "D_direct": {
+    "resident_bytes": 9191424,
+    "wall_clock_us": 1460.55,
+    "peak_vram_bytes": 17319936
+   },
+   "D_blocked": {
+    "resident_bytes": 9688576,
+    "wall_clock_us": 1414.8,
+    "peak_vram_bytes": 17817088
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.4,
+  "p_target": 0.7,
+  "seed": 51,
+  "actual_I": 1.7035,
+  "actual_M": 0.0477,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1475865.4,
+    "peak_vram_bytes": 8710144
+   },
+   "D_direct": {
+    "resident_bytes": 9152000,
+    "wall_clock_us": 1500.7,
+    "peak_vram_bytes": 16713216
+   },
+   "D_blocked": {
+    "resident_bytes": 9614336,
+    "wall_clock_us": 866.6,
+    "peak_vram_bytes": 17175552
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.01,
+  "seed": 42,
+  "actual_I": 1.7207,
+  "actual_M": 0.0929,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 15129.2,
+    "peak_vram_bytes": 8697856
+   },
+   "D_direct": {
+    "resident_bytes": 8592896,
+    "wall_clock_us": 1269.85,
+    "peak_vram_bytes": 8603648
+   },
+   "D_blocked": {
+    "resident_bytes": 8598016,
+    "wall_clock_us": 1192.8,
+    "peak_vram_bytes": 8608768
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.01,
+  "seed": 43,
+  "actual_I": 1.7077,
+  "actual_M": 0.0204,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 15815.3,
+    "peak_vram_bytes": 8700416
+   },
+   "D_direct": {
+    "resident_bytes": 8592384,
+    "wall_clock_us": 1143.65,
+    "peak_vram_bytes": 8600064
+   },
+   "D_blocked": {
+    "resident_bytes": 8596992,
+    "wall_clock_us": 1162.45,
+    "peak_vram_bytes": 8604672
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.01,
+  "seed": 44,
+  "actual_I": 1.7088,
+  "actual_M": 0.013,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 15547.9,
+    "peak_vram_bytes": 8701440
+   },
+   "D_direct": {
+    "resident_bytes": 8592384,
+    "wall_clock_us": 1055.5,
+    "peak_vram_bytes": 8600064
+   },
+   "D_blocked": {
+    "resident_bytes": 8596992,
+    "wall_clock_us": 1165.65,
+    "peak_vram_bytes": 8604672
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.01,
+  "seed": 45,
+  "actual_I": 1.7118,
+  "actual_M": 0.0076,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 18072.3,
+    "peak_vram_bytes": 8702976
+   },
+   "D_direct": {
+    "resident_bytes": 8592896,
+    "wall_clock_us": 1273.25,
+    "peak_vram_bytes": 8603648
+   },
+   "D_blocked": {
+    "resident_bytes": 8598016,
+    "wall_clock_us": 1286.65,
+    "peak_vram_bytes": 8608768
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.01,
+  "seed": 46,
+  "actual_I": 1.7108,
+  "actual_M": 0.0393,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 18980.75,
+    "peak_vram_bytes": 8699904
+   },
+   "D_direct": {
+    "resident_bytes": 8592384,
+    "wall_clock_us": 1266.85,
+    "peak_vram_bytes": 8600064
+   },
+   "D_blocked": {
+    "resident_bytes": 8596992,
+    "wall_clock_us": 1190.6,
+    "peak_vram_bytes": 8604672
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.01,
+  "seed": 47,
+  "actual_I": 1.7124,
+  "actual_M": -0.0017,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 15179.05,
+    "peak_vram_bytes": 8699392
+   },
+   "D_direct": {
+    "resident_bytes": 8592384,
+    "wall_clock_us": 1165.55,
+    "peak_vram_bytes": 8601088
+   },
+   "D_blocked": {
+    "resident_bytes": 8596992,
+    "wall_clock_us": 1171.05,
+    "peak_vram_bytes": 8605696
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.01,
+  "seed": 48,
+  "actual_I": 1.6964,
+  "actual_M": 0.0245,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 14908.45,
+    "peak_vram_bytes": 8700928
+   },
+   "D_direct": {
+    "resident_bytes": 8592384,
+    "wall_clock_us": 1084.85,
+    "peak_vram_bytes": 8600064
+   },
+   "D_blocked": {
+    "resident_bytes": 8596992,
+    "wall_clock_us": 453.05,
+    "peak_vram_bytes": 8604672
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.01,
+  "seed": 49,
+  "actual_I": 1.6944,
+  "actual_M": 0.0366,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 15068.25,
+    "peak_vram_bytes": 8702464
+   },
+   "D_direct": {
+    "resident_bytes": 8592896,
+    "wall_clock_us": 1068.8,
+    "peak_vram_bytes": 8605696
+   },
+   "D_blocked": {
+    "resident_bytes": 8598016,
+    "wall_clock_us": 1073.0,
+    "peak_vram_bytes": 8610816
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.01,
+  "seed": 50,
+  "actual_I": 1.717,
+  "actual_M": 0.0201,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 14767.45,
+    "peak_vram_bytes": 8700416
+   },
+   "D_direct": {
+    "resident_bytes": 8592896,
+    "wall_clock_us": 1281.45,
+    "peak_vram_bytes": 8603648
+   },
+   "D_blocked": {
+    "resident_bytes": 8598016,
+    "wall_clock_us": 1214.85,
+    "peak_vram_bytes": 8608768
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.01,
+  "seed": 51,
+  "actual_I": 1.7035,
+  "actual_M": 0.1071,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 18598.8,
+    "peak_vram_bytes": 8696832
+   },
+   "D_direct": {
+    "resident_bytes": 8592896,
+    "wall_clock_us": 1203.1,
+    "peak_vram_bytes": 8603648
+   },
+   "D_blocked": {
+    "resident_bytes": 8598016,
+    "wall_clock_us": 1194.7,
+    "peak_vram_bytes": 8608768
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.05,
+  "seed": 42,
+  "actual_I": 1.7207,
+  "actual_M": 0.0911,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 187476.75,
+    "peak_vram_bytes": 8700928
+   },
+   "D_direct": {
+    "resident_bytes": 8609280,
+    "wall_clock_us": 1335.25,
+    "peak_vram_bytes": 8824832
+   },
+   "D_blocked": {
+    "resident_bytes": 8626688,
+    "wall_clock_us": 1268.7,
+    "peak_vram_bytes": 8842240
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.05,
+  "seed": 43,
+  "actual_I": 1.7077,
+  "actual_M": 0.0204,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 104544.05,
+    "peak_vram_bytes": 8700416
+   },
+   "D_direct": {
+    "resident_bytes": 8615424,
+    "wall_clock_us": 1135.8,
+    "peak_vram_bytes": 8926208
+   },
+   "D_blocked": {
+    "resident_bytes": 8638464,
+    "wall_clock_us": 1297.2,
+    "peak_vram_bytes": 8949248
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.05,
+  "seed": 44,
+  "actual_I": 1.7088,
+  "actual_M": 0.0162,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 115931.85,
+    "peak_vram_bytes": 8701440
+   },
+   "D_direct": {
+    "resident_bytes": 8614912,
+    "wall_clock_us": 1248.8,
+    "peak_vram_bytes": 8911872
+   },
+   "D_blocked": {
+    "resident_bytes": 8637440,
+    "wall_clock_us": 1123.1,
+    "peak_vram_bytes": 8934400
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.05,
+  "seed": 45,
+  "actual_I": 1.7118,
+  "actual_M": 0.0065,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 189843.75,
+    "peak_vram_bytes": 8702976
+   },
+   "D_direct": {
+    "resident_bytes": 8614400,
+    "wall_clock_us": 1294.25,
+    "peak_vram_bytes": 8905216
+   },
+   "D_blocked": {
+    "resident_bytes": 8636416,
+    "wall_clock_us": 1325.75,
+    "peak_vram_bytes": 8927232
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.05,
+  "seed": 46,
+  "actual_I": 1.7108,
+  "actual_M": 0.0393,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 87947.1,
+    "peak_vram_bytes": 8701440
+   },
+   "D_direct": {
+    "resident_bytes": 8610304,
+    "wall_clock_us": 1328.6,
+    "peak_vram_bytes": 8839680
+   },
+   "D_blocked": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 809.15,
+    "peak_vram_bytes": 8858112
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.05,
+  "seed": 47,
+  "actual_I": 1.7124,
+  "actual_M": -0.0024,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 63493.4,
+    "peak_vram_bytes": 8700416
+   },
+   "D_direct": {
+    "resident_bytes": 8613376,
+    "wall_clock_us": 1241.95,
+    "peak_vram_bytes": 8890368
+   },
+   "D_blocked": {
+    "resident_bytes": 8634368,
+    "wall_clock_us": 1277.45,
+    "peak_vram_bytes": 8911360
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.05,
+  "seed": 48,
+  "actual_I": 1.6964,
+  "actual_M": 0.0289,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 95927.5,
+    "peak_vram_bytes": 8700928
+   },
+   "D_direct": {
+    "resident_bytes": 8607232,
+    "wall_clock_us": 1311.35,
+    "peak_vram_bytes": 8796672
+   },
+   "D_blocked": {
+    "resident_bytes": 8623104,
+    "wall_clock_us": 1293.95,
+    "peak_vram_bytes": 8812544
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.05,
+  "seed": 49,
+  "actual_I": 1.6944,
+  "actual_M": 0.0366,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 93273.55,
+    "peak_vram_bytes": 8702464
+   },
+   "D_direct": {
+    "resident_bytes": 8616960,
+    "wall_clock_us": 1182.75,
+    "peak_vram_bytes": 8953856
+   },
+   "D_blocked": {
+    "resident_bytes": 8641536,
+    "wall_clock_us": 1304.8,
+    "peak_vram_bytes": 8978432
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.05,
+  "seed": 50,
+  "actual_I": 1.717,
+  "actual_M": 0.0152,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 106064.65,
+    "peak_vram_bytes": 8701440
+   },
+   "D_direct": {
+    "resident_bytes": 8605696,
+    "wall_clock_us": 513.9,
+    "peak_vram_bytes": 8774656
+   },
+   "D_blocked": {
+    "resident_bytes": 8620032,
+    "wall_clock_us": 1203.4,
+    "peak_vram_bytes": 8788992
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.05,
+  "seed": 51,
+  "actual_I": 1.7035,
+  "actual_M": 0.1098,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 68003.55,
+    "peak_vram_bytes": 8704512
+   },
+   "D_direct": {
+    "resident_bytes": 8598528,
+    "wall_clock_us": 823.7,
+    "peak_vram_bytes": 8659968
+   },
+   "D_blocked": {
+    "resident_bytes": 8606720,
+    "wall_clock_us": 876.65,
+    "peak_vram_bytes": 8668160
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.1,
+  "seed": 42,
+  "actual_I": 1.7207,
+  "actual_M": 0.0925,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 365014.4,
+    "peak_vram_bytes": 8701952
+   },
+   "D_direct": {
+    "resident_bytes": 8626688,
+    "wall_clock_us": 1302.05,
+    "peak_vram_bytes": 9057792
+   },
+   "D_blocked": {
+    "resident_bytes": 8656896,
+    "wall_clock_us": 1213.5,
+    "peak_vram_bytes": 9088000
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.1,
+  "seed": 43,
+  "actual_I": 1.7077,
+  "actual_M": 0.0211,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 132678.15,
+    "peak_vram_bytes": 8701440
+   },
+   "D_direct": {
+    "resident_bytes": 8645120,
+    "wall_clock_us": 1244.8,
+    "peak_vram_bytes": 9345536
+   },
+   "D_blocked": {
+    "resident_bytes": 8691712,
+    "wall_clock_us": 1325.35,
+    "peak_vram_bytes": 9392128
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.1,
+  "seed": 44,
+  "actual_I": 1.7088,
+  "actual_M": 0.0178,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 196389.95,
+    "peak_vram_bytes": 8701952
+   },
+   "D_direct": {
+    "resident_bytes": 8672768,
+    "wall_clock_us": 1339.2,
+    "peak_vram_bytes": 9777664
+   },
+   "D_blocked": {
+    "resident_bytes": 8743936,
+    "wall_clock_us": 1421.2,
+    "peak_vram_bytes": 9848832
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.1,
+  "seed": 45,
+  "actual_I": 1.7118,
+  "actual_M": 0.0065,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 179772.75,
+    "peak_vram_bytes": 8703488
+   },
+   "D_direct": {
+    "resident_bytes": 8683520,
+    "wall_clock_us": 1301.7,
+    "peak_vram_bytes": 9949696
+   },
+   "D_blocked": {
+    "resident_bytes": 8764416,
+    "wall_clock_us": 1136.0,
+    "peak_vram_bytes": 10030592
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.1,
+  "seed": 46,
+  "actual_I": 1.7108,
+  "actual_M": 0.0392,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 137237.45,
+    "peak_vram_bytes": 8700416
+   },
+   "D_direct": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1233.05,
+    "peak_vram_bytes": 9087488
+   },
+   "D_blocked": {
+    "resident_bytes": 8660992,
+    "wall_clock_us": 1129.5,
+    "peak_vram_bytes": 9119744
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.1,
+  "seed": 47,
+  "actual_I": 1.7124,
+  "actual_M": 0.0024,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 285668.7,
+    "peak_vram_bytes": 8701440
+   },
+   "D_direct": {
+    "resident_bytes": 8635392,
+    "wall_clock_us": 1198.05,
+    "peak_vram_bytes": 9187840
+   },
+   "D_blocked": {
+    "resident_bytes": 8673280,
+    "wall_clock_us": 1280.4,
+    "peak_vram_bytes": 9225728
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.1,
+  "seed": 48,
+  "actual_I": 1.6964,
+  "actual_M": 0.0289,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 381055.55,
+    "peak_vram_bytes": 8700928
+   },
+   "D_direct": {
+    "resident_bytes": 8656896,
+    "wall_clock_us": 1349.4,
+    "peak_vram_bytes": 9532416
+   },
+   "D_blocked": {
+    "resident_bytes": 8714240,
+    "wall_clock_us": 1298.35,
+    "peak_vram_bytes": 9589760
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.1,
+  "seed": 49,
+  "actual_I": 1.6944,
+  "actual_M": 0.0365,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 161491.75,
+    "peak_vram_bytes": 8702976
+   },
+   "D_direct": {
+    "resident_bytes": 8675328,
+    "wall_clock_us": 1275.15,
+    "peak_vram_bytes": 9820160
+   },
+   "D_blocked": {
+    "resident_bytes": 8749056,
+    "wall_clock_us": 1356.2,
+    "peak_vram_bytes": 9893888
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.1,
+  "seed": 50,
+  "actual_I": 1.717,
+  "actual_M": 0.0177,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 178227.75,
+    "peak_vram_bytes": 8701952
+   },
+   "D_direct": {
+    "resident_bytes": 8644608,
+    "wall_clock_us": 1262.3,
+    "peak_vram_bytes": 9332224
+   },
+   "D_blocked": {
+    "resident_bytes": 8690688,
+    "wall_clock_us": 1340.1,
+    "peak_vram_bytes": 9378304
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.1,
+  "seed": 51,
+  "actual_I": 1.7035,
+  "actual_M": 0.1094,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 182568.25,
+    "peak_vram_bytes": 8705024
+   },
+   "D_direct": {
+    "resident_bytes": 8646144,
+    "wall_clock_us": 1333.95,
+    "peak_vram_bytes": 9360384
+   },
+   "D_blocked": {
+    "resident_bytes": 8693760,
+    "wall_clock_us": 1178.3,
+    "peak_vram_bytes": 9408000
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.2,
+  "seed": 42,
+  "actual_I": 1.7207,
+  "actual_M": 0.0939,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 629651.55,
+    "peak_vram_bytes": 8702464
+   },
+   "D_direct": {
+    "resident_bytes": 8734720,
+    "wall_clock_us": 1348.2,
+    "peak_vram_bytes": 10647552
+   },
+   "D_blocked": {
+    "resident_bytes": 8855040,
+    "wall_clock_us": 1332.0,
+    "peak_vram_bytes": 10767872
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.2,
+  "seed": 43,
+  "actual_I": 1.7077,
+  "actual_M": 0.025,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 352271.2,
+    "peak_vram_bytes": 8701440
+   },
+   "D_direct": {
+    "resident_bytes": 8717824,
+    "wall_clock_us": 1242.65,
+    "peak_vram_bytes": 10387456
+   },
+   "D_blocked": {
+    "resident_bytes": 8823296,
+    "wall_clock_us": 1407.85,
+    "peak_vram_bytes": 10492928
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.2,
+  "seed": 44,
+  "actual_I": 1.7088,
+  "actual_M": 0.0142,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 345173.2,
+    "peak_vram_bytes": 8702976
+   },
+   "D_direct": {
+    "resident_bytes": 8754688,
+    "wall_clock_us": 1056.1,
+    "peak_vram_bytes": 10962944
+   },
+   "D_blocked": {
+    "resident_bytes": 8892928,
+    "wall_clock_us": 1866.95,
+    "peak_vram_bytes": 11101184
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.2,
+  "seed": 45,
+  "actual_I": 1.7118,
+  "actual_M": 0.0104,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 468961.4,
+    "peak_vram_bytes": 8704512
+   },
+   "D_direct": {
+    "resident_bytes": 8800768,
+    "wall_clock_us": 1346.85,
+    "peak_vram_bytes": 11682816
+   },
+   "D_blocked": {
+    "resident_bytes": 8979968,
+    "wall_clock_us": 2001.2,
+    "peak_vram_bytes": 11862016
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.2,
+  "seed": 46,
+  "actual_I": 1.7108,
+  "actual_M": 0.0427,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 446165.8,
+    "peak_vram_bytes": 8702976
+   },
+   "D_direct": {
+    "resident_bytes": 8666624,
+    "wall_clock_us": 1353.1,
+    "peak_vram_bytes": 9582592
+   },
+   "D_blocked": {
+    "resident_bytes": 8726528,
+    "wall_clock_us": 1378.15,
+    "peak_vram_bytes": 9642496
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.2,
+  "seed": 47,
+  "actual_I": 1.7124,
+  "actual_M": 0.0008,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 740079.6,
+    "peak_vram_bytes": 8702464
+   },
+   "D_direct": {
+    "resident_bytes": 8694272,
+    "wall_clock_us": 1323.15,
+    "peak_vram_bytes": 10014720
+   },
+   "D_blocked": {
+    "resident_bytes": 8778752,
+    "wall_clock_us": 1407.35,
+    "peak_vram_bytes": 10099200
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.2,
+  "seed": 48,
+  "actual_I": 1.6964,
+  "actual_M": 0.0341,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 736740.95,
+    "peak_vram_bytes": 8701952
+   },
+   "D_direct": {
+    "resident_bytes": 8736256,
+    "wall_clock_us": 1427.2,
+    "peak_vram_bytes": 10675200
+   },
+   "D_blocked": {
+    "resident_bytes": 8858112,
+    "wall_clock_us": 1359.15,
+    "peak_vram_bytes": 10797056
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.2,
+  "seed": 49,
+  "actual_I": 1.6944,
+  "actual_M": 0.0205,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 591126.75,
+    "peak_vram_bytes": 8704000
+   },
+   "D_direct": {
+    "resident_bytes": 8759808,
+    "wall_clock_us": 1409.8,
+    "peak_vram_bytes": 11049472
+   },
+   "D_blocked": {
+    "resident_bytes": 8902656,
+    "wall_clock_us": 1235.5,
+    "peak_vram_bytes": 11192320
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.2,
+  "seed": 50,
+  "actual_I": 1.717,
+  "actual_M": 0.0279,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 331837.7,
+    "peak_vram_bytes": 8702976
+   },
+   "D_direct": {
+    "resident_bytes": 8762368,
+    "wall_clock_us": 1236.45,
+    "peak_vram_bytes": 11078656
+   },
+   "D_blocked": {
+    "resident_bytes": 8907264,
+    "wall_clock_us": 1283.7,
+    "peak_vram_bytes": 11223552
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.2,
+  "seed": 51,
+  "actual_I": 1.7035,
+  "actual_M": 0.11,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 335091.0,
+    "peak_vram_bytes": 8706048
+   },
+   "D_direct": {
+    "resident_bytes": 8710656,
+    "wall_clock_us": 1389.8,
+    "peak_vram_bytes": 10272768
+   },
+   "D_blocked": {
+    "resident_bytes": 8809472,
+    "wall_clock_us": 2673.2,
+    "peak_vram_bytes": 10371584
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.3,
+  "seed": 42,
+  "actual_I": 1.7207,
+  "actual_M": 0.0933,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1157426.0,
+    "peak_vram_bytes": 8702976
+   },
+   "D_direct": {
+    "resident_bytes": 8806912,
+    "wall_clock_us": 1328.75,
+    "peak_vram_bytes": 11684864
+   },
+   "D_blocked": {
+    "resident_bytes": 8985600,
+    "wall_clock_us": 1351.3,
+    "peak_vram_bytes": 11863552
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.3,
+  "seed": 43,
+  "actual_I": 1.7077,
+  "actual_M": 0.0172,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 645001.4,
+    "peak_vram_bytes": 8701952
+   },
+   "D_direct": {
+    "resident_bytes": 8782336,
+    "wall_clock_us": 1496.45,
+    "peak_vram_bytes": 11295744
+   },
+   "D_blocked": {
+    "resident_bytes": 8939008,
+    "wall_clock_us": 1361.7,
+    "peak_vram_bytes": 11452416
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.3,
+  "seed": 44,
+  "actual_I": 1.7088,
+  "actual_M": 0.0127,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 534218.4,
+    "peak_vram_bytes": 8703488
+   },
+   "D_direct": {
+    "resident_bytes": 8837632,
+    "wall_clock_us": 1556.6,
+    "peak_vram_bytes": 12161024
+   },
+   "D_blocked": {
+    "resident_bytes": 9043456,
+    "wall_clock_us": 1460.25,
+    "peak_vram_bytes": 12366848
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.3,
+  "seed": 45,
+  "actual_I": 1.7118,
+  "actual_M": 0.0058,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 593988.25,
+    "peak_vram_bytes": 8705024
+   },
+   "D_direct": {
+    "resident_bytes": 8906752,
+    "wall_clock_us": 1560.35,
+    "peak_vram_bytes": 13243904
+   },
+   "D_blocked": {
+    "resident_bytes": 9174016,
+    "wall_clock_us": 1376.55,
+    "peak_vram_bytes": 13511168
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.3,
+  "seed": 46,
+  "actual_I": 1.7108,
+  "actual_M": 0.0411,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 486056.9,
+    "peak_vram_bytes": 8703488
+   },
+   "D_direct": {
+    "resident_bytes": 8774144,
+    "wall_clock_us": 1504.25,
+    "peak_vram_bytes": 11166208
+   },
+   "D_blocked": {
+    "resident_bytes": 8923648,
+    "wall_clock_us": 1339.25,
+    "peak_vram_bytes": 11315712
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.3,
+  "seed": 47,
+  "actual_I": 1.7124,
+  "actual_M": -0.0018,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 735553.55,
+    "peak_vram_bytes": 8702976
+   },
+   "D_direct": {
+    "resident_bytes": 8746496,
+    "wall_clock_us": 1197.5,
+    "peak_vram_bytes": 10733056
+   },
+   "D_blocked": {
+    "resident_bytes": 8871424,
+    "wall_clock_us": 1336.45,
+    "peak_vram_bytes": 10857984
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.3,
+  "seed": 48,
+  "actual_I": 1.6964,
+  "actual_M": 0.0314,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 643375.15,
+    "peak_vram_bytes": 8702464
+   },
+   "D_direct": {
+    "resident_bytes": 8809984,
+    "wall_clock_us": 1444.25,
+    "peak_vram_bytes": 11727872
+   },
+   "D_blocked": {
+    "resident_bytes": 8991232,
+    "wall_clock_us": 2729.25,
+    "peak_vram_bytes": 11909120
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.3,
+  "seed": 49,
+  "actual_I": 1.6944,
+  "actual_M": 0.022,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 752820.25,
+    "peak_vram_bytes": 8704512
+   },
+   "D_direct": {
+    "resident_bytes": 8845312,
+    "wall_clock_us": 2270.3,
+    "peak_vram_bytes": 12290048
+   },
+   "D_blocked": {
+    "resident_bytes": 9058304,
+    "wall_clock_us": 1484.2,
+    "peak_vram_bytes": 12503040
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.3,
+  "seed": 50,
+  "actual_I": 1.717,
+  "actual_M": 0.0309,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1228293.95,
+    "peak_vram_bytes": 8703488
+   },
+   "D_direct": {
+    "resident_bytes": 8848384,
+    "wall_clock_us": 1144.95,
+    "peak_vram_bytes": 12334592
+   },
+   "D_blocked": {
+    "resident_bytes": 9063936,
+    "wall_clock_us": 1235.15,
+    "peak_vram_bytes": 12550144
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.3,
+  "seed": 51,
+  "actual_I": 1.7035,
+  "actual_M": 0.1065,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 535368.95,
+    "peak_vram_bytes": 8706560
+   },
+   "D_direct": {
+    "resident_bytes": 8831488,
+    "wall_clock_us": 1408.65,
+    "peak_vram_bytes": 12073472
+   },
+   "D_blocked": {
+    "resident_bytes": 9032192,
+    "wall_clock_us": 1230.75,
+    "peak_vram_bytes": 12274176
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.5,
+  "seed": 42,
+  "actual_I": 1.7207,
+  "actual_M": 0.1173,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1795465.4,
+    "peak_vram_bytes": 8704512
+   },
+   "D_direct": {
+    "resident_bytes": 8950272,
+    "wall_clock_us": 1366.2,
+    "peak_vram_bytes": 13748736
+   },
+   "D_blocked": {
+    "resident_bytes": 9245184,
+    "wall_clock_us": 1771.05,
+    "peak_vram_bytes": 14043648
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.5,
+  "seed": 43,
+  "actual_I": 1.7077,
+  "actual_M": 0.0168,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1364632.95,
+    "peak_vram_bytes": 8703488
+   },
+   "D_direct": {
+    "resident_bytes": 8908800,
+    "wall_clock_us": 1479.15,
+    "peak_vram_bytes": 13099008
+   },
+   "D_blocked": {
+    "resident_bytes": 9166848,
+    "wall_clock_us": 1198.3,
+    "peak_vram_bytes": 13357056
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.5,
+  "seed": 44,
+  "actual_I": 1.7088,
+  "actual_M": 0.0074,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1301769.85,
+    "peak_vram_bytes": 8705024
+   },
+   "D_direct": {
+    "resident_bytes": 9000960,
+    "wall_clock_us": 2472.45,
+    "peak_vram_bytes": 14542848
+   },
+   "D_blocked": {
+    "resident_bytes": 9340928,
+    "wall_clock_us": 1176.3,
+    "peak_vram_bytes": 14882816
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.5,
+  "seed": 45,
+  "actual_I": 1.7118,
+  "actual_M": 0.0062,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1126394.8,
+    "peak_vram_bytes": 8706560
+   },
+   "D_direct": {
+    "resident_bytes": 9116160,
+    "wall_clock_us": 2432.3,
+    "peak_vram_bytes": 16347648
+   },
+   "D_blocked": {
+    "resident_bytes": 9558528,
+    "wall_clock_us": 1456.1,
+    "peak_vram_bytes": 16790016
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.5,
+  "seed": 46,
+  "actual_I": 1.7108,
+  "actual_M": 0.0375,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1074414.3,
+    "peak_vram_bytes": 8703488
+   },
+   "D_direct": {
+    "resident_bytes": 8894976,
+    "wall_clock_us": 1438.85,
+    "peak_vram_bytes": 12882432
+   },
+   "D_blocked": {
+    "resident_bytes": 9140736,
+    "wall_clock_us": 1223.35,
+    "peak_vram_bytes": 13128192
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.5,
+  "seed": 47,
+  "actual_I": 1.7124,
+  "actual_M": -0.001,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1641205.5,
+    "peak_vram_bytes": 8704512
+   },
+   "D_direct": {
+    "resident_bytes": 8848896,
+    "wall_clock_us": 1130.5,
+    "peak_vram_bytes": 12160512
+   },
+   "D_blocked": {
+    "resident_bytes": 9053696,
+    "wall_clock_us": 1351.15,
+    "peak_vram_bytes": 12365312
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.5,
+  "seed": 48,
+  "actual_I": 1.6964,
+  "actual_M": 0.0284,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1501877.5,
+    "peak_vram_bytes": 8704000
+   },
+   "D_direct": {
+    "resident_bytes": 8954880,
+    "wall_clock_us": 2052.0,
+    "peak_vram_bytes": 13820928
+   },
+   "D_blocked": {
+    "resident_bytes": 9253888,
+    "wall_clock_us": 1350.25,
+    "peak_vram_bytes": 14119936
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.5,
+  "seed": 49,
+  "actual_I": 1.6944,
+  "actual_M": 0.029,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 762064.85,
+    "peak_vram_bytes": 8706048
+   },
+   "D_direct": {
+    "resident_bytes": 9014784,
+    "wall_clock_us": 1415.8,
+    "peak_vram_bytes": 14759424
+   },
+   "D_blocked": {
+    "resident_bytes": 9367040,
+    "wall_clock_us": 1377.0,
+    "peak_vram_bytes": 15111680
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.5,
+  "seed": 50,
+  "actual_I": 1.717,
+  "actual_M": 0.0412,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1922230.0,
+    "peak_vram_bytes": 8705024
+   },
+   "D_direct": {
+    "resident_bytes": 9019392,
+    "wall_clock_us": 1329.55,
+    "peak_vram_bytes": 14831616
+   },
+   "D_blocked": {
+    "resident_bytes": 9375744,
+    "wall_clock_us": 1277.15,
+    "peak_vram_bytes": 15187968
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.5,
+  "seed": 51,
+  "actual_I": 1.7035,
+  "actual_M": 0.1002,
+  "actual_p": 0.5,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 784425.7,
+    "peak_vram_bytes": 8708096
+   },
+   "D_direct": {
+    "resident_bytes": 8991744,
+    "wall_clock_us": 959.35,
+    "peak_vram_bytes": 14398464
+   },
+   "D_blocked": {
+    "resident_bytes": 9323520,
+    "wall_clock_us": 1330.05,
+    "peak_vram_bytes": 14730240
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.7,
+  "seed": 42,
+  "actual_I": 1.7207,
+  "actual_M": 0.1328,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1445863.25,
+    "peak_vram_bytes": 8706560
+   },
+   "D_direct": {
+    "resident_bytes": 9094656,
+    "wall_clock_us": 1331.2,
+    "peak_vram_bytes": 15805952
+   },
+   "D_blocked": {
+    "resident_bytes": 9505792,
+    "wall_clock_us": 1247.3,
+    "peak_vram_bytes": 16217088
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.7,
+  "seed": 43,
+  "actual_I": 1.7077,
+  "actual_M": 0.023,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1172401.55,
+    "peak_vram_bytes": 8705536
+   },
+   "D_direct": {
+    "resident_bytes": 9036288,
+    "wall_clock_us": 553.3,
+    "peak_vram_bytes": 14896128
+   },
+   "D_blocked": {
+    "resident_bytes": 9395712,
+    "wall_clock_us": 1355.25,
+    "peak_vram_bytes": 15255552
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.7,
+  "seed": 44,
+  "actual_I": 1.7088,
+  "actual_M": 0.0078,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1692437.85,
+    "peak_vram_bytes": 8707072
+   },
+   "D_direct": {
+    "resident_bytes": 9165312,
+    "wall_clock_us": 1411.75,
+    "peak_vram_bytes": 16915456
+   },
+   "D_blocked": {
+    "resident_bytes": 9639424,
+    "wall_clock_us": 1419.0,
+    "peak_vram_bytes": 17389568
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.7,
+  "seed": 45,
+  "actual_I": 1.7118,
+  "actual_M": 0.0062,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1618876.85,
+    "peak_vram_bytes": 8708608
+   },
+   "D_direct": {
+    "resident_bytes": 9326592,
+    "wall_clock_us": 1347.35,
+    "peak_vram_bytes": 19440128
+   },
+   "D_blocked": {
+    "resident_bytes": 9944064,
+    "wall_clock_us": 1414.5,
+    "peak_vram_bytes": 20057600
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.7,
+  "seed": 46,
+  "actual_I": 1.7108,
+  "actual_M": 0.0435,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1784301.45,
+    "peak_vram_bytes": 8705536
+   },
+   "D_direct": {
+    "resident_bytes": 9017344,
+    "wall_clock_us": 1242.25,
+    "peak_vram_bytes": 14594560
+   },
+   "D_blocked": {
+    "resident_bytes": 9359872,
+    "wall_clock_us": 1387.55,
+    "peak_vram_bytes": 14937088
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.7,
+  "seed": 47,
+  "actual_I": 1.7124,
+  "actual_M": -0.0051,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1504739.85,
+    "peak_vram_bytes": 8706560
+   },
+   "D_direct": {
+    "resident_bytes": 8952832,
+    "wall_clock_us": 1392.1,
+    "peak_vram_bytes": 13584896
+   },
+   "D_blocked": {
+    "resident_bytes": 9238016,
+    "wall_clock_us": 1372.3,
+    "peak_vram_bytes": 13870080
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.7,
+  "seed": 48,
+  "actual_I": 1.6964,
+  "actual_M": 0.0345,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1283600.75,
+    "peak_vram_bytes": 8706048
+   },
+   "D_direct": {
+    "resident_bytes": 9100800,
+    "wall_clock_us": 1435.8,
+    "peak_vram_bytes": 15905792
+   },
+   "D_blocked": {
+    "resident_bytes": 9517568,
+    "wall_clock_us": 1387.2,
+    "peak_vram_bytes": 16322560
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.7,
+  "seed": 49,
+  "actual_I": 1.6944,
+  "actual_M": 0.0435,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1586488.25,
+    "peak_vram_bytes": 8707072
+   },
+   "D_direct": {
+    "resident_bytes": 9184256,
+    "wall_clock_us": 1422.9,
+    "peak_vram_bytes": 17218560
+   },
+   "D_blocked": {
+    "resident_bytes": 9675264,
+    "wall_clock_us": 1358.25,
+    "peak_vram_bytes": 17709568
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.7,
+  "seed": 50,
+  "actual_I": 1.717,
+  "actual_M": 0.0247,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1736034.15,
+    "peak_vram_bytes": 8707072
+   },
+   "D_direct": {
+    "resident_bytes": 9191424,
+    "wall_clock_us": 1524.05,
+    "peak_vram_bytes": 17319936
+   },
+   "D_blocked": {
+    "resident_bytes": 9688576,
+    "wall_clock_us": 1490.5,
+    "peak_vram_bytes": 17817088
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.6,
+  "p_target": 0.7,
+  "seed": 51,
+  "actual_I": 1.7035,
+  "actual_M": 0.1077,
+  "actual_p": 0.6992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1344847.55,
+    "peak_vram_bytes": 8710144
+   },
+   "D_direct": {
+    "resident_bytes": 9152000,
+    "wall_clock_us": 970.3,
+    "peak_vram_bytes": 16713216
+   },
+   "D_blocked": {
+    "resident_bytes": 9614336,
+    "wall_clock_us": 1273.8,
+    "peak_vram_bytes": 17175552
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.01,
+  "seed": 42,
+  "actual_I": 1.7207,
+  "actual_M": 0.1413,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 18697.7,
+    "peak_vram_bytes": 8696320
+   },
+   "D_direct": {
+    "resident_bytes": 8592384,
+    "wall_clock_us": 1113.2,
+    "peak_vram_bytes": 8600064
+   },
+   "D_blocked": {
+    "resident_bytes": 8596992,
+    "wall_clock_us": 1156.5,
+    "peak_vram_bytes": 8604672
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.01,
+  "seed": 43,
+  "actual_I": 1.7077,
+  "actual_M": 0.0335,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 26715.45,
+    "peak_vram_bytes": 8701952
+   },
+   "D_direct": {
+    "resident_bytes": 8592896,
+    "wall_clock_us": 1448.1,
+    "peak_vram_bytes": 8603648
+   },
+   "D_blocked": {
+    "resident_bytes": 8598016,
+    "wall_clock_us": 1244.2,
+    "peak_vram_bytes": 8608768
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.01,
+  "seed": 44,
+  "actual_I": 1.7088,
+  "actual_M": 0.1065,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 22843.0,
+    "peak_vram_bytes": 8698880
+   },
+   "D_direct": {
+    "resident_bytes": 8592896,
+    "wall_clock_us": 845.0,
+    "peak_vram_bytes": 8603648
+   },
+   "D_blocked": {
+    "resident_bytes": 8598016,
+    "wall_clock_us": 2409.65,
+    "peak_vram_bytes": 8608768
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.01,
+  "seed": 45,
+  "actual_I": 1.7118,
+  "actual_M": 0.0582,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 17598.4,
+    "peak_vram_bytes": 8704512
+   },
+   "D_direct": {
+    "resident_bytes": 8592384,
+    "wall_clock_us": 1377.9,
+    "peak_vram_bytes": 8600064
+   },
+   "D_blocked": {
+    "resident_bytes": 8596992,
+    "wall_clock_us": 1234.05,
+    "peak_vram_bytes": 8604672
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.01,
+  "seed": 46,
+  "actual_I": 1.7108,
+  "actual_M": 0.0278,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 15965.1,
+    "peak_vram_bytes": 8696320
+   },
+   "D_direct": {
+    "resident_bytes": 8592896,
+    "wall_clock_us": 1224.35,
+    "peak_vram_bytes": 8603648
+   },
+   "D_blocked": {
+    "resident_bytes": 8598016,
+    "wall_clock_us": 951.75,
+    "peak_vram_bytes": 8608768
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.01,
+  "seed": 47,
+  "actual_I": 1.7124,
+  "actual_M": 0.0648,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 16780.3,
+    "peak_vram_bytes": 8697344
+   },
+   "D_direct": {
+    "resident_bytes": 8592896,
+    "wall_clock_us": 1360.45,
+    "peak_vram_bytes": 8602624
+   },
+   "D_blocked": {
+    "resident_bytes": 8598016,
+    "wall_clock_us": 1105.75,
+    "peak_vram_bytes": 8607744
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.01,
+  "seed": 48,
+  "actual_I": 1.6964,
+  "actual_M": 0.0206,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 16265.8,
+    "peak_vram_bytes": 8697344
+   },
+   "D_direct": {
+    "resident_bytes": 8592384,
+    "wall_clock_us": 1103.9,
+    "peak_vram_bytes": 8600064
+   },
+   "D_blocked": {
+    "resident_bytes": 8596992,
+    "wall_clock_us": 1040.15,
+    "peak_vram_bytes": 8604672
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.01,
+  "seed": 49,
+  "actual_I": 1.6944,
+  "actual_M": 0.0471,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 16404.7,
+    "peak_vram_bytes": 8699904
+   },
+   "D_direct": {
+    "resident_bytes": 8592896,
+    "wall_clock_us": 1216.45,
+    "peak_vram_bytes": 8603648
+   },
+   "D_blocked": {
+    "resident_bytes": 8598016,
+    "wall_clock_us": 1209.1,
+    "peak_vram_bytes": 8608768
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.01,
+  "seed": 50,
+  "actual_I": 1.717,
+  "actual_M": 0.0273,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 20942.9,
+    "peak_vram_bytes": 8698880
+   },
+   "D_direct": {
+    "resident_bytes": 8592896,
+    "wall_clock_us": 1279.95,
+    "peak_vram_bytes": 8602624
+   },
+   "D_blocked": {
+    "resident_bytes": 8598016,
+    "wall_clock_us": 1556.0,
+    "peak_vram_bytes": 8607744
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.01,
+  "seed": 51,
+  "actual_I": 1.7035,
+  "actual_M": 0.0801,
+  "actual_p": 0.0098,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 16994.3,
+    "peak_vram_bytes": 8700928
+   },
+   "D_direct": {
+    "resident_bytes": 8592384,
+    "wall_clock_us": 2458.6,
+    "peak_vram_bytes": 8601088
+   },
+   "D_blocked": {
+    "resident_bytes": 8596992,
+    "wall_clock_us": 1278.05,
+    "peak_vram_bytes": 8605696
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.05,
+  "seed": 42,
+  "actual_I": 1.7207,
+  "actual_M": 0.143,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 247931.7,
+    "peak_vram_bytes": 8700416
+   },
+   "D_direct": {
+    "resident_bytes": 8603136,
+    "wall_clock_us": 1329.65,
+    "peak_vram_bytes": 8738304
+   },
+   "D_blocked": {
+    "resident_bytes": 8615424,
+    "wall_clock_us": 1309.45,
+    "peak_vram_bytes": 8750592
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.05,
+  "seed": 43,
+  "actual_I": 1.7077,
+  "actual_M": 0.0291,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 62719.5,
+    "peak_vram_bytes": 8701440
+   },
+   "D_direct": {
+    "resident_bytes": 8612352,
+    "wall_clock_us": 1177.55,
+    "peak_vram_bytes": 8875520
+   },
+   "D_blocked": {
+    "resident_bytes": 8632832,
+    "wall_clock_us": 2044.1,
+    "peak_vram_bytes": 8896000
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.05,
+  "seed": 44,
+  "actual_I": 1.7088,
+  "actual_M": 0.1046,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 63774.7,
+    "peak_vram_bytes": 8701440
+   },
+   "D_direct": {
+    "resident_bytes": 8609792,
+    "wall_clock_us": 1164.3,
+    "peak_vram_bytes": 8833024
+   },
+   "D_blocked": {
+    "resident_bytes": 8627712,
+    "wall_clock_us": 798.8,
+    "peak_vram_bytes": 8850944
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.05,
+  "seed": 45,
+  "actual_I": 1.7118,
+  "actual_M": 0.0619,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 55456.7,
+    "peak_vram_bytes": 8702976
+   },
+   "D_direct": {
+    "resident_bytes": 8606208,
+    "wall_clock_us": 1046.55,
+    "peak_vram_bytes": 8781824
+   },
+   "D_blocked": {
+    "resident_bytes": 8621056,
+    "wall_clock_us": 821.8,
+    "peak_vram_bytes": 8796672
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.05,
+  "seed": 46,
+  "actual_I": 1.7108,
+  "actual_M": 0.0322,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 58160.15,
+    "peak_vram_bytes": 8702464
+   },
+   "D_direct": {
+    "resident_bytes": 8603136,
+    "wall_clock_us": 1214.65,
+    "peak_vram_bytes": 8732160
+   },
+   "D_blocked": {
+    "resident_bytes": 8615424,
+    "wall_clock_us": 1283.95,
+    "peak_vram_bytes": 8744448
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.05,
+  "seed": 47,
+  "actual_I": 1.7124,
+  "actual_M": 0.064,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 170425.7,
+    "peak_vram_bytes": 8698880
+   },
+   "D_direct": {
+    "resident_bytes": 8603136,
+    "wall_clock_us": 1241.0,
+    "peak_vram_bytes": 8732160
+   },
+   "D_blocked": {
+    "resident_bytes": 8615424,
+    "wall_clock_us": 3506.8,
+    "peak_vram_bytes": 8744448
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.05,
+  "seed": 48,
+  "actual_I": 1.6964,
+  "actual_M": 0.0161,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 176160.4,
+    "peak_vram_bytes": 8698880
+   },
+   "D_direct": {
+    "resident_bytes": 8602624,
+    "wall_clock_us": 1382.75,
+    "peak_vram_bytes": 8724480
+   },
+   "D_blocked": {
+    "resident_bytes": 8614400,
+    "wall_clock_us": 1385.25,
+    "peak_vram_bytes": 8736256
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.05,
+  "seed": 49,
+  "actual_I": 1.6944,
+  "actual_M": 0.0477,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 188566.85,
+    "peak_vram_bytes": 8701952
+   },
+   "D_direct": {
+    "resident_bytes": 8610304,
+    "wall_clock_us": 1241.7,
+    "peak_vram_bytes": 8846848
+   },
+   "D_blocked": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1130.2,
+    "peak_vram_bytes": 8865280
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.05,
+  "seed": 50,
+  "actual_I": 1.717,
+  "actual_M": 0.0248,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 184448.15,
+    "peak_vram_bytes": 8700416
+   },
+   "D_direct": {
+    "resident_bytes": 8610816,
+    "wall_clock_us": 1726.85,
+    "peak_vram_bytes": 8854016
+   },
+   "D_blocked": {
+    "resident_bytes": 8629760,
+    "wall_clock_us": 1404.3,
+    "peak_vram_bytes": 8872960
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.05,
+  "seed": 51,
+  "actual_I": 1.7035,
+  "actual_M": 0.0756,
+  "actual_p": 0.0498,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 74828.25,
+    "peak_vram_bytes": 8701440
+   },
+   "D_direct": {
+    "resident_bytes": 8614400,
+    "wall_clock_us": 1388.3,
+    "peak_vram_bytes": 8905216
+   },
+   "D_blocked": {
+    "resident_bytes": 8636416,
+    "wall_clock_us": 1299.55,
+    "peak_vram_bytes": 8927232
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.1,
+  "seed": 42,
+  "actual_I": 1.7207,
+  "actual_M": 0.1433,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 187837.4,
+    "peak_vram_bytes": 8700928
+   },
+   "D_direct": {
+    "resident_bytes": 8643072,
+    "wall_clock_us": 1320.85,
+    "peak_vram_bytes": 9316864
+   },
+   "D_blocked": {
+    "resident_bytes": 8688128,
+    "wall_clock_us": 1219.1,
+    "peak_vram_bytes": 9361920
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.1,
+  "seed": 43,
+  "actual_I": 1.7077,
+  "actual_M": 0.0337,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 236258.45,
+    "peak_vram_bytes": 8702464
+   },
+   "D_direct": {
+    "resident_bytes": 8654336,
+    "wall_clock_us": 1317.8,
+    "peak_vram_bytes": 9489920
+   },
+   "D_blocked": {
+    "resident_bytes": 8709120,
+    "wall_clock_us": 901.1,
+    "peak_vram_bytes": 9544704
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.1,
+  "seed": 44,
+  "actual_I": 1.7088,
+  "actual_M": 0.1048,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 305270.1,
+    "peak_vram_bytes": 8701952
+   },
+   "D_direct": {
+    "resident_bytes": 8627712,
+    "wall_clock_us": 1403.95,
+    "peak_vram_bytes": 9072640
+   },
+   "D_blocked": {
+    "resident_bytes": 8658944,
+    "wall_clock_us": 1314.6,
+    "peak_vram_bytes": 9103872
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.1,
+  "seed": 45,
+  "actual_I": 1.7118,
+  "actual_M": 0.0619,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 324786.4,
+    "peak_vram_bytes": 8703488
+   },
+   "D_direct": {
+    "resident_bytes": 8668160,
+    "wall_clock_us": 1398.7,
+    "peak_vram_bytes": 9705472
+   },
+   "D_blocked": {
+    "resident_bytes": 8735232,
+    "wall_clock_us": 1294.85,
+    "peak_vram_bytes": 9772544
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.1,
+  "seed": 46,
+  "actual_I": 1.7108,
+  "actual_M": 0.0326,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 204676.95,
+    "peak_vram_bytes": 8700416
+   },
+   "D_direct": {
+    "resident_bytes": 8624128,
+    "wall_clock_us": 826.65,
+    "peak_vram_bytes": 9015296
+   },
+   "D_blocked": {
+    "resident_bytes": 8652288,
+    "wall_clock_us": 1090.9,
+    "peak_vram_bytes": 9043456
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.1,
+  "seed": 47,
+  "actual_I": 1.7124,
+  "actual_M": 0.0625,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 120941.35,
+    "peak_vram_bytes": 8699392
+   },
+   "D_direct": {
+    "resident_bytes": 8621568,
+    "wall_clock_us": 1304.5,
+    "peak_vram_bytes": 8972288
+   },
+   "D_blocked": {
+    "resident_bytes": 8647168,
+    "wall_clock_us": 1581.0,
+    "peak_vram_bytes": 8997888
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.1,
+  "seed": 48,
+  "actual_I": 1.6964,
+  "actual_M": 0.0114,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 133924.2,
+    "peak_vram_bytes": 8700928
+   },
+   "D_direct": {
+    "resident_bytes": 8619520,
+    "wall_clock_us": 1388.55,
+    "peak_vram_bytes": 8943104
+   },
+   "D_blocked": {
+    "resident_bytes": 8643584,
+    "wall_clock_us": 1123.9,
+    "peak_vram_bytes": 8967168
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.1,
+  "seed": 49,
+  "actual_I": 1.6944,
+  "actual_M": 0.0453,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 158511.8,
+    "peak_vram_bytes": 8702464
+   },
+   "D_direct": {
+    "resident_bytes": 8642560,
+    "wall_clock_us": 1211.5,
+    "peak_vram_bytes": 9303040
+   },
+   "D_blocked": {
+    "resident_bytes": 8687104,
+    "wall_clock_us": 1411.7,
+    "peak_vram_bytes": 9347584
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.1,
+  "seed": 50,
+  "actual_I": 1.717,
+  "actual_M": 0.0263,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 146959.65,
+    "peak_vram_bytes": 8701952
+   },
+   "D_direct": {
+    "resident_bytes": 8633344,
+    "wall_clock_us": 716.4,
+    "peak_vram_bytes": 9159680
+   },
+   "D_blocked": {
+    "resident_bytes": 8669696,
+    "wall_clock_us": 798.45,
+    "peak_vram_bytes": 9196032
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.1,
+  "seed": 51,
+  "actual_I": 1.7035,
+  "actual_M": 0.0746,
+  "actual_p": 0.0996,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 147560.0,
+    "peak_vram_bytes": 8705024
+   },
+   "D_direct": {
+    "resident_bytes": 8670720,
+    "wall_clock_us": 943.15,
+    "peak_vram_bytes": 9747968
+   },
+   "D_blocked": {
+    "resident_bytes": 8740352,
+    "wall_clock_us": 1325.35,
+    "peak_vram_bytes": 9817600
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.2,
+  "seed": 42,
+  "actual_I": 1.7207,
+  "actual_M": 0.1416,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 349157.55,
+    "peak_vram_bytes": 8701952
+   },
+   "D_direct": {
+    "resident_bytes": 8734720,
+    "wall_clock_us": 1270.3,
+    "peak_vram_bytes": 10647552
+   },
+   "D_blocked": {
+    "resident_bytes": 8855040,
+    "wall_clock_us": 1431.8,
+    "peak_vram_bytes": 10767872
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.2,
+  "seed": 43,
+  "actual_I": 1.7077,
+  "actual_M": 0.0409,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 701361.65,
+    "peak_vram_bytes": 8703488
+   },
+   "D_direct": {
+    "resident_bytes": 8717824,
+    "wall_clock_us": 1331.15,
+    "peak_vram_bytes": 10387456
+   },
+   "D_blocked": {
+    "resident_bytes": 8823296,
+    "wall_clock_us": 1325.35,
+    "peak_vram_bytes": 10492928
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.2,
+  "seed": 44,
+  "actual_I": 1.7088,
+  "actual_M": 0.1017,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 299370.2,
+    "peak_vram_bytes": 8702976
+   },
+   "D_direct": {
+    "resident_bytes": 8754688,
+    "wall_clock_us": 1290.55,
+    "peak_vram_bytes": 10962944
+   },
+   "D_blocked": {
+    "resident_bytes": 8892928,
+    "wall_clock_us": 760.85,
+    "peak_vram_bytes": 11101184
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.2,
+  "seed": 45,
+  "actual_I": 1.7118,
+  "actual_M": 0.0635,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 348441.5,
+    "peak_vram_bytes": 8704512
+   },
+   "D_direct": {
+    "resident_bytes": 8800768,
+    "wall_clock_us": 1325.5,
+    "peak_vram_bytes": 11682816
+   },
+   "D_blocked": {
+    "resident_bytes": 8979968,
+    "wall_clock_us": 1335.15,
+    "peak_vram_bytes": 11862016
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.2,
+  "seed": 46,
+  "actual_I": 1.7108,
+  "actual_M": 0.0392,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 648863.15,
+    "peak_vram_bytes": 8701440
+   },
+   "D_direct": {
+    "resident_bytes": 8679424,
+    "wall_clock_us": 1126.95,
+    "peak_vram_bytes": 9784320
+   },
+   "D_blocked": {
+    "resident_bytes": 8750592,
+    "wall_clock_us": 1238.55,
+    "peak_vram_bytes": 9855488
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.2,
+  "seed": 47,
+  "actual_I": 1.7124,
+  "actual_M": 0.0681,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 699612.6,
+    "peak_vram_bytes": 8701952
+   },
+   "D_direct": {
+    "resident_bytes": 8679424,
+    "wall_clock_us": 1333.05,
+    "peak_vram_bytes": 9784320
+   },
+   "D_blocked": {
+    "resident_bytes": 8750592,
+    "wall_clock_us": 1237.0,
+    "peak_vram_bytes": 9855488
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.2,
+  "seed": 48,
+  "actual_I": 1.6964,
+  "actual_M": 0.0031,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 726796.45,
+    "peak_vram_bytes": 8705024
+   },
+   "D_direct": {
+    "resident_bytes": 8655872,
+    "wall_clock_us": 1263.65,
+    "peak_vram_bytes": 9410048
+   },
+   "D_blocked": {
+    "resident_bytes": 8706048,
+    "wall_clock_us": 1305.4,
+    "peak_vram_bytes": 9460224
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.2,
+  "seed": 49,
+  "actual_I": 1.6944,
+  "actual_M": 0.0445,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 363865.95,
+    "peak_vram_bytes": 8702976
+   },
+   "D_direct": {
+    "resident_bytes": 8694272,
+    "wall_clock_us": 1325.2,
+    "peak_vram_bytes": 10014720
+   },
+   "D_blocked": {
+    "resident_bytes": 8778752,
+    "wall_clock_us": 1409.2,
+    "peak_vram_bytes": 10099200
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.2,
+  "seed": 50,
+  "actual_I": 1.717,
+  "actual_M": 0.0274,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 358199.1,
+    "peak_vram_bytes": 8702976
+   },
+   "D_direct": {
+    "resident_bytes": 8723456,
+    "wall_clock_us": 965.35,
+    "peak_vram_bytes": 10474496
+   },
+   "D_blocked": {
+    "resident_bytes": 8834048,
+    "wall_clock_us": 1468.55,
+    "peak_vram_bytes": 10585088
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.2,
+  "seed": 51,
+  "actual_I": 1.7035,
+  "actual_M": 0.0694,
+  "actual_p": 0.1992,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 529222.7,
+    "peak_vram_bytes": 8706048
+   },
+   "D_direct": {
+    "resident_bytes": 8750592,
+    "wall_clock_us": 1238.75,
+    "peak_vram_bytes": 10905088
+   },
+   "D_blocked": {
+    "resident_bytes": 8885248,
+    "wall_clock_us": 1217.7,
+    "peak_vram_bytes": 11039744
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.3,
+  "seed": 42,
+  "actual_I": 1.7207,
+  "actual_M": 0.1341,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 568601.8,
+    "peak_vram_bytes": 8702464
+   },
+   "D_direct": {
+    "resident_bytes": 8806912,
+    "wall_clock_us": 1187.1,
+    "peak_vram_bytes": 11684864
+   },
+   "D_blocked": {
+    "resident_bytes": 8985600,
+    "wall_clock_us": 1316.1,
+    "peak_vram_bytes": 11863552
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.3,
+  "seed": 43,
+  "actual_I": 1.7077,
+  "actual_M": 0.0452,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1049929.2,
+    "peak_vram_bytes": 8704000
+   },
+   "D_direct": {
+    "resident_bytes": 8782336,
+    "wall_clock_us": 1341.15,
+    "peak_vram_bytes": 11295744
+   },
+   "D_blocked": {
+    "resident_bytes": 8939008,
+    "wall_clock_us": 1466.3,
+    "peak_vram_bytes": 11452416
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.3,
+  "seed": 44,
+  "actual_I": 1.7088,
+  "actual_M": 0.0952,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 587258.15,
+    "peak_vram_bytes": 8705536
+   },
+   "D_direct": {
+    "resident_bytes": 8837632,
+    "wall_clock_us": 1225.25,
+    "peak_vram_bytes": 12161024
+   },
+   "D_blocked": {
+    "resident_bytes": 9043456,
+    "wall_clock_us": 1380.1,
+    "peak_vram_bytes": 12366848
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.3,
+  "seed": 45,
+  "actual_I": 1.7118,
+  "actual_M": 0.0546,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 1012798.85,
+    "peak_vram_bytes": 8705024
+   },
+   "D_direct": {
+    "resident_bytes": 8906752,
+    "wall_clock_us": 1469.2,
+    "peak_vram_bytes": 13243904
+   },
+   "D_blocked": {
+    "resident_bytes": 9174016,
+    "wall_clock_us": 1343.05,
+    "peak_vram_bytes": 13511168
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.3,
+  "seed": 46,
+  "actual_I": 1.7108,
+  "actual_M": 0.0388,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 466417.4,
+    "peak_vram_bytes": 8703488
+   },
+   "D_direct": {
+    "resident_bytes": 8774144,
+    "wall_clock_us": 1340.2,
+    "peak_vram_bytes": 11166208
+   },
+   "D_blocked": {
+    "resident_bytes": 8923648,
+    "wall_clock_us": 1407.25,
+    "peak_vram_bytes": 11315712
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.3,
+  "seed": 47,
+  "actual_I": 1.7124,
+  "actual_M": 0.0789,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 481135.6,
+    "peak_vram_bytes": 8701440
+   },
+   "D_direct": {
+    "resident_bytes": 8723968,
+    "wall_clock_us": 1392.15,
+    "peak_vram_bytes": 10386432
+   },
+   "D_blocked": {
+    "resident_bytes": 8828928,
+    "wall_clock_us": 1157.05,
+    "peak_vram_bytes": 10491392
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.3,
+  "seed": 48,
+  "actual_I": 1.6964,
+  "actual_M": -0.0027,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 508856.65,
+    "peak_vram_bytes": 8705536
+   },
+   "D_direct": {
+    "resident_bytes": 8734720,
+    "wall_clock_us": 1270.0,
+    "peak_vram_bytes": 10558464
+   },
+   "D_blocked": {
+    "resident_bytes": 8849408,
+    "wall_clock_us": 1358.4,
+    "peak_vram_bytes": 10673152
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.3,
+  "seed": 49,
+  "actual_I": 1.6944,
+  "actual_M": 0.0442,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 495069.85,
+    "peak_vram_bytes": 8703488
+   },
+   "D_direct": {
+    "resident_bytes": 8793088,
+    "wall_clock_us": 1358.85,
+    "peak_vram_bytes": 11468288
+   },
+   "D_blocked": {
+    "resident_bytes": 8959488,
+    "wall_clock_us": 1405.4,
+    "peak_vram_bytes": 11634688
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.3,
+  "seed": 50,
+  "actual_I": 1.717,
+  "actual_M": 0.0316,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 670894.55,
+    "peak_vram_bytes": 8703488
+   },
+   "D_direct": {
+    "resident_bytes": 8790016,
+    "wall_clock_us": 1351.2,
+    "peak_vram_bytes": 11424768
+   },
+   "D_blocked": {
+    "resident_bytes": 8953856,
+    "wall_clock_us": 1459.45,
+    "peak_vram_bytes": 11588608
+   }
+  }
+ },
+ {
+  "I_target": 3.5,
+  "M_target": 0.8,
+  "p_target": 0.3,
+  "seed": 51,
+  "actual_I": 1.7035,
+  "actual_M": 0.0742,
+  "actual_p": 0.2998,
+  "layouts": {
+   "A_bitset": {
+    "resident_bytes": 8628736,
+    "wall_clock_us": 547323.25,
+    "peak_vram_bytes": 8706560
+   },
+   "D_direct": {
+    "resident_bytes": 8831488,
+    "wall_clock_us": 1335.05,
+    "peak_vram_bytes": 12073472
+   },
+   "D_blocked": {
+    "resident_bytes": 9032192,
+    "wall_clock_us": 1448.85,
+    "peak_vram_bytes": 12274176
+   }
+  }
+ }
+]
