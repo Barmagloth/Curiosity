@@ -266,3 +266,26 @@ The order is strict: no jumping ahead without closing dependencies.
 **Context leakage** — when halo expansion bleeds into unrelated tiles. A critical problem for tree topology: in a tree, structural "neighbors" can be semantically distant, and extending halo to them is harmful rather than helpful.
 
 **Boundary parallelism** — the number of independent cross-edges at a tile boundary. For halo to work correctly, boundary parallelism >= 3 is required. In grid/graph this is naturally satisfied; in tree/forest it is not.
+
+---
+
+## 16. Layout (GPU)
+
+Terminology from the exp10 experiment series (P0 layout). Full methodology: `docs/layout_selection_policy.md`.
+
+| Term | Definition |
+|------|-----------|
+| **D_direct** (packed tiles + direct tile_map) | Active tiles stored in compact array `tiles[k, ...]`. Lookup via `tile_map[tile_id] → slot` (int32, -1 = inactive). O(1) addressing without element-level reverse index. Production layout for scalar_grid and vector_grid. |
+| **D_direct_per_level** | Same as D_direct but tile_map built independently per tree level. Used for tree_hierarchy with heavy compute and occupancy < 40%. |
+| **A_bitset** (dense grid + bitset mask) | Full-size data tensor over entire universe. Activation tracked by bitset (1 bit per element). No indirection. Simple fallback for all space types. |
+| **D_blocked** (graph block addressing) | Graph nodes partitioned into fixed-size blocks. `block_map[block_id] → slot`. Dense storage within blocks; cross-block edges handled separately. Only viable for spatial graphs with cbr ≤ 0.35. |
+| **E_hash** (hash table lookup) | Archived fallback. Hash table for tile_id → slot. Dominated by D_direct at current scale. Resurrect only for very large or irregular tile universes. |
+| **Contour A** (architectural viability) | Layout validation mode: manual stencil kernel, no framework temporaries. Tests pure layout economics: build + gather/scatter + addressing + resident memory. |
+| **Contour B** (operational viability) | Layout validation mode: real operator (conv2d / matmul). Tests peak-step memory and GPU budget compatibility. |
+| **cbr** (cross-block ratio) | Fraction of graph edges crossing block boundaries. Range [0, 1]. Lower = better partitioning. Threshold: cbr ≤ 0.35 for D_blocked. |
+| **occupancy** (p) | Fraction of active tiles/nodes: k / N. For trees, per-level: p_l = k_l / N_l. |
+| **resident memory** | Layout storage after build, before compute. Excludes operator temporary allocations. |
+| **peak step memory** | Maximum GPU allocation during compute step. Includes operator workspace. |
+| **workspace overhead** | peak_step − resident. Operator temporary allocations not attributable to layout. |
+| **tile_map** | Array `int32[N_tiles]` where `tile_map[tile_id] = slot` (index into packed array) or -1 (inactive). Core of D_direct. |
+| **padding waste** (pw) | Fraction of packed block storage occupied by padding (inactive slots within active blocks). Problem for graphs with fixed block_size. |

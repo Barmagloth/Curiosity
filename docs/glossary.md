@@ -255,3 +255,26 @@
 **Context leakage** — ситуация, когда halo expansion проникает в нерелевантные тайлы. Критическая проблема для древовидной топологии: в дереве "соседи" по структуре могут быть семантически далеки, и расширение halo на них вредит, а не помогает.
 
 **Boundary parallelism** — количество независимых кросс-рёбер на границе тайла. Для корректной работы halo требуется boundary parallelism >= 3. В grid/graph это выполняется естественно; в tree/forest — нет.
+
+---
+
+## 16. Layout (GPU)
+
+Терминология из серии экспериментов exp10 (P0 layout). Полная методика: `docs/layout_selection_policy.md`.
+
+| Термин | Определение |
+|--------|------------|
+| **D_direct** (packed tiles + direct tile_map) | Активные тайлы хранятся в компактном массиве `tiles[k, ...]`. Адресация через `tile_map[tile_id] → slot` (int32, -1 = неактивен). O(1) lookup без element-level обратного индекса. Production layout для scalar_grid и vector_grid. |
+| **D_direct_per_level** | То же что D_direct, но tile_map строится независимо для каждого уровня дерева. Используется для tree_hierarchy при тяжёлом compute и occupancy < 40%. |
+| **A_bitset** (dense grid + bitset mask) | Полноразмерный тензор данных на всё пространство. Активация отслеживается через bitset (1 бит на элемент). Без индирекции. Простой fallback для всех типов пространств. |
+| **D_blocked** (graph block addressing) | Узлы графа разбиты на блоки фиксированного размера. `block_map[block_id] → slot`. Внутри блока данные плотные; межблочные связи обрабатываются отдельно. Работает только для пространственных графов с cbr ≤ 0.35. |
+| **E_hash** (hash table lookup) | Архивный fallback. Hash table для tile_id → slot. Доминируется D_direct на текущем масштабе. Воскрешать только при очень большом / нерегулярном tile universe. |
+| **Contour A** (architectural viability) | Контур проверки layout: ручной stencil kernel, без framework-temporaries. Тестирует чистую экономику layout: build + gather/scatter + addressing + resident memory. |
+| **Contour B** (operational viability) | Контур проверки layout: реальный оператор (conv2d / matmul). Тестирует peak-step memory и совместимость с GPU бюджетом. |
+| **cbr** (cross-block ratio) | Доля рёбер графа, пересекающих границы блоков. Диапазон [0, 1]. Чем ниже, тем лучше разбиение. Порог: cbr ≤ 0.35 для D_blocked. |
+| **occupancy** (p) | Доля активных тайлов/узлов: k / N. Для деревьев — per-level: p_l = k_l / N_l. |
+| **resident memory** | Память layout-структуры после build и до compute. Не включает temporary аллокации оператора. |
+| **peak step memory** | Максимальная GPU-аллокация во время compute-step. Включает workspace оператора. |
+| **workspace overhead** | peak_step − resident. Temporary аллокации оператора, не относящиеся к layout. |
+| **tile_map** | Массив `int32[N_tiles]`, где `tile_map[tile_id] = slot` (индекс в packed массиве) или -1 (неактивен). Ядро D_direct. |
+| **padding waste** (pw) | Доля packed-хранилища, занятая padding'ом (неактивные слоты внутри активных блоков). Проблема для графов с фиксированным block_size. |

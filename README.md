@@ -20,39 +20,61 @@ Curiosity — исследовательский ML-проект по созда
 
 Серия экспериментов Exp0.1–Exp0.8 **завершена**. Результаты консолидированы в документацию v1.8. Система валидирована: адаптивное уточнение работает и превосходит random selection при ограниченном бюджете. В v1.6 добавлен (обновлён в v1.7) Scale-Consistency Invariant — формализация требования «не сломать фичи». В v1.8 добавлены инварианты детерминизма (DET-1, DET-2).
 
-Следующий рубеж — Exp0.9b0 (buffer-scaling probe, P0) и SC-baseline (верификация scale-consistency).
+Phase 0 (Exp0.1–Exp0.8) завершена. Phase 1 (P0 layout, DET-1, sensitivity, scale-consistency) завершена. P0 Layout **закрыт** — финальная policy по всем типам пространств зафиксирована в `docs/layout_selection_policy.md`. Серия exp10 (8 субэкспериментов, 158 000+ trials) определила оптимальный layout для каждого типа пространства.
+
+Следующий рубеж — **Phase 2** (end-to-end pipeline validation).
 
 ## Структура репозитория
 
 ```
 README.md                          — этот файл
-docs/
-  target_problem_definition_v1.1.md — зачем проект, что успех, Track A→B→C
+README_ENG.md                      — English version
+docs/                              — документация (русский)
   concept_v1.8.md                  — концептуальный документ (канонический)
-  concept_v1.7_historical.md       — предыдущая версия (после Phase 0)
-  concept_v1.5_historical.md       — предыдущая версия (после Exp0.1–0.8)
-  concept_v1.4_historical.md       — ранняя версия (после Exp0.2–0.3)
-  scale_consistency_verification_protocol_v1.0.md — протокол верификации SC
-  handoff_v1.5_to_v1.6.md          — changelog v1.5→v1.6
-  experiment_results.md            — результаты всех экспериментов Exp0.1–Exp0.8
+  layout_selection_policy.md       — методика подбора layout (P0 результат)
   experiment_hierarchy.md          — граф зависимостей экспериментов и roadmap
-  architecture.md                  — архитектура системы и ключевые решения
-  workplan.md                      — план реализации (модули A–F, мини-роадмап)
-  handoff.md                       — документ передачи проекта
+  session_handoff.md               — документ передачи между сессиями
+  phase1_plan.md                   — план Phase 1 (завершена)
+  target_problem_definition_v1.1.md — зачем проект, что успех, Track A→B→C
+  scale_consistency_verification_protocol_v1.0.md — протокол верификации SC
+  architecture.md                  — архитектура системы
+  workplan.md                      — план реализации (модули A–F)
   glossary.md                      — глоссарий терминов проекта
+  teamplan.md                      — план для команды
+  handoff.md                       — документ передачи проекта (legacy)
+  experiment_results.md            — результаты Exp0.1–Exp0.8
+  concept_v1.7_historical.md       — историческая версия (после Phase 0)
+  concept_v1.5_historical.md       — историческая версия (после Exp0.1–0.8)
+  concept_v1.4_historical.md       — ранняя версия (после Exp0.2–0.3)
+  handoff_v1.5_to_v1.6.md          — changelog v1.5→v1.6
+docs_eng/                          — documentation (English)
+  [зеркальная структура docs/]
 experiments/
-  ARTIFACT_INVENTORY.md            — инвентарь артефактов из диалогов Claude/ChatGPT
-  exp01_poc/                       — Exp0.1: PoC adaptive refinement (IPYNB)
-  exp02_cifar_poc/                 — Exp0.2: CIFAR PoC (IPYNB)
-  exp03_halo_diagnostic/           — Exp0.3: halo diagnostic (IPYNB)
-  exp04_combined_interest/         — Exp0.4: combined interest (код+протокол+данные)
-  exp05_break_oracle/              — Exp0.5: break oracle (код+данные)
-  exp06_adaptive_switch/           — Exp0.6: adaptive ρ switch (код)
-  exp07_gate/                      — Exp0.7/0.7b: soft gate + two-stage (код+протокол+данные)
-  exp08_schedule/                  — Exp0.8: dynamic schedule (код+дизайн+данные)
-  exp09a_layout_sandbox/           — Exp0.9a: layout microbench (план §C / C3)
-  phase1_halo/                     — План валидации §A (A1+A2+A3): halo/overlap hardening
-  phase2_probe_seam/               — План валидации §B (B1+B2): probe + seam metric
+  exp01_poc/                       — Exp0.1: PoC adaptive refinement
+  exp02_cifar_poc/                 — Exp0.2: CIFAR PoC
+  exp03_halo_diagnostic/           — Exp0.3: halo diagnostic
+  exp04_combined_interest/         — Exp0.4: combined interest
+  exp05_break_oracle/              — Exp0.5: break oracle
+  exp06_adaptive_switch/           — Exp0.6: adaptive ρ switch
+  exp07_gate/                      — Exp0.7/0.7b: soft gate + two-stage
+  exp08_schedule/                  — Exp0.8: dynamic schedule + governor + probe
+  exp09a_layout_sandbox/           — Exp0.9a: layout microbench (CPU sandbox)
+  exp10_buffer_scaling/            — P0: grid vs compact на GPU (серия exp10)
+  exp10d_seed_determinism/         — DET-1: побитовый детерминизм
+  exp10e_tile_sparse/              — P0: tile-sparse кандидаты (A/B/C)
+  exp10f_packed_lookup/            — P0: packed tiles + direct/hash lookup
+  exp10g_dual_benchmark/           — P0: dual-mode benchmark (stencil + conv2d)
+  exp10h_cross_space/              — P0: cross-space (vector_grid + tree)
+  exp10i_graph_blocks/             — P0: блочная адресация для графов
+  exp10j_tree_perlevel/            — P0: per-level break-even для деревьев
+  exp11_dirty_signatures/          — dirty signature compression
+  exp12a_tau_parent/               — data-driven τ_parent по глубине
+  exp_deferred_revisit/            — research note: отложенные вопросы
+  halo_crossspace/                 — halo applicability across space types
+  p2a_sensitivity/                 — sensitivity sweep порогов гейта
+  phase1_halo/                     — Phase 1: halo/overlap hardening
+  phase2_probe_seam/               — Phase 2: probe + seam metric
+  sc_baseline/                     — SC-baseline: scale-consistency
 ```
 
 ## Рекомендованный порядок чтения
@@ -63,10 +85,11 @@ experiments/
 2. **`docs/concept_v1.8.md`** — каноническая концепция (все валидированные решения)
 3. **`docs/glossary.md`** — термины проекта
 4. **`docs/architecture.md`** — архитектура и компоненты
-5. **`docs/experiment_results.md`** — результаты Exp0.1–Exp0.8 с числами
-6. **`docs/experiment_hierarchy.md`** — граф зависимостей и roadmap
-7. **`docs/handoff.md`** — документ передачи (статус + первая задача)
-8. **`docs/workplan.md`** — план реализации
+5. **`docs/layout_selection_policy.md`** — методика подбора layout по типам пространств
+6. **`docs/experiment_results.md`** — результаты Exp0.1–Exp0.8 с числами
+7. **`docs/experiment_hierarchy.md`** — граф зависимостей и roadmap
+8. **`docs/handoff.md`** — документ передачи (статус + первая задача)
+9. **`docs/workplan.md`** — план реализации
 
 ## Технологии
 
