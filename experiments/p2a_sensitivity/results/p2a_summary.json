@@ -1,0 +1,347 @@
+{
+  "config": {
+    "defaults": {
+      "instability_threshold": 0.25,
+      "FSR_threshold": 0.2
+    },
+    "n_grid": 10,
+    "n_seeds": 10,
+    "budget_fraction": 0.3,
+    "instab_multipliers": [
+      0.1,
+      0.16681005372000587,
+      0.2782559402207124,
+      0.46415888336127786,
+      0.774263682681127,
+      1.291549665014884,
+      2.1544346900318834,
+      3.593813663804626,
+      5.994842503189409,
+      10.0
+    ],
+    "fsr_multipliers": [
+      0.1,
+      0.16681005372000587,
+      0.2782559402207124,
+      0.46415888336127786,
+      0.774263682681127,
+      1.291549665014884,
+      2.1544346900318834,
+      3.593813663804626,
+      5.994842503189409,
+      10.0
+    ]
+  },
+  "ridge_summary": {
+    "clean": {
+      "scalar_grid": {
+        "ridge_instab": 1.0,
+        "ridge_fsr": 1.0,
+        "ridge_2d": 1.0,
+        "optimal_quality": 30.8993170740599,
+        "quality_at_default": 30.760230995041873
+      },
+      "vector_grid": {
+        "ridge_instab": 1.0,
+        "ridge_fsr": 1.0,
+        "ridge_2d": 1.0,
+        "optimal_quality": 24.670361048924285,
+        "quality_at_default": 24.670361048924285
+      },
+      "irregular_graph": {
+        "ridge_instab": 1.0,
+        "ridge_fsr": 1.0,
+        "ridge_2d": 1.0,
+        "optimal_quality": 21.688718356966767,
+        "quality_at_default": 21.623251561482313
+      },
+      "tree_hierarchy": {
+        "ridge_instab": 1.0,
+        "ridge_fsr": 1.0,
+        "ridge_2d": 1.0,
+        "optimal_quality": 15.220483262630491,
+        "quality_at_default": 15.220483262630491
+      }
+    },
+    "noise": {
+      "scalar_grid": {
+        "ridge_instab": 1.0,
+        "ridge_fsr": 1.0,
+        "ridge_2d": 1.0,
+        "optimal_quality": 23.69710199982068,
+        "quality_at_default": 23.69710199982068
+      },
+      "vector_grid": {
+        "ridge_instab": 1.0,
+        "ridge_fsr": 1.0,
+        "ridge_2d": 1.0,
+        "optimal_quality": 24.80388207210224,
+        "quality_at_default": 24.80388207210224
+      },
+      "irregular_graph": {
+        "ridge_instab": 1.0,
+        "ridge_fsr": 1.0,
+        "ridge_2d": 1.0,
+        "optimal_quality": 19.673445959467877,
+        "quality_at_default": 19.673445959467877
+      },
+      "tree_hierarchy": {
+        "ridge_instab": 1.0,
+        "ridge_fsr": 1.0,
+        "ridge_2d": 1.0,
+        "optimal_quality": 15.24669661638915,
+        "quality_at_default": 15.24669661638915
+      }
+    },
+    "blur": {
+      "scalar_grid": {
+        "ridge_instab": 1.0,
+        "ridge_fsr": 1.0,
+        "ridge_2d": 1.0,
+        "optimal_quality": 31.590806398426064,
+        "quality_at_default": 31.590806398426064
+      },
+      "vector_grid": {
+        "ridge_instab": 1.0,
+        "ridge_fsr": 1.0,
+        "ridge_2d": 1.0,
+        "optimal_quality": 23.82395127630718,
+        "quality_at_default": 23.82395127630718
+      },
+      "irregular_graph": {
+        "ridge_instab": 1.0,
+        "ridge_fsr": 1.0,
+        "ridge_2d": 1.0,
+        "optimal_quality": 22.089790661561235,
+        "quality_at_default": 22.089790661561235
+      },
+      "tree_hierarchy": {
+        "ridge_instab": 1.0,
+        "ridge_fsr": 1.0,
+        "ridge_2d": 1.0,
+        "optimal_quality": 15.323580042869093,
+        "quality_at_default": 15.323580042869093
+      }
+    },
+    "spatial_variation": {
+      "scalar_grid": {
+        "ridge_instab": 1.0,
+        "ridge_fsr": 1.0,
+        "ridge_2d": 1.0,
+        "optimal_quality": 27.013074933460977,
+        "quality_at_default": 26.681976013819405
+      },
+      "vector_grid": {
+        "ridge_instab": 1.0,
+        "ridge_fsr": 1.0,
+        "ridge_2d": 1.0,
+        "optimal_quality": 24.476189805429662,
+        "quality_at_default": 24.476189805429662
+      },
+      "irregular_graph": {
+        "ridge_instab": 1.0,
+        "ridge_fsr": 1.0,
+        "ridge_2d": 1.0,
+        "optimal_quality": 20.734663043196047,
+        "quality_at_default": 20.734663043196047
+      },
+      "tree_hierarchy": {
+        "ridge_instab": 1.0,
+        "ridge_fsr": 1.0,
+        "ridge_2d": 1.0,
+        "optimal_quality": 15.244244489844913,
+        "quality_at_default": 15.244244489844913
+      }
+    },
+    "jpeg_artifacts": {
+      "scalar_grid": {
+        "ridge_instab": 1.0,
+        "ridge_fsr": 1.0,
+        "ridge_2d": 1.0,
+        "optimal_quality": 33.55322116574409,
+        "quality_at_default": 33.55322116574409
+      },
+      "vector_grid": {
+        "ridge_instab": 1.0,
+        "ridge_fsr": 1.0,
+        "ridge_2d": 1.0,
+        "optimal_quality": 24.201854828256263,
+        "quality_at_default": 24.201854828256263
+      },
+      "irregular_graph": {
+        "ridge_instab": 1.0,
+        "ridge_fsr": 1.0,
+        "ridge_2d": 1.0,
+        "optimal_quality": 21.80780540715933,
+        "quality_at_default": 21.59719320444089
+      },
+      "tree_hierarchy": {
+        "ridge_instab": 1.0,
+        "ridge_fsr": 1.0,
+        "ridge_2d": 1.0,
+        "optimal_quality": 15.1129800042231,
+        "quality_at_default": 15.1129800042231
+      }
+    }
+  },
+  "verdicts": [
+    {
+      "scene": "clean",
+      "space": "scalar_grid",
+      "rw_2d": 1.0,
+      "verdict": "PASS (wide)"
+    },
+    {
+      "scene": "clean",
+      "space": "vector_grid",
+      "rw_2d": 1.0,
+      "verdict": "PASS (wide)"
+    },
+    {
+      "scene": "clean",
+      "space": "irregular_graph",
+      "rw_2d": 1.0,
+      "verdict": "PASS (wide)"
+    },
+    {
+      "scene": "clean",
+      "space": "tree_hierarchy",
+      "rw_2d": 1.0,
+      "verdict": "PASS (wide)"
+    },
+    {
+      "scene": "noise",
+      "space": "scalar_grid",
+      "rw_2d": 1.0,
+      "verdict": "PASS (wide)"
+    },
+    {
+      "scene": "noise",
+      "space": "vector_grid",
+      "rw_2d": 1.0,
+      "verdict": "PASS (wide)"
+    },
+    {
+      "scene": "noise",
+      "space": "irregular_graph",
+      "rw_2d": 1.0,
+      "verdict": "PASS (wide)"
+    },
+    {
+      "scene": "noise",
+      "space": "tree_hierarchy",
+      "rw_2d": 1.0,
+      "verdict": "PASS (wide)"
+    },
+    {
+      "scene": "blur",
+      "space": "scalar_grid",
+      "rw_2d": 1.0,
+      "verdict": "PASS (wide)"
+    },
+    {
+      "scene": "blur",
+      "space": "vector_grid",
+      "rw_2d": 1.0,
+      "verdict": "PASS (wide)"
+    },
+    {
+      "scene": "blur",
+      "space": "irregular_graph",
+      "rw_2d": 1.0,
+      "verdict": "PASS (wide)"
+    },
+    {
+      "scene": "blur",
+      "space": "tree_hierarchy",
+      "rw_2d": 1.0,
+      "verdict": "PASS (wide)"
+    },
+    {
+      "scene": "spatial_variation",
+      "space": "scalar_grid",
+      "rw_2d": 1.0,
+      "verdict": "PASS (wide)"
+    },
+    {
+      "scene": "spatial_variation",
+      "space": "vector_grid",
+      "rw_2d": 1.0,
+      "verdict": "PASS (wide)"
+    },
+    {
+      "scene": "spatial_variation",
+      "space": "irregular_graph",
+      "rw_2d": 1.0,
+      "verdict": "PASS (wide)"
+    },
+    {
+      "scene": "spatial_variation",
+      "space": "tree_hierarchy",
+      "rw_2d": 1.0,
+      "verdict": "PASS (wide)"
+    },
+    {
+      "scene": "jpeg_artifacts",
+      "space": "scalar_grid",
+      "rw_2d": 1.0,
+      "verdict": "PASS (wide)"
+    },
+    {
+      "scene": "jpeg_artifacts",
+      "space": "vector_grid",
+      "rw_2d": 1.0,
+      "verdict": "PASS (wide)"
+    },
+    {
+      "scene": "jpeg_artifacts",
+      "space": "irregular_graph",
+      "rw_2d": 1.0,
+      "verdict": "PASS (wide)"
+    },
+    {
+      "scene": "jpeg_artifacts",
+      "space": "tree_hierarchy",
+      "rw_2d": 1.0,
+      "verdict": "PASS (wide)"
+    }
+  ],
+  "divergence_flags": [
+    {
+      "scene": "clean",
+      "rw_min": 1.0,
+      "rw_max": 1.0,
+      "rw_range": 0.0,
+      "divergent": false
+    },
+    {
+      "scene": "noise",
+      "rw_min": 1.0,
+      "rw_max": 1.0,
+      "rw_range": 0.0,
+      "divergent": false
+    },
+    {
+      "scene": "blur",
+      "rw_min": 1.0,
+      "rw_max": 1.0,
+      "rw_range": 0.0,
+      "divergent": false
+    },
+    {
+      "scene": "spatial_variation",
+      "rw_min": 1.0,
+      "rw_max": 1.0,
+      "rw_range": 0.0,
+      "divergent": false
+    },
+    {
+      "scene": "jpeg_artifacts",
+      "rw_min": 1.0,
+      "rw_max": 1.0,
+      "rw_range": 0.0,
+      "divergent": false
+    }
+  ],
+  "overall_verdict": "MANUAL_OK"
+}

@@ -1,0 +1,32 @@
+{
+  "method": "f1_optimal",
+  "thresholds": {
+    "L1": 0.0783974311786752,
+    "L2": 0.2611302373245256,
+    "L3": 0.18475797869574853
+  },
+  "metrics": {
+    "L1": {
+      "method": "f1_optimal",
+      "accuracy": 0.75,
+      "sensitivity": 1.0,
+      "specificity": 0.25,
+      "f1": 0.8421052631578948
+    },
+    "L2": {
+      "method": "f1_optimal",
+      "accuracy": 0.8722222222222222,
+      "sensitivity": 0.9333333333333333,
+      "specificity": 0.75,
+      "f1": 0.9068825910931174
+    },
+    "L3": {
+      "method": "f1_optimal",
+      "accuracy": 0.9166666666666666,
+      "sensitivity": 1.0,
+      "specificity": 0.75,
+      "f1": 0.9411764705882353
+    }
+  },
+  "kill_criterion_passed": false
+}
