@@ -382,19 +382,15 @@ class IrregularGraphSpace:
     """T3: Irregular graph (k-NN point cloud)."""
     name = "irregular_graph"
 
-    def __init__(self, n_points=GRAPH_POINTS, k=GRAPH_K,
-                 n_clusters=GRAPH_CLUSTERS):
+    def __init__(self, n_points=GRAPH_POINTS, k=GRAPH_K):
         self.n_pts = n_points
         self.k = k
-        self.n_clusters = n_clusters
+        self.n_clusters = None  # set by community detection in setup()
 
     def setup(self, seed: int):
         from scipy.spatial import cKDTree
-        from scipy.cluster.vq import kmeans2
 
         rng = np.random.default_rng(seed)
-        # Use legacy RandomState for kmeans2 compatibility
-        rng_legacy = np.random.RandomState(seed)
 
         self.pos = rng.random((self.n_pts, 2))
         tree = cKDTree(self.pos)
@@ -406,14 +402,89 @@ class IrregularGraphSpace:
                    + 0.7 * (self.pos[:, 0] > 0.4).astype(float)
                    + rng.standard_normal(self.n_pts) * 0.03)
 
-        _, self.labels = kmeans2(
-            self.pos, self.n_clusters, minit='points', seed=seed)
+        # ------------------------------------------------------------------
+        # Community detection: topology-only clustering.
+        # Leiden preferred (connected guaranteed).  Louvain+CC fallback
+        # for environments where igraph C-extensions won't compile (ARM etc).
+        # Both paths produce identical semantics: connected communities.
+        # ------------------------------------------------------------------
+        self.labels, self.n_clusters, self._cluster_backend = \
+            self._community_detect(seed)
 
         self.coarse = np.zeros(self.n_pts)
         for c in range(self.n_clusters):
             mask = self.labels == c
             if mask.any():
                 self.coarse[mask] = self.gt[mask].mean()
+
+    def _community_detect(self, seed: int):
+        """Topology-only community detection.
+
+        Strategy:
+          1. Leiden (igraph + leidenalg) — native connected communities.
+          2. Fallback: NetworkX Louvain + connected_components post-fix.
+             Same semantics, zero C-dependencies.
+
+        Not a performance decision — both are O(N log N).
+        This is deployment resilience: igraph needs a C compiler,
+        networkx doesn't.
+        """
+        try:
+            import igraph as ig
+            import leidenalg
+            return self._cluster_leiden(seed, ig, leidenalg)
+        except ImportError:
+            return self._cluster_louvain_cc(seed)
+
+    def _cluster_leiden(self, seed, ig, leidenalg):
+        edges = [(i, j)
+                 for i, nbrs in self.neighbors.items()
+                 for j in nbrs if j > i]
+        G = ig.Graph(n=self.n_pts, edges=edges, directed=False)
+        partition = leidenalg.find_partition(
+            G, leidenalg.ModularityVertexPartition, seed=seed)
+        labels = np.array(partition.membership)
+        return labels, len(set(labels)), "leiden"
+
+    def _cluster_louvain_cc(self, seed):
+        """Louvain + connected_components post-fix.
+
+        Louvain may produce disconnected clusters.
+        CC splits them in O(V+E).  Result: same connected-community
+        guarantee as Leiden, zero C-dependencies.
+        """
+        import networkx as nx
+
+        G = nx.Graph()
+        G.add_nodes_from(range(self.n_pts))
+        for i, nbrs in self.neighbors.items():
+            for j in nbrs:
+                G.add_edge(i, j)
+
+        communities = nx.algorithms.community.louvain_communities(
+            G, seed=seed, resolution=1.0)
+
+        labels = np.zeros(self.n_pts, dtype=int)
+        for cid, nodes in enumerate(communities):
+            for n in nodes:
+                labels[n] = cid
+
+        # CC post-fix: split disconnected clusters
+        next_id = len(communities)
+        for cid, nodes in enumerate(communities):
+            subg = G.subgraph(nodes)
+            components = list(nx.connected_components(subg))
+            if len(components) > 1:
+                for comp in components[1:]:
+                    for node in comp:
+                        labels[node] = next_id
+                    next_id += 1
+
+        # Re-pack to 0..N-1 (no gaps after splits)
+        unique = sorted(set(labels))
+        remap = {old: new for new, old in enumerate(unique)}
+        labels = np.array([remap[l] for l in labels])
+        return labels, len(unique), "louvain+cc"
 
     def get_units(self) -> list:
         return list(range(self.n_clusters))
@@ -580,7 +651,7 @@ SPACE_FACTORIES = {
     "scalar_grid": lambda: ScalarGridSpace(N=GRID_N, tile=GRID_TILE),
     "vector_grid": lambda: VectorGridSpace(N=32, tile=GRID_TILE, D=VECTOR_DIM),
     "irregular_graph": lambda: IrregularGraphSpace(
-        n_points=GRAPH_POINTS, k=GRAPH_K, n_clusters=GRAPH_CLUSTERS),
+        n_points=GRAPH_POINTS, k=GRAPH_K),
     "tree_hierarchy": lambda: TreeHierarchySpace(depth=TREE_DEPTH),
 }
 

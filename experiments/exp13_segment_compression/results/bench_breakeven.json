@@ -1,0 +1,31 @@
+{
+  "iterations": 10000,
+  "L_avg": 3,
+  "C_refine_median_ns": 15900.0,
+  "C_track_median_ns": 1900.0,
+  "C_init_median_ns": 100500.0,
+  "denominator_ns": 8700.000000000002,
+  "N_critical": 11.551724137931032,
+  "N_critical_ceil": 12,
+  "compression_profitable": true,
+  "percentiles": {
+    "C_refine": {
+      "p25": 15700.0,
+      "p50": 15900.0,
+      "p75": 16100.0,
+      "p99": 35203.000000000065
+    },
+    "C_track": {
+      "p25": 1800.0,
+      "p50": 1900.0,
+      "p75": 3400.0,
+      "p99": 17800.0
+    },
+    "C_init": {
+      "p25": 99900.0,
+      "p50": 100500.0,
+      "p75": 101800.0,
+      "p99": 212502.00000000006
+    }
+  }
+}

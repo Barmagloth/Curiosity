@@ -1,0 +1,261 @@
+{
+  "verdict": "PASS",
+  "summary": {
+    "binary_d6_3chains": {
+      "n_trials": 10,
+      "n_active": 0,
+      "mean_compression": 0.0,
+      "std_compression": 0.0,
+      "mean_overhead": 0.0,
+      "std_overhead": 0.0,
+      "mean_merges": 0.0,
+      "mean_splits": 0.0,
+      "chain_stats_mean": {},
+      "pass_compression": false,
+      "pass_overhead": true
+    },
+    "binary_d7_4chains": {
+      "n_trials": 10,
+      "n_active": 9,
+      "mean_compression": 0.6602450381862147,
+      "std_compression": 0.09835349934006431,
+      "min_compression": 0.4666666666666667,
+      "max_compression": 0.8,
+      "mean_overhead": -0.09136707980432097,
+      "std_overhead": 0.060296595580734066,
+      "mean_merges": 21.666666666666668,
+      "mean_splits": 13.333333333333334,
+      "chain_stats_mean": {
+        "total_nodes": 51.333333333333336,
+        "degree2_nodes": 15.11111111111111,
+        "num_chains": 5.0,
+        "max_chain": 3.888888888888889,
+        "mean_chain": 3.022222222222222,
+        "fraction_degree2": 0.3417577809559877
+      },
+      "pass_compression": true,
+      "pass_overhead": true
+    },
+    "binary_d8_6chains": {
+      "n_trials": 10,
+      "n_active": 10,
+      "mean_compression": 0.6019339356295879,
+      "std_compression": 0.11958115862055103,
+      "min_compression": 0.4090909090909091,
+      "max_compression": 0.8181818181818182,
+      "mean_overhead": -0.0398586109489598,
+      "std_overhead": 0.01586189717232418,
+      "mean_merges": 27.8,
+      "mean_splits": 16.6,
+      "chain_stats_mean": {
+        "total_nodes": 138.0,
+        "degree2_nodes": 22.4,
+        "num_chains": 7.0,
+        "max_chain": 4.0,
+        "mean_chain": 3.1999999999999997,
+        "fraction_degree2": 0.16529038333731066
+      },
+      "pass_compression": true,
+      "pass_overhead": true
+    },
+    "quadtree_d5_4chains": {
+      "n_trials": 10,
+      "n_active": 0,
+      "mean_compression": 0.0,
+      "std_compression": 0.0,
+      "mean_overhead": 0.0,
+      "std_overhead": 0.0,
+      "mean_merges": 0.0,
+      "mean_splits": 0.0,
+      "chain_stats_mean": {},
+      "pass_compression": false,
+      "pass_overhead": true
+    }
+  },
+  "guard_report": {
+    "total_trials": 120,
+    "guard_blocked": 82,
+    "ran_compression": 38,
+    "guard_log_sample": [
+      {
+        "space": "binary_d6_3chains",
+        "seed": 0,
+        "budget_fraction": 0.1,
+        "reason": "below_n_critical",
+        "total_nodes": 41,
+        "degree2_nodes": 7
+      },
+      {
+        "space": "binary_d6_3chains",
+        "seed": 1,
+        "budget_fraction": 0.1,
+        "reason": "below_n_critical",
+        "total_nodes": 26,
+        "degree2_nodes": 8
+      },
+      {
+        "space": "binary_d6_3chains",
+        "seed": 2,
+        "budget_fraction": 0.1,
+        "reason": "below_n_critical",
+        "total_nodes": 26,
+        "degree2_nodes": 8
+      },
+      {
+        "space": "binary_d6_3chains",
+        "seed": 3,
+        "budget_fraction": 0.1,
+        "reason": "below_n_critical",
+        "total_nodes": 26,
+        "degree2_nodes": 8
+      },
+      {
+        "space": "binary_d6_3chains",
+        "seed": 4,
+        "budget_fraction": 0.1,
+        "reason": "below_n_critical",
+        "total_nodes": 11,
+        "degree2_nodes": 9
+      },
+      {
+        "space": "binary_d6_3chains",
+        "seed": 5,
+        "budget_fraction": 0.1,
+        "reason": "below_n_critical",
+        "total_nodes": 11,
+        "degree2_nodes": 9
+      },
+      {
+        "space": "binary_d6_3chains",
+        "seed": 6,
+        "budget_fraction": 0.1,
+        "reason": "below_n_critical",
+        "total_nodes": 41,
+        "degree2_nodes": 7
+      },
+      {
+        "space": "binary_d6_3chains",
+        "seed": 7,
+        "budget_fraction": 0.1,
+        "reason": "below_n_critical",
+        "total_nodes": 11,
+        "degree2_nodes": 9
+      },
+      {
+        "space": "binary_d6_3chains",
+        "seed": 8,
+        "budget_fraction": 0.1,
+        "reason": "below_n_critical",
+        "total_nodes": 26,
+        "degree2_nodes": 8
+      },
+      {
+        "space": "binary_d6_3chains",
+        "seed": 9,
+        "budget_fraction": 0.1,
+        "reason": "below_n_critical",
+        "total_nodes": 26,
+        "degree2_nodes": 8
+      },
+      {
+        "space": "binary_d6_3chains",
+        "seed": 0,
+        "budget_fraction": 0.3,
+        "reason": "below_n_critical",
+        "total_nodes": 41,
+        "degree2_nodes": 7
+      },
+      {
+        "space": "binary_d6_3chains",
+        "seed": 1,
+        "budget_fraction": 0.3,
+        "reason": "below_n_critical",
+        "total_nodes": 26,
+        "degree2_nodes": 8
+      },
+      {
+        "space": "binary_d6_3chains",
+        "seed": 2,
+        "budget_fraction": 0.3,
+        "reason": "below_n_critical",
+        "total_nodes": 26,
+        "degree2_nodes": 8
+      },
+      {
+        "space": "binary_d6_3chains",
+        "seed": 3,
+        "budget_fraction": 0.3,
+        "reason": "below_n_critical",
+        "total_nodes": 26,
+        "degree2_nodes": 8
+      },
+      {
+        "space": "binary_d6_3chains",
+        "seed": 4,
+        "budget_fraction": 0.3,
+        "reason": "below_n_critical",
+        "total_nodes": 11,
+        "degree2_nodes": 9
+      },
+      {
+        "space": "binary_d6_3chains",
+        "seed": 5,
+        "budget_fraction": 0.3,
+        "reason": "below_n_critical",
+        "total_nodes": 11,
+        "degree2_nodes": 9
+      },
+      {
+        "space": "binary_d6_3chains",
+        "seed": 6,
+        "budget_fraction": 0.3,
+        "reason": "below_n_critical",
+        "total_nodes": 41,
+        "degree2_nodes": 7
+      },
+      {
+        "space": "binary_d6_3chains",
+        "seed": 7,
+        "budget_fraction": 0.3,
+        "reason": "below_n_critical",
+        "total_nodes": 11,
+        "degree2_nodes": 9
+      },
+      {
+        "space": "binary_d6_3chains",
+        "seed": 8,
+        "budget_fraction": 0.3,
+        "reason": "below_n_critical",
+        "total_nodes": 26,
+        "degree2_nodes": 8
+      },
+      {
+        "space": "binary_d6_3chains",
+        "seed": 9,
+        "budget_fraction": 0.3,
+        "reason": "below_n_critical",
+        "total_nodes": 26,
+        "degree2_nodes": 8
+      }
+    ]
+  },
+  "config": {
+    "n_seeds": 10,
+    "n_steps": 40,
+    "budget_fractions": [
+      0.1,
+      0.3,
+      0.6
+    ],
+    "max_segment_length": 8,
+    "stability_window": 3,
+    "hamming_threshold": 3,
+    "component_threshold": 4,
+    "spaces": {
+      "binary_d6_3chains": "Binary tree depth 6, 3 chains",
+      "binary_d7_4chains": "Binary tree depth 7, 4 chains",
+      "binary_d8_6chains": "Binary tree depth 8, 6 chains",
+      "quadtree_d5_4chains": "Quadtree depth 5, 4 chains"
+    }
+  }
+}

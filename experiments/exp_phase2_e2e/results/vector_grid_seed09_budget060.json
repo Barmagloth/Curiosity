@@ -1,0 +1,19 @@
+{
+  "space": "vector_grid",
+  "seed": 9,
+  "budget": 0.6,
+  "psnr_coarse": 16.4452,
+  "psnr_final": 20.2083,
+  "psnr_gain": 3.7631,
+  "mse_coarse": 0.025441646077629936,
+  "mse_final": 0.010696278824007616,
+  "n_refined": 9,
+  "n_total": 16,
+  "n_passed": 9,
+  "n_damped": 0,
+  "n_rejected": 0,
+  "reject_rate": 0.0,
+  "waste_exhausted": false,
+  "gate_stage": "stage1_healthy",
+  "wall_time": 0.031
+}

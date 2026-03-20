@@ -190,6 +190,43 @@ Root cause tree failure: single-edge bottleneck + sibling bleed (85% fade на h
 
 ---
 
+## Компонент 8: Graph Community Detection
+
+**Задача:** Разбиение нерегулярного графа (T3: irregular_graph) на связные community для формирования refinement units.
+
+**Требования:**
+1. Кластеры должны быть **топологически связными** — R/Up операторы (restrict = cluster-mean, prolong = piecewise constant) требуют этого для корректности.
+2. Разбиение должно следовать **структуре связности**, а не геометрии координат. На скрученных манифольдах (Swiss Roll и подобные) геометрия лжёт.
+3. Сложность O(N log N) или лучше — линейная масштабируемость по числу узлов.
+
+**Primary: Leiden** (`leidenalg` + `igraph`)
+- Максимизирует модулярность, режет строго по топологическим швам.
+- Нативная гарантия связности community (каждый кластер = связный подграф).
+- O(N log N), детерминистичен при фиксированном seed.
+- Edge cut 6.9–7.9% на Swiss Roll тестах (vs 12.7–15.3% у k-means).
+- D_parent на 14–16% ниже чем у k-means на патологических графах.
+
+**Fallback: Louvain + CC post-fix** (NetworkX, zero C-dependencies)
+
+На платформах, где `igraph` не может быть скомпилирован (экзотические ARM-архитектуры, минимальные контейнеры без build tools, среды без C-компилятора), допустима замена на связку:
+1. `networkx.algorithms.community.louvain_communities()` — O(N log N), чистый Python.
+2. `networkx.connected_components()` на каждом кластере — O(V+E), линейное время.
+3. Если внутри кластера обнаружены изолированные компоненты — каждый получает уникальный ID.
+
+Результат функционально идентичен Leiden: связные community, топологическое разбиение. Fallback активируется автоматически при `ImportError` на `igraph`/`leidenalg`.
+
+**Ограничения fallback:** NetworkX Louvain в ~50–80× медленнее и потребляет ~70–170× больше памяти, чем Leiden (замеры на PC2, RTX 2070). На больших графах (>10K узлов) это может быть неприемлемо. Если Leiden недоступен на целевом железе — рекомендуется решить проблему на уровне деплоя (установить C-компилятор), а не мириться с производительностью fallback.
+
+**Валидация:** `experiments/exp_phase2_pipeline/test_swiss_roll.py` — Swiss Roll stress test, 4 конфигурации (500–3000 точек), 3 seed, 4 алгоритма (k-means, spectral, Louvain, Leiden).
+
+| Метрика | k-means | Spectral | Louvain | Leiden |
+|---|---|---|---|---|
+| Edge Cut (pathological) | 12.7% | 10.6% | 7.2% | **6.9%** |
+| D_parent mean | 0.098 | 0.099 | 0.085 | **0.082** |
+| Связность | ❌ | ❌ | ✅ (post-fix) | ✅ (native) |
+
+---
+
 ## Стек технологий
 
 - **Язык:** Python
@@ -198,3 +235,4 @@ Root cause tree failure: single-edge bottleneck + sibling bleed (85% fade на h
 - **Окружения:** `.venv` (CPU, Python 3.13) + `.venv-gpu` (DirectML, Python 3.12). См. `docs/environment_1.md`
 - **Эксперименты:** Jupyter Notebooks
 - **Документация:** Versioned markdown
+- **Зависимости:** `requirements.txt` в корне проекта

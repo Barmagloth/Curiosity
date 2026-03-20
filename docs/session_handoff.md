@@ -8,7 +8,8 @@
 
 - Фаза 0 **завершена** (18 марта 2026).
 - Фаза 1 **завершена** (20 марта 2026). Все потоки — PASS. P0 Layout **ЗАКРЫТ**. DET-1 **PASS**. DET-2 **PASS**.
-- **Следующий шаг — Фаза 2.**
+- Фаза 2 **завершена** (20 марта 2026). Pipeline assembled, SC-enforce integrated, E2E validated.
+- **Следующий шаг — Фаза 3.**
 
 Рабочий ПК: **PC 2** (NVIDIA RTX 2070, 8 GB, CUDA 12.8). Рабочая директория: `R:\Projects\Curiosity`.
 
@@ -105,6 +106,35 @@ Phase 2 → Instrument Readiness Gate → Track A
 2. **Graph-native sparse для scale-free** — Track C. CSR/COO вместо A_bitset fallback для scale-free графов (barabasi-albert и подобных).
 
 3. **C(I,M,p) surface с правильными метриками** — Track C. Построение поверхности curiosity = f(information, mass, position) с корректными метриками для каждого типа пространства.
+
+---
+
+## Фаза 2 — Финальные результаты (20 марта 2026)
+
+### Потоки
+
+| Stream | Описание | Статус |
+|--------|----------|--------|
+| A (Pipeline Assembly) | CuriosityPipeline: gate + governor + SC-enforce + probe + traversal | ✅ DONE |
+| B (SC-Enforce) | Three-tier pass/damp/reject + strictness-weighted waste budget + adaptive τ T4(N) = τ_base*(1+β/√N) | ✅ DONE |
+| C (Segment Compression) | Thermodynamic guards (N_critical=12, bombardment guard) — eliminate overhead on small trees | ✅ DONE |
+| D (E2E Validation) | 240 configs, 4 space types, DET-1 verified | ✅ DONE |
+
+### Ключевые находки
+
+- **tree_hierarchy high reject rate (~50%)** из-за тесных T4 thresholds — resolved with adaptive τ T4(N) = τ_base * (1 + β/√N)
+- **Graph clustering** upgraded from k-means to Leiden (community detection), validated on 10 pathological topologies: Swiss Roll, Barbell, Hub-Spoke, Ring of Cliques, Bipartite, Erdos-Renyi, Grid, Planar Delaunay, Mobius strip
+
+### Smoke test results
+
+| Space | Gain (dB) |
+|-------|-----------|
+| scalar_grid | +5.74 |
+| vector_grid | +1.58 |
+| graph | +5.58 |
+| tree | +1.26 |
+
+**Gate Phase 2 -> Phase 3: PASSED.** All streams DONE. Pipeline assembled and validated end-to-end.
 
 ---
 

@@ -1,0 +1,90 @@
+{
+  "scalar_grid": {
+    "quality_mse": 0.0031139704351116314,
+    "quality_psnr": 28.246670705833154,
+    "coarse_mse": 0.011677209832684499,
+    "coarse_psnr": 22.50642471226099,
+    "n_refined": 19,
+    "n_total": 64,
+    "n_passed": 19,
+    "n_damped": 0,
+    "n_rejected": 0,
+    "reject_rate": 0.0,
+    "governor_ema_final": 0.8649148282327008,
+    "gate_stage": "stage1_healthy",
+    "gate_weights": {
+      "resid": 0.95
+    },
+    "waste_budget_exhausted": false,
+    "compression_viable": false,
+    "compression_reason": "not_tree",
+    "compression_d2_skipped": 0,
+    "wall_time_seconds": 0.01099705696105957
+  },
+  "vector_grid": {
+    "quality_mse": 0.018029631601059533,
+    "quality_psnr": 17.735794189170583,
+    "coarse_mse": 0.025908890658662614,
+    "coarse_psnr": 16.16117453612604,
+    "n_refined": 4,
+    "n_total": 16,
+    "n_passed": 4,
+    "n_damped": 0,
+    "n_rejected": 0,
+    "reject_rate": 0.0,
+    "governor_ema_final": 0.34390000000000004,
+    "gate_stage": "stage1_healthy",
+    "gate_weights": {
+      "resid": 0.95
+    },
+    "waste_budget_exhausted": false,
+    "compression_viable": false,
+    "compression_reason": "not_tree",
+    "compression_d2_skipped": 0,
+    "wall_time_seconds": 0.014193058013916016
+  },
+  "irregular_graph": {
+    "quality_mse": 0.032085957772837605,
+    "quality_psnr": 19.597621802365158,
+    "coarse_mse": 0.09426217710852729,
+    "coarse_psnr": 14.917397217024892,
+    "n_refined": 3,
+    "n_total": 11,
+    "n_passed": 3,
+    "n_damped": 0,
+    "n_rejected": 0,
+    "reject_rate": 0.0,
+    "governor_ema_final": 0.271,
+    "gate_stage": "stage1_healthy",
+    "gate_weights": {
+      "resid": 0.95
+    },
+    "waste_budget_exhausted": false,
+    "compression_viable": false,
+    "compression_reason": "not_tree",
+    "compression_d2_skipped": 0,
+    "wall_time_seconds": 0.11611008644104004
+  },
+  "tree_hierarchy": {
+    "quality_mse": 0.02267528086327205,
+    "quality_psnr": 15.705956010728436,
+    "coarse_mse": 0.03741884671473335,
+    "coarse_psnr": 13.530578781567396,
+    "n_refined": 2,
+    "n_total": 8,
+    "n_passed": 1,
+    "n_damped": 1,
+    "n_rejected": 0,
+    "reject_rate": 0.0,
+    "governor_ema_final": 0.19,
+    "gate_stage": "stage1_healthy",
+    "gate_weights": {
+      "resid": 0.95
+    },
+    "waste_budget_exhausted": false,
+    "compression_viable": false,
+    "compression_reason": "below_n_critical",
+    "compression_d2_skipped": 0,
+    "wall_time_seconds": 0.0026450157165527344
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "space": "vector_grid",
+  "n_configs": 60,
+  "n_errors": 0,
+  "psnr_gain_median": 1.4632,
+  "psnr_gain_iqr": [
+    0.4109,
+    3.6022
+  ],
+  "all_psnr_positive": true,
+  "reject_rate_median": 0.0,
+  "reject_rate_max": 0.0,
+  "wall_time_max": 0.0331,
+  "wall_time_median": 0.015
+}

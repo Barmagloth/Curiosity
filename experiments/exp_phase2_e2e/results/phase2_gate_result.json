@@ -1,0 +1,73 @@
+{
+  "phase": 2,
+  "gate_verdict": "PASS",
+  "per_space": {
+    "scalar_grid": {
+      "space": "scalar_grid",
+      "n_configs": 60,
+      "n_errors": 0,
+      "psnr_gain_median": 7.3371,
+      "psnr_gain_iqr": [
+        2.9223,
+        11.4014
+      ],
+      "all_psnr_positive": true,
+      "reject_rate_median": 0.0,
+      "reject_rate_max": 0.0,
+      "wall_time_max": 0.0226,
+      "wall_time_median": 0.0094
+    },
+    "vector_grid": {
+      "space": "vector_grid",
+      "n_configs": 60,
+      "n_errors": 0,
+      "psnr_gain_median": 1.4632,
+      "psnr_gain_iqr": [
+        0.4109,
+        3.6022
+      ],
+      "all_psnr_positive": true,
+      "reject_rate_median": 0.0,
+      "reject_rate_max": 0.0,
+      "wall_time_max": 0.0331,
+      "wall_time_median": 0.015
+    },
+    "irregular_graph": {
+      "space": "irregular_graph",
+      "n_configs": 60,
+      "n_errors": 0,
+      "psnr_gain_median": 3.7366,
+      "psnr_gain_iqr": [
+        1.6649,
+        7.0385
+      ],
+      "all_psnr_positive": true,
+      "reject_rate_median": 0.0,
+      "reject_rate_max": 0.0,
+      "wall_time_max": 0.005,
+      "wall_time_median": 0.003
+    },
+    "tree_hierarchy": {
+      "space": "tree_hierarchy",
+      "n_configs": 60,
+      "n_errors": 0,
+      "psnr_gain_median": 1.4786,
+      "psnr_gain_iqr": [
+        1.2325,
+        2.3034
+      ],
+      "all_psnr_positive": true,
+      "reject_rate_median": 0.0,
+      "reject_rate_max": 0.5,
+      "wall_time_max": 0.0036,
+      "wall_time_median": 0.0023
+    }
+  },
+  "det1_recheck": {
+    "total": 40,
+    "pass": 40,
+    "fail": 0,
+    "pass_rate": "40/40",
+    "verdict": "PASS"
+  }
+}

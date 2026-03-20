@@ -1,0 +1,19 @@
+# Curiosity — adaptive refinement for computational spaces
+# Core
+numpy>=1.24
+scipy>=1.10
+torch>=2.0
+networkx>=3.0
+
+# Graph community detection
+# Primary: Leiden (igraph + leidenalg)
+# Requires C compiler for igraph extensions.
+# On platforms where igraph cannot be compiled (exotic ARM, minimal containers
+# without build tools, etc.), допустима замена на связку NetworkX Louvain +
+# connected_components post-fix.  Функциональная семантика идентична:
+# обе реализации гарантируют связные community.
+# Fallback активируется автоматически при ImportError.
+# См. docs/architecture.md §8 «Graph Community Detection».
+# Leiden community detection for graph clustering (fallback: Louvain+CC from networkx if unavailable)
+python-igraph>=0.11
+leidenalg>=0.10

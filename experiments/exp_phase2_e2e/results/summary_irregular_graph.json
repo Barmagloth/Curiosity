@@ -1,0 +1,15 @@
+{
+  "space": "irregular_graph",
+  "n_configs": 60,
+  "n_errors": 0,
+  "psnr_gain_median": 3.7366,
+  "psnr_gain_iqr": [
+    1.6649,
+    7.0385
+  ],
+  "all_psnr_positive": true,
+  "reject_rate_median": 0.0,
+  "reject_rate_max": 0.0,
+  "wall_time_max": 0.005,
+  "wall_time_median": 0.003
+}

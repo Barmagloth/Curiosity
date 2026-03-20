@@ -1,0 +1,15 @@
+{
+  "space": "scalar_grid",
+  "n_configs": 60,
+  "n_errors": 0,
+  "psnr_gain_median": 7.3371,
+  "psnr_gain_iqr": [
+    2.9223,
+    11.4014
+  ],
+  "all_psnr_positive": true,
+  "reject_rate_median": 0.0,
+  "reject_rate_max": 0.0,
+  "wall_time_max": 0.0226,
+  "wall_time_median": 0.0094
+}

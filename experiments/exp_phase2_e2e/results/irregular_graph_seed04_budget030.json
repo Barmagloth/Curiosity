@@ -1,0 +1,19 @@
+{
+  "space": "irregular_graph",
+  "seed": 4,
+  "budget": 0.3,
+  "psnr_coarse": 15.0584,
+  "psnr_final": 20.8734,
+  "psnr_gain": 5.815,
+  "mse_coarse": 0.08978285008134616,
+  "mse_final": 0.02353388619223669,
+  "n_refined": 3,
+  "n_total": 10,
+  "n_passed": 3,
+  "n_damped": 0,
+  "n_rejected": 0,
+  "reject_rate": 0.0,
+  "waste_exhausted": false,
+  "gate_stage": "stage1_healthy",
+  "wall_time": 0.003
+}

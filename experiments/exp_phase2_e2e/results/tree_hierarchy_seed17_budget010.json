@@ -1,0 +1,19 @@
+{
+  "space": "tree_hierarchy",
+  "seed": 17,
+  "budget": 0.1,
+  "psnr_coarse": 14.3407,
+  "psnr_final": 15.967,
+  "psnr_gain": 1.6263,
+  "mse_coarse": 0.036607646693819156,
+  "mse_final": 0.02517343304325974,
+  "n_refined": 1,
+  "n_total": 8,
+  "n_passed": 1,
+  "n_damped": 0,
+  "n_rejected": 0,
+  "reject_rate": 0.0,
+  "waste_exhausted": false,
+  "gate_stage": "stage1_healthy",
+  "wall_time": 0.0022
+}

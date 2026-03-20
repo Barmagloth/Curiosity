@@ -1,0 +1,230 @@
+{
+  "per_space": {
+    "T1_scalar": {
+      "pos_total": 360,
+      "pos_pass": 360,
+      "pos_damped": 0,
+      "pos_rejected": 0,
+      "pos_reject_rate": 0.0,
+      "neg_total": 360,
+      "neg_caught": 360,
+      "neg_catch_rate": 1.0,
+      "damp_total": 34,
+      "damp_converged": 34,
+      "damp_convergence_rate": 1.0,
+      "per_damp_factor": {
+        "0.3": {
+          "pos_total": 90,
+          "pos_pass": 90,
+          "pos_damped": 0,
+          "pos_rejected": 0,
+          "neg_total": 90,
+          "neg_caught": 90,
+          "neg_pass": 0
+        },
+        "0.5": {
+          "pos_total": 90,
+          "pos_pass": 90,
+          "pos_damped": 0,
+          "pos_rejected": 0,
+          "neg_total": 90,
+          "neg_caught": 90,
+          "neg_pass": 0
+        },
+        "0.7": {
+          "pos_total": 90,
+          "pos_pass": 90,
+          "pos_damped": 0,
+          "pos_rejected": 0,
+          "neg_total": 90,
+          "neg_caught": 90,
+          "neg_pass": 0
+        },
+        "1.0": {
+          "pos_total": 90,
+          "pos_pass": 90,
+          "pos_damped": 0,
+          "pos_rejected": 0,
+          "neg_total": 90,
+          "neg_caught": 90,
+          "neg_pass": 0
+        }
+      }
+    },
+    "T2_vector": {
+      "pos_total": 360,
+      "pos_pass": 360,
+      "pos_damped": 0,
+      "pos_rejected": 0,
+      "pos_reject_rate": 0.0,
+      "neg_total": 360,
+      "neg_caught": 360,
+      "neg_catch_rate": 1.0,
+      "damp_total": 0,
+      "damp_converged": 0,
+      "damp_convergence_rate": 0.0,
+      "per_damp_factor": {
+        "0.3": {
+          "pos_total": 90,
+          "pos_pass": 90,
+          "pos_damped": 0,
+          "pos_rejected": 0,
+          "neg_total": 90,
+          "neg_caught": 90,
+          "neg_pass": 0
+        },
+        "0.5": {
+          "pos_total": 90,
+          "pos_pass": 90,
+          "pos_damped": 0,
+          "pos_rejected": 0,
+          "neg_total": 90,
+          "neg_caught": 90,
+          "neg_pass": 0
+        },
+        "0.7": {
+          "pos_total": 90,
+          "pos_pass": 90,
+          "pos_damped": 0,
+          "pos_rejected": 0,
+          "neg_total": 90,
+          "neg_caught": 90,
+          "neg_pass": 0
+        },
+        "1.0": {
+          "pos_total": 90,
+          "pos_pass": 90,
+          "pos_damped": 0,
+          "pos_rejected": 0,
+          "neg_total": 90,
+          "neg_caught": 90,
+          "neg_pass": 0
+        }
+      }
+    },
+    "T3_graph": {
+      "pos_total": 360,
+      "pos_pass": 360,
+      "pos_damped": 0,
+      "pos_rejected": 0,
+      "pos_reject_rate": 0.0,
+      "neg_total": 360,
+      "neg_caught": 360,
+      "neg_catch_rate": 1.0,
+      "damp_total": 136,
+      "damp_converged": 136,
+      "damp_convergence_rate": 1.0,
+      "per_damp_factor": {
+        "0.3": {
+          "pos_total": 90,
+          "pos_pass": 90,
+          "pos_damped": 0,
+          "pos_rejected": 0,
+          "neg_total": 90,
+          "neg_caught": 90,
+          "neg_pass": 0
+        },
+        "0.5": {
+          "pos_total": 90,
+          "pos_pass": 90,
+          "pos_damped": 0,
+          "pos_rejected": 0,
+          "neg_total": 90,
+          "neg_caught": 90,
+          "neg_pass": 0
+        },
+        "0.7": {
+          "pos_total": 90,
+          "pos_pass": 90,
+          "pos_damped": 0,
+          "pos_rejected": 0,
+          "neg_total": 90,
+          "neg_caught": 90,
+          "neg_pass": 0
+        },
+        "1.0": {
+          "pos_total": 90,
+          "pos_pass": 90,
+          "pos_damped": 0,
+          "pos_rejected": 0,
+          "neg_total": 90,
+          "neg_caught": 90,
+          "neg_pass": 0
+        }
+      }
+    },
+    "T4_tree": {
+      "pos_total": 360,
+      "pos_pass": 316,
+      "pos_damped": 44,
+      "pos_rejected": 0,
+      "pos_reject_rate": 0.0,
+      "neg_total": 360,
+      "neg_caught": 340,
+      "neg_catch_rate": 0.9444,
+      "damp_total": 244,
+      "damp_converged": 244,
+      "damp_convergence_rate": 1.0,
+      "per_damp_factor": {
+        "0.3": {
+          "pos_total": 90,
+          "pos_pass": 79,
+          "pos_damped": 11,
+          "pos_rejected": 0,
+          "neg_total": 90,
+          "neg_caught": 85,
+          "neg_pass": 5
+        },
+        "0.5": {
+          "pos_total": 90,
+          "pos_pass": 79,
+          "pos_damped": 11,
+          "pos_rejected": 0,
+          "neg_total": 90,
+          "neg_caught": 85,
+          "neg_pass": 5
+        },
+        "0.7": {
+          "pos_total": 90,
+          "pos_pass": 79,
+          "pos_damped": 11,
+          "pos_rejected": 0,
+          "neg_total": 90,
+          "neg_caught": 85,
+          "neg_pass": 5
+        },
+        "1.0": {
+          "pos_total": 90,
+          "pos_pass": 79,
+          "pos_damped": 11,
+          "pos_rejected": 0,
+          "neg_total": 90,
+          "neg_caught": 85,
+          "neg_pass": 5
+        }
+      }
+    }
+  },
+  "kill_criteria": {
+    "KC1_pos_reject_rate": {
+      "value": 0.0,
+      "threshold": 0.05,
+      "condition": "<=",
+      "passed": true
+    },
+    "KC2_neg_catch_rate": {
+      "value": 0.9861,
+      "threshold": 0.8,
+      "condition": ">=",
+      "passed": true
+    },
+    "KC3_damp_convergence": {
+      "value": 1.0,
+      "threshold": 0.95,
+      "condition": ">=",
+      "passed": true
+    },
+    "all_passed": true
+  },
+  "total_time_s": 11.92
+}

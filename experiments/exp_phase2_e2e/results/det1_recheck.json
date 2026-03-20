@@ -1,0 +1,291 @@
+{
+  "results": [
+    {
+      "space": "scalar_grid",
+      "seed": 0,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "scalar_grid",
+      "seed": 1,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "scalar_grid",
+      "seed": 2,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "scalar_grid",
+      "seed": 3,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "scalar_grid",
+      "seed": 4,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "scalar_grid",
+      "seed": 5,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "scalar_grid",
+      "seed": 6,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "scalar_grid",
+      "seed": 7,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "scalar_grid",
+      "seed": 8,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "scalar_grid",
+      "seed": 9,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "vector_grid",
+      "seed": 0,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "vector_grid",
+      "seed": 1,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "vector_grid",
+      "seed": 2,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "vector_grid",
+      "seed": 3,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "vector_grid",
+      "seed": 4,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "vector_grid",
+      "seed": 5,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "vector_grid",
+      "seed": 6,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "vector_grid",
+      "seed": 7,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "vector_grid",
+      "seed": 8,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "vector_grid",
+      "seed": 9,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "irregular_graph",
+      "seed": 0,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "irregular_graph",
+      "seed": 1,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "irregular_graph",
+      "seed": 2,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "irregular_graph",
+      "seed": 3,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "irregular_graph",
+      "seed": 4,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "irregular_graph",
+      "seed": 5,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "irregular_graph",
+      "seed": 6,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "irregular_graph",
+      "seed": 7,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "irregular_graph",
+      "seed": 8,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "irregular_graph",
+      "seed": 9,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "tree_hierarchy",
+      "seed": 0,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "tree_hierarchy",
+      "seed": 1,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "tree_hierarchy",
+      "seed": 2,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "tree_hierarchy",
+      "seed": 3,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "tree_hierarchy",
+      "seed": 4,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "tree_hierarchy",
+      "seed": 5,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "tree_hierarchy",
+      "seed": 6,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "tree_hierarchy",
+      "seed": 7,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "tree_hierarchy",
+      "seed": 8,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    },
+    {
+      "space": "tree_hierarchy",
+      "seed": 9,
+      "state_bitwise_match": true,
+      "decisions_match": true,
+      "overall": true
+    }
+  ],
+  "summary": {
+    "total": 40,
+    "pass": 40,
+    "fail": 0,
+    "pass_rate": "40/40",
+    "verdict": "PASS"
+  }
+}

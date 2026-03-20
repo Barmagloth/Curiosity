@@ -4,3 +4,4 @@ __pycache__/
 .venv-gpu/
 *.egg-info/
 .ipynb_checkpoints/
+.env
