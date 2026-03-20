@@ -1,5 +1,7 @@
 # Exp10g: Dual-Mode Benchmark (Layout vs Operator)
 
+**Status:** closed — Contour A FAIL (40/54), Contour B PASS (54/54). D_direct passes operational viability.
+
 ## Motivation
 
 Exp10f showed that packed tiles + direct tile_map (candidate D) achieves:

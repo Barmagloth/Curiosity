@@ -4,7 +4,7 @@
 **Motivation:** exp10e-B showed packed storage saves VRAM (-30%) but binary search killed time (+1700%).
               Replace binary search with O(1) tile_map[tile_id] -> slot.
 **Roadmap level:** P0 (0.9b2)
-**Status:** D passes Contour A (architecture), fails Contour B (operational peak). A remains default.
+**Status:** closed — D passes Contour A, fails Contour B (peak VRAM). A_bitset operational default. D alive pending exp10g.
 
 ## Candidates
 - D_direct_onfly: packed tiles + tile_map + on-the-fly halo lookup

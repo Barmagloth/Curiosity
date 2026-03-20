@@ -1,3 +1,5 @@
+> **Historical changelog.** See session_handoff.md for current status.
+
 # Handoff: v1.5 → v1.6
 
 Что изменилось и почему. Для того кто будет добавлять файлы в репозиторий.

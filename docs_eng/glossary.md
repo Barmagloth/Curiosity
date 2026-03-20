@@ -132,6 +132,8 @@ Project-specific terms without which the documentation reads like gibberish. Org
 
 **Dirty signature** — a 12-bit signature (seam_risk + uncert + mass) for quickly determining whether a region has changed. Debounce (2 consecutive hits) protects against false positives from noise.
 
+**Temporal ramp** — scoring method for dirty signatures (exp11). For each step, compute the mean signature distance from baseline (hamming + component_diff) across all units. Score = mean(second_half) − mean(first_half) of the trajectory. Structural changes create a step function (low first half, high second half → positive score); noise creates a flat trajectory (score ≈ 0). Key distinction from step-to-step comparison: catches sustained level shift without reacting to random jumps.
+
 ---
 
 ## Scale-Consistency (v1.7)
@@ -149,6 +151,8 @@ Project-specific terms without which the documentation reads like gibberish. Org
 **D_hf** — a metric for high-frequency purity of step_delta: `D_hf = ‖step_delta - Up(R(step_delta))‖ / (‖step_delta‖ + ε)`. Higher = better (step_delta lives in the HF subspace). A diagnostic signal, not a hard constraint.
 
 **τ_parent** — a data-driven threshold for D_parent, set by the baseline experiment. May depend on level L.
+
+**Per-space thresholds** — approach from exp12a: thresholds τ_parent[L, space_type] are set independently per space type instead of a single global τ[L]. Reason: R/Up operators produce different D_parent dynamic ranges per space type (grids ~0.42–0.50, graph ~0.08, tree ~0.19), making a single threshold impossible. Selection method: youden_j. Aligns with layout selection policy — space_type is known statically.
 
 **Step_delta tolerance** — the permissible fraction of parent_coarse that step_delta may alter when projected to the parent scale. Operationally determined by τ_parent. Two-sided risk: too tight → loss of legitimate features; too loose → hierarchy drift. Automatic choice mechanism is an open question. See concept_v1.8.md, section 8.9.
 

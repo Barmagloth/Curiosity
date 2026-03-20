@@ -3,4 +3,4 @@
 **Question:** Two runs with identical inputs + seed → bitwise identical tree?
 **Kill criteria:** ANY divergence = FAIL
 **Roadmap level:** DET-1
-**Status:** open
+**Status:** closed — PASS 240/240 bitwise match

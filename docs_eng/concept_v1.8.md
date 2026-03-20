@@ -100,7 +100,7 @@ The structure must be GPU-friendly (flat packing, no pointer chasing).
 - scalar_grid → D_direct (packed tiles + tile_map) — production layout (exp10g: both contours PASS)
 - vector_grid → D_direct — production layout (exp10h: 72/72 PASS both contours)
 - tree_hierarchy → Hybrid per-level: D_direct where p_l < 0.40 AND operator is compute-heavy (matmul-like); A_bitset elsewhere. Upper levels (small N_l, high occupancy) → A_bitset. Lower levels (large N_l, low occupancy, heavy compute) → D_direct. Stencil ops: D saves memory but NEVER wins time → A_bitset. (exp10j: 158K trials, break-even stable across all branching factors)
-- irregular_graph / spatial → D_blocked conditional (spatial partition, cbr < 0.30) (exp10i)
+- irregular_graph / spatial → D_blocked conditional (spatial partition, cbr ≤ 0.35) (exp10i)
 - irregular_graph / scale-free → blocked layout rejected (cbr=0.66); A_bitset fallback (exp10i)
 
 For graphs: fixed-size blocks are NOT a universal abstraction. Compute-path is healthy (Contour B 100%), data representation is sick (padding 50-97%). Graphs split into two classes based on presence of spatial structure.

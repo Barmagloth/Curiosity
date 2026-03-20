@@ -4,7 +4,7 @@
 **Motivation:** exp10g validated D on scalar 2D grids. Need cross-space validation.
 **Kill criteria:** Dual contour (A: architectural, B: operational) per space type
 **Roadmap level:** P0 (0.9b3)
-**Status:** tree FAIL (0/108), vector_grid pending
+**Status:** closed — vector_grid 72/72 PASS, tree FAIL 0/108 (configs too small; see exp10j for per-level analysis)
 
 ## Results — tree_hierarchy (19 March 2026)
 

@@ -1,3 +1,5 @@
+> **Historical version.** Current version: concept_v1.8.md
+
 # Curiosity — Conceptual Document (v1.4, Historical)
 
 This document captures the project logic as it stood after Exp0.2–Exp0.3. It is preserved for historical reference. The canonical version is concept_v1.5.md.

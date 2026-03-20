@@ -12,7 +12,7 @@ Pass = D_direct beats A_bitset on both resident memory AND wall-clock for at lea
 (N_l, p_l) regime in each contour.
 
 **Roadmap level:** P0 (0.9b3)
-**Status:** done
+**Status:** closed — matmul PARTIAL PASS (45.8% at p<0.40), stencil FAIL
 **Predecessor:** exp10h (cross-space, tree FAIL 0/108)
 
 ## Design

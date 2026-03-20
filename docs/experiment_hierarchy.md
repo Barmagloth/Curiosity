@@ -32,10 +32,11 @@ v2.1: добавлен уровень DET (детерминизм и воспр�
 | `exp10f_packed_lookup/` | Packed tiles + alternative lookup (hash/direct) | P0 (0.9b2) | ⚠️ D passes Contour A, fails Contour B (peak VRAM from conv2d workspace). E archived as contingency. |
 | `exp10g_dual_benchmark/` | Dual-mode benchmark: manual stencil (layout cost) vs conv2d (operator cost). Resolves D's Contour B. | P0 (0.9b3) | ✅ D_direct PASS both contours. -54% to -80% time, -36% to -86% peak VRAM. |
 | `exp10h_cross_space/` | D_direct on vector_grid and tree_hierarchy | P0 (0.9b3) | ✅ vector_grid 72/72 PASS. tree FAIL 0/108 (configs too small → exp10j). |
-| `exp10i_graph_blocks/` | Graph block-based addressing with 3 partition strategies | P0 (0.9b3) | ✅ Spatial graphs conditional (cbr<0.30). Scale-free rejected (cbr=0.66). |
+| `exp10i_graph_blocks/` | Graph block-based addressing with 3 partition strategies | P0 (0.9b3) | ✅ Spatial graphs conditional (cbr≤0.35). Scale-free rejected (cbr=0.66). |
 | `exp10j_tree_perlevel/` | Per-level independent D_direct vs A_bitset benchmark for trees. Finds break-even thresholds per level. | P0 (0.9b3) | ✅ matmul: D wins at p<0.40 any N_l. stencil: D saves memory, never time. Contour B 45% PASS. |
-| `exp11_dirty_signatures/` | 12-bit dirty signature + debounce | P1-B2 | ❌ FAIL 3/4 spaces (архитект. проблема) |
-| `exp12a_tau_parent/` | Data-driven τ_parent[L] per depth | SC-5 | ⚠️ Частично (L1 specificity низкая) |
+| `exp11_dirty_signatures/` | 12-bit dirty signature + debounce | P1-B2 | ✅ PASS (AUC 0.91-1.0, baseline comparison + temporal ramp) |
+| `exp11a_det2_stability/` | Cross-seed stability (DET-2) | DET-2 | ✅ PASS 8/8 (per-regime CV thresholds) |
+| `exp12a_tau_parent/` | Data-driven τ_parent[L] per depth | SC-5 | ✅ PASS (per-space thresholds, specificity 1.000) |
 | `exp_deferred_revisit/` | Research note: Morton/block-sparse/schedule | — | ✅ Done |
 
 **Примечание:** §A/B/C — секции плана валидации, написанного между Exp0.3 и Phase 1.
@@ -100,7 +101,7 @@ P0. Layout на GPU
 │
 ├── 0.9b3 (exp10i): graph block-based addressing (3 partition strategies)
 │         РЕЗУЛЬТАТ: Spatial graphs (random_geometric, grid_graph) conditionally viable
-│         with spatial partition, cbr<0.30. Scale-free (barabasi-albert) REJECTED, cbr=0.66.
+│         with spatial partition, cbr≤0.35. Scale-free (barabasi-albert) REJECTED, cbr=0.66.
 │
 ├── 0.9b3 (exp10j): per-level tree break-even (158K trials)
 │         РЕЗУЛЬТАТ: matmul op: D wins at p_l<0.375-0.40 for ALL level sizes.
@@ -125,7 +126,7 @@ Final layout policy (all space types resolved):
 | scalar_grid | D_direct (packed tiles + direct tile_map) | Production | exp10g: both contours PASS |
 | vector_grid | D_direct (packed tiles + direct tile_map) | Production | exp10h: 72/72 PASS |
 | tree_hierarchy | Hybrid: D_direct per-level where p_l<0.40 + matmul op; A_bitset elsewhere | Validated | exp10j: break-even found |
-| irregular_graph / spatial | D_blocked (graph block addressing) conditional | Conditional | exp10i: spatial partition, cbr<0.30 |
+| irregular_graph / spatial | D_blocked (graph block addressing) conditional | Conditional | exp10i: spatial partition, cbr≤0.35 |
 | irregular_graph / scale-free | A_bitset (dense grid + bitset mask) fallback | Fallback only | exp10i: blocks rejected, cbr=0.66 |
 
 Layout naming glossary:

@@ -1,3 +1,5 @@
+> **Historical version.** Current version: concept_v1.8.md
+
 # Curiosity — Conceptual Document (v1.6)
 
 This document captures the current project logic so that the line of reasoning can be reconstructed a year from now without external context.
