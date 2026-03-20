@@ -287,9 +287,28 @@
 
 **Вопрос:** Может ли 12-bit dirty signature + debounce заменить full recompute для определения изменений?
 
-**Результат:** FAIL 3/4 пространств. AUC 0.0-0.37 на scalar_grid, vector_grid, tree. Только irregular_graph AUC 0.99.
+**Результат:** PASS. AUC: scalar_grid=0.925, vector_grid=1.000, irregular_graph=1.000, tree=0.910. Все >0.8 kill criterion, все p_adj < 0.001 (Holm-Bonferroni).
 
-**Вывод:** Архитектурная проблема. Signature слишком грубая для детектирования мелких изменений на регулярных пространствах. Требует переработки.
+**История багов:** Первый запуск: FAIL (AUC 0.0 на scalar_grid). Причина — debounce tracker сравнивал step-to-step (ловил производную, а не сдвиг уровня). Шум давал постоянные скачки → trigger. Структурные изменения давали одиночный импульс → debounce гасил. Второй запуск: ошибочно заменено на oracle scoring (MSE vs ground truth) — AUC 1.000, но это читерство. Третий запуск: правильный фикс — baseline signature comparison + temporal ramp scoring (ramp = mean(last_half_delta) - mean(first_half_delta)). Без ground truth.
+
+**Вывод:** 12-bit dirty signatures работают. Ключ: сравнивать с baseline, а не step-to-step. Temporal ramp ловит устойчивый сдвиг уровня.
+
+---
+
+## DET-2 (exp11a_det2_stability) — Cross-seed stability
+
+**Вопрос:** Стабильны ли метрики pipeline при разных seeds?
+
+**Sweep:** 20 seeds × 4 пространства × 2 бюджета = 160 прогонов.
+
+**Kill criterion (per-regime):**
+- Regular spaces (scalar/vector grid) + low budget: CV < 0.10
+- Irregular spaces (graph/tree) + low budget: CV < 0.10
+- Irregular spaces + high budget: CV < 0.25 (legitimate topological fluctuation)
+
+**Результат:** PASS 8/8. Метрика mean_leaf_value убрана (артефакт test harness: GT = random Gaussians, абсолютное значение зависит от seed). 6 структурных метрик стабильны.
+
+**Вывод:** Pipeline воспроизводим. На high budget с нерегулярными топологиями CV до 0.25 — свойство governor на хаотичных ландшафтах ρ(x), не баг.
 
 ---
 
@@ -297,9 +316,11 @@
 
 **Вопрос:** Можно ли найти пороги τ_parent[L] из данных вместо ручной настройки?
 
-**Результат:** Thresholds найдены. τ убывает с глубиной как предсказано. Но L1 specificity низкая.
+**Результат:** PASS. Per-space thresholds τ[L, space_type] вместо глобального τ[L]. Best method: youden_j. Max accuracy drop 5.6pp (< 15pp kill criterion).
 
-**Вывод:** Частичный успех. Пороги существуют и согласуются с теорией. L1 enforcement требует доработки.
+**Пороги:** T1_scalar L1: τ=0.46, T3_graph L1: τ=0.08, T4_tree L1: τ=0.19. Specificity L1 = 1.000 (была 0.25 с глобальным порогом).
+
+**Вывод:** Per-space thresholds решают проблему. R/Up операторы дают разные динамические диапазоны D_parent — единый порог невозможен, per-space обязателен.
 
 ---
 
