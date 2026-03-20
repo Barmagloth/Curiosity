@@ -194,12 +194,20 @@ class DirtySignature:
 # ═══════════════════════════════════════════════════════════════════════
 
 class DebounceTracker:
-    """Tracks per-unit signature history; fires after 2 consecutive
-    threshold crossings.
+    """Tracks per-unit signature distance from baseline; fires after 2
+    consecutive threshold crossings vs the baseline signature.
 
-    A crossing is detected when:
-      - Hamming distance (in bits) between old and new signature >= 3, OR
-      - Any single component changes by >= 4 quantised levels.
+    Baseline comparison fixes the original step-to-step (discrete derivative)
+    bug: structural changes produce a step function in delta(t) — the
+    signature shifts ONCE then stays at the new level.  Step-to-step
+    comparison saw only the impulse (one crossing) which the debounce
+    filter killed.  Baseline comparison sees a persistent crossing every
+    step after the event.
+
+    A crossing is detected when the current signature differs from the
+    *baseline* signature by:
+      - Hamming distance (in bits) >= threshold, OR
+      - Any single component changes by >= component_threshold levels.
     """
 
     def __init__(self, hamming_threshold=3, component_threshold=4,
@@ -209,14 +217,18 @@ class DebounceTracker:
         self.consecutive_needed = consecutive_needed
 
         # Per-unit state
-        self._prev_sig = {}       # unit_id -> last signature
+        self._baseline_sig = {}   # unit_id -> baseline signature
         self._consec_count = {}   # unit_id -> consecutive crossing count
         self._trigger_log = {}    # unit_id -> list of (step, sig) when triggered
 
     def reset(self):
-        self._prev_sig.clear()
+        self._baseline_sig.clear()
         self._consec_count.clear()
         self._trigger_log.clear()
+
+    def set_baseline(self, unit_id, sig):
+        """Store the baseline signature for a unit (from unperturbed state)."""
+        self._baseline_sig[unit_id] = sig
 
     # ── helpers ──────────────────────────────────────────────────────
 
@@ -233,10 +245,10 @@ class DebounceTracker:
         sb, ub, mb = DirtySignature.unpack(b)
         return max(abs(sa - sb), abs(ua - ub), abs(ma - mb))
 
-    def _is_crossing(self, old_sig, new_sig):
-        if self._hamming12(old_sig, new_sig) >= self.hamming_threshold:
+    def _is_crossing(self, baseline_sig, new_sig):
+        if self._hamming12(baseline_sig, new_sig) >= self.hamming_threshold:
             return True
-        if self._component_diff(old_sig, new_sig) >= self.component_threshold:
+        if self._component_diff(baseline_sig, new_sig) >= self.component_threshold:
             return True
         return False
 
@@ -245,21 +257,20 @@ class DebounceTracker:
     def update(self, unit_id, new_sig, step=None):
         """Record a new signature for *unit_id*.
 
+        Compares new_sig against the stored baseline (not the previous step).
         Returns True if a trigger fires on this update.
         """
-        if unit_id not in self._prev_sig:
-            # First observation — no comparison possible
-            self._prev_sig[unit_id] = new_sig
+        if unit_id not in self._baseline_sig:
+            # No baseline set — store as baseline, no comparison possible
+            self._baseline_sig[unit_id] = new_sig
             self._consec_count[unit_id] = 0
             return False
 
-        old_sig = self._prev_sig[unit_id]
-        if self._is_crossing(old_sig, new_sig):
+        baseline = self._baseline_sig[unit_id]
+        if self._is_crossing(baseline, new_sig):
             self._consec_count[unit_id] = self._consec_count.get(unit_id, 0) + 1
         else:
             self._consec_count[unit_id] = 0
-
-        self._prev_sig[unit_id] = new_sig
 
         if self._consec_count[unit_id] >= self.consecutive_needed:
             self._trigger_log.setdefault(unit_id, []).append(
@@ -416,13 +427,6 @@ def run_trial(space_name, seed):
             restrict_fn, prolong_fn, coarse_ref,
             rng_seed=seed * 1000)
 
-    # Compute baseline unit_error for each unit (unperturbed state).
-    # unit_error measures MSE against ground truth, so structural changes
-    # that shift state away from GT produce large error increases.
-    baseline_errors = {}
-    for uid in units:
-        baseline_errors[uid] = space.unit_error(base_state, uid)
-
     for scenario_name, label, event_step in scenarios:
         # Fresh RNG per scenario so results are independent and reproducible.
         # Use a deterministic offset per scenario (not hash, which is randomised
@@ -431,15 +435,24 @@ def run_trial(space_name, seed):
         rng_legacy = np.random.RandomState(seed * 10 + scenario_offset)
 
         tracker = DebounceTracker()
+        # Set baseline signatures so the tracker compares against the
+        # unperturbed state rather than step-to-step.
+        for uid in units:
+            tracker.set_baseline(uid, baseline_sigs[uid])
         state = base_state.copy()
 
         per_unit_first_trigger = {}   # unit_id -> step
         all_trigger_steps = []
 
-        # Track max unit_error change from baseline per unit.
-        # Structural changes cause persistent error increases (state moves
-        # away from GT); noise causes small transient fluctuations.
-        max_error_change = {}         # uid -> max |error - baseline_error|
+        # Track per-step mean signature distance from baseline.
+        # Structural changes produce a step function in delta(t):
+        #   0, 0, ..., D, D, D  -> high temporal variance.
+        # Noise produces a flat profile:
+        #   d, d, d, d, ...     -> low temporal variance.
+        # The temporal variance (std of per-step mean deltas) captures this
+        # difference without needing ground truth.
+        per_step_mean_deltas = []
+        max_delta_from_baseline = {}  # uid -> max delta (secondary)
 
         for step in range(N_STEPS):
             # Apply scenario perturbation
@@ -455,6 +468,7 @@ def run_trial(space_name, seed):
             # Use a FIXED rng_seed (not step-dependent) so that the uncert
             # jitter is deterministic given the same state — this prevents
             # the jitter itself from creating spurious signature changes.
+            step_deltas = []
             for uid in units:
                 sig = DirtySignature.compute_signature(
                     space, state_perturbed, uid,
@@ -465,28 +479,47 @@ def run_trial(space_name, seed):
                     per_unit_first_trigger[uid] = step
                     all_trigger_steps.append(step)
 
-                # Track unit_error deviation from baseline
-                err = space.unit_error(state_perturbed, uid)
-                delta_err = abs(err - baseline_errors[uid])
-                prev = max_error_change.get(uid, 0.0)
-                if delta_err > prev:
-                    max_error_change[uid] = delta_err
+                # Signature distance from baseline (no ground truth).
+                bsig = baseline_sigs[uid]
+                hamming_d = DebounceTracker._hamming12(bsig, sig)
+                comp_d = DebounceTracker._component_diff(bsig, sig)
+                delta = hamming_d + comp_d
+                step_deltas.append(delta)
+                prev = max_delta_from_baseline.get(uid, 0.0)
+                if delta > prev:
+                    max_delta_from_baseline[uid] = float(delta)
+
+            per_step_mean_deltas.append(float(np.mean(step_deltas)))
 
         # Aggregate
         any_trigger = len(per_unit_first_trigger) > 0
         blast = len(per_unit_first_trigger)
 
-        # Score: mean max-error-change across all units.
-        # unit_error measures MSE vs ground truth, so structural changes
-        # (which shift state away from GT) produce large, persistent error
-        # increases.  Noise (small random perturbation) produces tiny error
-        # changes that wash out.  This replaces the previous signature-
-        # distance metric which was inverted (noise caused larger signature
-        # jumps than structural changes due to the uncert component's
-        # sensitivity to ranking shuffles).
-        mean_error_change = (
-            sum(max_error_change.values()) / max(len(max_error_change), 1))
-        score = float(mean_error_change)
+        # Score: temporal std of per-step mean baseline distance.
+        # Structural changes create a step function in delta(t) — the
+        # signature jumps once then stays at the new level, producing high
+        # temporal variance.  Noise creates independent perturbations each
+        # step with roughly constant baseline distance, producing low
+        # temporal variance.  This directly captures the user's signal
+        # processing insight: we need delta(t) - delta(baseline), not
+        # d(delta)/dt.
+        mean_max_delta = float(
+            sum(max_delta_from_baseline.values())
+            / max(len(max_delta_from_baseline), 1)
+        )
+        temporal_std = float(np.std(per_step_mean_deltas))
+        # Primary score: ramp = mean(last_half_delta) - mean(first_half_delta).
+        # Structural changes produce a step function in delta(t): the
+        # signature is near baseline for early steps, then jumps and
+        # stays elevated — giving a positive ramp.  Noise produces a
+        # roughly constant delta profile (elevated from step 0) — giving
+        # ramp near zero.  Drift produces a gradually increasing ramp.
+        # This directly captures the temporal asymmetry without needing
+        # ground truth.
+        half = N_STEPS // 2
+        deltas_arr = np.array(per_step_mean_deltas)
+        ramp = float(np.mean(deltas_arr[half:]) - np.mean(deltas_arr[:half]))
+        score = max(0.0, ramp)
 
         if scenario_name == "structural" and event_step is not None:
             if per_unit_first_trigger:

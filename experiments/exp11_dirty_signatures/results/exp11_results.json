@@ -1,14 +1,14 @@
 {
   "verdict": "PASS",
   "auc_per_space": {
-    "scalar_grid": 1.0,
+    "scalar_grid": 0.925,
     "vector_grid": 1.0,
     "irregular_graph": 1.0,
-    "tree_hierarchy": 1.0
+    "tree_hierarchy": 0.91
   },
   "ci_per_space": {
     "scalar_grid": [
-      1.0,
+      0.815,
       1.0
     ],
     "vector_grid": [
@@ -20,7 +20,7 @@
       1.0
     ],
     "tree_hierarchy": [
-      1.0,
+      0.785,
       1.0
     ]
   },
@@ -41,35 +41,35 @@
       "reject": true
     },
     "tree_hierarchy": {
-      "p_raw": 0.0002,
-      "p_adjusted": 0.0002,
+      "p_raw": 0.0004,
+      "p_adjusted": 0.0004,
       "reject": true
     }
   },
   "blast_radius": {
     "scalar_grid": {
       "noise_mean": 50.0,
-      "noise_max": 55,
+      "noise_max": 63,
       "struct_mean": 0.0,
       "struct_max": 0
     },
     "vector_grid": {
-      "noise_mean": 8.3,
+      "noise_mean": 1.7,
       "noise_max": 16,
-      "struct_mean": 0.0,
-      "struct_max": 0
+      "struct_mean": 6.4,
+      "struct_max": 16
     },
     "irregular_graph": {
-      "noise_mean": 0.1,
-      "noise_max": 1,
-      "struct_mean": 2.2,
+      "noise_mean": 0.0,
+      "noise_max": 0,
+      "struct_mean": 3.15,
       "struct_max": 10
     },
     "tree_hierarchy": {
-      "noise_mean": 4.0,
-      "noise_max": 8,
-      "struct_mean": 1.2,
-      "struct_max": 8
+      "noise_mean": 1.4,
+      "noise_max": 4,
+      "struct_mean": 0.0,
+      "struct_max": 0
     }
   },
   "latency": {
@@ -80,29 +80,29 @@
       "max": NaN
     },
     "vector_grid": {
+      "mean": 3.0,
+      "median": 1.0,
+      "min": 1.0,
+      "max": 14.0
+    },
+    "irregular_graph": {
+      "mean": 4.9411764705882355,
+      "median": 1.0,
+      "min": 1.0,
+      "max": 17.0
+    },
+    "tree_hierarchy": {
       "mean": NaN,
       "median": NaN,
       "min": NaN,
       "max": NaN
-    },
-    "irregular_graph": {
-      "mean": 11.285714285714286,
-      "median": 9.0,
-      "min": 6.0,
-      "max": 19.0
-    },
-    "tree_hierarchy": {
-      "mean": 4.333333333333333,
-      "median": 4.0,
-      "min": 2.0,
-      "max": 7.0
     }
   },
   "burstiness": {
     "scalar_grid": 1.0,
-    "vector_grid": 0.03614457831325301,
-    "irregular_graph": 0.9777777777777777,
-    "tree_hierarchy": 0.8125
+    "vector_grid": 0.05517241379310345,
+    "irregular_graph": 0.9841269841269841,
+    "tree_hierarchy": 0.8571428571428571
   },
   "config": {
     "n_seeds": 10,
