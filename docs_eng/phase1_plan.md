@@ -1,3 +1,5 @@
+> **ARCHIVED.** Phase 1 completed 20 March 2026. All streams PASS. See session_handoff.md for current status.
+
 # Curiosity — Phase 1 Implementation Plan
 
 ## Context

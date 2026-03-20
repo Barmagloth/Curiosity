@@ -1,72 +1,67 @@
-# Session Handoff — Curiosity Phase 1
+# Session Handoff — Curiosity Phase 2
 
 Document for a new AI orchestrator session. Contains full context for immediately continuing work.
 
 ## Where We Are
 
-Curiosity project. Phase 0 **complete** (March 18, 2026). Phase 1 **complete** (March 19, 2026). P0 layout **CLOSED**. Next step — Phase 2.
+Curiosity project. Phase 0 **complete** (March 18, 2026). Phase 1 **complete** (March 20, 2026). All streams PASS. P0 Layout **CLOSED**. DET-1 **PASS**. DET-2 **PASS**. Next step — **Phase 2**.
 
 Workstation: **PC 2** (NVIDIA RTX 2070, 8 GB, CUDA 12.8). Working directory: `R:\Projects\Curiosity`.
 
-## What to Read (in this order)
+---
 
-| # | File | Why |
-|---|------|-----|
-| 1 | `docs/phase1_plan.md` | **Phase 1 plan** — 6 streams, worker assignment, kill criteria, reuse map |
-| 2 | `docs/concept_v1.8.md` | Canonical concept (current) |
-| 3 | `docs/experiment_hierarchy.md` | Dependency graph, priorities, exp10+ numbering |
-| 4 | `docs/teamplan.md` | Plan with Phase 0 mark, description of Phases 1-4 |
-| 5 | `docs/environment_2.md` | How to activate .venv-gpu on PC 2 (CUDA) |
+## Phase 1 Final Results (all PASS)
 
-## What Was Done Previously (Phase 0)
+| Stream | Experiment | Result | Status |
+|--------|-----------|--------|--------|
+| S1 | exp10 series | Layout policy fixed: D_direct for grids, hybrid for trees, D_blocked conditional for spatial graphs, A_bitset fallback for scale-free | PASS |
+| S1b | exp10d | DET-1 PASS 240/240 bitwise match CPU+CUDA | PASS |
+| S2 | exp11 | Dirty signatures PASS (AUC 0.91-1.0) | PASS |
+| S3 | P2a | Sensitivity PASS — ridge 100%, manual thresholds ok, P2b not needed | PASS |
+| S4 | exp12a | tau_parent PASS — per-space thresholds found | PASS |
+| DET-2 | — | PASS 8/8 (per-regime cross-validation) | PASS |
 
-### Experiments
-1. **Environment**: PC 1 (AMD Radeon 780M, DirectML) + PC 2 (RTX 2070, CUDA 12.8)
-2. **Halo cross-space**: grid/graph OK, tree FAIL (0.56x). Rule: parallelism >= 3 AND no leakage.
-3. **P2a sweep**: code ready (20K configurations), NOT RUN
-4. **SC-baseline**: D_parent = ||R(delta)|| / (||delta|| + eps), R = gauss sigma=3.0. AUC 0.824-1.000 across 4 spaces.
-
-### Key Architectural Decisions
-- Halo: NOT a universal invariant — rule depends on topology.
-- D_parent: formula updated (lf_frac).
-- Morton/block-sparse/phase schedule: DEFERRED, not rejected.
-
-## Phase 1 — Main Stream Results (March 19, 2026)
-
-| Stream | Result |
-|--------|--------|
-| S1 exp10 | KILL compact-with-reverse-map (VRAM +38.6%). Grid — baseline. The implementation was killed, not the sparse principle. |
-| S1b exp10d | DET-1 PASS (240/240 bitwise match CPU+CUDA) |
-| S2 exp11 | FAIL 3/4 spaces. Architectural problem. |
-| S3 P2a | PASS — ridge 100%. Manual thresholds ok. P2b not needed. |
-| S4 exp12a | Thresholds found. L1 specificity low. |
-| S5 deferred | Research note done. |
-
-Gate Phase 1 -> 2: PASSED (grid fixed + DET-1). P0 reopened for layout investigation.
+Gate Phase 1 -> Phase 2: **PASSED**.
 
 ---
 
-## P0 LAYOUT — CLOSED (full exp10 series, March 19, 2026)
+## What to Do — Phase 2
 
-### Layout Glossary
+### Goal
 
-- **D_direct** ("packed tiles + direct tile_map") — active tiles in a compact array, tile_map[tile_id] -> slot for O(1) lookup. No element-level reverse_map. Winner for grids.
-- **A_bitset** ("dense grid + bitset mask") — full-size data tensor + activation bitmask. Simple fallback.
-- **D_blocked** ("block addressing for graphs") — graph nodes split into fixed blocks, block_map[block_id] -> slot. Works only for spatial graphs.
-- **E_hash** ("hash table lookup") — archival fallback, dominated by D_direct at current scale. Resurrection triggers documented.
+End-to-end pipeline validation. Assemble the full pipeline (layout + halo + gate + governor + probe + SeamScore) and run on real tasks.
 
-### Full exp10 Series Chronology
+### Critical Path
 
-| Experiment | What was tested | Result |
-|------------|----------------|--------|
-| exp10 | Grid layout vs compact layout with element-level reverse_map (scalar_grid) | KILL compact. reverse_map[M] on int32 = structural VRAM failure (+38.6%). Compute at O(k) was 18.5% faster. |
-| exp10d | Bitwise determinism DET-1 (all 4 space types) | PASS 240/240 bitwise match CPU+CUDA. |
-| exp10e | Three tile-sparse candidates: A=grid+bitset mask, B=packed tiles+Morton binary search, C=paged sparse (scalar_grid) | A alive (-20% time, +18% VRAM). B killed (binary search +1700%). C killed (+9000%). |
-| exp10f | Packed tiles + direct tile_map O(1) vs hash table (scalar_grid) | D_direct: 5x faster, 5.5x less resident. Peak VRAM kill = measurement artifact. E_hash = same speed, build 10-30x slower. |
-| exp10g | Two-mode benchmark: manual stencil (Contour A) + conv2d (Contour B) (scalar_grid) | D_direct PASS both contours. -54% to -80% time, -36% to -86% peak VRAM. |
-| exp10h | Cross-space: vector_grid + tree_hierarchy | Vector: 72/72 PASS both contours. Tree: 0/108 FAIL (trees too small to amortize overhead). |
-| exp10i | Block addressing for graphs with 3 partitioning strategies (3 graph types) | Spatial graphs (random_geometric, grid_graph): conditionally viable with spatial partition, cbr<0.30. Scale-free (barabasi-albert): REJECTED, cbr=0.66. |
-| exp10j | Per-level break-even analysis of D_direct for trees (tree_hierarchy) | matmul: D wins at occupancy < 37.5-40% at ALL level sizes. stencil: D saves memory but NEVER wins on time. Contour B: 45% PASS. |
+```
+Phase 2 → Instrument Readiness Gate → Track A
+```
+
+### Key Tasks
+
+1. **Assemble full pipeline** — integrate all validated components into a single runtime:
+   - Layout (D_direct / hybrid / D_blocked / A_bitset per space type)
+   - Halo (cosine feathering, topology-dependent rule)
+   - Two-stage gate (residual-first with fallback)
+   - Budget governor (EMA strictness controller)
+   - Probe (5-10% budget for exploration)
+   - SeamScore (Jumpout / (Jumpin + eps))
+2. **End-to-end validation** — run assembled pipeline on real tasks across all 4 space types
+3. **Integration testing** — verify component interactions under production conditions
+4. **Instrument Readiness Gate** — confirm pipeline meets all criteria for Track A transition
+
+---
+
+## Open Questions for Phase 2
+
+- exp11 dirty signatures: integration approach after redesign (was FAIL 3/4, now PASS after fix)
+- exp12a tau_parent: per-space thresholds — enforce or advisory?
+- SC-enforce: how to integrate D_parent enforcement into the runtime pipeline
+- DET-2 stability guarantees: sufficient for production or additional validation needed?
+
+---
+
+## P0 LAYOUT — CLOSED (full exp10 series)
 
 ### Final Layout Policy
 
@@ -78,41 +73,34 @@ Gate Phase 1 -> 2: PASSED (grid fixed + DET-1). P0 reopened for layout investiga
 | irregular_graph / spatial | D_blocked (block addressing) conditional | Conditional | exp10i: spatial partition, cbr<0.30 |
 | irregular_graph / scale-free | A_bitset (dense grid + bitset mask) fallback | Fallback only | exp10i: blocks rejected, cbr=0.66 |
 
-**Break-even for trees (exp10j):**
-- matmul operator: D_direct wins at occupancy < 37.5-40% at ANY level size
-- stencil operator: D_direct saves memory below the same threshold, but is always slower
-- Policy: use D_direct per-level only when the operator is compute-heavy (matmul-like) AND occupancy < 40%
-- Upper tree levels (small N_l, high occupancy) -> A_bitset
-- Lower levels (large N_l, low occupancy, heavy compute) -> D_direct
+---
 
-### Killed Permanently
+## What to Read (in this order)
 
-- Element-level reverse_map[M] (exp10: VRAM +38.6%)
-- Binary search on GPU (exp10e-B: +1700%)
-- Paged sparse tiles (exp10e-C: +9000%)
-- Hash as primary lookup (exp10f-E: dominated by D_direct)
-- Fixed blocks for scale-free graphs (exp10i: cbr 0.64-0.99)
+| # | File | Why |
+|---|------|-----|
+| 1 | `docs/concept_v1.8.md` | Canonical concept — all validated decisions |
+| 2 | `docs/experiment_hierarchy.md` | Dependency graph, priorities, exp10+ numbering |
+| 3 | `docs_eng/phase1_plan.md` | Phase 1 plan and results (ARCHIVED) — full exp10 series details |
+| 4 | `docs_eng/teamplan.md` | Team plan with Phase 0-1 complete, Phase 2 active |
+| 5 | `docs/environment_2.md` | How to activate .venv-gpu on PC 2 (CUDA) |
 
 ---
 
-## What to Do — Phase 2
+## What Was Done Previously
 
-P0 layout **CLOSED**. All space types have an assigned layout (see table above).
+### Phase 0 (March 18, 2026)
 
-### Critical Path
-```
-P0 LAYOUT [CLOSED] -> Phase 2 (layout integration into runtime)
-```
+1. **Environment**: PC 1 (AMD Radeon 780M, DirectML) + PC 2 (RTX 2070, CUDA 12.8)
+2. **Halo cross-space**: grid/graph OK, tree FAIL (0.56x). Rule: parallelism >= 3 AND no leakage.
+3. **P2a sweep**: code ready (20K configurations), NOT RUN
+4. **SC-baseline**: D_parent = ||R(delta)|| / (||delta|| + eps), R = gauss sigma=3.0. AUC 0.824-1.000 across 4 spaces.
 
-### Open Questions for the Architect (before starting Phase 2)
-- exp11: redo dirty signatures or accept the limitation? (FAIL 3/4 spaces)
-- exp12a: L1 without enforcement or rework? (specificity low)
-- DET-2 cross-seed stability: needed before Phase 2 starts?
+### Phase 1 (March 19-20, 2026)
 
-### Possible Follow-ups (NOT in the current phase)
-- For graphs: variable-size/adaptive blocks for the spatial subclass; graph-native sparse (CSR/COO) for scale-free
-- For trees: stencil path optimization (current manual stencil is too slow) — low priority
-- For all: DET-2 cross-seed stability not yet verified
+Full exp10 series (exp10 through exp10j) — layout policy resolved for all space types. DET-1 passed. All streams closed with PASS.
+
+---
 
 ## Environment
 

@@ -1,5 +1,15 @@
 # Work Plan (Curiosity)
 
+> **Status:** Modules A-G described as implementation plan. As of 20 March 2026:
+> - Module C (informativeness ρ): validated (Exp0.4-0.7, two-stage gate)
+> - Module D (tree + split/merge): validated (Exp0.1-0.3, Exp0.8 governor)
+> - Module E (deltas + boundaries): validated (halo w∈[2,4], SeamScore, Phase 1/2)
+> - Module F (benchmark): conducted (exp10 series, 158K+ trials, layout policy fixed)
+> - Module G (Scale-Consistency): validated (SC-baseline AUC 0.82-1.0, exp12a τ_parent PASS)
+> - Modules A, B (canonicalization, cache): NOT implemented (not on critical path)
+> - P0 Layout CLOSED. DET-1 PASS. DET-2 PASS. Phase 1 completed 20 March 2026.
+> - Next step: Phase 2 (end-to-end pipeline).
+
 ## Core Logic
 1. Only modules that provide standalone benefit survive: cache, detector, recomputation scheduler, profiling.
 2. Start not from a "smart tree" but from **data identity**: canonicalization → hash → cache.

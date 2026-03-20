@@ -1,3 +1,5 @@
+# ARCHIVED — see session_handoff.md
+
 # HANDOFF — Curiosity Project Transfer
 
 Document for a new project participant (human or AI orchestrator). Contains everything needed to continue work without additional context.

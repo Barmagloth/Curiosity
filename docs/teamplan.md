@@ -38,7 +38,11 @@
 
 ---
 
-### Фаза 1: P0 + DET-1 + параллельные CPU-задачи (Неделя 3–5)
+### ✅ Фаза 1: ЗАВЕРШЕНА (20 марта 2026)
+
+Все потоки PASS. P0 Layout закрыт. DET-1 и DET-2 пройдены. Gate Phase 1 -> Phase 2: PASSED.
+
+#### Оригинальный план (Неделя 3–5)
 
 | Поток | Исполнитель | Задача | Тип | Зависимости |
 |-------|-------------|--------|-----|-------------|
@@ -49,19 +53,21 @@
 | **S4: SC-baseline завершение** | Executor D | SC-0..SC-4 пройдены. Осталось: SC-5 — установить data-driven τ_parent[L]. Подготовить SC-enforce (Фаза 2). | Валидация | S4 Фаза 0 (каркас) ✅ |
 | **S5: Deferred revisit** | Executor E | Re-investigation Morton layout / block-sparse / phase schedule с иным подходом. Литобзор + новые идеи. Не эксперимент — research note с предложениями. | Исследование | Нет |
 
-**Gate: Фаза 1 → Фаза 2:**
-- P0 layout зафиксирован (grid / compact).
-- **DET-1 пройден** (побитовое совпадение при фиксированном seed). Без этого результаты Фазы 2 нетестируемы.
+**Gate: Фаза 1 → Фаза 2: ✅ PASSED**
+- P0 layout закрыт — полная layout policy по типам пространств.
+- DET-1 PASS (240/240 побитовое совпадение CPU+CUDA).
+- DET-2 PASS (cross-seed stability).
+- Все потоки (S1–S5, exp11, exp12a) — PASS.
 
-**Развилки для архитектора (конец Фазы 1):**
-- P0 результат → выбор layout (grid / compact). Определяет весь P1.
-- P2a результат → go/no-go для P2b (adaptive threshold). **Дополнительно:** если ridge width существенно различается между типами пространств → может потребоваться space-dependent tuning (отдельное решение архитектора).
-- SC-baseline → pass/fail. Если fail → пересмотр пары (R, Up).
-- Deferred revisit → архитектор решает, стоит ли возвращать Morton/block-sparse/schedule в план.
+**Развилки для архитектора (конец Фазы 1): ✅ Все решены**
+- Layout: D_direct для сеток (scalar + vector), гибрид для деревьев, D_blocked conditional для spatial графов, A_bitset fallback для scale-free.
+- P2b нужен? Нет — ridge 100%.
+- SC-5: пороги найдены.
+- Morton/block-sparse: Morton убит (бинарный поиск +1700%), block addressing viable только для spatial графов.
 
 ---
 
-### Фаза 2: Compression + enforcement + DET-2 (Неделя 6–8)
+### 🔶 Фаза 2: End-to-end pipeline validation (Неделя 6–8) — АКТИВНАЯ
 
 | Поток | Исполнитель | Задача | Зависимости |
 |-------|-------------|--------|-------------|
@@ -119,7 +125,7 @@
 | Halo кросс-пространственный? | Частично: grid/graph да, tree нет. Правило выведено. |
 | D_parent fail? | Исправлен: σ=3.0 + lf_frac normalization |
 | coarse_shift? | Генератор исправлен на spatially coherent |
-| Конец Фазы 1 | Layout (grid/compact)? P2b нужен? SC pass? Morton/schedule возврат? | P0, P2a, SC, S5 отчёты |
+| Конец Фазы 1 | ✅ Решено (20 марта 2026). Layout: D_direct/гибрид/D_blocked/A_bitset по типам. P2b не нужен. SC pass. Morton убит. | Все потоки PASS |
 | Конец Фазы 2 | SC-enforce работает? Compression достаточна? | S2, S4 отчёты |
 | Конец Фазы 3 | Дерево семантично? C unfreezes? | P3a, P3b отчёты |
 | Конец Фазы 4 | Instrument Readiness Gate пройден? Переход на Track B? | P4a, P4b, C-pre |

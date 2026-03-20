@@ -38,7 +38,7 @@ Four streams, all independent of each other:
 
 ---
 
-### Phase 1: P0 + DET-1 + Parallel CPU Tasks (Week 3–5)
+### ✅ Phase 1: COMPLETED (March 20, 2026)
 
 | Stream | Executor | Task | Type | Dependencies |
 |--------|----------|------|------|--------------|
@@ -49,19 +49,25 @@ Four streams, all independent of each other:
 | **S4: SC-baseline completion** | Executor D | SC-0..SC-4 passed. Remaining: SC-5 — set data-driven τ_parent[L]. Prepare SC-enforce (Phase 2). | Validation | S4 Phase 0 (scaffold) ✅ |
 | **S5: Deferred revisit** | Executor E | Re-investigation of Morton layout / block-sparse / phase schedule with a different approach. Literature review + new ideas. Not an experiment — a research note with proposals. | Research | None |
 
-**Gate: Phase 1 → Phase 2:**
-- P0 layout locked (grid / compact).
-- **DET-1 passed** (bitwise tree match at fixed seed). Without this, Phase 2 results are untestable.
+**Phase 1 Results (all PASS):**
+- S1 exp10 series: layout policy fixed (D_direct for grids, hybrid for trees, D_blocked conditional for spatial graphs, A_bitset fallback for scale-free)
+- S1b exp10d: DET-1 PASS 240/240 bitwise match CPU+CUDA
+- S2 exp11: dirty signatures PASS (AUC 0.91-1.0)
+- S3 P2a: sensitivity PASS — ridge 100%, manual thresholds ok, P2b not needed
+- S4 exp12a: tau_parent PASS (per-space thresholds)
+- DET-2: PASS 8/8 (per-regime CV)
 
-**Forks for the architect (end of Phase 1):**
-- P0 result → layout choice (grid / compact). Determines all of P1.
-- P2a result → go/no-go for P2b (adaptive threshold). **Additionally:** if ridge width differs substantially across space types → may require space-dependent tuning (separate architect decision).
-- SC-baseline → pass/fail. If fail → reconsider the (R, Up) pair.
-- Deferred revisit → architect decides whether to bring Morton/block-sparse/schedule back into the plan.
+**Gate: Phase 1 → Phase 2:** PASSED. P0 layout CLOSED. DET-1 PASSED.
+
+**Forks for the architect (end of Phase 1):** ✅ All resolved
+- Layout: D_direct for grids, hybrid for trees, D_blocked conditional for spatial graphs, A_bitset fallback for scale-free
+- P2b needed? No — ridge 100%
+- SC-5: thresholds found, per-space
+- Morton/block-sparse: Morton killed, block addressing viable only for spatial graphs
 
 ---
 
-### Phase 2: Compression + Enforcement + DET-2 (Week 6–8)
+### 🔶 Phase 2: End-to-End Pipeline Validation — ACTIVE FOCUS
 
 | Stream | Executor | Task | Dependencies |
 |--------|----------|------|--------------|
@@ -119,7 +125,7 @@ Phase 0: S1(env) ──→ Phase 1: S1(P0) → S1b(DET-1) ──→ Phase 2: S2(
 | Halo cross-space? | Partially: grid/graph yes, tree no. Rule derived. |
 | D_parent fail? | Fixed: σ=3.0 + lf_frac normalization |
 | coarse_shift? | Generator fixed to spatially coherent |
-| End of Phase 1 | Layout (grid/compact)? P2b needed? SC pass? Morton/schedule return? | P0, P2a, SC, S5 reports |
+| End of Phase 1 | ✅ Resolved: layout policy fixed, P2b not needed, SC pass, Morton killed | All streams PASS |
 | End of Phase 2 | SC-enforce works? Compression sufficient? | S2, S4 reports |
 | End of Phase 3 | Tree is semantic? C unfreezes? | P3a, P3b reports |
 | End of Phase 4 | Instrument Readiness Gate passed? Transition to Track B? | P4a, P4b, C-pre |
