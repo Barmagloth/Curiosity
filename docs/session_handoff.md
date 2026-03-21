@@ -118,23 +118,33 @@ Phase 2 → Instrument Readiness Gate → Track A
 | A (Pipeline Assembly) | CuriosityPipeline: gate + governor + SC-enforce + probe + traversal | ✅ DONE |
 | B (SC-Enforce) | Three-tier pass/damp/reject + strictness-weighted waste budget + adaptive τ T4(N) = τ_base*(1+β/√N) | ✅ DONE |
 | C (Segment Compression) | Thermodynamic guards (N_critical=12, bombardment guard) — eliminate overhead on small trees | ✅ DONE |
-| D (E2E Validation) | 240 configs, 4 space types, DET-1 verified | ✅ DONE |
+| D (E2E Validation) | 240 configs, 4 space types, DET-1 + DET-2 recheck with topo | ✅ DONE |
 
 ### Ключевые находки
 
 - **tree_hierarchy high reject rate (~50%)** из-за тесных T4 thresholds — resolved with adaptive τ T4(N) = τ_base * (1 + β/√N)
 - **Graph clustering** upgraded from k-means to Leiden (community detection), validated on 10 pathological topologies: Swiss Roll, Barbell, Hub-Spoke, Ring of Cliques, Bipartite, Erdos-Renyi, Grid, Planar Delaunay, Mobius strip
+- **E2E irregular_graph перезапущен** (21.03.2026) с topo profiling active: zone distribution GREEN 75%/RED 25%, PSNR −0.20 dB vs pre-topo (ожидаемо)
 
-### Smoke test results
+### E2E результаты (с topo profiling, 21.03.2026)
 
-| Space | Gain (dB) |
-|-------|-----------|
-| scalar_grid | +5.74 |
-| vector_grid | +1.58 |
-| graph | +5.58 |
-| tree | +1.26 |
+| Space | PSNR gain median | Reject max | Wall max |
+|-------|-----------------|------------|----------|
+| scalar_grid | +7.34 dB | 0% | 23ms |
+| vector_grid | +1.46 dB | 0% | 33ms |
+| irregular_graph | +3.54 dB | 0% | 245ms |
+| tree_hierarchy | +1.48 dB | 0% | 4ms |
 
-**Gate Phase 2 -> Phase 3: PASSED.** All streams DONE. Pipeline assembled and validated end-to-end.
+### DET Rechecks (с topo profiling, 21.03.2026)
+
+| Тест | Scope | Результат |
+|------|-------|-----------|
+| DET-1 (bitwise determinism) | 4 spaces × 10 seeds = 40 | ✅ 40/40 PASS |
+| DET-2 (cross-seed stability) | 4 spaces × 20 seeds × 2 budgets = 160 | ✅ 8/8 cells PASS |
+
+DET-2 kill metrics (n_refined, compliance): CV≈0. psnr_gain CV=0.09–0.37 — информационная, зависит от seed GT (не kill-criteria).
+
+**Gate Phase 2 -> Phase 3: PASSED.** All streams DONE. Pipeline assembled and validated end-to-end. Topo profiling integrated and DET-verified.
 
 ### Топологический профайлинг графовых пространств (21 марта 2026)
 

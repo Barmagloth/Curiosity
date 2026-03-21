@@ -40,7 +40,7 @@ Updated after Phase 0 (parallel validation: halo cross-space, SC-baseline, D_par
 | `exp13_segment_compression/` | Segment compression with thermodynamic guards (N_critical=12, bombardment guard) | P1-B1 | ✅ PASS (overhead eliminated on small trees) |
 | `exp14a_sc_enforce/` | Scale-consistency enforcement: three-tier pass/damp/reject + strictness-weighted waste budget + adaptive τ T4(N)=τ_base*(1+β/√N) | SC-enforce | ✅ PASS |
 | `exp_phase2_pipeline/` | Full pipeline assembly (gate + governor + SC-enforce + probe + traversal) + topological pre-runtime profiling (hybrid Forman/Ollivier curvature, three-zone classifier v3, η_F entropy index) | Phase 2 + Topo | ✅ PASS |
-| `exp_phase2_e2e/` | End-to-end validation: 4 space types, 240 configs, DET-1 verified | Phase 2 | ✅ PASS |
+| `exp_phase2_e2e/` | End-to-end validation: 4 space types, 240 configs. DET-1 recheck 40/40 + DET-2 recheck 8/8 (with topo profiling). irregular_graph re-run with zone classification (GREEN 75%/RED 25%) | Phase 2 | ✅ PASS |
 | `exp_deferred_revisit/` | Research note: Morton/block-sparse/schedule | — | ✅ Done |
 
 **Phase 2 note:** Graph clustering upgraded from k-means to Leiden (community detection), validated on 10 pathological topologies: Swiss Roll, Barbell, Hub-Spoke, Ring of Cliques, Bipartite, Erdos-Renyi, Grid, Planar Delaunay, Mobius strip.

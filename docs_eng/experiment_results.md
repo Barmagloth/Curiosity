@@ -418,6 +418,84 @@ v2 failed: absolute σ_F threshold depends on graph density. Planar and Watts-St
 
 ---
 
+## Exp14a (exp14a_sc_enforce) — Scale-Consistency Enforcement
+
+**Question:** How to react when D_parent > tau_parent? Can we damp/reject deltas without significant quality loss?
+
+**Mechanism:**
+1. **PASS** (D_parent ≤ tau): delta applied as-is
+2. **DAMP** (tau < D_parent ≤ 2*tau): delta_enforced = delta − Up(R(delta)) × damp_factor. Up to 3 iterations.
+3. **REJECT** (D_parent > 2*tau): delta not applied, unit skipped
+
+**Strictness-weighted waste budget:** rejected unit doesn't spend quality budget but spends wall-clock. Waste_current += S_node (strictness multiplier). If Waste ≥ R_max = floor(B_step × 0.2) → force-terminate step. Toxic hubs (S≈4-5) exhaust quota avalanche-style.
+
+**Adaptive τ for trees:** τ_T4(N) = τ_base × (1 + β/√N) — relaxation for small trees.
+
+**Result:** PASS. Projection (delta − Up(R(delta)) × factor) outperforms scaling (delta × 0.5) — preserves HF details while removing only LF leakage.
+
+---
+
+## Exp13 (exp13_segment_compression) — Segment Compression
+
+**Question:** Can degree-2 tree chains be compressed >50% using dirty signature stability?
+
+**Kill criteria:** compression ratio > 50% of degree-2 nodes, per-step overhead < 10%.
+
+**Result:** PASS.
+
+| Space | Compression | Overhead | Guard |
+|---|---|---|---|
+| binary_d7 (4 chains) | 66% | −9.1% (profitable) | active |
+| binary_d8 (6 chains) | 60% | −4.0% (profitable) | active |
+| binary_d6 (3 chains) | — | — | blocked: below_n_critical |
+| quadtree_d5 (4 chains) | — | — | blocked: below_n_critical |
+
+**Thermodynamic guards:**
+1. **Bombardment density:** budget ≥ 50% active nodes → skip (carpet-bombing kills chains)
+2. **Breakeven N_critical=12:** derived from profiling (C_refine=15.9μs, C_track=1.9μs, C_init=100.5μs)
+
+**Conclusion:** Compression is profitable on trees of depth ≥7 with sufficient degree-2 chains. Guard `should_compress()` automatically rejects unprofitable cases.
+
+---
+
+## Phase 2 E2E Validation (exp_phase2_e2e) — End-to-end Pipeline
+
+**Question:** Does the assembled pipeline work end-to-end on all 4 space types?
+
+**Sweep:** 4 spaces × 20 seeds × 3 budgets (0.10, 0.30, 0.60) = 240 configurations.
+
+**Kill criteria:**
+
+| Metric | Threshold | Result |
+|--------|-----------|--------|
+| Quality (PSNR) | > 0 dB vs coarse-only | ✅ 240/240 positive |
+| Reject rate | < 5% refined units | ✅ max 0% (scalar/vector/graph) |
+| Budget compliance | refined ≤ budget × total | ✅ 240/240 |
+| Runtime | < 60s per config | ✅ max 245ms |
+
+**Results per space (with topo profiling for irregular_graph):**
+
+| Space | PSNR gain median | IQR | Reject max | Wall max |
+|---|---|---|---|---|
+| scalar_grid | +7.34 dB | [2.92, 11.40] | 0% | 23ms |
+| vector_grid | +1.46 dB | [0.41, 3.60] | 0% | 33ms |
+| irregular_graph | +3.54 dB | [1.71, 7.45] | 0% | 245ms |
+| tree_hierarchy | +1.48 dB | [1.23, 2.30] | 0% (max 50% singular) | 4ms |
+
+**Topo profiling in E2E (irregular_graph, March 21, 2026):**
+- Zone distribution: GREEN 75% (45/60), RED 25% (15/60)
+- η_F median: 1.0557, tau_factor median: 1.3
+- Topo computation: 67ms median, 78ms max
+- PSNR change vs pre-topo: −0.20 dB (3.74→3.54) — expected, GREEN relaxes tau, RED tightens
+
+**DET-1 Recheck (with topo profiling):** 40/40 PASS — bitwise determinism. Topo profiling is deterministic at fixed seed.
+
+**DET-2 Recheck (with topo profiling):** 8/8 PASS — cross-seed stability. Kill metrics (n_refined, compliance) CV≈0. psnr_gain CV=0.09–0.37 — informational metric, depends on seed-generated GT (same issue as mean_leaf_value in exp11a, not kill-criteria). Topo metrics: η_F CV=0.03, computation_ms CV=0.05.
+
+**Conclusion:** Pipeline validated end-to-end. All kill criteria passed. Topo profiling integrated without breaking determinism.
+
+---
+
 ## Final Layout Policy (result of exp10 series)
 
 Full methodology: `docs/layout_selection_policy.md`
