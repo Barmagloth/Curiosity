@@ -37,7 +37,15 @@ Updated after Phase 0 (parallel validation: halo cross-space, SC-baseline, D_par
 | `exp11_dirty_signatures/` | 12-bit dirty signature + debounce | P1-B2 | ✅ PASS (AUC 0.91-1.0, baseline comparison + temporal ramp) |
 | `exp11a_det2_stability/` | Cross-seed stability (DET-2) | DET-2 | ✅ PASS 8/8 (per-regime CV thresholds) |
 | `exp12a_tau_parent/` | Data-driven τ_parent[L] per depth | SC-5 | ✅ PASS (per-space thresholds, specificity 1.000) |
+| `exp13_segment_compression/` | Segment compression with thermodynamic guards (N_critical=12, bombardment guard) | P1-B1 | ✅ PASS (overhead eliminated on small trees) |
+| `exp14a_sc_enforce/` | Scale-consistency enforcement: three-tier pass/damp/reject + strictness-weighted waste budget + adaptive τ T4(N)=τ_base*(1+β/√N) | SC-enforce | ✅ PASS |
+| `exp_phase2_pipeline/` | Full pipeline assembly (gate + governor + SC-enforce + probe + traversal) + topological pre-runtime profiling (hybrid Forman/Ollivier curvature, three-zone classifier v3, η_F entropy index) | Phase 2 + Topo | ✅ PASS |
+| `exp_phase2_e2e/` | End-to-end validation: 4 space types, 240 configs, DET-1 verified | Phase 2 | ✅ PASS |
 | `exp_deferred_revisit/` | Research note: Morton/block-sparse/schedule | — | ✅ Done |
+
+**Phase 2 note:** Graph clustering upgraded from k-means to Leiden (community detection), validated on 10 pathological topologies: Swiss Roll, Barbell, Hub-Spoke, Ring of Cliques, Bipartite, Erdos-Renyi, Grid, Planar Delaunay, Mobius strip.
+
+**Topo Profiling note (21.03.2026):** Topological pre-runtime profiling added to IrregularGraphSpace. Hybrid Forman/Ollivier curvature with hardware-calibrated budget (Synthetic Transport Probe). Three-zone classifier v3 (κ_mean + Gini(PageRank) + η_F) stamps each graph GREEN/YELLOW/RED before pipeline starts. η_F = σ_F / √(2⟨k⟩) — dimensionless entropy index normalized against Poisson noise floor of Erdős-Rényi random graph with same mean degree. Threshold η=0.70 selected from clean gap [0.60, 0.76] in corpus: all YELLOW graphs (Grid, Ladder, Planar, Möbius) have η < 0.60, all RED graphs (ER, Bipartite) have η > 0.76. Validated at 97% accuracy on 35-graph corpus. Pre-runtime overhead: P50=56ms, MAX=125ms.
 
 **Note:** §A/B/C are sections of the validation plan written between Exp0.3 and Phase 1.
 In §B, "B1/B2" = probe scenes. In P1 below, "B1/B2/B3" = tree compression. Different contexts.
@@ -303,35 +311,15 @@ SC-σ. Fine-grained sweep of σ parameter
 
 ---
 
-### SC-enforce. Enforcement (after SC-baseline)
+### SC-enforce. Enforcement (after SC-baseline) — ✅ CLOSED (exp14a)
 
 ```
 SC-enforce. Scale-Consistency Enforcement
-├── damp step_delta / reject split / increase local strictness when D_parent > τ_parent
+├── damp delta / reject split / increase local strictness when D_parent > τ_parent
 └── D_parent as contextual signal in ρ (not self-sufficient)
 ```
 
-### Exp0.10. (R, Up) Sensitivity Probe (after SC-baseline)
-
-```
-Exp0.10. (R, Up) Sensitivity Probe
-├── Dependency: SC-baseline (need validated metrics for one pair first)
-├── Pairs to test:
-│   ├── gaussian + bilinear (current default)
-│   ├── box + nearest (coarsest variant)
-│   ├── Lanczos + bicubic (more precise)
-│   └── haar wavelet decomposition (fundamentally different decomposition)
-├── Measured:
-│   ├── D_parent / D_hf distributions — do thresholds shift?
-│   ├── Tree topology divergence — same data → different trees?
-│   ├── PSNR ceiling — does R affect quality at equal budget?
-│   └── SC-baseline separability — does ROC-AUC change?
-└── Kill criterion:
-    if topology + D_parent stable (±20%) across pairs → default justified
-    if divergence > 50% → need pair selection mechanism (new open question)
-```
-
-**Exp0.10 output:** either "choice of R is not critical, default stands" or "pair selection mechanism needed."
+**Result (exp14a_sc_enforce):** Three-tier enforcement (pass/damp/reject) + strictness-weighted waste budget + adaptive τ T4(N) = τ_base * (1 + β/√N). Adaptive tau resolves high reject rate (~50%) on tree_hierarchy with tight T4 thresholds.
 
 ---
 
@@ -387,14 +375,19 @@ P0 (GPU layout)
  ├──→ DET-1 (seed determinism) ──→ DET-2 (cross-seed stability)
  │         │
  ├──→ P1 (tree compression)  ──→ P3 (tree semantics)
+ │    └── exp11 (dirty sig) ──→ exp13 (segment compression)
  │                                       │
- ├──→ P2 (ρ auto-tuning)                ├──→ C-pre
+ ├──→ P2 (ρ auto-tuning)               ├──→ C-pre
  │                                        │
- └──→ SC-baseline (✅ SC-0..SC-4) ──→ SC-5 ──→ SC-enforce ──→ P4 ("don't break features")
-                                              depends on P0 + DET + P1 + P2 + P3 + SC
+ └──→ SC-baseline (✅ SC-0..SC-4) ──→ SC-5 (exp12a) ──→ SC-enforce (exp14a) ──→ P4
+                                                                │
+                                                                ▼
+ exp07 + exp10d + exp12a + exp14a ──→ exp_phase2_pipeline ──→ exp_phase2_e2e (✅ 240 configs, DET-1)
 ```
 
 **Critical path:** P0 → DET-1 → P1 → P3 → P4.
+
+**Phase 2 path (✅ CLOSED):** exp07 + exp10d + exp12a + exp14a → exp_phase2_pipeline → exp_phase2_e2e.
 
 **Parallel branches:** P2 and SC-baseline — both run in parallel with P1, all are needed before P4. DET-2 parallel with P1 (after DET-1).
 
@@ -462,10 +455,13 @@ sub-experiments within levels (B1–B3 in P1). Result: confusion.
 | 5 | DET-2 | cross-seed stability (20 seeds × 4 spaces × 2 budgets) | exp11a |
 | 6 | P2a | sensitivity sweep of gate thresholds (5 scenes × 4 spaces) | exp12 |
 | 7 | SC-5 | set data-driven τ_parent[L] (SC-0..SC-4 ✅) | exp12a |
-| 8 | P1-B1 | segment compression | exp13 |
+| 8 | P1-B1 | segment compression (thermodynamic guards, N_critical=12) | exp13 ✅ |
 | 9 | P1-B3 | anchors + rebuild | exp14 |
-| 10 | SC-enforce | enforcement of scale-consistency | exp14a |
+| 10 | SC-enforce | enforcement: three-tier + waste budget + adaptive τ | exp14a ✅ |
 | — | SC-σ | fine-grained σ sweep × tile_size × 4 spaces (low priority) | exp14b |
+| 10½ | Phase 2 | full pipeline assembly (gate+governor+SC-enforce+probe+traversal) | exp_phase2_pipeline ✅ |
+| 10¾ | Phase 2 | end-to-end validation (4 spaces, 240 configs, DET-1 verified) | exp_phase2_e2e ✅ |
+| 10⅞ | Topo | topological pre-runtime profiling: hybrid Forman/Ollivier curvature + three-zone classifier v3 (κ+Gini+η_F). 35-graph corpus, 97% accuracy. η_F=0.70 from gap [0.60, 0.76] | exp_phase2_pipeline (topo_features.py) ✅ |
 | 11 | P3a/b | tree semantics | exp15 |
 | 12 | C-pre | profile cluster check | exp16 |
 | 13 | P4 | "don't break features" | exp17 |

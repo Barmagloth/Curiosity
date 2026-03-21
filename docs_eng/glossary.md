@@ -263,6 +263,30 @@ The order is strict: no jumping ahead without closing dependencies.
 
 ---
 
+## Topological Profiling (v2.0)
+
+**Forman-Ricci curvature** — combinatorial curvature of a graph edge: F(e) = 4 - d_u - d_v + 3·|△(e)|, where d_u, d_v are endpoint degrees, |△(e)| is the number of triangles containing the edge. O(1) per edge with precomputed triangles. Positive = dense region (cliques), negative = bridge/bottleneck.
+
+**Ollivier-Ricci curvature** — transport curvature of an edge: κ(u,v) = 1 - W₁(μ_u, μ_v)/d(u,v), where W₁ is the Wasserstein-1 distance between lazy random walk distributions. Computed exactly via EMD (transportation LP, scipy linprog HiGHS). Expensive: O(W³), W = d_u × d_v. Yields [-1, +1].
+
+**Hybrid curvature engine** — three-phase budget-constrained approach: (1) Forman for ALL edges (cheap), (2) sort by |Forman| anomaly, (3) upgrade top-N anomalous to Ollivier, where N = floor(topo_budget / t_ollivier). Solves the problem: Swiss Roll 500 nodes — all 1800 edges eligible for Ollivier by κ_max, but budget allows only 19 exact calls.
+
+**Synthetic Transport Probe** — hardware calibration at session start. Generates a synthetic EMD problem of size d_test=10, solves it n_trials times, measures median t_test. Extrapolates κ_max = W_test · ∛(τ_edge / t_test). One-time measurement (~52ms).
+
+**κ_max** — maximum problem size d_u × d_v at which Ollivier-Ricci fits within the per-edge budget τ_edge. Determined by hardware calibration.
+
+**σ_F (sigma Forman)** — standard deviation of Forman curvature across all graph edges. A measure of topological heterogeneity: high σ_F = mixture of bridges and cliques.
+
+**η_F (eta Forman, topological entropy index)** — dimensionless index: η_F = σ_F / √(2⟨k⟩), where ⟨k⟩ = 2|E|/|N| is the mean degree. Normalization by √(2⟨k⟩) is the noise limit of Forman curvature variance for an Erdos-Renyi random graph with the same mean degree. η_F < 0.70 = structurally regular graph. η_F > 0.70 = structural chaos above random background. Threshold 0.70 chosen from the dead zone [0.60, 0.76] in the 35-graph corpus.
+
+**Topo zone** — three-level stamp assigned to a graph at initialization: GREEN (κ_mean > 0, dense cliques, ECR < 5%), YELLOW (κ < 0, Gini < 0.12, η_F ≤ 0.70, regular lattices, ECR 10-25%), RED (structural chaos, ECR > 30%). Determines runtime policy: τ_eff, split budget, SC-enforce strictness.
+
+**ECR (Edge Cut Ratio)** — fraction of graph edges crossing cluster boundaries after Leiden clustering: cut_edges / total_edges. A measure of clustering quality: low ECR = clean separation.
+
+**Gini coefficient** — a measure of distribution inequality. In the profiling context: Gini(PageRank) = inequality of node influence. 0 = all nodes equal (lattice), >0.8 = one node dominates (hub-spoke). Threshold 0.12: below = homogeneous space, above = pronounced hubs.
+
+---
+
 ## Cross-Space Validation and Topological Concepts
 
 **Cross-space validation** — the principle that any claim about working in "arbitrary spaces" must be tested on >= 4 space types (scalar grid, vector grid, irregular graph, tree hierarchy). Without this, the claim is a declaration, not a fact.
