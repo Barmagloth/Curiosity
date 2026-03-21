@@ -41,6 +41,13 @@ class PipelineConfig:
     strictness_escalation: float = 1.5
     strictness_decay: float = 0.9
 
+    # Topological profiling (irregular_graph only)
+    topo_profiling_enabled: bool = True
+    topo_budget_ms: float = 50.0        # budget for curvature computation
+    tau_zone_factor_green: float = 1.3   # relax tau_eff for GREEN graphs
+    tau_zone_factor_yellow: float = 1.0  # standard tau_eff for YELLOW
+    tau_zone_factor_red: float = 0.7     # tighten tau_eff for RED graphs
+
     # Diagnostics
     track_seam_score: bool = True
     reject_rate_alert: float = 0.20  # flag if > 20% rejects

@@ -19,7 +19,11 @@
     "compression_viable": false,
     "compression_reason": "not_tree",
     "compression_d2_skipped": 0,
-    "wall_time_seconds": 0.010537147521972656
+    "topo_zone": "n/a",
+    "topo_eta_f": 0.0,
+    "topo_computation_ms": 0.0,
+    "topo_tau_factor": 1.0,
+    "wall_time_seconds": 0.010740518569946289
   },
   "vector_grid": {
     "quality_mse": 0.018029631601059533,
@@ -41,7 +45,11 @@
     "compression_viable": false,
     "compression_reason": "not_tree",
     "compression_d2_skipped": 0,
-    "wall_time_seconds": 0.01354360580444336
+    "topo_zone": "n/a",
+    "topo_eta_f": 0.0,
+    "topo_computation_ms": 0.0,
+    "topo_tau_factor": 1.0,
+    "wall_time_seconds": 0.013780832290649414
   },
   "irregular_graph": {
     "quality_mse": 0.032085957772837605,
@@ -63,7 +71,11 @@
     "compression_viable": false,
     "compression_reason": "not_tree",
     "compression_d2_skipped": 0,
-    "wall_time_seconds": 0.11494207382202148
+    "topo_zone": "RED",
+    "topo_eta_f": 1.0674126119914007,
+    "topo_computation_ms": 73.49229999817908,
+    "topo_tau_factor": 0.7,
+    "wall_time_seconds": 0.2499239444732666
   },
   "tree_hierarchy": {
     "quality_mse": 0.02267528086327205,
@@ -85,6 +97,10 @@
     "compression_viable": false,
     "compression_reason": "below_n_critical",
     "compression_d2_skipped": 0,
-    "wall_time_seconds": 0.0026481151580810547
+    "topo_zone": "n/a",
+    "topo_eta_f": 0.0,
+    "topo_computation_ms": 0.0,
+    "topo_tau_factor": 1.0,
+    "wall_time_seconds": 0.003278970718383789
   }
 }

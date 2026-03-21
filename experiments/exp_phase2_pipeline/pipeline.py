@@ -31,6 +31,10 @@ from space_registry import (
     SCEnforcer, load_thresholds, StrictnessTracker, WasteBudget,
     RefinementTree, should_compress, N_CRITICAL_D2,
 )
+from topo_features import (
+    extract_topo_features, topo_adjusted_rho,
+    calibrate_transport_probe, reset_calibration,
+)
 
 
 # ===================================================================
@@ -62,6 +66,10 @@ class PipelineResult:
     compression_viable: bool
     compression_reason: str
     compression_d2_skipped: int
+    topo_zone: str                  # GREEN/YELLOW/RED or "n/a"
+    topo_eta_f: float               # eta_F entropy index (0.0 if n/a)
+    topo_computation_ms: float      # pre-runtime profiling time
+    topo_tau_factor: float          # zone-based tau multiplier applied
     wall_time_seconds: float
     config: dict
 
@@ -204,12 +212,53 @@ class CuriosityPipeline:
             if viable:
                 d2_skip_set = {n for n in range(n_total) if rtree.degree(n) == 2}
 
+        # 1c. Topological profiling (irregular_graph only, one-time pre-runtime)
+        topo = None
+        topo_zone = "n/a"
+        topo_eta_f = 0.0
+        topo_computation_ms = 0.0
+        topo_tau_factor = 1.0
+
+        if space_type == "irregular_graph" and cfg.topo_profiling_enabled:
+            import networkx as nx
+            cal = calibrate_transport_probe()
+
+            # Build networkx graph from adapter's neighbor dict
+            G_nx = nx.Graph()
+            G_nx.add_nodes_from(range(space.n_pts))
+            for i, nbrs in space.neighbors.items():
+                for j in nbrs:
+                    G_nx.add_edge(i, j)
+
+            labels = space.labels
+            node_list = sorted(G_nx.nodes())
+            topo = extract_topo_features(
+                G_nx, labels, node_list,
+                kappa_max=cal.kappa_max,
+                topo_budget_ms=cfg.topo_budget_ms)
+            topo_zone = topo.topo_zone
+            topo_eta_f = topo.eta_F
+            topo_computation_ms = topo.computation_ms
+
+            # Zone-based tau modulation factor
+            if topo_zone == "GREEN":
+                topo_tau_factor = cfg.tau_zone_factor_green
+            elif topo_zone == "RED":
+                topo_tau_factor = cfg.tau_zone_factor_red
+            else:
+                topo_tau_factor = cfg.tau_zone_factor_yellow
+
         # 2. Probe selection
         probe_set = DeterministicProbe.select_probe_units(
             units, cfg.probe_fraction, coords, level=0, global_seed=seed)
 
         # 3. Compute rho + canonical traversal
         rho_values = np.array([space.unit_rho(state, u) for u in units])
+
+        # 3b. Topo-adjusted rho: boost clusters at bridges/hubs
+        if topo is not None:
+            rho_values = topo_adjusted_rho(rho_values, topo)
+
         ordered = CanonicalTraversal.sort_units(units, rho_values, space.name)
 
         # 4. Gate: compute probe diagnostics
@@ -237,8 +286,20 @@ class CuriosityPipeline:
             }
             thresh_prefix = SPACE_TO_THRESH[space_type]
             all_thresholds = load_thresholds(str(THRESHOLD_PATH))
+            # Apply topo zone modulation to thresholds for irregular_graph
+            effective_thresholds = dict(all_thresholds)
+            if topo_tau_factor != 1.0:
+                for key in list(effective_thresholds.keys()):
+                    if isinstance(effective_thresholds[key], (int, float)):
+                        effective_thresholds[key] = effective_thresholds[key] * topo_tau_factor
+                    elif isinstance(effective_thresholds[key], dict):
+                        effective_thresholds[key] = {
+                            k: v * topo_tau_factor
+                            for k, v in effective_thresholds[key].items()
+                        }
+
             enforcer = SCEnforcer(
-                tau_parent=all_thresholds, R_fn=R_fn, Up_fn=Up_fn,
+                tau_parent=effective_thresholds, R_fn=R_fn, Up_fn=Up_fn,
                 space_type=thresh_prefix,
                 damp_factor=cfg.damp_factor,
                 max_damp_iterations=cfg.max_damp_iterations,
@@ -378,6 +439,10 @@ class CuriosityPipeline:
             compression_viable=compression_viable,
             compression_reason=compression_reason,
             compression_d2_skipped=n_d2_skipped,
+            topo_zone=topo_zone,
+            topo_eta_f=topo_eta_f,
+            topo_computation_ms=topo_computation_ms,
+            topo_tau_factor=topo_tau_factor,
             wall_time_seconds=wall_time,
             config=cfg.__dict__,
         )
@@ -410,6 +475,9 @@ def _run_smoke_test():
         print(f"    waste_exhausted: {r.waste_budget_exhausted}")
         print(f"    compression: viable={r.compression_viable} "
               f"reason={r.compression_reason} d2_skipped={r.compression_d2_skipped}")
+        if r.topo_zone != "n/a":
+            print(f"    topo: zone={r.topo_zone}  eta_F={r.topo_eta_f:.2f}  "
+                  f"tau_factor={r.topo_tau_factor:.2f}  profiling={r.topo_computation_ms:.0f}ms")
 
         if r.reject_rate > pipe.config.reject_rate_alert:
             print(f"    ** ALERT: reject_rate {r.reject_rate:.3f} > "
@@ -433,6 +501,10 @@ def _run_smoke_test():
             "compression_viable": r.compression_viable,
             "compression_reason": r.compression_reason,
             "compression_d2_skipped": r.compression_d2_skipped,
+            "topo_zone": r.topo_zone,
+            "topo_eta_f": r.topo_eta_f,
+            "topo_computation_ms": r.topo_computation_ms,
+            "topo_tau_factor": r.topo_tau_factor,
             "wall_time_seconds": r.wall_time_seconds,
         }
 
