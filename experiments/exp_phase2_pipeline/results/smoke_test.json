@@ -19,7 +19,7 @@
     "compression_viable": false,
     "compression_reason": "not_tree",
     "compression_d2_skipped": 0,
-    "wall_time_seconds": 0.01099705696105957
+    "wall_time_seconds": 0.010537147521972656
   },
   "vector_grid": {
     "quality_mse": 0.018029631601059533,
@@ -41,7 +41,7 @@
     "compression_viable": false,
     "compression_reason": "not_tree",
     "compression_d2_skipped": 0,
-    "wall_time_seconds": 0.014193058013916016
+    "wall_time_seconds": 0.01354360580444336
   },
   "irregular_graph": {
     "quality_mse": 0.032085957772837605,
@@ -63,7 +63,7 @@
     "compression_viable": false,
     "compression_reason": "not_tree",
     "compression_d2_skipped": 0,
-    "wall_time_seconds": 0.11611008644104004
+    "wall_time_seconds": 0.11494207382202148
   },
   "tree_hierarchy": {
     "quality_mse": 0.02267528086327205,
@@ -85,6 +85,6 @@
     "compression_viable": false,
     "compression_reason": "below_n_critical",
     "compression_d2_skipped": 0,
-    "wall_time_seconds": 0.0026450157165527344
+    "wall_time_seconds": 0.0026481151580810547
   }
 }

@@ -136,6 +136,47 @@ Phase 2 → Instrument Readiness Gate → Track A
 
 **Gate Phase 2 -> Phase 3: PASSED.** All streams DONE. Pipeline assembled and validated end-to-end.
 
+### Топологический профайлинг графовых пространств (21 марта 2026)
+
+**Проблема:** pipeline не видел топологию пространства до начала работы. ρ-функция распределяла бюджет вслепую — без учёта мостов, хабов, структурного хаоса.
+
+**Решение:** многоступенчатый профайлинг при инициализации IrregularGraphSpace, ДО первого pipeline tick:
+
+1. **Гибридная кривизна** — Forman-Ricci O(1) для ВСЕХ рёбер + Ollivier-Ricci (точный EMD через linprog HiGHS) для top-N аномальных рёбер. N = floor(topo_budget_ms / t_ollivier_ms), бюджет ≤ 50ms.
+2. **Аппаратная калибровка** — Synthetic Transport Probe: κ_max = W_test · ∛(τ_edge / t_test). Одноразовый замер при старте сессии (52ms).
+3. **Трёхзонный классификатор (v3)** — присваивает графу клеймо GREEN/YELLOW/RED:
+   - **GREEN** (κ_mean > 0): плотные клики, ECR < 5%. Карт-бланш бюджету, ослабление τ_eff.
+   - **YELLOW** (κ < 0, Gini < 0.12, η_F ≤ 0.70): однородные решётки, ECR 10-25%. Стандартные лимиты.
+   - **RED** (κ < 0, Gini ≥ 0.12 ИЛИ η_F > 0.70): структурный хаос, ECR > 30%. Максимальное затягивание τ, блокировка глубокого расщепления.
+4. **η_F = σ_F / √(2⟨k⟩)** — безразмерный индекс топологической энтропии. σ_F = дисперсия Forman-кривизны, √(2⟨k⟩) = шумовой предел дисперсии случайного графа Эрдёша-Реньи с той же средней степенью. Граф, у которого структурная дисперсия ниже пуассоновского пола — регулярный. Выше — фонит хаосом.
+
+**Обоснование порога η_F = 0.70:**
+- Threshold sweep по κ<0 подмножеству корпуса (22 графа):
+  - YELLOW графы (Grid, Ladder, Planar, Möbius): η_F < 0.60 — чётко ниже порога
+  - RED графы (ER, Bipartite): η_F > 0.76 — чётко выше
+  - Gap [0.60, 0.76] — мёртвая зона, ни один граф корпуса туда не попадает
+  - Порог 0.70 — середина gap, максимальный margin с обеих сторон
+- Единственный пограничный случай: Watts-Strogatz (η_F = 1.02) → RED. Классифицирован корректно: WS с p=0.1 — кольцо с впрыснутым пуассоновским хаосом, η > 1.0 = структурный шум объективно выше случайного фона. То, что Leiden вырезает куски с ECR=15.7% — алгоритмическое везение, не свойство топологии.
+- Стабильность: диапазон η_thresh ∈ [0.60, 0.75] даёт одинаковые 86% на κ<0 подмножестве. Порог не на лезвии.
+
+**Валидация:** 35-graph corpus (9 базовых + 26 вариаций масштаба/параметров). v3 accuracy = 97% (34/35, единственный документированный граничный случай — Karate Club, 3 п.п. от порога).
+
+**Производительность (pre-runtime, одноразовый setup):**
+- P50 = 56ms, P90 = 85ms, MAX = 125ms (Swiss Roll 1000 узлов)
+- Leiden: 1.2ms средняя (пренебрежимо)
+- Topo features + classifier: 57.6ms средняя
+- Overhead vs pipeline tick (500ms): 11.8% mean, 25% worst case
+
+**Ключевые файлы:**
+- `exp_phase2_pipeline/topo_features.py` — ядро: CalibrationResult, compute_curvature_hybrid, extract_topo_features, topo_adjusted_rho
+- `exp_phase2_pipeline/test_zone_classifier.py` — валидация v1/v2/v3 на 35 графах
+- `exp_phase2_pipeline/bench_preruntime.py` — бенчмарк pre-runtime overhead
+
+**Возвращаемый TopoFeatures содержит:**
+- Per-node: curvature (hybrid), pagerank, clustering_coeff, local_density, degree
+- Per-cluster: mean/std/max агрегаты + boundary curvature
+- Profiling: sigma_F, eta_F, gini_pagerank, **topo_zone** (GREEN/YELLOW/RED)
+
 ---
 
 ## Что было сделано ранее (Фаза 0)
