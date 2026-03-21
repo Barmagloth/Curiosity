@@ -2,14 +2,22 @@
   "space": "irregular_graph",
   "n_configs": 60,
   "n_errors": 0,
-  "psnr_gain_median": 3.7366,
+  "psnr_gain_median": 3.537,
   "psnr_gain_iqr": [
-    1.6649,
-    7.0385
+    1.711,
+    7.4536
   ],
   "all_psnr_positive": true,
   "reject_rate_median": 0.0,
   "reject_rate_max": 0.0,
-  "wall_time_max": 0.005,
-  "wall_time_median": 0.003
+  "wall_time_max": 0.2453,
+  "wall_time_median": 0.0727,
+  "topo_zone_counts": {
+    "GREEN": 45,
+    "RED": 15
+  },
+  "topo_eta_f_median": 1.0557,
+  "topo_tau_factor_median": 1.3,
+  "topo_computation_ms_median": 67.16,
+  "topo_computation_ms_max": 78.06
 }
