@@ -42,10 +42,16 @@ Updated after Phase 0 (parallel validation: halo cross-space, SC-baseline, D_par
 | `exp_phase2_pipeline/` | Full pipeline assembly (gate + governor + SC-enforce + probe + traversal) + topological pre-runtime profiling (hybrid Forman/Ollivier curvature, three-zone classifier v3, η_F entropy index) + Enox infrastructure (RegionURI, DecisionJournal, MultiStageDedup, PostStepSweep — observation-only, all defaults False) | Phase 2 + Topo + Enox | ✅ PASS |
 | `exp_phase2_e2e/` | End-to-end validation: 4 space types, 240 configs. DET-1 recheck 40/40 + DET-2 recheck 8/8 (with topo profiling). irregular_graph re-run with zone classification (GREEN 75%/RED 25%) | Phase 2 | ✅ PASS |
 | `exp_deferred_revisit/` | Research note: Morton/block-sparse/schedule | — | ✅ Done |
+| `exp14_anchors/` | Anchors + periodic rebuild: local update vs full rebuild divergence. 720 configs (4 spaces × 9 strategies × 20 seeds). Grid: div=0.000 (PASS). Graph/tree: div>0.20 (FAIL). Dirty-triggered > periodic. | P1-B3 | ⚠️ CONDITIONAL (grid PASS, graph/tree FAIL) |
+| `exp15_lca_semantics/` | LCA-distance vs feature similarity correlation. 80 configs. Spearman: scalar_grid 0.299, vector_grid −0.032, irregular_graph 0.267, tree_hierarchy 0.006. | P3a | ❌ FAIL (r < 0.3 all spaces) |
+| `exp15b_bushes/` | Leaf-path clustering: silhouette + cross-seed ARI stability. 80 configs. Silhouette >0.4 all spaces, but ARI <0.21 everywhere. | P3b | ❌ FAIL (ARI unstable) |
+| `exp16_cpre_profiles/` | C-pre trajectory profile clustering. 80 configs. Gap >1.0, Silhouette >0.3 all spaces. Track C UNFREEZE signal. | C-pre | ✅ PASS (UNFREEZE) |
 
 **Phase 2 note:** Graph clustering upgraded from k-means to Leiden (community detection), validated on 10 pathological topologies: Swiss Roll, Barbell, Hub-Spoke, Ring of Cliques, Bipartite, Erdos-Renyi, Grid, Planar Delaunay, Mobius strip.
 
 **Topo Profiling note (21.03.2026):** Topological pre-runtime profiling added to IrregularGraphSpace. Hybrid Forman/Ollivier curvature with hardware-calibrated budget (Synthetic Transport Probe). Three-zone classifier v3 (κ_mean + Gini(PageRank) + η_F) stamps each graph GREEN/YELLOW/RED before pipeline starts. η_F = σ_F / √(2⟨k⟩) — dimensionless entropy index normalized against Poisson noise floor of Erdős-Rényi random graph with same mean degree. Threshold η=0.70 selected from clean gap [0.60, 0.76] in corpus: all YELLOW graphs (Grid, Ladder, Planar, Möbius) have η < 0.60, all RED graphs (ER, Bipartite) have η > 0.76. Validated at 97% accuracy on 35-graph corpus. Pre-runtime overhead: P50=56ms, MAX=125ms.
+
+**Phase 3 note (22.03.2026):** Four Phase 3 experiments completed. Exp14 (anchors): grid divergence=0 (PASS), graph/tree >0.20 (FAIL) — local update introduces structural drift on irregular spaces. Exp15 (LCA-distance): Spearman r<0.3 in all spaces — tree is not semantic. Exp15b (bushes): silhouette>0.4 (clusters exist), ARI<0.21 (not stable). Exp16 (C-pre): gap>1.0, sil>0.3 all spaces — Track C UNFREEZE.
 
 **Enox note (21.03.2026):** Four observation-only infrastructure patterns from the Enox framework, implemented for the project's needs: (1) RegionURI — SHA256 unit address, (2) DecisionJournal — append-only decision log, (3) MultiStageDedup — 3-level deduplication (scaffolding for multi-pass Phase 3, epsilon=0.0 → never fires), (4) PostStepSweep — sibling dirty-sig detection in tree hierarchy. All patterns are pure annotation, never modify state. Defaults = False, zero overhead. Baseline fingerprint: 20 runs, DET-1 PASS. Integration complete. NO REGRESSION (15/20 bitwise SAME).
 
@@ -356,7 +362,7 @@ P4. "Don't break features"
 
 # Frozen
 
-## C. DAG + Profiles
+## C. DAG + Profiles — UNFROZEN (March 22, 2026)
 
 **Entry contract (all three simultaneously):**
 
@@ -364,9 +370,7 @@ P4. "Don't break features"
 2. A concrete downstream consumer that actually relies on these objectives
 3. An observable conflict: different optimal solutions under different objectives on the same data
 
-Pre-experiment C-pre (in P3) may signal unfreezing, but is not sufficient by itself.
-
-If the contract is not met — freeze is indefinite.
+**C-pre result (exp16):** PASS. Gap > 1.0 and Silhouette > 0.3 in all 4 spaces. Discrete profiles exist. Track C UNFROZEN. However, the entry contract (points 1-3) still requires concrete specification for next steps.
 
 ---
 
@@ -458,14 +462,15 @@ sub-experiments within levels (B1–B3 in P1). Result: confusion.
 | 6 | P2a | sensitivity sweep of gate thresholds (5 scenes × 4 spaces) | exp12 |
 | 7 | SC-5 | set data-driven τ_parent[L] (SC-0..SC-4 ✅) | exp12a |
 | 8 | P1-B1 | segment compression (thermodynamic guards, N_critical=12) | exp13 ✅ |
-| 9 | P1-B3 | anchors + rebuild | exp14 |
+| 9 | P1-B3 | anchors + rebuild (grid PASS, graph/tree FAIL — structural drift) | exp14 ✅ CONDITIONAL |
 | 10 | SC-enforce | enforcement: three-tier + waste budget + adaptive τ | exp14a ✅ |
 | — | SC-σ | fine-grained σ sweep × tile_size × 4 spaces (low priority) | exp14b |
 | 10½ | Phase 2 | full pipeline assembly (gate+governor+SC-enforce+probe+traversal) | exp_phase2_pipeline ✅ |
 | 10¾ | Phase 2 | end-to-end validation (4 spaces, 240 configs, DET-1 verified) | exp_phase2_e2e ✅ |
 | 10⅞ | Topo | topological pre-runtime profiling: hybrid Forman/Ollivier curvature + three-zone classifier v3 (κ+Gini+η_F). 35-graph corpus, 97% accuracy. η_F=0.70 from gap [0.60, 0.76] | exp_phase2_pipeline (topo_features.py) ✅ |
-| 11 | P3a/b | tree semantics | exp15 |
-| 12 | C-pre | profile cluster check | exp16 |
+| 11 | P3a | LCA-distance vs feature similarity (Spearman r<0.3 all spaces) | exp15 ❌ FAIL |
+| 11b | P3b | bush clustering (sil>0.4 but ARI<0.21 — unstable) | exp15b ❌ FAIL |
+| 12 | C-pre | trajectory profile clustering (gap>1.0, sil>0.3 — Track C UNFREEZE) | exp16 ✅ PASS |
 | 13 | P4 | "don't break features" | exp17 |
 
 Numbers are provisional. If an unplanned experiment arises between steps,

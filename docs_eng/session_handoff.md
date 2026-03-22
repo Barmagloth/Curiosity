@@ -1,4 +1,4 @@
-# Session Handoff — Curiosity Phase 2
+# Session Handoff — Curiosity Phase 3
 
 Document for a new AI orchestrator session. Contains full context for immediately continuing work.
 
@@ -10,7 +10,8 @@ Curiosity project.
 - Phase 1 **complete** (March 20, 2026). All streams — PASS. P0 Layout **CLOSED**. DET-1 **PASS**. DET-2 **PASS**.
 - Phase 2 **complete** (March 20, 2026). Pipeline assembled, SC-enforce integrated, E2E validated.
 - **Enox infrastructure** — ✅ DONE (March 21, 2026). Four observation-only patterns (RegionURI, DecisionJournal, MultiStageDedup, PostStepSweep) — pure annotation, never modify pipeline state.
-- **Next step — Phase 3.**
+- Phase 3 **complete** (March 22, 2026). Exp14 anchors: grid PASS, graph/tree FAIL. Exp15 LCA-distance: FAIL. Exp15b bushes: FAIL. Exp16 C-pre: PASS → **Track C UNFREEZE**.
+- **Next step — Phase 4** (P4: downstream consumer test) + Track C design.
 
 Workstation: **PC 2** (NVIDIA RTX 2070, 8 GB, CUDA 12.8). Working directory: `R:\Projects\Curiosity`.
 

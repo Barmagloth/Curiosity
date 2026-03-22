@@ -560,3 +560,129 @@ Full methodology: `docs/layout_selection_policy.md`
 - `exp_phase2_pipeline/pipeline.py` — integration (DONE)
 
 **Conclusion:** Observation infrastructure fully integrated. Functionally — zero change by design. Practical value will emerge in Phase 3 (multi-pass, debugging complex decisions).
+
+---
+
+## Phase 3 — Tree Semantics and Rebuild (March 22, 2026)
+
+Phase 3 consists of four experiments: three streams (S1, S2, S3) and C-pre. Goal: determine whether the tree has semantics, and whether incremental rebuild works.
+
+### Exp14 — Anchors + Periodic Rebuild (P1-B3) — CONDITIONAL PASS
+
+**Question:** How much does local update diverge from full rebuild? Which rebuild strategy minimizes divergence at minimum cost?
+
+**Configuration:** 720 configs (4 spaces × 9 strategies × 20 seeds). 50 steps per config. Strategies: no_rebuild, periodic_{5,10,20,50}, dirty_{0.05,0.1,0.2,0.5}.
+
+**Kill criterion:** divergence < 5% (0.05).
+
+**Results by space:**
+
+| Space | Max Div | Mean Div | Best Strategy | Kill |
+|-------|---------|----------|---------------|------|
+| scalar_grid | 0.000 | 0.000 | no_rebuild | ✅ PASS |
+| vector_grid | 0.000 | 0.000 | no_rebuild | ✅ PASS |
+| irregular_graph | 1.517 | 0.374 | dirty_0.05 (0.204 mean) | ❌ FAIL |
+| tree_hierarchy | 1.715 | 0.694 | dirty_0.05 (0.204 mean) | ❌ FAIL |
+
+**Key findings:**
+- **Grids (scalar_grid, vector_grid):** divergence = 0.000 for ALL strategies. Local update is perfect — no rebuild needed.
+- **Graph and tree:** dirty-triggered (threshold 0.05) is the best strategy (mean_div=0.204), but still far from the 0.05 threshold. Periodic strategies are worse than dirty-triggered.
+- **Conclusion:** dichotomy — grids are trivial (no rebuild needed), graphs/trees have a problem not with the rebuild strategy but with local update itself (it introduces structural drift).
+
+**Verdict:** CONDITIONAL PASS — passes for grids, fails for graph/tree. Local update redesign needed for irregular spaces.
+
+---
+
+### Exp15 — LCA-Distance vs Feature Similarity (P3a) — FAIL
+
+**Question:** Does LCA-distance in the tree correlate with semantic similarity (‖feature_i − feature_j‖)?
+
+**Configuration:** 80 configs (4 spaces × 20 seeds). 500 unit pairs per seed.
+
+**Kill criterion:** Spearman r > 0.3.
+
+**Results:**
+
+| Space | Spearman (mean ± std) | Pearson (mean ± std) | Kill |
+|-------|----------------------|---------------------|------|
+| scalar_grid | 0.299 ± 0.108 | 0.283 ± 0.087 | ❌ FAIL (0.299 < 0.3) |
+| vector_grid | −0.032 ± 0.035 | −0.031 ± 0.024 | ❌ FAIL |
+| irregular_graph | 0.267 ± 0.113 | 0.272 ± 0.110 | ❌ FAIL |
+| tree_hierarchy | 0.006 ± 0.064 | 0.079 ± 0.072 | ❌ FAIL |
+
+**Key findings:**
+- scalar_grid closest to threshold (0.299), individual seeds up to 0.49, but high variance.
+- vector_grid and tree_hierarchy show near-zero correlation.
+- **Conclusion:** LCA-distance is not a reliable metric for semantic similarity. The tree is a refinement log, not a semantic map.
+
+**Verdict:** FAIL. The tree is not semantic by LCA-distance criterion.
+
+---
+
+### Exp15b — Bush Clustering (P3b) — FAIL
+
+**Question:** Are there natural clusters among leaf paths? Are they stable?
+
+**Configuration:** 80 configs (4 spaces × 20 seeds). Methods: kmeans (k=2-10), DBSCAN (eps sweep), agglomerative.
+
+**Kill criterion:** Silhouette > 0.4 AND ARI stability > 0.6.
+
+**Results:**
+
+| Space | Silhouette (mean ± std) | k_mode | ARI | Kill |
+|-------|------------------------|--------|-----|------|
+| scalar_grid | 0.661 ± 0.125 | 2 | 0.073 | ❌ FAIL |
+| vector_grid | 0.793 ± 0.065 | 2 | 0.094 | ❌ FAIL |
+| irregular_graph | 0.649 ± 0.082 | 2 | −0.011 | ❌ FAIL |
+| tree_hierarchy | 0.485 ± 0.067 | 2 | 0.210 | ❌ FAIL |
+
+**Key findings:**
+- Silhouette passes the 0.4 threshold in all spaces — clusters within a single seed look reasonable.
+- ARI is catastrophically low — clusters are NOT reproducible across seeds.
+- **Conclusion:** leaf-path clusters are an artifact of a particular seed, not a stable property of the space.
+
+**Verdict:** FAIL. Silhouette > 0.4 ✅, but ARI stability ❌. Bushes are not stable.
+
+---
+
+### Exp16 — C-pre: Trajectory Profile Clustering — PASS (UNFREEZE)
+
+**Question:** Is there cluster structure in trajectory features (EMA quantiles, split signatures)?
+
+**Configuration:** 80 configs (4 spaces × 20 seeds). Gap statistic + silhouette + ARI.
+
+**Kill criterion:** Gap > 1.0 AND Silhouette > 0.3.
+
+**Results:**
+
+| Space | Gap (mean ± std) | Silhouette (mean ± std) | k_mode | ARI | Kill |
+|-------|-----------------|------------------------|--------|-----|------|
+| scalar_grid | 1.37 ± 0.09 | 0.605 ± 0.148 | 4 | 0.454 | ✅ PASS |
+| vector_grid | 2.04 ± 0.26 | 0.794 ± 0.125 | 4 | 0.086 | ✅ PASS |
+| irregular_graph | 1.39 ± 0.41 | 0.518 ± 0.117 | 2 | 0.029 | ✅ PASS |
+| tree_hierarchy | 2.40 ± 1.01 | 0.453 ± 0.075 | 7 | 0.441 | ✅ PASS |
+
+**Key findings:**
+- All 4 spaces pass both thresholds (gap > 1.0, silhouette > 0.3).
+- ARI is moderate for scalar_grid (0.454) and tree_hierarchy (0.441), low for vector_grid and irregular_graph — clusters are real (high gap) but boundaries are unstable.
+- k_mode varies: 2-4 for grid/graph, 7 for tree — different spaces yield different numbers of profiles.
+
+**Verdict:** PASS. Track C **UNFREEZE**. Trajectory features demonstrate real cluster structure.
+
+---
+
+### Phase 3 — Decision Summary
+
+| Experiment | Kill Criterion | Result | Decision |
+|------------|---------------|--------|----------|
+| Exp14 (anchors) | div < 5% | Grid: PASS, Graph/Tree: FAIL | CONDITIONAL — local update ok for grids, redesign needed for graph/tree |
+| Exp15 (LCA-distance) | Spearman r > 0.3 | FAIL (max 0.299) | Tree = log, not metric |
+| Exp15b (bushes) | Sil > 0.4 + ARI > 0.6 | Sil PASS, ARI FAIL | Clusters not stable |
+| Exp16 (C-pre) | Gap > 1.0 + Sil > 0.3 | PASS (all 4 spaces) | **Track C UNFREEZE** |
+
+**Gate Phase 3 → Phase 4:** "Is tree semantic?" → **NO** (P3a+P3b FAIL). "C unfreezes?" → **YES** (C-pre PASS).
+
+**Implications for Phase 4:**
+- P4 (downstream consumer test) can proceed — it does not depend on tree semantics.
+- Track C is open — discrete profiles exist, multi-objective experiments can be designed.
+- Local update for graph/tree requires separate R&D (structural drift problem).

@@ -1,4 +1,4 @@
-# Session Handoff — Curiosity Phase 2
+# Session Handoff — Curiosity Phase 3
 
 Документ для новой сессии AI-оркестратора. Содержит полный контекст для немедленного продолжения работы.
 
@@ -10,7 +10,8 @@
 - Фаза 1 **завершена** (20 марта 2026). Все потоки — PASS. P0 Layout **ЗАКРЫТ**. DET-1 **PASS**. DET-2 **PASS**.
 - Фаза 2 **завершена** (20 марта 2026). Pipeline assembled, SC-enforce integrated, E2E validated.
 - **Enox-инфраструктура** — ✅ DONE (21 марта 2026). Четыре observation-only паттерна (RegionURI, DecisionJournal, MultiStageDedup, PostStepSweep) — чистая аннотация, не меняют pipeline state.
-- **Следующий шаг — Фаза 3.**
+- Фаза 3 **завершена** (22 марта 2026). Exp14 anchors: grid PASS, graph/tree FAIL. Exp15 LCA-distance: FAIL. Exp15b bushes: FAIL. Exp16 C-pre: PASS → **Track C UNFREEZE**.
+- **Следующий шаг — Фаза 4** (P4: downstream consumer test) + проектирование Track C.
 
 Рабочий ПК: **PC 2** (NVIDIA RTX 2070, 8 GB, CUDA 12.8). Рабочая директория: `R:\Projects\Curiosity`.
 
