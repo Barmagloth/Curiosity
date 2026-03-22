@@ -8,7 +8,9 @@
 > - Модуль G (Scale-Consistency): валидирован (SC-baseline AUC 0.82-1.0, exp12a τ_parent PASS)
 > - Модули A, B (каноникализация, кэш): НЕ реализованы (не на критическом пути)
 > - P0 Layout ЗАКРЫТ. DET-1 PASS. DET-2 PASS. Phase 1 завершена 20 марта 2026.
-> - Следующий шаг: Phase 2 (end-to-end pipeline).
+> - Phase 2 ЗАВЕРШЕНА (21 марта 2026). Pipeline assembled, SC-enforce integrated, E2E validated.
+> - Enox-инфраструктура: 4 observation-only паттерна — ✅ DONE. NO REGRESSION.
+> - Следующий шаг: Phase 3.
 
 ## Базовая логика
 1. Выживают только модули, которые дают выигрыш **сами по себе**: кэш, детектор, планировщик пересчёта, профилирование.

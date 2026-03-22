@@ -35,6 +35,10 @@ from topo_features import (
     extract_topo_features, topo_adjusted_rho,
     calibrate_transport_probe, reset_calibration,
 )
+from enox_infra import (
+    region_uri, DecisionJournal, JournalEntry,
+    MultiStageDedup, PostStepSweep,
+)
 
 
 # ===================================================================
@@ -70,6 +74,11 @@ class PipelineResult:
     topo_eta_f: float               # eta_F entropy index (0.0 if n/a)
     topo_computation_ms: float      # pre-runtime profiling time
     topo_tau_factor: float          # zone-based tau multiplier applied
+    # Enox infrastructure
+    enox_journal_summary: dict      # {total, by_decision: {...}}
+    enox_dedup_stats: dict          # DedupStats as dict
+    enox_sweep_stats: dict          # SweepStats as dict
+    enox_uri_map: dict              # {unit_str: final_uri} (empty if disabled)
     wall_time_seconds: float
     config: dict
 
@@ -248,6 +257,18 @@ class CuriosityPipeline:
             else:
                 topo_tau_factor = cfg.tau_zone_factor_yellow
 
+        # 1d. Enox infrastructure init
+        enox_any = (cfg.enox_journal_enabled or cfg.enox_dedup_enabled
+                    or cfg.enox_sweep_enabled)
+        journal = DecisionJournal(enabled=cfg.enox_journal_enabled)
+        dedup = MultiStageDedup(
+            enabled=cfg.enox_dedup_enabled, epsilon=cfg.enox_dedup_epsilon)
+        uri_map: Dict[int, str] = {}
+        if enox_any:
+            for i, unit in enumerate(units):
+                uri_map[unit] = region_uri("root", "init", i)
+        tick = 0
+
         # 2. Probe selection
         probe_set = DeterministicProbe.select_probe_units(
             units, cfg.probe_fraction, coords, level=0, global_seed=seed)
@@ -326,7 +347,26 @@ class CuriosityPipeline:
             # Compression: skip degree-2 transit nodes
             if unit in d2_skip_set:
                 n_d2_skipped += 1
+                if enox_any:
+                    journal.append(JournalEntry(
+                        uri_map.get(unit, ""), tick, gate_stage,
+                        "skip_d2", {}, {}))
+                    tick += 1
                 continue
+
+            # Enox: dedup check (before computing refinement candidate)
+            if cfg.enox_dedup_enabled:
+                unit_idx = units.index(unit) if unit in units else 0
+                local_bytes = state.ravel()[unit_idx:unit_idx+1].tobytes()
+                rho_val = float(rho_values[unit_idx]) if unit_idx < len(rho_values) else 0.0
+                dedup_action = dedup.check(
+                    uri_map.get(unit, ""), local_bytes, rho_val)
+                if dedup_action != "process":
+                    journal.append(JournalEntry(
+                        uri_map.get(unit, ""), tick, gate_stage,
+                        dedup_action, {"rho": rho_val}, {}))
+                    tick += 1
+                    continue
 
             # Get halo parameter per space type
             if space_type == "tree_hierarchy":
@@ -368,17 +408,49 @@ class CuriosityPipeline:
                 elif result.action == "rejected":
                     state = old_state  # revert
                     n_rejected += 1
+                    # Enox journal: rejected
+                    if enox_any:
+                        journal.append(JournalEntry(
+                            uri_map.get(unit, ""), tick, gate_stage,
+                            "rejected",
+                            {"rho": float(rho_values[units.index(unit)] if unit in units else 0),
+                             "d_parent": result.d_parent_value,
+                             "damp_iterations": result.damp_iterations},
+                            {"tau_effective": result.original_d_parent}))
+                        tick += 1
                     s = strictness.get(unit_id)
                     if waste.record_reject(unit_id, s):
                         waste_exhausted = True
                         break
                     continue  # don't count toward budget
 
+                # Enox journal: pass or damped
+                if enox_any:
+                    journal.append(JournalEntry(
+                        uri_map.get(unit, ""), tick, gate_stage,
+                        result.action,
+                        {"rho": float(rho_values[units.index(unit)] if unit in units else 0),
+                         "d_parent": result.d_parent_value,
+                         "damp_iterations": result.damp_iterations},
+                        {"tau_effective": result.original_d_parent}))
+                    tick += 1
+
                 if result.action in ("damped", "rejected"):
                     strictness.escalate(unit_id)
             else:
                 state = state_candidate
                 n_passed += 1
+                # Enox journal: pass (no enforce)
+                if enox_any:
+                    journal.append(JournalEntry(
+                        uri_map.get(unit, ""), tick, gate_stage,
+                        "pass", {}, {}))
+                    tick += 1
+
+            # Enox: update URI after refinement applied
+            if enox_any:
+                uri_map[unit] = region_uri(
+                    uri_map.get(unit, ""), "refine", tick)
 
             # -- Segment compression guard (re-evaluate inside loop) --
             if space_type == "tree_hierarchy" and d2_skip_set:
@@ -403,7 +475,13 @@ class CuriosityPipeline:
         if cfg.enforce_enabled:
             strictness.decay_all()
 
-        # 8. Compute quality metrics
+        # 8. Enox: post-step sweep
+        sweep = PostStepSweep(
+            enabled=cfg.enox_sweep_enabled,
+            sibling_threshold=cfg.enox_sweep_threshold)
+        sweep_stats = sweep.run(space_type, state, units, n_total)
+
+        # 9. Compute quality metrics
         gt = space.gt
         mse_final = float(np.mean((gt - state) ** 2))
         mse_coarse = float(np.mean((gt - initial_state) ** 2))
@@ -443,6 +521,10 @@ class CuriosityPipeline:
             topo_eta_f=topo_eta_f,
             topo_computation_ms=topo_computation_ms,
             topo_tau_factor=topo_tau_factor,
+            enox_journal_summary=journal.summary() if enox_any else {"total": 0, "by_decision": {}},
+            enox_dedup_stats=dedup.stats.to_dict() if cfg.enox_dedup_enabled else {},
+            enox_sweep_stats=sweep_stats.to_dict() if cfg.enox_sweep_enabled else {},
+            enox_uri_map={str(k): v for k, v in uri_map.items()} if cfg.enox_include_uri_map else {},
             wall_time_seconds=wall_time,
             config=cfg.__dict__,
         )
@@ -478,6 +560,12 @@ def _run_smoke_test():
         if r.topo_zone != "n/a":
             print(f"    topo: zone={r.topo_zone}  eta_F={r.topo_eta_f:.2f}  "
                   f"tau_factor={r.topo_tau_factor:.2f}  profiling={r.topo_computation_ms:.0f}ms")
+        if r.enox_journal_summary.get("total", 0) > 0:
+            print(f"    enox journal: {r.enox_journal_summary}")
+        if r.enox_dedup_stats:
+            print(f"    enox dedup: {r.enox_dedup_stats}")
+        if r.enox_sweep_stats:
+            print(f"    enox sweep: {r.enox_sweep_stats}")
 
         if r.reject_rate > pipe.config.reject_rate_alert:
             print(f"    ** ALERT: reject_rate {r.reject_rate:.3f} > "
@@ -505,6 +593,9 @@ def _run_smoke_test():
             "topo_eta_f": r.topo_eta_f,
             "topo_computation_ms": r.topo_computation_ms,
             "topo_tau_factor": r.topo_tau_factor,
+            "enox_journal_summary": r.enox_journal_summary,
+            "enox_dedup_stats": r.enox_dedup_stats,
+            "enox_sweep_stats": r.enox_sweep_stats,
             "wall_time_seconds": r.wall_time_seconds,
         }
 

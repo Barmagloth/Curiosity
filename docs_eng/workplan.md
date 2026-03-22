@@ -8,7 +8,9 @@
 > - Module G (Scale-Consistency): validated (SC-baseline AUC 0.82-1.0, exp12a τ_parent PASS)
 > - Modules A, B (canonicalization, cache): NOT implemented (not on critical path)
 > - P0 Layout CLOSED. DET-1 PASS. DET-2 PASS. Phase 1 completed 20 March 2026.
-> - Next step: Phase 2 (end-to-end pipeline).
+> - Phase 2 COMPLETED (March 21, 2026). Pipeline assembled, SC-enforce integrated, E2E validated.
+> - Enox infrastructure: 4 observation-only patterns — ✅ DONE. NO REGRESSION.
+> - Next step: Phase 3.
 
 ## Core Logic
 1. Only modules that provide standalone benefit survive: cache, detector, recomputation scheduler, profiling.

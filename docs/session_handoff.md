@@ -9,6 +9,7 @@
 - Фаза 0 **завершена** (18 марта 2026).
 - Фаза 1 **завершена** (20 марта 2026). Все потоки — PASS. P0 Layout **ЗАКРЫТ**. DET-1 **PASS**. DET-2 **PASS**.
 - Фаза 2 **завершена** (20 марта 2026). Pipeline assembled, SC-enforce integrated, E2E validated.
+- **Enox-инфраструктура** — ✅ DONE (21 марта 2026). Четыре observation-only паттерна (RegionURI, DecisionJournal, MultiStageDedup, PostStepSweep) — чистая аннотация, не меняют pipeline state.
 - **Следующий шаг — Фаза 3.**
 
 Рабочий ПК: **PC 2** (NVIDIA RTX 2070, 8 GB, CUDA 12.8). Рабочая директория: `R:\Projects\Curiosity`.
@@ -145,6 +146,39 @@ Phase 2 → Instrument Readiness Gate → Track A
 DET-2 kill metrics (n_refined, compliance): CV≈0. psnr_gain CV=0.09–0.37 — информационная, зависит от seed GT (не kill-criteria).
 
 **Gate Phase 2 -> Phase 3: PASSED.** All streams DONE. Pipeline assembled and validated end-to-end. Topo profiling integrated and DET-verified.
+
+### Enox-инфраструктура (21 марта 2026) — ✅ DONE
+
+**Источник:** Enox open-source фреймворк. Взяты 4 паттерна (идеи, не код), реализованы под наши нужды.
+
+**Принцип:** все паттерны — чистое наблюдение/аннотация. Никогда не модифицируют pipeline state. Все дефолты = False (backward compatible). DET-1 должен по-прежнему проходить.
+
+**4 паттерна:**
+
+| # | Паттерн | Назначение | Статус сейчас |
+|---|---------|-----------|---------------|
+| 1 | RegionURI | SHA256-адрес каждого юнита (parent_id\|op_type\|child_idx → 16 hex) | Готов |
+| 2 | DecisionJournal | Append-only лог решений гейта/enforce с метриками | Готов |
+| 3 | MultiStageDedup | 3-уровневая дедупликация (exact hash / metric / policy). epsilon=0.0 → не срабатывает в single-pass | Готов (заготовка для Phase 3) |
+| 4 | PostStepSweep | Поиск идентичных sibling'ов в tree_hierarchy (merge candidates) | Готов |
+
+**Config knobs (все default=False):**
+`enox_journal_enabled`, `enox_dedup_enabled`, `enox_dedup_epsilon` (0.0), `enox_sweep_enabled`, `enox_sweep_threshold` (0.05), `enox_include_uri_map`
+
+**Baseline fingerprint:** 20 runs (4 spaces × 5 seeds), budget=0.30. PSNR median +2.32 dB, DET-1 PASS, wall time median 11.9ms.
+
+**Ключевые файлы:**
+- `exp_phase2_pipeline/enox_infra.py` — реализация 4 паттернов
+- `exp_phase2_pipeline/enox_comparison.py` — before/after тестовый фреймворк
+- `exp_phase2_pipeline/config.py` — 6 новых ручек
+- `exp_phase2_pipeline/pipeline.py` — интеграция хуков (DONE)
+
+**Результат:** ✅ DONE
+- Pipeline.py: все хуки интегрированы (journal после каждого решения, URI update, PostStepSweep, PipelineResult)
+- Smoke test: PASS (4 spaces)
+- Enox enabled test: journal/dedup/sweep/uri_map — все работают
+- Comparison: NO REGRESSION (15/20 bitwise SAME, 5 DIFF = topo calibration)
+- DET-1: PASS
 
 ### Топологический профайлинг графовых пространств (21 марта 2026)
 

@@ -48,6 +48,14 @@ class PipelineConfig:
     tau_zone_factor_yellow: float = 1.0  # standard tau_eff for YELLOW
     tau_zone_factor_red: float = 0.7     # tighten tau_eff for RED graphs
 
+    # Enox infrastructure patterns (all default OFF for backward compat)
+    enox_journal_enabled: bool = False      # Decision journal
+    enox_dedup_enabled: bool = False        # Multi-stage dedup
+    enox_dedup_epsilon: float = 0.0         # Metric distance threshold (0.0 = exact only)
+    enox_sweep_enabled: bool = False        # Post-step sweep
+    enox_sweep_threshold: float = 0.05      # Sibling dirty-sig overlap trigger (5%)
+    enox_include_uri_map: bool = False      # Include full URI map in result (debug)
+
     # Diagnostics
     track_seam_score: bool = True
     reject_rate_alert: float = 0.20  # flag if > 20% rejects

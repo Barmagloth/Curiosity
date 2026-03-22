@@ -9,6 +9,7 @@ Curiosity project.
 - Phase 0 **complete** (March 18, 2026).
 - Phase 1 **complete** (March 20, 2026). All streams — PASS. P0 Layout **CLOSED**. DET-1 **PASS**. DET-2 **PASS**.
 - Phase 2 **complete** (March 20, 2026). Pipeline assembled, SC-enforce integrated, E2E validated.
+- **Enox infrastructure** — ✅ DONE (March 21, 2026). Four observation-only patterns (RegionURI, DecisionJournal, MultiStageDedup, PostStepSweep) — pure annotation, never modify pipeline state.
 - **Next step — Phase 3.**
 
 Workstation: **PC 2** (NVIDIA RTX 2070, 8 GB, CUDA 12.8). Working directory: `R:\Projects\Curiosity`.
@@ -145,6 +146,39 @@ Phase 2 → Instrument Readiness Gate → Track A
 DET-2 kill metrics (n_refined, compliance): CV≈0. psnr_gain CV=0.09–0.37 — informational, depends on seed GT (not kill-criteria).
 
 **Gate Phase 2 -> Phase 3: PASSED.** All streams DONE. Pipeline assembled and validated end-to-end. Topo profiling integrated and DET-verified.
+
+### Enox Infrastructure (March 21, 2026) — ✅ DONE
+
+**Source:** Enox open-source framework. Four patterns adopted (ideas, not code), implemented for our needs.
+
+**Principle:** all patterns are pure observation/annotation. Never modify pipeline state. All defaults = False (backward compatible). DET-1 must still pass.
+
+**4 patterns:**
+
+| # | Pattern | Purpose | Current status |
+|---|---------|---------|----------------|
+| 1 | RegionURI | SHA256 address for each unit (parent_id\|op_type\|child_idx → 16 hex) | Ready |
+| 2 | DecisionJournal | Append-only log of gate/enforce decisions with metrics | Ready |
+| 3 | MultiStageDedup | 3-level deduplication (exact hash / metric / policy). epsilon=0.0 → never fires in single-pass | Ready (scaffolding for Phase 3) |
+| 4 | PostStepSweep | Identical sibling detection in tree_hierarchy (merge candidates) | Ready |
+
+**Config knobs (all default=False):**
+`enox_journal_enabled`, `enox_dedup_enabled`, `enox_dedup_epsilon` (0.0), `enox_sweep_enabled`, `enox_sweep_threshold` (0.05), `enox_include_uri_map`
+
+**Baseline fingerprint:** 20 runs (4 spaces × 5 seeds), budget=0.30. PSNR median +2.32 dB, DET-1 PASS, wall time median 11.9ms.
+
+**Key files:**
+- `exp_phase2_pipeline/enox_infra.py` — implementation of 4 patterns
+- `exp_phase2_pipeline/enox_comparison.py` — before/after test framework
+- `exp_phase2_pipeline/config.py` — 6 new knobs
+- `exp_phase2_pipeline/pipeline.py` — hook integration (DONE)
+
+**Result:** ✅ DONE
+- Pipeline.py: all hooks integrated (journal after each decision, URI update, PostStepSweep, PipelineResult)
+- Smoke test: PASS (4 spaces)
+- Enox enabled test: journal/dedup/sweep/uri_map — all working
+- Comparison: NO REGRESSION (15/20 bitwise SAME, 5 DIFF = topo calibration)
+- DET-1: PASS
 
 ### Topological Pre-Runtime Profiling of Graph Spaces (March 21, 2026)
 

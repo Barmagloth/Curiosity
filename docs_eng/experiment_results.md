@@ -164,6 +164,7 @@ All spaces pass threshold (AUC >= 0.75).
 | Morton/block-sparse layout | Preliminarily unfavorable | Per 0.9a microbench; P0 open |
 | Topo profiling (pre-runtime) | Confirmed | Mandatory for IrregularGraphSpace. 97% accuracy, P50=56ms |
 | Three-zone classifier v3 | Confirmed | κ+Gini+η_F → GREEN/YELLOW/RED. Changes τ_eff and budget |
+| Enox infrastructure | ✅ PASS | 4 observation-only patterns. Zero functional change. Scaffolding for Phase 3 |
 
 ---
 
@@ -507,3 +508,55 @@ Full methodology: `docs/layout_selection_policy.md`
 | tree_hierarchy | Hybrid: D_direct per-level (p<0.40 + heavy compute), A_bitset otherwise | Validated |
 | irregular_graph / spatial | D_blocked (block addressing) conditional | Conditional |
 | irregular_graph / scale-free | A_bitset (dense + bitset) fallback | Fallback |
+
+---
+
+## Enox Infrastructure (exp_phase2_pipeline) — Observation-only Patterns — PASS
+
+**Question:** Can observation infrastructure (tracing, decision journal, deduplication, sweep) be integrated into the pipeline without changing its behavior?
+
+**Source:** Enox open-source framework. Ideas (not code) taken and implemented for Curiosity.
+
+**Principle:** All 4 patterns are pure annotation/observation. They never modify pipeline state. All defaults = False. When enabled: zero functional change, confirmed by bitwise state hash match.
+
+**4 Patterns:**
+
+| # | Pattern | Function | Value now | Value in Phase 3 |
+|---|---------|----------|-----------|-------------------|
+| 1 | RegionURI | SHA256(parent_id\|op_type\|child_idx) → 16 hex. Deterministic unit address | Tracing | Provenance |
+| 2 | DecisionJournal | Append-only log: region_id, tick, gate_stage, decision, metrics, thresholds | Debug | Full decision audit |
+| 3 | MultiStageDedup | 3 levels: exact hash / metric distance (ε) / policy. ε=0.0 → never fires | Scaffolding | Compute savings in multi-pass |
+| 4 | PostStepSweep | Sibling dirty-sig in tree_hierarchy. Threshold 5% | Find merge candidates | Automatic compression |
+
+**Config (6 knobs, all default=False):**
+`enox_journal_enabled`, `enox_dedup_enabled`, `enox_dedup_epsilon` (0.0), `enox_sweep_enabled`, `enox_sweep_threshold` (0.05), `enox_include_uri_map`
+
+**Baseline fingerprint (without Enox):**
+
+| Metric | Value |
+|--------|-------|
+| Configurations | 20 (4 spaces × 5 seeds) |
+| Budget | 0.30 |
+| PSNR median | +2.32 dB |
+| DET-1 spot check | PASS |
+| Wall time median | 11.9ms |
+
+**Comparison baseline vs enox:** NO REGRESSION.
+
+| Metric | Result |
+|--------|--------|
+| Hash match | 15/20 SAME (scalar_grid, vector_grid, tree_hierarchy — bitwise identical) |
+| Hash diff | 5/20 irregular_graph (non-deterministic topo calibration timing, not Enox) |
+| PSNR median delta | +0.0000 dB |
+| PSNR max abs delta | 1.40 dB (irregular_graph seed=2, topo timing) |
+| DET-1 | PASS |
+| All PSNR positive | Yes (20/20) |
+| Any rejects | No |
+
+**Key files:**
+- `exp_phase2_pipeline/enox_infra.py` — implementation (region_uri, DecisionJournal, MultiStageDedup, PostStepSweep)
+- `exp_phase2_pipeline/enox_comparison.py` — before/after framework
+- `exp_phase2_pipeline/config.py` — 6 knobs
+- `exp_phase2_pipeline/pipeline.py` — integration (DONE)
+
+**Conclusion:** Observation infrastructure fully integrated. Functionally — zero change by design. Practical value will emerge in Phase 3 (multi-pass, debugging complex decisions).

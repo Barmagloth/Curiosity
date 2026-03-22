@@ -67,7 +67,7 @@
 
 ---
 
-### 🔶 Фаза 2: End-to-end pipeline validation (Неделя 6–8) — АКТИВНАЯ
+### ✅ Фаза 2: End-to-end pipeline validation (Неделя 6–8) — ЗАВЕРШЕНА (21 марта 2026)
 
 | Поток | Исполнитель | Задача | Зависимости |
 |-------|-------------|--------|-------------|
@@ -75,6 +75,25 @@
 | **S2: P1-B1 compression** | Executor B | Segment compression (degree-2 + signature-stable + length cap). Compression ratio > 50%, overhead < 10%. | P1-B2 (Фаза 1) + P0 layout + DET-1 |
 | **S3: P2b (условно)** | Executor C | Online percentile estimation для adaptive threshold. Только если P2a показал narrow ridge. Иначе — помогает другим потокам. | P2a результат |
 | **S4: SC-enforce** | Executor D | Damp delta / reject split при D_parent > τ_parent. Интеграция enforcement в pipeline. | SC-baseline pass |
+| **S5: Enox infra** | — | Четыре observation-only паттерна (RegionURI, DecisionJournal, MultiStageDedup, PostStepSweep). Чистая аннотация, zero functional change. Заготовка для Phase 3. | Phase 2 pipeline |
+
+**Результаты Фазы 2:**
+- S1 (Pipeline Assembly): CuriosityPipeline собран — gate + governor + SC-enforce + probe + traversal. ✅ DONE
+- S2 (SC-Enforce): Three-tier pass/damp/reject + strictness-weighted waste budget + adaptive τ T4(N). ✅ DONE
+- S3 (Segment Compression): Thermodynamic guards (N_critical=12, bombardment). Compression 60-66% on d7/d8. ✅ DONE
+- S4 (E2E Validation): 240 configs, 4 spaces, DET-1 40/40 + DET-2 8/8. Topo profiling integrated. ✅ DONE
+- S5 (Enox Infra): 4 observation-only patterns. ✅ DONE. Comparison: NO REGRESSION (15/20 bitwise SAME). DET-1 PASS.
+
+**Gate: Фаза 2 → Фаза 3: ✅ PASSED**
+- Pipeline собран и E2E валидирован
+- SC-enforce интегрирован
+- Topo profiling интегрирован
+- Enox-инфраструктура: ✅ DONE. NO REGRESSION
+
+**Развилки для архитектора (конец Фазы 2): ✅ Все решены**
+- SC-enforce работает: три уровня (pass/damp/reject), adaptive τ для деревьев
+- Compression: прибыльна на d7/d8, guards отсекают невыгодные случаи
+- Enox: ADOPT RegionURI hash, ADAPT decision journal/dedup/sweep/provenance, SKIP phase sep/perspectives
 
 ---
 
@@ -126,7 +145,7 @@
 | D_parent fail? | Исправлен: σ=3.0 + lf_frac normalization |
 | coarse_shift? | Генератор исправлен на spatially coherent |
 | Конец Фазы 1 | ✅ Решено (20 марта 2026). Layout: D_direct/гибрид/D_blocked/A_bitset по типам. P2b не нужен. SC pass. Morton убит. | Все потоки PASS |
-| Конец Фазы 2 | SC-enforce работает? Compression достаточна? | S2, S4 отчёты |
+| Конец Фазы 2 | ✅ Решено (21 марта 2026). SC-enforce: pass/damp/reject. Compression: 60-66%. Enox: 4 observation-only patterns. | Все потоки PASS |
 | Конец Фазы 3 | Дерево семантично? C unfreezes? | P3a, P3b отчёты |
 | Конец Фазы 4 | Instrument Readiness Gate пройден? Переход на Track B? | P4a, P4b, C-pre |
 

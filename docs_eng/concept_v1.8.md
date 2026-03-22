@@ -15,6 +15,9 @@ Changes relative to v1.6:
 - Section 11: added cross-space validation invariant
 - Section 13: updated experimental status
 
+Changes in v1.8.4:
+- Section 14: added Enox observation patterns (RegionURI, DecisionJournal, MultiStageDedup, PostStepSweep)
+
 Changes in v1.8.3:
 - Section 2.1: added Layout Selection Invariant (three axes: isotropy, metric gap, dynamic density)
 - Section 11: added invariant #12 (layout is determined by space properties)
@@ -608,3 +611,29 @@ Formally: refinement must be boundary-aware, must include controlled exploration
 * **Step_delta tolerance:** automatic mechanism for choosing τ_parent that balances feature loss vs. hierarchy drift. See section 8.9.
 * **Track C spatial dependency:** transition to non-spatial domains (graphs, latent spaces) will require reworking spatially-dependent components: Halo (cosine feathering), R/Up (gaussian/bilinear), SeamScore (gradient energy), and parts of ρ (Laplacian-based HF energy). This is not incremental adaptation but partial redesign. Accepted as a known trade-off.
 * ~~How to ensure "no broken features"?~~ → Closed: formalized via Scale-Consistency Invariant (section 8). Transitions to experimental queue as baseline experiment.
+
+---
+
+## 14. Enox Infrastructure: Observation Patterns (v1.8.4, 21 March 2026)
+
+Four infrastructure patterns borrowed from the Enox framework (ideas, not code). All are pure observation/annotation: **they never modify pipeline state**. All defaults = off.
+
+### 14.1 RegionURI
+
+Deterministic unit address: `SHA256(parent_id | op_type | child_idx)`, truncated to 16 hex characters. Links a unit across the entire pipeline: init → dedup → gate → enforce → final. Analogous to Module A (canonicalization) for internal pipeline objects.
+
+### 14.2 DecisionJournal
+
+Append-only log of every decision: region_id, tick, gate_stage (stage1_healthy / stage2_utility / enforce), decision (pass / damped / rejected / d2_skip), metrics_snapshot, thresholds_used. No-op when disabled. Turns the pipeline from a black box into an auditable process.
+
+### 14.3 MultiStageDedup
+
+Three-level check before refinement: (a) exact hash — state unchanged, (b) metric distance — |Δρ| < ε, (c) external policy. In the current single-pass mode (ε=0.0) no level fires — this is a **scaffold** for multi-pass iterative refinement (Phase 3), where reprocessing an unchanged unit is pure budget waste.
+
+### 14.4 PostStepSweep
+
+After the refinement loop: tree traversal, searching for siblings with identical dirty-signatures. If > 5% of pairs are identical — signal for future merge. Works only on tree_hierarchy (grids and graphs lack parent-child structure).
+
+### 14.5 Integration Principle
+
+Observation infrastructure is cheapest to integrate into a simple pipeline. In Phase 3 (multi-pass, adaptive budgets) the same integration would require refactoring already complex code. Therefore the patterns are laid down now, activated later.

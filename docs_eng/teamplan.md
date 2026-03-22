@@ -67,7 +67,7 @@ Four streams, all independent of each other:
 
 ---
 
-### 🔶 Phase 2: End-to-End Pipeline Validation — ACTIVE FOCUS
+### ✅ Phase 2: End-to-End Pipeline Validation — COMPLETED (March 21, 2026)
 
 | Stream | Executor | Task | Dependencies |
 |--------|----------|------|--------------|
@@ -75,6 +75,25 @@ Four streams, all independent of each other:
 | **S2: P1-B1 compression** | Executor B | Segment compression (degree-2 + signature-stable + length cap). Compression ratio > 50%, overhead < 10%. | P1-B2 (Phase 1) + P0 layout + DET-1 |
 | **S3: P2b (conditional)** | Executor C | Online percentile estimation for adaptive threshold. Only if P2a showed narrow ridge. Otherwise — assists other streams. | P2a result |
 | **S4: SC-enforce** | Executor D | Damp delta / reject split when D_parent > τ_parent. Integration of enforcement into the pipeline. | SC-baseline pass |
+| **S5: Enox infra** | — | Four observation-only patterns (RegionURI, DecisionJournal, MultiStageDedup, PostStepSweep). Pure annotation, zero functional change. Groundwork for Phase 3. | Phase 2 pipeline |
+
+**Phase 2 Results:**
+- S1 (Pipeline Assembly): CuriosityPipeline assembled — gate + governor + SC-enforce + probe + traversal. ✅ DONE
+- S2 (SC-Enforce): Three-tier pass/damp/reject + strictness-weighted waste budget + adaptive τ T4(N). ✅ DONE
+- S3 (Segment Compression): Thermodynamic guards (N_critical=12, bombardment). Compression 60-66% on d7/d8. ✅ DONE
+- S4 (E2E Validation): 240 configs, 4 spaces, DET-1 40/40 + DET-2 8/8. Topo profiling integrated. ✅ DONE
+- S5 (Enox Infra): 4 observation-only patterns. ✅ DONE. Comparison: NO REGRESSION (15/20 bitwise SAME). DET-1 PASS.
+
+**Gate: Phase 2 → Phase 3: ✅ PASSED**
+- Pipeline assembled and E2E validated
+- SC-enforce integrated
+- Topo profiling integrated
+- Enox infrastructure: ✅ DONE. NO REGRESSION
+
+**Forks for the architect (end of Phase 2): ✅ All resolved**
+- SC-enforce works: three tiers (pass/damp/reject), adaptive τ for trees
+- Compression: profitable on d7/d8, guards cut unprofitable cases
+- Enox: ADOPT RegionURI hash, ADAPT decision journal/dedup/sweep/provenance, SKIP phase sep/perspectives
 
 ---
 
@@ -126,7 +145,7 @@ Phase 0: S1(env) ──→ Phase 1: S1(P0) → S1b(DET-1) ──→ Phase 2: S2(
 | D_parent fail? | Fixed: σ=3.0 + lf_frac normalization |
 | coarse_shift? | Generator fixed to spatially coherent |
 | End of Phase 1 | ✅ Resolved: layout policy fixed, P2b not needed, SC pass, Morton killed | All streams PASS |
-| End of Phase 2 | SC-enforce works? Compression sufficient? | S2, S4 reports |
+| End of Phase 2 | ✅ Resolved (March 21, 2026). SC-enforce: pass/damp/reject. Compression: 60-66%. Enox: 4 observation-only patterns. | All streams PASS |
 | End of Phase 3 | Tree is semantic? C unfreezes? | P3a, P3b reports |
 | End of Phase 4 | Instrument Readiness Gate passed? Transition to Track B? | P4a, P4b, C-pre |
 
