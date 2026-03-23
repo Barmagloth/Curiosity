@@ -1,10 +1,12 @@
-# Curiosity — Conceptual Document (v1.8)
+# Curiosity — Conceptual Document (v2.0)
+
+v2.0 (March 23, 2026): Three-layer rho decomposition (L0 Topology → L1 Presence → L2 Query), cascade quotas, streaming pipeline, Phase 3/3.5 complete.
 
 This document captures the current project logic so that the line of reasoning can be reconstructed a year from now without external context.
 
 Updated after theoretical analysis following experiments Exp0.1–Exp0.8, and Phase 0 results (cross-space validation).
 
-v1.8: added determinism invariants (section 8A) and reproducibility requirements.
+v2.0: added determinism invariants (section 8A) and reproducibility requirements.
 
 v1.8.3: Layout Selection Invariant — layout choice as a function of three space properties, not a type name.
 
@@ -459,7 +461,7 @@ See **Exp0.10: (R, Up) Sensitivity Probe** in `experiment_hierarchy.md`. Depende
 
 ---
 
-# 8A. Determinism and Reproducibility (new section, v1.8)
+# 8A. Determinism and Reproducibility (new section, v2.0)
 
 ## 8A.1 Motivation
 

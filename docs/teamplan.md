@@ -184,7 +184,7 @@
 - `docs/experiment_hierarchy.md` — граф зависимостей, kill criteria
 - `docs/workplan.md` — модули A–F
 - `docs/scale_consistency_verification_protocol_v1.0.md` — протокол SC
-- `docs/concept_v1.8.md` — каноническая концепция (актуальная)
+- `docs/concept_v2.0.md` — каноническая концепция (актуальная)
 - `experiments/phase2_probe_seam/` — код для переиспользования в Halo cross-space
 - `experiments/exp07_gate/`, `experiments/exp08_schedule/` — код для P2a sweep
 

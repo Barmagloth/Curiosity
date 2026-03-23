@@ -686,3 +686,146 @@ Phase 3 consists of four experiments: three streams (S1, S2, S3) and C-pre. Goal
 - P4 (downstream consumer test) can proceed — it does not depend on tree semantics.
 - Track C is open — discrete profiles exist, multi-objective experiments can be designed.
 - Local update for graph/tree requires separate R&D (structural drift problem).
+
+---
+
+## Phase 3.5 — Three-Layer Rho Decomposition (exp17, March 23, 2026)
+
+### Motivation
+
+Phase 3 showed: the refinement tree is not semantic (LCA-distance FAIL, bushes unstable), and local update drifts on graph/tree (anchors FAIL). Root cause — **the monolithic rho mixes three orthogonal signals:**
+
+1. Space structure (topology) — data-independent
+2. Data presence — query-independent
+3. Task-specific residual — depends on everything
+
+Mixing makes the tree non-reusable and opaque: you cannot separate "the tree knows the structure" from "the tree is tuned to a specific residual".
+
+### Architecture: Three Layers
+
+```
+Layer 0: TOPOLOGY        "how the space is structured"
+         Input:  raw space (graph/tree/grid)
+         Output: per-unit structural score + cluster_ids
+         For graph: Leiden clusters + Forman/Ollivier curvature + PageRank + boundary anomalies
+         For tree:  depth-band grouping + subtree size scoring
+         For grid:  spatial quadrant blocks (trivial topology)
+         [data-independent, computed once]
+
+Layer 1: DATA YES/NO     "where non-trivial signal exists"
+         Input:  L0 cluster structure + ground truth
+         Output: per-unit presence score + active_mask
+         Metric: variance(gt[region]) — "is there structure worth computing here?"
+         Threshold: CASCADE QUOTAS (Variant C) — see below
+         [data-dependent, query-independent]
+
+Layer 2: QUERY            "of what exists — where is what I need"
+         Input:  frozen tree (L0+L1) + task-specific query function
+         Output: ordered refinement list
+         Three interchangeable query functions on one tree:
+           - MSE (current unit_rho)
+           - Max absolute error
+           - HF residual (Laplacian)
+         [task-specific, cheap]
+```
+
+Each layer **narrows** the working set for the next. Information flows strictly top-down (L0 -> L1 -> L2).
+
+### Cascade Quotas (Variant C)
+
+**Problem:** a fixed L1 threshold (l1_threshold = 0.01) killed 97-98% of units on scalar_grid at scale 1000. Out of 1024 tiles, ~20 survived; single_pass refined 307. Reusability ratio = 0.725 FAIL.
+
+**Why:** small tiles (8x8 pixels) on smooth GT regions have variance < 0.01 even without sparsity. A fixed threshold does not account for scale.
+
+**Solution:** threshold tied to L0 cluster structure. Each L0 cluster guarantees a minimum number of survivors:
+
+```
+quota = max(1, ceil(cluster_size * min_survival_ratio))
+```
+
+Where min_survival_ratio = budget_fraction (typically 0.30). Within each cluster, units are sorted by presence score and the top-quota are retained.
+
+**Properties:**
+- No L0 cluster goes completely extinct
+- Threshold adapts to scale (more units -> more survivors -> more budget)
+- No magic numbers — the sole parameter (min_survival_ratio) is tied to budget_fraction
+- Information cascades: L0 topology -> L1 quotas -> L2 budget
+
+**Result:** scalar_grid 1000 went from 0.725 FAIL to 0.863 PASS (final sweep, 20 seeds).
+
+### Streaming Pipeline
+
+Instead of batch (L0 all -> L1 all -> L2 all) — per-cluster processing:
+
+```
+Cluster_0: [L0 score] -> [L1 filter] -> [L2 refine]
+Cluster_1:              [L0 score] -> [L1 filter] -> [L2 refine]
+Cluster_2:                           [L0 score] -> [L1 filter] -> [L2 refine]
+```
+
+Clusters are processed in L0 priority score order (most structurally important first). Global budget cap: total refinements <= budget_fraction * n_total. When budget is exhausted — early stop.
+
+**Advantages:**
+- First results after 1 cluster, not after the full map
+- L1 pruning genuinely reduces refinements (budget per-cluster, not global)
+- 10-20% faster than batch on grid spaces
+
+### Industry Baselines
+
+Four standard approaches for comparison:
+
+| Baseline | Approach | Spaces |
+|----------|----------|--------|
+| cKDTree (scipy) | k-d tree build + sort by rho | All 4 |
+| Quadtree | Quadrant splitting by cumulative rho | Grid only |
+| Leiden + brute force | Community detection + sort by rho within | Graph only |
+| Wavelets (Haar DWT) | Detail coefficients as saliency map | Scalar grid only |
+
+### Results (1080 configs, 4 spaces x 3 scales x 8 approaches x 20 seeds)
+
+**Errors:** 0 out of 1080.
+
+**Reusability (frozen tree + different query vs fresh build):**
+
+| Space | Scale 100 | Scale 1000 | Scale 10000 |
+|-------|----------|-----------|------------|
+| scalar_grid | 0.838 PASS | 0.863 PASS | 0.884 PASS |
+| vector_grid | 0.984 PASS | 0.959 PASS | 0.978 PASS |
+| irregular_graph | 0.926 PASS | 0.926 PASS | 1.000 PASS |
+| tree_hierarchy | 0.996 PASS | 0.999 PASS | 0.999 PASS |
+
+**Timing (single query, scale=1000):**
+
+| Space | single_pass | three_layer_stream | kdtree (industry best) |
+|-------|------------|-------------------|----------------------|
+| scalar_grid | 51ms | 32ms | 23ms |
+| vector_grid | 690ms | 709ms | 652ms |
+| irregular_graph | 0.4ms | 68ms (L0 overhead) | 0.5ms |
+| tree_hierarchy | 9ms | 12ms | 9ms |
+
+**Amortized cost (break-even for tree_hierarchy):**
+
+| N queries | three_layer | kdtree | single_pass |
+|-----------|------------|--------|-------------|
+| 1 | 12ms | 10ms | 10ms |
+| 2 | 17ms | 19ms | 19ms |
+| 5 | 34ms | 48ms | 47ms |
+| 10 | 61ms | 96ms | 95ms |
+
+### Conclusions
+
+1. **Architecture works:** reusability 12/12 PASS. Frozen tree is reusable.
+2. **PSNR trade-off:** 2-4 dB below single_pass on grid (L1 pruning cost), parity on graph/tree.
+3. **Timing:** streaming faster than batch, but kdtree (scipy C) is faster on single query. At >=2 queries, three_layer wins on tree_hierarchy.
+4. **Bottleneck = refinement, not scoring.** All approaches refine roughly the same number of units; refinement = 50-70% of total time (numpy, already near-C).
+5. **C-optimization** of scoring phases will have multiplicative effect for streaming: L0 topo 70ms->5ms, L1+L2 scoring 13ms->1.3ms. Streaming in C could potentially beat kdtree on graph/tree.
+6. **Curiosity's value vs industry:** side data (topo features, zones, cluster structure, decision journal) that kdtree does not provide. Interpretability: each layer answers a separate question.
+
+### Key Files
+
+| File | Purpose |
+|------|---------|
+| `experiments/exp17_three_layer_rho/layers.py` | Core: Layer0, Layer1 (cascade quotas), Layer2, FrozenTree, ThreeLayerPipeline, IndustryBaselines |
+| `experiments/exp17_three_layer_rho/exp17_three_layer_rho.py` | Runner with --chunk for parallel execution |
+| `experiments/exp17_three_layer_rho/config17.py` | Parameterization (scales, thresholds, approaches) |
+| `experiments/exp17_three_layer_rho/results/` | JSON results per chunk |

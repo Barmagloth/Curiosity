@@ -155,7 +155,7 @@ In all three cases, the governor's EMA feedback loop adapts to the AVERAGE cost/
 The governor fails (strictness hits maximum, candidates still exceed hard_cap) when:
 - **Burst events:** a sudden change in input causes many regions to simultaneously need refinement. The EMA smooths this out, meaning the governor reacts slowly (by design, for stability). Phase schedule could pre-allocate budget to critical depths.
 - **Depth imbalance:** if 80% of candidates are at depth 2 and 20% at depth 6, the governor's uniform strictness wastes budget on shallow splits that provide little gain, while starving deep splits that provide most of the quality improvement.
-- **candidates >> hard_cap:** concept_v1.8 section 5.2 explicitly flags this case. When max strictness still yields more candidates than hard_cap, the governor is useless. Phase schedule with depth-dependent caps would bound each depth independently.
+- **candidates >> hard_cap:** concept_v2.0 section 5.2 explicitly flags this case. When max strictness still yields more candidates than hard_cap, the governor is useless. Phase schedule with depth-dependent caps would bound each depth independently.
 
 ### 4.4 Quantifying the gap
 

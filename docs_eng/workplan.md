@@ -1,16 +1,15 @@
 # Work Plan (Curiosity)
 
-> **Status:** Modules A-G described as implementation plan. As of 20 March 2026:
-> - Module C (informativeness ρ): validated (Exp0.4-0.7, two-stage gate)
+> **Status:** Modules A-H described. As of 23 March 2026:
+> - Module C (informativeness rho): validated (Exp0.4-0.7, two-stage gate)
 > - Module D (tree + split/merge): validated (Exp0.1-0.3, Exp0.8 governor)
 > - Module E (deltas + boundaries): validated (halo w∈[2,4], SeamScore, Phase 1/2)
 > - Module F (benchmark): conducted (exp10 series, 158K+ trials, layout policy fixed)
-> - Module G (Scale-Consistency): validated (SC-baseline AUC 0.82-1.0, exp12a τ_parent PASS)
+> - Module G (Scale-Consistency): validated (SC-baseline AUC 0.82-1.0, exp12a tau_parent PASS)
+> - **Module H (three-layer rho): validated** (exp17, 1080 configs, reusability 12/12 PASS, cascade quotas, streaming pipeline)
 > - Modules A, B (canonicalization, cache): NOT implemented (not on critical path)
-> - P0 Layout CLOSED. DET-1 PASS. DET-2 PASS. Phase 1 completed 20 March 2026.
-> - Phase 2 COMPLETED (March 21, 2026). Pipeline assembled, SC-enforce integrated, E2E validated.
-> - Enox infrastructure: 4 observation-only patterns — ✅ DONE. NO REGRESSION.
-> - Next step: Phase 3.
+> - Phase 1 completed (20.03.2026). Phase 2 completed (21.03.2026). Phase 3 completed (22.03.2026). Phase 3.5 completed (23.03.2026).
+> - Next step: Phase 4 (P4a downstream, P4b matryoshka) + C-optimization scoring (roadmap).
 
 ## Core Logic
 1. Only modules that provide standalone benefit survive: cache, detector, recomputation scheduler, profiling.
@@ -133,17 +132,59 @@
 
 ---
 
-## H. (R, Up) Sensitivity Probe (Exp0.10)
-**Goal:** verify that system behavior is qualitatively stable across different (R, Up) pairs.
+## H. Three-Layer Rho Decomposition (exp17, March 22-23, 2026)
 
-**Dependency:** after SC-baseline (module G baseline experiment).
+**Status:** experimentally validated. Architecture works, reusability PASS across all spaces and scales (100 / 1K / 10K).
 
-**Deliverables:**
-- Test 4 pairs: gaussian+bilinear (default), box+nearest, Lanczos+bicubic, haar wavelet.
-- Compare D_parent/D_hf distributions, tree topology divergence, PSNR ceiling, SC-baseline separability (ROC-AUC).
-- Decision: default justified, or pair selection mechanism needed.
+### Core Idea
 
-**Kill criterion:** topology + D_parent stable (±20%) → default stands. Divergence > 50% → new open question.
+The monolithic rho is replaced by a cascade of three layers:
+
+```
+Layer 0: TOPOLOGY       — "how the space is structured" (data-independent)
+Layer 1: DATA YES/NO    — "where non-trivial signal exists" (data-dependent, query-independent)
+Layer 2: QUERY          — "of what exists — where is what I need" (task-specific)
+```
+
+Each layer narrows the working set for the next. Reusability increases bottom-up: topology is immutable, the data map updates rarely, the query changes constantly.
+
+### Key Architectural Decisions
+
+1. **Cascade quotas (Variant C):** L1 does not cut by a fixed threshold — each L0 cluster guarantees a minimum number of survivors proportional to cluster size. The survival threshold is tied to budget_fraction. Topology dictates quotas. No region goes extinct.
+
+2. **Streaming pipeline:** instead of L0(all) -> L1(all) -> L2(all) — per-cluster processing: each L0 cluster goes through L0 -> L1 -> L2 before moving to the next. Clusters processed in L0 priority score order. Advantages:
+   - First results appear after 1 cluster, not after the full map.
+   - L1 pruning genuinely reduces the number of refinements (budget per-cluster).
+   - Can stop early — partial results are already useful.
+
+### Experimental Results (exp17, 1080 configs)
+
+- **Reusability:** 12/12 PASS (min ratio = 0.838, threshold = 0.80). Frozen tree is reusable across different queries.
+- **PSNR:** 2-4 dB below single_pass/kdtree on grid (L1 pruning cost), parity on graph/tree.
+- **Timing (single query):** streaming faster than batch by 10-20%, but kdtree (scipy C) is faster than both.
+- **Amortized:** three_layer beats single_pass starting from 2 queries on tree_hierarchy.
+
+### Roadmap: C/Cython Optimization (Phase 5+)
+
+**Rationale:** the current bottleneck is Python overhead in scoring phases. Refinement (numpy) is already near-C speed. Rewriting scoring in C will have a multiplicative effect specifically for streaming, because streaming scores FEWER units.
+
+**Projected speedups (C vs Python):**
+
+| Component | Python (current) | C (projected) | Speedup |
+|-----------|-----------------|--------------|---------|
+| L0 topo extraction (graph) | 70ms | ~2-5ms | 15-35x |
+| L1 presence scoring | 5ms | ~0.5ms | 10x |
+| L2 query scoring | 8ms | ~0.8ms | 10x |
+| Refinement (numpy) | 19ms | ~19ms | 1x (already fast) |
+| **TOTAL streaming (1K grid)** | **33ms** | **~22ms** | **1.5x** |
+| **TOTAL streaming (graph)** | **68ms** | **~22ms** | **3x** |
+
+**Expected outcome:** streaming in C would beat kdtree on graph/tree spaces and match it on grid. While retaining side data (topo features, zones, cluster structure, decision journal) that kdtree does not provide.
+
+**Implementation priority:**
+1. L0 topo in C/Cython (maximum ROI — 70ms -> 5ms)
+2. L1 + L2 scoring in C (single vectorized pass)
+3. Refinement batching (grouping adjacent tiles for cache locality)
 
 ---
 

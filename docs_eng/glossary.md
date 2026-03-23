@@ -138,7 +138,7 @@ Project-specific terms without which the documentation reads like gibberish. Org
 
 ## Scale-Consistency (v1.7)
 
-**Scale-Consistency Invariant** — the requirement that step_delta does not redefine the semantics of the parent scale. Formally: `||R(step_delta)|| / (||step_delta|| + epsilon) < tau_rel`. Measures what fraction of step_delta energy is low-frequency (lf_frac). Closes the open question from v1.5 "how not to break features." See concept_v1.8.md, section 8, for details.
+**Scale-Consistency Invariant** — the requirement that step_delta does not redefine the semantics of the parent scale. Formally: `||R(step_delta)|| / (||step_delta|| + epsilon) < tau_rel`. Measures what fraction of step_delta energy is low-frequency (lf_frac). Closes the open question from v1.5 "how not to break features." See concept_v2.0.md, section 8, for details.
 
 **R (coarse-graining operator)** — `gaussian blur (sigma=3.0) + decimation`. Projects the signal from fine to coarse scale. Fixed before experiments — an architectural choice.
 
@@ -154,7 +154,7 @@ Project-specific terms without which the documentation reads like gibberish. Org
 
 **Per-space thresholds** — approach from exp12a: thresholds τ_parent[L, space_type] are set independently per space type instead of a single global τ[L]. Reason: R/Up operators produce different D_parent dynamic ranges per space type (grids ~0.42–0.50, graph ~0.08, tree ~0.19), making a single threshold impossible. Selection method: youden_j. Aligns with layout selection policy — space_type is known statically.
 
-**Step_delta tolerance** — the permissible fraction of parent_coarse that step_delta may alter when projected to the parent scale. Operationally determined by τ_parent. Two-sided risk: too tight → loss of legitimate features; too loose → hierarchy drift. Automatic choice mechanism is an open question. See concept_v1.8.md, section 8.9.
+**Step_delta tolerance** — the permissible fraction of parent_coarse that step_delta may alter when projected to the parent scale. Operationally determined by τ_parent. Two-sided risk: too tight → loss of legitimate features; too loose → hierarchy drift. Automatic choice mechanism is an open question. See concept_v2.0.md, section 8.9.
 
 **Scale-stable fixed point** — a node where simultaneously: (1) gain < τ_gain, (2) D_parent < τ_parent, (3) stable for K steps. A local refinement stopping criterion. Probe remains mandatory as a safeguard.
 
@@ -317,3 +317,43 @@ Terminology from the exp10 experiment series (P0 layout). Full methodology: `doc
 | **workspace overhead** | peak_step − resident. Operator temporary allocations not attributable to layout. |
 | **tile_map** | Array `int32[N_tiles]` where `tile_map[tile_id] = slot` (index into packed array) or -1 (inactive). Core of D_direct. |
 | **padding waste** (pw) | Fraction of packed block storage occupied by padding (inactive slots within active blocks). Problem for graphs with fixed block_size. |
+
+---
+
+## Three-Layer Rho and Pipeline (v2.1, exp17)
+
+**Three-Layer rho** — architectural decomposition of the monolithic informativeness function rho into three cascaded layers. Layer 0 (Topology) handles space structure (data-independent): clusters, bridges, hubs, density. Layer 1 (Presence) handles data existence (data-dependent, query-independent): binary map of "is there a non-trivial signal here". Layer 2 (Query) handles task-specific refinement: residual, HF energy, max absolute error. Each layer narrows the working set for the next. Reusability increases bottom-up: topology is immutable, the data map updates rarely, the query changes constantly. Introduced in exp17 (March 23, 2026).
+
+**Cascade Quotas (Variant C)** — adaptive L1 pruning threshold mechanism tied to the L0 cluster structure. Instead of a fixed threshold (l1_threshold=0.01, which killed 97% of units on scalar_grid at scale 1000), each L0 cluster guarantees a minimum number of surviving units proportional to cluster size: quota = max(1, ceil(cluster_size * min_survival_ratio)). min_survival_ratio is tied to budget_fraction (typically 0.30). Information flows strictly top-down (L0->L1->L2): topology dictates survival quotas, data is filtered not by an abstract threshold but by the local context of its own geometry. Solves the "region extinction" problem — no L0 cluster can lose all its units. Implemented in layers.py, validated in exp17v2 (1080 configs, 12/12 PASS on reusability).
+
+**Frozen Tree** — a serializable snapshot of Layers 0+1 (topological scores + presence scores + list of active units). A reusable spatial index: built once (expensive), then different Layer 2 queries run on top of it (cheap). Analogous to R-tree/quadtree in spatial databases. Contains: l0_scores, l1_scores, active_units, zone, memory footprint.
+
+**Streaming Pipeline** — execution mode for the three-layer rho where L0 clusters are processed sequentially, each going through the full L0->L1->L2 cycle before moving to the next. Clusters are sorted by L0 priority score (most important first). A global budget cap ensures total refinements do not exceed budget_fraction * n_total. Two advantages: (1) first results appear after processing the first cluster, not after the full map; (2) L1 pruning genuinely reduces the number of refinements (budget per-cluster), not just scoring. Implemented in ThreeLayerPipeline.run_streaming().
+
+**L0 Spatial Clusters** — cluster structure produced by Layer 0. For irregular_graph: Leiden communities (each unit = one cluster). For tree_hierarchy: depth-band grouping. For grids: spatial quadrant blocks (NQ*NQ). Used by Layer 1 for cascade quotas and by the streaming pipeline for traversal order.
+
+**Industry Baselines** — standard industry approaches for spatial search and refinement, implemented in exp17 for comparison with the Curiosity pipeline: (1) cKDTree (scipy) — k-d tree + NN query; (2) Quadtree — quadrant splitting by rho (grid only); (3) Leiden + brute force — community detection + sort by rho within (graph only); (4) Wavelets — Haar DWT detail coefficients as a saliency map (scalar grid only).
+
+**unit_rho** — the per-unit informativeness score computed by the rho function. In the three-layer architecture, unit_rho at Layer 2 is the task-specific signal (e.g., MSE residual) evaluated only on units that survived L0 and L1 filtering.
+
+**anchor** — a node in the refinement tree designated as a fixed reference point during periodic rebuild. Anchors are retained across rebuild cycles to preserve structural continuity. Exp14 tested anchor + periodic rebuild strategies: grid divergence = 0 (PASS), graph/tree divergence > 0.20 (FAIL due to structural drift).
+
+**RegionURI** — a deterministic SHA256 address for each unit in the tree: SHA256(parent_id|op_type|child_idx) truncated to 16 hex characters. Provides stable provenance tracking. Observation-only — never modifies pipeline state. Part of Enox infrastructure.
+
+**Decision Journal** — an append-only log of gate and enforcement decisions with full metrics (region_id, tick, gate_stage, decision, thresholds). Used for debugging and post-hoc audit of pipeline behavior. Observation-only. Part of Enox infrastructure.
+
+**topo profiling** — see Topological Profiling (v2.0) section. Multi-stage pre-runtime analysis of graph structure performed during IrregularGraphSpace initialization, before the first pipeline tick. Outputs per-node curvature, pagerank, clustering coefficients, and a topo_zone stamp (GREEN/YELLOW/RED).
+
+**zone classification** — the process of assigning a topological zone (GREEN/YELLOW/RED) to a graph based on topo profiling results. Determines runtime policy: tau_eff, split budget, SC-enforce strictness. See Topo zone entry.
+
+**MultiStageDedup** — three-level deduplication mechanism: (1) exact hash match, (2) metric-distance match within epsilon, (3) policy-level dedup. With epsilon=0.0 (default), never fires in single-pass mode. Scaffolding for future multi-pass scenarios. Observation-only. Part of Enox infrastructure.
+
+**PostStepSweep** — post-step scan for identical siblings in tree_hierarchy based on dirty signature comparison. Identifies merge candidates (siblings whose signatures differ by less than the sweep threshold, default 5%). Observation-only. Part of Enox infrastructure.
+
+---
+
+## Trajectories and Bushes (exp15-exp16)
+
+**Trajectory Profiles (C-pre)** — discrete clusters found in the feature space of refinement trajectories. Exp16 showed: trajectory features (how the pipeline refined each unit) form 2-7 natural clusters with Gap > 1.0 and Silhouette > 0.3 across all 4 space types. This means the pipeline does not behave uniformly everywhere — there are discrete "behavior types" during refinement. Served as the UNFREEZE signal for Track C. Potential applications: multi-objective optimization (different strategies for different profiles), anomaly detection in pipeline behavior.
+
+**Bushes (exp15b)** — clusters of leaf-paths in the refinement tree. Hypothesis: if tree leaves form stable clusters (bushes), this indicates semantic structure. Result: Silhouette > 0.4 (clusters are visually real), but ARI < 0.6 (clusters are not stable across seeds). Kill criteria FAIL. However: (1) clusters exist within each seed; (2) their instability may reflect GT dependence rather than uselessness; (3) leaf-path similarity could potentially be used for cluster compaction (merge candidates), duplicate region detection, or as features for a downstream classifier. Revisit planned after Track C.

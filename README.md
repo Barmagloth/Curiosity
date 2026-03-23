@@ -20,7 +20,7 @@ Curiosity — исследовательский ML-проект по созда
 
 ## Статус проекта
 
-Серия экспериментов Exp0.1–Exp0.8 **завершена**. Результаты консолидированы в документацию v1.8. Система валидирована: адаптивное уточнение работает и превосходит random selection при ограниченном бюджете. В v1.6 добавлен (обновлён в v1.7) Scale-Consistency Invariant — формализация требования «не сломать фичи». В v1.8 добавлены инварианты детерминизма (DET-1, DET-2).
+Серия экспериментов Exp0.1–Exp0.8 **завершена**. Результаты консолидированы в документацию v2.0. Система валидирована: адаптивное уточнение работает и превосходит random selection при ограниченном бюджете. В v1.6 добавлен (обновлён в v1.7) Scale-Consistency Invariant — формализация требования «не сломать фичи». В v2.0 добавлены инварианты детерминизма (DET-1, DET-2).
 
 Phase 0 (Exp0.1–Exp0.8) завершена. Phase 1 (P0 layout, DET-1, sensitivity, scale-consistency) завершена. P0 Layout **закрыт** — финальная policy по всем типам пространств зафиксирована в `docs/layout_selection_policy.md`. Серия exp10 (8 субэкспериментов, 158 000+ trials) определила оптимальный layout для каждого типа пространства. Phase 2 (end-to-end pipeline validation) завершена. Phase 3 (anchors, LCA-distance, bushes, C-pre) завершена — Track C UNFREEZE. Phase 3.5 (three-layer rho decomposition, exp17) завершена — архитектурная декомпозиция ρ на L0/L1/L2, reusability 12/12 PASS.
 
@@ -32,7 +32,7 @@ Phase 0 (Exp0.1–Exp0.8) завершена. Phase 1 (P0 layout, DET-1, sensiti
 README.md                          — этот файл
 README_ENG.md                      — English version
 docs/                              — документация (русский)
-  concept_v1.8.md                  — концептуальный документ (канонический)
+  concept_v2.0.md                  — концептуальный документ (канонический)
   layout_selection_policy.md       — методика подбора layout (P0 результат)
   experiment_hierarchy.md          — граф зависимостей экспериментов и roadmap
   session_handoff.md               — документ передачи между сессиями
@@ -98,7 +98,7 @@ experiments/
 Для нового участника проекта:
 
 1. **`docs/target_problem_definition_v1.1.md`** — зачем проект, что считается успехом
-2. **`docs/concept_v1.8.md`** — каноническая концепция (все валидированные решения)
+2. **`docs/concept_v2.0.md`** — каноническая концепция (все валидированные решения)
 3. **`docs/glossary.md`** — термины проекта
 4. **`docs/architecture.md`** — архитектура и компоненты
 5. **`docs/layout_selection_policy.md`** — методика подбора layout по типам пространств

@@ -39,7 +39,7 @@
 | # | Файл | Зачем |
 |---|------|-------|
 | 1 | `docs/session_handoff.md` | **Этот файл** — текущий статус, что делать дальше |
-| 2 | `docs/concept_v1.8.md` | Каноническая концепция (актуальная) |
+| 2 | `docs/concept_v2.0.md` | Каноническая концепция (актуальная) |
 | 3 | `docs/teamplan.md` | План с отметками Фаза 0-3.5, описание Фаз 4+ |
 | 4 | `docs/experiment_hierarchy.md` | Граф зависимостей, приоритеты, нумерация exp10+ |
 | 5 | `docs/workplan.md` | Модули A-H, roadmap C-оптимизации |
@@ -241,6 +241,145 @@ DET-2 kill metrics (n_refined, compliance): CV≈0. psnr_gain CV=0.09–0.37 —
 - Per-node: curvature (hybrid), pagerank, clustering_coeff, local_density, degree
 - Per-cluster: mean/std/max агрегаты + boundary curvature
 - Profiling: sigma_F, eta_F, gini_pagerank, **topo_zone** (GREEN/YELLOW/RED)
+
+---
+
+## Фаза 3 — Tree Semantics + Rebuild (22 марта 2026)
+
+### Цель
+
+Ответить на два вопроса: (1) Семантично ли дерево? (LCA-distance коррелирует с feature similarity?) (2) Работает ли инкрементальный rebuild? (anchors удерживают divergence < 5%?)
+
+### Эксперименты и результаты
+
+| Exp | Название | Конфигов | Kill criteria | Результат | Вердикт |
+|-----|----------|----------|--------------|-----------|---------|
+| exp14 | Anchors + Periodic Rebuild | 720 | divergence < 5% | scalar_grid/vector_grid: div=0.000 **PASS**. irregular_graph/tree_hierarchy: div 0.20-1.72 **FAIL** | **Partial FAIL** |
+| exp15 | LCA-distance correlation | 80 | Spearman r > 0.3 | scalar_grid: 0.299 (borderline). vector_grid: -0.032. graph: 0.267. tree: 0.006 | **ALL FAIL** |
+| exp15b | Bushes (leaf-path clusters) | 80 | Silhouette > 0.4 AND ARI > 0.6 | Silhouette: 0.49-0.79 **PASS**. ARI: -0.01 to 0.21 **FAIL** | **FAIL** |
+| exp16 | C-pre (trajectory profiles) | 80 | Gap > 1.0 AND Sil > 0.3 | All 4 spaces PASS. Gap 1.37-2.40. k_mode 2-7. | **PASS → Track C UNFREEZE** |
+
+### Ключевые находки
+
+**Exp14 (anchors):** Local update идеально работает для регулярных пространств (grid: divergence = 0). Для нерегулярных (graph, tree) — structural drift. Dirty-triggered rebuild лучше periodic, но даже aggressive dirty_0.05 не проходит kill criteria. **Вывод:** проблема не в стратегии rebuild, а в том что монолитная ρ не разделяет структуру и задачу → мотивация для Phase 3.5.
+
+**Exp15 (LCA-distance):** Дерево НЕ семантично в смысле LCA. Близость в дереве ≠ близость в feature space. scalar_grid ближе всего (0.299), но это артефакт регулярной сетки.
+
+**Exp15b (bushes):** Кластеры leaf-paths **реальны** (Silhouette > 0.4 во всех пространствах), но **нестабильны** между seeds (ARI < 0.21). Потенциально: leaf-path similarity может использоваться для merge candidates, обнаружения дублирующих регионов, или как фичи для downstream. **Revisit запланирован после Track C.**
+
+**Exp16 (C-pre):** Trajectory profiles образуют 2-7 natural clusters с Gap > 1.0 и Silhouette > 0.3 во ВСЕХ 4 пространствах. Pipeline ведёт себя дискретно — есть "типы поведения" при уточнении. **Track C разморожен.**
+
+### Gate Phase 3 → Phase 3.5
+
+- "Дерево семантично?" → **НЕТ** (P3a LCA FAIL + P3b bushes FAIL)
+- "C unfreezes?" → **ДА** (C-pre PASS)
+- "Rebuild работает?" → **Частично** (grid YES, graph/tree NO → мотивация для декомпозиции ρ)
+
+### Ключевые файлы Phase 3
+
+- `experiments/exp14_anchors/` — anchors + rebuild, 720 configs
+- `experiments/exp15_lca_semantics/` — LCA-distance correlation, 80 configs
+- `experiments/exp15b_bushes/` — leaf-path clustering, 80 configs
+- `experiments/exp16_cpre_profiles/` — trajectory profile clustering, 80 configs
+
+---
+
+## Фаза 3.5 — Three-Layer Rho Decomposition (23 марта 2026)
+
+### Предыстория
+
+Phase 3 показала: монолитная ρ смешивает три concern'а — структуру пространства (topology), наличие данных (presence), и задаче-специфический запрос (query). Из-за этого: дерево нельзя переиспользовать, rebuild дрейфует на нерегулярных пространствах, непонятно что за что отвечает.
+
+### Архитектура: три каскадных слоя
+
+```
+Layer 0: ТОПОЛОГИЯ        "как устроено пространство"
+         Кластеры, мосты, хабы, плотность, границы
+         [не зависит от данных вообще]
+
+Layer 1: ДАННЫЕ ДА/НЕТ    "где в этом пространстве что-то лежит"
+         Бинарная карта присутствия поверх топологии
+         [не зависит от задачи]
+
+Layer 2: ЗАПРОС            "из того что лежит — где нужное мне"
+         residual / HF / teacher / что угодно
+         [зависит от конкретной задачи]
+```
+
+Каждый слой **сужает** область работы для следующего. Переиспользуемость растёт снизу вверх.
+
+### Cascade Quotas (Variant C)
+
+**Проблема:** фиксированный L1 threshold (0.01) убивал 97% юнитов на scalar_grid при масштабе 1000. Reusability FAIL (0.725).
+
+**Решение:** адаптивный порог L1, привязанный к кластерной структуре L0. Каждый L0-кластер гарантирует минимум выживших: `quota = max(1, ceil(cluster_size × min_survival_ratio))`. Информация течёт строго сверху вниз: L0 → L1 → L2. Ни один L0-кластер не вымирает полностью.
+
+**Результат:** scalar_grid 1000: 0.725 FAIL → 0.863 PASS. Reusability 12/12 PASS по всем пространствам и масштабам.
+
+### Streaming Pipeline
+
+Вместо batch L0(all)→L1(all)→L2(all) — обработка по кластерам с L0-priority ordering и глобальным budget cap:
+
+```
+Cluster 0 (highest L0 score): [L0] → [L1] → [L2 refine]
+Cluster 1:                           [L0] → [L1] → [L2 refine]
+Cluster 2:                                  [L0] → [L1] → [L2 refine]
+```
+
+Два преимущества: (1) первые результаты после первого кластера; (2) L1 pruning реально сокращает refinement (budget per-cluster).
+
+### Результаты (1080 конфигов, 0 ошибок)
+
+| Метрика | Результат |
+|---------|-----------|
+| Reusability | 12/12 PASS (min ratio 0.838, threshold 0.80) |
+| PSNR vs single_pass | Grids: -2-4 dB (цена L1 pruning). Graph/tree: паритет. |
+| Streaming vs batch | 10-20% быстрее на grids |
+| vs industry kdtree | kdtree быстрее на single query (оптимизированный C). 3L выигрывает при ≥2 запросах на tree_hierarchy. |
+| Amortized break-even | tree_hierarchy: 2 запроса. Grids: не окупается (refinement доминирует). |
+
+### Industry Baselines (сравнение)
+
+| Baseline | Метод | Применимость |
+|----------|-------|-------------|
+| cKDTree (scipy) | k-d дерево + NN query | Все 4 пространства |
+| Quadtree | Деление на квадранты по rho | Grid only |
+| Leiden + brute force | Community detection + sort by rho | Graph only |
+| Wavelets (Haar DWT) | Detail coefficients как saliency | Scalar grid only |
+
+### C/Cython Roadmap
+
+Бутылочное горлышко — refinement (numpy, ~60% total time). Scoring фазы (L0 topo, L1 presence, L2 query) — Python, ускоряемы 10× через C/Cython. Прогноз: streaming с C-scoring обойдёт kdtree на irregular_graph (70ms→5ms topo extraction) и сравняется на grids. Записано в workplan.md секция H.
+
+### Ключевые файлы Phase 3.5
+
+- `experiments/exp17_three_layer_rho/layers.py` — Layer0_Topology, Layer1_Presence, Layer2_Query, FrozenTree, ThreeLayerPipeline, IndustryBaselines
+- `experiments/exp17_three_layer_rho/exp17_three_layer_rho.py` — runner с --chunk support
+- `experiments/exp17_three_layer_rho/config17.py` — конфигурация эксперимента
+- `experiments/exp17_three_layer_rho/results/` — результаты по чанкам (JSON)
+- `experiments/exp17_three_layer_rho/README.md` — полное описание (RU+EN)
+
+---
+
+## Что дальше — Фаза 4
+
+### P4a: Downstream Consumer Test
+- Задача: классификатор или автоэнкодер на adaptive-refined данных vs dense vs coarse
+- Kill criteria: metric loss < 2%
+- Зависимости: все P0-P3.5
+
+### P4b: Matryoshka
+- Каждый уровень вложенности дерева — валиден для downstream
+- Зависимости: P4a
+
+### Bushes Revisit (после Track C)
+- Кластеры leaf-paths реальны (Silhouette > 0.4), но нестабильны (ARI < 0.21)
+- Потенциал: leaf-path similarity для merge candidates, обнаружение дублирующих регионов
+- Идея: на основе leaf-path features — уплотнять кластеры, находить сходство между регионами
+
+### C-Optimization (Roadmap)
+- C/Cython переписка scoring фаз → 10× ускорение L0/L1/L2
+- Streaming + C-scoring → потенциальный выигрыш над kdtree
 
 ---
 

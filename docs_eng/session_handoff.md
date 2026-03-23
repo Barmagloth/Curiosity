@@ -1,4 +1,4 @@
-# Session Handoff — Curiosity Phase 3
+# Session Handoff — Curiosity (Phase 4 next)
 
 Document for a new AI orchestrator session. Contains full context for immediately continuing work.
 
@@ -9,9 +9,10 @@ Curiosity project.
 - Phase 0 **complete** (March 18, 2026).
 - Phase 1 **complete** (March 20, 2026). All streams — PASS. P0 Layout **CLOSED**. DET-1 **PASS**. DET-2 **PASS**.
 - Phase 2 **complete** (March 20, 2026). Pipeline assembled, SC-enforce integrated, E2E validated.
-- **Enox infrastructure** — ✅ DONE (March 21, 2026). Four observation-only patterns (RegionURI, DecisionJournal, MultiStageDedup, PostStepSweep) — pure annotation, never modify pipeline state.
+- **Enox infrastructure** — DONE (March 21, 2026). Four observation-only patterns (RegionURI, DecisionJournal, MultiStageDedup, PostStepSweep) — pure annotation, never modify pipeline state.
 - Phase 3 **complete** (March 22, 2026). Exp14 anchors: grid PASS, graph/tree FAIL. Exp15 LCA-distance: FAIL. Exp15b bushes: FAIL. Exp16 C-pre: PASS → **Track C UNFREEZE**.
-- **Next step — Phase 4** (P4: downstream consumer test) + Track C design.
+- Phase 3.5 **complete** (March 23, 2026). Exp17 three-layer rho: architectural decomposition of rho into L0 (topology) -> L1 (presence, cascade quotas) -> L2 (query). Streaming pipeline. 1080 configs, reusability 12/12 PASS. Industry benchmarks (kdtree, quadtree, wavelets, leiden).
+- **Next step — Phase 4** (P4a: downstream consumer test, P4b: matryoshka) + C-optimization scoring (roadmap). Bushes revisit planned after Track C.
 
 Workstation: **PC 2** (NVIDIA RTX 2070, 8 GB, CUDA 12.8). Working directory: `R:\Projects\Curiosity`.
 
@@ -21,10 +22,11 @@ Workstation: **PC 2** (NVIDIA RTX 2070, 8 GB, CUDA 12.8). Working directory: `R:
 |---|------|-----|
 | 1 | `docs/session_handoff.md` | **This file** — current status, what to do next |
 | 2 | `docs/concept_v1.8.md` | Canonical concept (current) |
-| 3 | `docs/teamplan.md` | Plan with Phase 0, Phase 1 marks, Phase 2-4 descriptions |
+| 3 | `docs/teamplan.md` | Plan with Phase 0-3.5 marks, Phase 4+ descriptions |
 | 4 | `docs/experiment_hierarchy.md` | Dependency graph, priorities, exp10+ numbering |
-| 5 | `docs/environment_2.md` | How to activate .venv-gpu on PC 2 (CUDA) |
-| 6 | `docs/phase1_plan.md` | Archive — Phase 1 plan and results (reference) |
+| 5 | `docs/workplan.md` | Modules A-H, C-optimization roadmap |
+| 6 | `docs/glossary.md` | All project terms (updated March 23, 2026) |
+| 7 | `docs/environment_2.md` | How to activate .venv-gpu on PC 2 (CUDA) |
 
 ## Phase 1 — Final Results (March 20, 2026)
 

@@ -1,4 +1,4 @@
-> **Historical version.** Current version: concept_v1.8.md
+> **Historical version.** Current version: concept_v2.0.md
 
 # Curiosity — Концептуальная фиксация (v1.5)
 

@@ -72,7 +72,7 @@ Two follow-up experiments documented in `exp_deferred_revisit/deferred_revisit_n
 
 - **Policy table works.** Empirical classification by space type is correct and sufficient.
   Does not need a continuous law to function.
-- **v1.8.3** downgraded from "law" to "hypothesis" in concept_v1.8.md.
+- **v1.8.3** downgraded from "law" to "hypothesis" in concept_v2.0.md.
 - **Confirmed:** sparse always beats dense (useful in itself).
 - **Not confirmed:** which sparse variant is optimal as a function of (I, M, p).
 

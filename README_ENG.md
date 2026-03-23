@@ -20,7 +20,7 @@ The goal is to reshape the search space so that:
 
 ## Project Status
 
-The experiment series Exp0.1–Exp0.8 is **complete**. Results are consolidated into v1.8 documentation. The system is validated: adaptive refinement works and outperforms random selection under budget constraints. The Scale-Consistency Invariant has been formalized. v1.8 adds determinism invariants (DET-1, DET-2).
+The experiment series Exp0.1–Exp0.8 is **complete**. Results are consolidated into v2.0 documentation. The system is validated: adaptive refinement works and outperforms random selection under budget constraints. The Scale-Consistency Invariant has been formalized. v2.0 adds determinism invariants (DET-1, DET-2).
 
 Phase 0 (Exp0.1–Exp0.8) complete. Phase 1 (P0 layout, DET-1, sensitivity, scale-consistency) complete. P0 Layout **closed** — final layout selection policy across all space types documented in `docs/layout_selection_policy.md`. The exp10 series (8 sub-experiments, 158,000+ trials) determined the optimal layout for each space type. Phase 2 (end-to-end pipeline validation) complete. Phase 3 (anchors, LCA-distance, bushes, C-pre) complete — Track C UNFREEZE. Phase 3.5 (three-layer rho decomposition, exp17) complete — architectural decomposition of rho into L0/L1/L2, reusability 12/12 PASS.
 
@@ -33,7 +33,7 @@ README.md                          — project overview (Russian)
 README_ENG.md                      — project overview (English, this file)
 docs/                              — documentation (Russian)
 docs_eng/                          — documentation (English)
-  concept_v1.8.md                  — canonical concept document
+  concept_v2.0.md                  — canonical concept document
   layout_selection_policy.md       — layout selection methodology (P0 result)
   experiment_hierarchy.md          — experiment dependency graph and roadmap
   session_handoff.md               — session transfer document
@@ -90,7 +90,7 @@ experiments/
 For a new project participant:
 
 1. **`docs_eng/target_problem_definition_v1.1.md`** — why the project exists, what counts as success
-2. **`docs_eng/concept_v1.8.md`** — canonical concept (all validated decisions)
+2. **`docs_eng/concept_v2.0.md`** — canonical concept (all validated decisions)
 3. **`docs_eng/glossary.md`** — project terminology
 4. **`docs_eng/architecture.md`** — architecture and components
 5. **`docs_eng/layout_selection_policy.md`** — layout selection methodology by space type

@@ -1,10 +1,11 @@
-# Curiosity — Experiment Hierarchy (v2.1)
+# Curiosity — Experiment Hierarchy (v2.2)
 
 This document captures the current status, dependencies, and execution order of experiments.
 
-v2.1: added DET level (determinism and reproducibility) — cross-infrastructure requirement.
+Updated after Phase 3.5 (exp17, three-layer rho decomposition). All experiments through exp17 are complete.
 
-Updated after Phase 0 (parallel validation: halo cross-space, SC-baseline, D_parent fix).
+v2.2: Phase 3 and Phase 3.5 completed. exp14-exp17 added to mapping and dependency graph.
+v2.1: added DET level (determinism and reproducibility) — cross-infrastructure requirement.
 
 ---
 
@@ -46,6 +47,7 @@ Updated after Phase 0 (parallel validation: halo cross-space, SC-baseline, D_par
 | `exp15_lca_semantics/` | LCA-distance vs feature similarity correlation. 80 configs. Spearman: scalar_grid 0.299, vector_grid −0.032, irregular_graph 0.267, tree_hierarchy 0.006. | P3a | ❌ FAIL (r < 0.3 all spaces) |
 | `exp15b_bushes/` | Leaf-path clustering: silhouette + cross-seed ARI stability. 80 configs. Silhouette >0.4 all spaces, but ARI <0.21 everywhere. | P3b | ❌ FAIL (ARI unstable) |
 | `exp16_cpre_profiles/` | C-pre trajectory profile clustering. 80 configs. Gap >1.0, Silhouette >0.3 all spaces. Track C UNFREEZE signal. | C-pre | ✅ PASS (UNFREEZE) |
+| `exp17_three_layer_rho/` | Three-layer rho decomposition. 1080 configs (4 spaces x 3 scales x 8 approaches x 20 seeds). Cascade quotas (Variant C). Streaming pipeline. Reusability 12/12 PASS (min 0.838). Industry benchmarks (kdtree, quadtree, wavelets, leiden). | Phase 3.5 | ✅ PASS (reusability) |
 
 **Phase 2 note:** Graph clustering upgraded from k-means to Leiden (community detection), validated on 10 pathological topologies: Swiss Roll, Barbell, Hub-Spoke, Ring of Cliques, Bipartite, Erdos-Renyi, Grid, Planar Delaunay, Mobius strip.
 
@@ -389,15 +391,20 @@ P0 (GPU layout)
                                                                 │
                                                                 ▼
  exp07 + exp10d + exp12a + exp14a ──→ exp_phase2_pipeline ──→ exp_phase2_e2e (✅ 240 configs, DET-1)
+ exp_phase2_e2e + exp14 (FAIL → rho decomposition) ──→ exp17 (three-layer rho, Phase 3.5)
 ```
 
 **Critical path:** P0 → DET-1 → P1 → P3 → P4.
 
-**Phase 2 path (✅ CLOSED):** exp07 + exp10d + exp12a + exp14a → exp_phase2_pipeline → exp_phase2_e2e.
+**Phase 2 path (CLOSED):** exp07 + exp10d + exp12a + exp14a -> exp_phase2_pipeline -> exp_phase2_e2e.
+
+**Phase 3.5 path:** Phase 2 pipeline + Phase 3 results (exp14 FAIL motivated rho decomposition) -> exp17 (three-layer rho).
 
 **Parallel branches:** P2 and SC-baseline — both run in parallel with P1, all are needed before P4. DET-2 parallel with P1 (after DET-1).
 
 **Gate blockers:** DET-1 blocks stability pass. DET-2 blocks Track B.
+
+All experiments through exp17 (Phase 3.5) are complete.
 
 ---
 
@@ -471,10 +478,11 @@ sub-experiments within levels (B1–B3 in P1). Result: confusion.
 | 11 | P3a | LCA-distance vs feature similarity (Spearman r<0.3 all spaces) | exp15 ❌ FAIL |
 | 11b | P3b | bush clustering (sil>0.4 but ARI<0.21 — unstable) | exp15b ❌ FAIL |
 | 12 | C-pre | trajectory profile clustering (gap>1.0, sil>0.3 — Track C UNFREEZE) | exp16 ✅ PASS |
-| 13 | P4 | "don't break features" | exp17 |
+| 13 | Three-layer rho | Decompose monolithic rho into L0 (topology) -> L1 (presence) -> L2 (query). Cascade quotas, streaming, industry benchmarks. | exp17 ✅ PASS |
 
-Numbers are provisional. If an unplanned experiment arises between steps,
-it gets the next free number.
+All items through Phase 3.5 are complete (exp01--exp17).
+
+Sequential integer numbering: exp10, exp11, ..., exp17. Sub-experiments use lowercase suffix: exp10a, exp10b. Folder format: `exp{N}{suffix}_{short_name}/`.
 
 ---
 

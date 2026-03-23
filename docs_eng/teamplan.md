@@ -4,7 +4,7 @@
 
 The Curiosity project has completed the Exp0.1–0.8 series. Ahead are P0–P4 + SC-baseline + cross-space Halo validation. The goal is to distribute work across 4+ parallel executors, with Barmagloth acting as architect (makes decisions at forks, reviews results, does not write code).
 
-**Constraint**: GPU is AMD Radeon 780M (no CUDA). Uses DirectML + PyTorch (Python 3.12). CPU venv on Python 3.13.
+**Constraint**: GPU — NVIDIA RTX 2070 8 GB (CUDA 12.8, PC 2). Uses PyTorch 2.10.0+cu128 (Python 3.12). Previously: AMD Radeon 780M (PC 1, DirectML) — not used since Phase 1.
 
 ---
 
@@ -97,23 +97,51 @@ Four streams, all independent of each other:
 
 ---
 
-### Phase 3: Semantics + Rebuild (Week 9–11)
+### Phase 3: Semantics + Rebuild (Week 9-11) — COMPLETED (March 22, 2026)
 
 | Stream | Executor | Task | Dependencies |
 |--------|----------|------|--------------|
 | **S1: P1-B3 anchors** | Executor A/B | Periodic rebuild + anchor insertion. Divergence < 5% vs full rebuild. | P1-B1 |
 | **S2: P3a LCA-distance** | Executor C | Correlation of LCA-distance with feature similarity. Correlation > 0.3 → tree is semantic. | P1-B1 (compressed tree) |
 | **S3: P3b bushes** | Executor D | Clusters of leaf-paths. Silhouette > 0.4 + stability. | P3a (can run in parallel) |
+| **S4: C-pre (exp16)** | — | Trajectory profiles: 2-7 natural clusters, Gap>1.0, Silhouette>0.3 across 4 spaces. | Pipeline ready |
+
+**Phase 3 Results:**
+- S1 (Exp14 anchors): grid PASS, graph/tree FAIL. Divergence > 5% on irregular topologies.
+- S2 (Exp15 LCA-distance): FAIL. Correlation < 0.3.
+- S3 (Exp15b bushes): FAIL. Silhouette > 0.4 (clusters are real), but ARI < 0.6 (not stable across seeds). Revisit planned after Track C.
+- S4 (Exp16 C-pre): PASS. Trajectory profiles found → **Track C UNFREEZE**.
+
+**Gate: Phase 3 -> Phase 3.5: PASSED** (partial — anchors/LCA/bushes FAIL, but C-pre PASS opened Track C and motivated three-layer rho decomposition).
 
 ---
 
-### Phase 4: Integration (Week 12–14)
+### Phase 3.5: Rho Decomposition (March 23, 2026) — DONE
+
+> Not originally planned — emerged from Phase 3 results (anchors FAIL → "why isn't rho reusable?" → three-layer architecture).
+
+| Stream | Task | Result |
+|--------|------|--------|
+| **Exp17: three-layer rho** | Decompose rho into L0 (topology) -> L1 (presence) -> L2 (query) | 1080 configs, reusability 12/12 PASS |
+| **Cascade quotas** | Adaptive L1 threshold tied to L0 clusters | Fixed scalar_grid 1000: 0.725 FAIL -> 0.928 PASS |
+| **Streaming pipeline** | Per-cluster L0->L1->L2 processing with L0-priority ordering | 10-20% faster than batch on grids |
+| **Industry benchmarks** | kdtree, quadtree, wavelets, leiden comparison | kdtree faster on single query, 3L wins at >=2 queries on tree |
+| **Roadmap C-opt** | Projected speedups from C/Cython rewrite of scoring | Recorded in workplan.md, section H |
+
+**Key findings:**
+- Three-layer architecture validated, frozen tree is reusable
+- Bottleneck = refinement (numpy), not scoring → C-optimization of scoring will have multiplicative effect
+- Bushes (exp15b) revisit planned: leaf-path similarity for merge candidates / downstream features
+
+---
+
+### Phase 4: Integration (Week 12-14)
 
 | Stream | Executor | Task | Dependencies |
 |--------|----------|------|--------------|
-| **S1: P4a downstream** | Executor A | Classifier/autoencoder on adaptive-refined vs dense vs coarse. Metric loss < 2%. | All P0–P3 + SC |
+| **S1: P4a downstream** | Executor A | Classifier/autoencoder on adaptive-refined vs dense vs coarse. Metric loss < 2%. | All P0-P3.5 + SC |
 | **S2: P4b matryoshka** | Executor B | Each nesting level is valid for downstream. | P4a |
-| **S3: C-pre** | Executor C | Is there natural clustering in trajectory features? Go/no-go for Track C. | P3 results |
+| **S3: C-pre** | — | DONE (exp16, Phase 3). Track C UNFREEZE. | — |
 
 ---
 
@@ -146,15 +174,15 @@ Phase 0: S1(env) ──→ Phase 1: S1(P0) → S1b(DET-1) ──→ Phase 2: S2(
 | coarse_shift? | Generator fixed to spatially coherent |
 | End of Phase 1 | ✅ Resolved: layout policy fixed, P2b not needed, SC pass, Morton killed | All streams PASS |
 | End of Phase 2 | ✅ Resolved (March 21, 2026). SC-enforce: pass/damp/reject. Compression: 60-66%. Enox: 4 observation-only patterns. | All streams PASS |
-| End of Phase 3 | Tree is semantic? C unfreezes? | P3a, P3b reports |
-| End of Phase 4 | Instrument Readiness Gate passed? Transition to Track B? | P4a, P4b, C-pre |
+| End of Phase 3 | Resolved (March 22, 2026). Anchors: grid PASS, graph/tree FAIL. LCA-distance FAIL. Bushes FAIL (ARI<0.6). C-pre PASS → Track C UNFREEZE. | Exp14-16 reports |
+| End of Phase 4 | Instrument Readiness Gate passed? Transition to Track B? | P4a, P4b (C-pre already DONE) |
 
 ---
 
 ## Key Files
 
 - `docs/experiment_hierarchy.md` — dependency graph, kill criteria
-- `docs/workplan.md` — modules A–F
+- `docs/workplan.md` — modules A-H
 - `docs/scale_consistency_verification_protocol_v1.0.md` — SC protocol
 - `docs/concept_v1.8.md` — canonical concept (current)
 - `experiments/phase2_probe_seam/` — code for reuse in Halo cross-space

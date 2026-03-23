@@ -3,7 +3,7 @@
 This document fixes why the project exists, what counts as success, and against what to compare.
 Without this, "quality-per-cost" is fog in a cylinder.
 
-Related to: `concept_v1.8.md` (how it is built), `experiment_hierarchy.md` (what is being tested).
+Related to: `concept_v2.0.md` (how it is built), `experiment_hierarchy.md` (what is being tested).
 
 ---
 
@@ -51,7 +51,7 @@ Tasks with heterogeneous information density in arbitrary computational spaces:
 
 **Cross-space validation principle:** all claims of domain-agnostic generality must be verified on at least 4 space types (scalar grid, vector grid, irregular graph, tree hierarchy). Results on a single type are not sufficient.
 
-**Halo limitation:** cosine feathering is applicable only to spaces with boundary parallelism ≥ 3 and no context leakage. Not applicable to tree/forest topologies (see concept_v1.8.md §6).
+**Halo limitation:** cosine feathering is applicable only to spaces with boundary parallelism ≥ 3 and no context leakage. Not applicable to tree/forest topologies (see concept_v2.0.md §6).
 
 ### Success criteria
 | Metric | Requirement |
@@ -138,7 +138,7 @@ Use the built mechanism as an instrument to study whether the refinement tree gi
 Determined after reaching Instrument Readiness Gate, based on which downstream consumer is most natural for the built instrument.
 
 ### Status
-**Research goal, not current.** Open questions are fixed in `concept_v1.8.md` §13.
+**Research goal, not current.** Open questions are fixed in `concept_v2.0.md` §13.
 
 ---
 
