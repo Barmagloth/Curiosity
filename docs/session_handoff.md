@@ -395,6 +395,20 @@ Cluster 2:                                  [L0] → [L1] → [L2 refine]
 - **Статус:** нужно восстановить в Phase 4. Hardware calibration уже есть (Synthetic Transport Probe, 52ms at startup).
 - **GovernorIsolation** из exp10d — это НЕ бюджетный контроллер. Это EMA-телеметрия для DET-1 (проверка order-independence). Не путать!
 
+**Область применения по режимам pipeline:**
+| Режим | Governor EMA | Обоснование |
+|-------|-------------|-------------|
+| Batch (L0→L1→L2 раздельно) | ✅ Нужен | Feedback между полными шагами L2 |
+| Frozen tree reuse (повторные L2) | ✅ Нужен | Адаптация между повторными L2 queries |
+| Streaming (cluster-by-cluster) | ❌ Не нужен / вреден | Cross-cluster bleed: кластеры гетерогенны, feedback от RED-зоны не должен ужесточать GREEN |
+
+В streaming бюджет контролируется global budget cap + per-cluster WasteBudget. EMA добавил бы шум (cross-cluster bleed).
+
+**Открытый вопрос: плавное управление бюджетом в streaming.** Сейчас в streaming только бинарные механизмы ("go" / "stop"), нет плавной регулировки. Планируемое решение — комбинация двух подходов:
+- **(B) L0-informed budget allocation:** L0 уже знает zone (GREEN/YELLOW/RED) каждого кластера. Распределять бюджет пропорционально ожидаемой полезности, а не просто размеру. GREEN → больше бюджета (refinement продуктивен), RED → меньше (много reject'ов).
+- **(C) Adaptive budget redistribution:** если кластер N не израсходовал квоту — остаток перетекает к следующим. Не EMA-feedback, а forward carry: "предыдущий не потратил → тебе больше".
+Нужно оттестировать в sweep вместе с Governor EMA (batch/reuse).
+
 **3. WasteBudget + StrictnessTracker** — "аварийный стоп" (safety, per-unit memory)
 - StrictnessTracker: per-unit множитель, escalation ×1.5 при reject, decay ×0.9 per clean step
 - WasteBudget: R_max = floor(B_step × ω), каждый reject стоит strictness_multiplier единиц (не 1.0!), force-stop при waste ≥ R_max

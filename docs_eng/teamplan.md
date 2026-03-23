@@ -152,6 +152,7 @@ Four streams, all independent of each other:
 |------------|-------------|--------------|
 | **Exp RG-flow verification** | Test whether refinement tree behaves as RG-flow trajectory. Basin membership as semantic metric (exp18 showed basins don't form in single-pass at 30% budget — needs multi-pass). Verify: convergence to fixed points, basin stability, universality under different (R, Up) pairs. | Multi-pass pipeline from Phase 4 |
 | **Governor EMA restoration** | Reconnect EMA feedback from exp0.8 as global strictness thermostat. Orthogonal to StrictnessTracker (per-unit reputation) and WasteBudget (kill switch). Provides smooth intake regulation, not just emergency stop. Priority: optimization, not critical. | Phase 4 pipeline |
+| **Exp Governor-sweep** | Validate Governor EMA on emulated hardware configurations. Sweep: 3 pipeline modes (batch, frozen reuse, streaming) x 3 emulated hardware profiles (low/mid/high budget) x 4 spaces x 20 seeds. Metrics: PSNR, wall time, reject rate, waste exhaustion rate, compliance. Kill criteria: (1) batch+reuse: Governor EMA improves compliance vs no-governor; (2) streaming: Governor EMA does NOT degrade PSNR vs no-governor. Dependencies: Governor EMA restoration (reconnect feedback loop from exp0.8). | Governor EMA restoration |
 
 ---
 

@@ -259,6 +259,15 @@ Split допускается только если выигрыш перекры
 * PSNR чуть ниже (−0.24 дБ clean, −0.68 дБ shift).
 * **Вывод:** budget governor нужен не для качества, а для контроля бюджета. Без него бюджет — декларация.
 
+**Область применения по режимам pipeline:**
+| Режим | Governor EMA | Обоснование |
+|-------|-------------|-------------|
+| Batch (L0→L1→L2 раздельно) | ✅ Нужен | Feedback между полными шагами L2 |
+| Frozen tree reuse (повторные L2) | ✅ Нужен | Адаптация между повторными L2 queries |
+| Streaming (cluster-by-cluster) | ❌ Не нужен / вреден | Cross-cluster bleed: кластеры гетерогенны, feedback от RED-зоны не должен ужесточать GREEN |
+
+В streaming бюджет контролируется global budget cap + per-cluster WasteBudget. EMA добавил бы шум.
+
 ## 5.2 Условие применимости governor
 
 Если при max strictness n_candidates ≥ hard_cap — контроллер бесполезен. Лечится параметризацией задачи.

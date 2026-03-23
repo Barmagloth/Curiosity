@@ -227,5 +227,9 @@ Layer 2: ЗАПРОС           — "из того что лежит — где 
 
 RG-flow верификация (пост-Phase 4): basin membership требует multi-pass для формирования бассейнов. Exp18 показал r=0.019 в single-pass (FAIL). Связано с: Exp0.10 (R,Up) sensitivity (concept section 8.10).
 
+### Governor EMA restoration + sweep
+
+Восстановить EMA feedback из exp0.8 как глобальный термостат strictness (потерян при сборке Phase 2 pipeline). Включает sweep-тест: batch/reuse/streaming × low/mid/high hardware × 4 spaces × 20 seeds. Метрики: PSNR, time, reject rate, compliance.
+
 ---
 

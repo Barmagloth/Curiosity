@@ -261,6 +261,20 @@ DET-2 kill metrics (n_refined, compliance): CV≈0. psnr_gain CV=0.09–0.37 —
 - **Status:** needs restoration in Phase 4. Hardware calibration already exists (Synthetic Transport Probe, 52ms at startup).
 - **GovernorIsolation** from exp10d is NOT a budget controller. It is EMA telemetry for DET-1 (order-independence check). Do not confuse!
 
+**Governor EMA scope by pipeline mode:**
+| Mode | Governor EMA | Rationale |
+|------|-------------|-----------|
+| Batch (L0→L1→L2 separately) | ✅ Needed | Feedback between full L2 steps |
+| Frozen tree reuse (repeated L2) | ✅ Needed | Adaptation between L2 query runs |
+| Streaming (cluster-by-cluster) | ❌ Not needed / harmful | Cross-cluster bleed: clusters are heterogeneous, RED zone feedback should not tighten GREEN zones |
+
+In streaming mode, budget is controlled by global budget cap + per-cluster WasteBudget. EMA would add noise (cross-cluster bleed).
+
+**Open question: smooth budget control in streaming.** Currently streaming has only binary mechanisms ("go" / "stop"), no smooth regulation. Planned solution — combination of two approaches:
+- **(B) L0-informed budget allocation:** L0 already knows zone (GREEN/YELLOW/RED) for each cluster. Allocate budget proportional to expected utility, not just size. GREEN → more budget (refinement is productive), RED → less (many rejects expected).
+- **(C) Adaptive budget redistribution:** if cluster N didn't spend its quota — remainder flows to subsequent clusters. Not EMA-feedback, but forward carry: "previous didn't spend → you get more".
+Must be tested in the sweep alongside Governor EMA (batch/reuse).
+
 **3. WasteBudget + StrictnessTracker** — "emergency stop" (safety, per-unit memory)
 - StrictnessTracker: per-unit multiplier, escalation x1.5 on reject, decay x0.9 per clean step
 - WasteBudget: R_max = floor(B_step x omega), each reject costs strictness_multiplier units (not 1.0!), force-stop when waste >= R_max

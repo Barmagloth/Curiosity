@@ -272,6 +272,15 @@ Metaphor: dog on leash. Hardware parameter = leash length. EMA = how far the dog
 * PSNR slightly lower (−0.24 dB clean, −0.68 dB shift): fixed threshold "eats" the best tiles upfront, budget governor spreads more evenly. At equal total cost, budget governor loses on peak quality but wins on spending predictability.
 * **Conclusion:** budget governor is needed for budget control, not quality. Without it, the budget is a declaration.
 
+**Governor EMA scope by pipeline mode:**
+| Mode | Governor EMA | Rationale |
+|------|-------------|-----------|
+| Batch (L0→L1→L2 separately) | ✅ Needed | Feedback between full L2 steps |
+| Frozen tree reuse (repeated L2) | ✅ Needed | Adaptation between L2 query runs |
+| Streaming (cluster-by-cluster) | ❌ Not needed / harmful | Cross-cluster bleed: clusters are heterogeneous, RED zone feedback should not tighten GREEN zones |
+
+In streaming mode, budget is controlled by global budget cap + per-cluster WasteBudget. EMA would add noise.
+
 ## 5.2 Governor Applicability Condition
 
 Governor works only if the strictness range actually changes the number of candidates.

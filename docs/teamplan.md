@@ -152,6 +152,7 @@
 |-------------|----------|-------------|
 | **Exp RG-flow verification** | Проверить, ведёт ли refinement tree себя как RG-flow траектория. Basin membership как семантическая метрика (exp18 показал: бассейны не формируются в single-pass при 30% бюджете — нужен multi-pass). Верифицировать: сходимость к фиксированным точкам, стабильность бассейнов, универсальность при разных парах (R, Up). | Multi-pass pipeline из Phase 4 |
 | **Governor EMA restoration** | Восстановить EMA feedback из exp0.8 как глобальный термостат strictness. Ортогонален StrictnessTracker (per-unit reputation) и WasteBudget (kill switch). Обеспечивает плавную регуляцию intake, не только аварийную остановку. Приоритет: оптимизация, не критичен. | Phase 4 pipeline |
+| **Exp Governor-sweep** | Валидация Governor EMA на эмулированных конфигурациях железа. Sweep: 3 режима pipeline (batch, frozen reuse, streaming) × 3 эмулированных hardware profile (low/mid/high budget) × 4 пространства × 20 seeds. Метрики: PSNR, wall time, reject rate, waste exhaustion rate, compliance. Kill criteria: (1) batch+reuse: Governor EMA улучшает compliance vs no-governor; (2) streaming: Governor EMA НЕ ухудшает PSNR vs no-governor. Зависимости: Governor EMA restoration (восстановить feedback loop из exp0.8). | Governor EMA restoration |
 
 ---
 

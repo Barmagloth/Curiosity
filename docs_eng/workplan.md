@@ -233,6 +233,10 @@ Each layer narrows the working set for the next. Reusability increases bottom-up
 
 RG-flow verification (post-Phase 4): basin membership requires multi-pass to form basins. Exp18 showed r=0.019 in single-pass (FAIL). Connected to: Exp0.10 (R,Up) sensitivity (concept section 8.10).
 
+### Governor EMA Restoration + Sweep
+
+Reconnect EMA feedback from exp0.8 as global strictness thermostat (lost during Phase 2 pipeline assembly). Includes sweep test: batch/reuse/streaming x low/mid/high hardware x 4 spaces x 20 seeds. Metrics: PSNR, time, reject rate, compliance.
+
 ---
 
 ## What Remains Useful Even If "The Whole Thing" Doesn't Pan Out
