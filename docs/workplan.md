@@ -229,7 +229,17 @@ RG-flow верификация (пост-Phase 4): basin membership требуе
 
 ### Governor EMA restoration + sweep
 
-Восстановить EMA feedback из exp0.8 как глобальный термостат strictness (потерян при сборке Phase 2 pipeline). Включает sweep-тест: batch/reuse/streaming × low/mid/high hardware × 4 spaces × 20 seeds. Метрики: PSNR, time, reject rate, compliance.
+Восстановить EMA feedback из exp0.8 как глобальный термостат strictness (потерян при сборке Phase 2 pipeline). Двухслойная архитектура: hardware parameter задаёт диапазон, EMA feedback управляет внутри диапазона. Применим в batch и frozen reuse; в streaming НЕ применим (cross-cluster bleed).
+
+### Streaming budget control (B+C)
+
+Плавное управление бюджетом для streaming mode (сейчас только бинарные go/stop):
+- **(B) L0-informed allocation:** бюджет по кластерам пропорционально ожидаемой полезности (zone GREEN → больше, RED → меньше), а не просто по размеру.
+- **(C) Adaptive redistribution:** неиспользованный бюджет кластера перетекает к следующим (forward carry). Не EMA-feedback, а перераспределение остатка.
+
+### Governor + B+C sweep test
+
+Sweep: 3 режима (batch/reuse/streaming) × 3 hardware profile (low/mid/high) × 4 spaces × 20 seeds. Метрики: PSNR, time, reject rate, compliance. Kill: batch/reuse — EMA улучшает compliance; streaming — B+C ≥ equal-allocation baseline.
 
 ---
 
