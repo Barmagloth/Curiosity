@@ -1,6 +1,24 @@
-# Session Handoff — Curiosity Phase 3
+# Session Handoff — Curiosity (Phase 4 next)
 
 Документ для новой сессии AI-оркестратора. Содержит полный контекст для немедленного продолжения работы.
+
+---
+
+## English Summary
+
+**Current status:** Phases 0–3.5 DONE. Next up: Phase 4.
+
+- **Phase 0** (18 Mar 2026): Environment setup, halo cross-space validation, SC-baseline.
+- **Phase 1** (20 Mar 2026): P0 Layout closed (D_direct for grids, hybrid for trees, D_blocked for spatial graphs, A_bitset fallback). DET-1 and DET-2 PASS.
+- **Phase 2** (20 Mar 2026): End-to-end pipeline assembled and validated. SC-enforce integrated. Topo profiling integrated.
+- **Enox infrastructure** (21 Mar 2026): Four observation-only patterns (RegionURI, DecisionJournal, MultiStageDedup, PostStepSweep).
+- **Phase 3** (22 Mar 2026): Exp14 anchors (grid PASS, graph/tree FAIL). Exp15 LCA-distance FAIL. Exp15b bushes FAIL. Exp16 C-pre PASS, Track C UNFREEZE.
+- **Phase 3.5** (23 Mar 2026): Three-layer rho decomposition (L0 topology, L1 presence with cascade quotas, L2 query). Streaming pipeline. 1080 configs, reusability 12/12 PASS. Industry benchmarks.
+- **Next: Phase 4** — P4a downstream consumer test, P4b matryoshka, C-optimization scoring. Bushes revisit planned after Track C.
+
+**Working PC:** PC 2 (NVIDIA RTX 2070, 8 GB, CUDA 12.8). Working directory: `R:\Projects\Curiosity`.
+
+---
 
 ## Где мы
 

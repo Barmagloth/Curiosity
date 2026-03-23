@@ -61,6 +61,18 @@ State space X (arbitrary nature)
 - Weights EMA-smoothed with hysteresis
 - Normalization: quantile (rank-based), not absolute
 
+### Three-Layer Rho Decomposition (Phase 3.5, exp17)
+
+rho is decomposed into three architectural layers:
+
+| Layer | Purpose | Recomputation frequency |
+|-------|---------|------------------------|
+| L0 (topology) | Structural properties of the space (curvature, connectivity) | Rarely (on tree rebuild) |
+| L1 (presence) | Cascade quotas, dirty signatures | Every step (incremental) |
+| L2 (query) | Specific query (residual, HF, utility-weighted combination) | Every query |
+
+Cascade quotas (Variant C) manage budget across layers. Streaming pipeline enables L0/L1 reuse between queries. Reusability validated 12/12 PASS (min 0.838) across 1080 configurations.
+
 ---
 
 ## Component 2: Halo (Boundary-Aware Blending)

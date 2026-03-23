@@ -1,5 +1,7 @@
 # Curiosity — Adaptive Refinement System
 
+> **[English version / Английская версия](README_ENG.md)**
+
 ## Что это
 
 Curiosity — исследовательский ML-проект по созданию системы **адаптивного уточнения** (adaptive refinement) для абстрактных вычислительных пространств.
@@ -20,9 +22,9 @@ Curiosity — исследовательский ML-проект по созда
 
 Серия экспериментов Exp0.1–Exp0.8 **завершена**. Результаты консолидированы в документацию v1.8. Система валидирована: адаптивное уточнение работает и превосходит random selection при ограниченном бюджете. В v1.6 добавлен (обновлён в v1.7) Scale-Consistency Invariant — формализация требования «не сломать фичи». В v1.8 добавлены инварианты детерминизма (DET-1, DET-2).
 
-Phase 0 (Exp0.1–Exp0.8) завершена. Phase 1 (P0 layout, DET-1, sensitivity, scale-consistency) завершена. P0 Layout **закрыт** — финальная policy по всем типам пространств зафиксирована в `docs/layout_selection_policy.md`. Серия exp10 (8 субэкспериментов, 158 000+ trials) определила оптимальный layout для каждого типа пространства.
+Phase 0 (Exp0.1–Exp0.8) завершена. Phase 1 (P0 layout, DET-1, sensitivity, scale-consistency) завершена. P0 Layout **закрыт** — финальная policy по всем типам пространств зафиксирована в `docs/layout_selection_policy.md`. Серия exp10 (8 субэкспериментов, 158 000+ trials) определила оптимальный layout для каждого типа пространства. Phase 2 (end-to-end pipeline validation) завершена. Phase 3 (anchors, LCA-distance, bushes, C-pre) завершена — Track C UNFREEZE. Phase 3.5 (three-layer rho decomposition, exp17) завершена — архитектурная декомпозиция ρ на L0/L1/L2, reusability 12/12 PASS.
 
-Следующий рубеж — **Phase 2** (end-to-end pipeline validation).
+Следующий рубеж — **Phase 4** (P4a: downstream consumer test, P4b: matryoshka).
 
 ## Структура репозитория
 
@@ -44,9 +46,12 @@ docs/                              — документация (русский)
   handoff.md                       — документ передачи проекта (legacy)
   experiment_results.md            — результаты Exp0.1–Exp0.8
   concept_v1.7_historical.md       — историческая версия (после Phase 0)
+  concept_v1.6_historical.md       — историческая версия (после Phase 0)
   concept_v1.5_historical.md       — историческая версия (после Exp0.1–0.8)
   concept_v1.4_historical.md       — ранняя версия (после Exp0.2–0.3)
   handoff_v1.5_to_v1.6.md          — changelog v1.5→v1.6
+  environment_1.md                 — окружение PC 1
+  environment_2.md                 — окружение PC 2 (RTX 2070, CUDA)
 docs_eng/                          — documentation (English)
   [зеркальная структура docs/]
 experiments/
@@ -67,8 +72,19 @@ experiments/
   exp10h_cross_space/              — P0: cross-space (vector_grid + tree)
   exp10i_graph_blocks/             — P0: блочная адресация для графов
   exp10j_tree_perlevel/            — P0: per-level break-even для деревьев
+  exp10k_cost_surface/             — P0: cost-surface analysis
   exp11_dirty_signatures/          — dirty signature compression
+  exp11a_det2_stability/           — DET-2: cross-seed stability
   exp12a_tau_parent/               — data-driven τ_parent по глубине
+  exp13_segment_compression/       — сжатие сегментов дерева
+  exp14_anchors/                   — Phase 3: anchors + periodic rebuild
+  exp14a_sc_enforce/               — SC-enforce: three-tier pass/damp/reject
+  exp15_lca_semantics/             — Phase 3: LCA-distance vs feature similarity
+  exp15b_bushes/                   — Phase 3: leaf-path clustering (bushes)
+  exp16_cpre_profiles/             — Phase 3: C-pre trajectory profiles → Track C UNFREEZE
+  exp17_three_layer_rho/           — Phase 3.5: three-layer rho (L0/L1/L2)
+  exp_phase2_pipeline/             — Phase 2: full pipeline assembly
+  exp_phase2_e2e/                  — Phase 2: end-to-end validation
   exp_deferred_revisit/            — research note: отложенные вопросы
   halo_crossspace/                 — halo applicability across space types
   p2a_sensitivity/                 — sensitivity sweep порогов гейта

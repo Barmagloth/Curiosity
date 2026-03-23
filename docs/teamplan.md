@@ -4,7 +4,7 @@
 
 Проект Curiosity завершил серию Exp0.1–0.8. Впереди P0–P4 + SC-baseline + кросс-пространственная валидация Halo. Задача — распределить работу на 4+ параллельных исполнителя при условии, что Barmagloth выступает архитектором (принимает решения на развилках, ревьюит результаты, не пишет код).
 
-**Ограничение**: GPU — AMD Radeon 780M (нет CUDA). Используется DirectML + PyTorch (Python 3.12). CPU venv на Python 3.13.
+**Ограничение**: GPU — NVIDIA RTX 2070 8 GB (CUDA 12.8, PC 2). Используется PyTorch 2.10.0+cu128 (Python 3.12). Ранее: AMD Radeon 780M (PC 1, DirectML) — не используется с Фазы 1.
 
 ---
 
@@ -97,13 +97,22 @@
 
 ---
 
-### Фаза 3: Семантика + rebuild (Неделя 9–11)
+### ✅ Фаза 3: Семантика + rebuild (Неделя 9–11) — ЗАВЕРШЕНА (22 марта 2026)
 
 | Поток | Исполнитель | Задача | Зависимости |
 |-------|-------------|--------|-------------|
 | **S1: P1-B3 anchors** | Executor A/B | Periodic rebuild + anchor insertion. Divergence < 5% vs full rebuild. | P1-B1 |
 | **S2: P3a LCA-distance** | Executor C | Корреляция LCA-distance с feature similarity. Correlation > 0.3 → дерево семантично. | P1-B1 (compressed tree) |
 | **S3: P3b bushes** | Executor D | Кластеры leaf-paths. Silhouette > 0.4 + стабильность. | P3a (можно параллельно) |
+| **S4: C-pre (exp16)** | — | Trajectory profiles: 2-7 natural clusters, Gap>1.0, Silhouette>0.3 на 4 пространствах. | Pipeline ready |
+
+**Результаты Фазы 3:**
+- S1 (Exp14 anchors): grid PASS, graph/tree FAIL. Divergence > 5% на нерегулярных топологиях.
+- S2 (Exp15 LCA-distance): FAIL. Корреляция < 0.3.
+- S3 (Exp15b bushes): FAIL. Silhouette > 0.4 (кластеры реальны), но ARI < 0.6 (нестабильны между seeds). Revisit запланирован после Track C.
+- S4 (Exp16 C-pre): PASS. Trajectory profiles обнаружены → **Track C UNFREEZE**.
+
+**Gate: Фаза 3 → Фаза 3.5: PASSED** (частично — anchors/LCA/bushes FAIL, но C-pre PASS открыл Track C и мотивировал трёхслойную декомпозицию ρ).
 
 ---
 
@@ -165,8 +174,8 @@
 | coarse_shift? | Генератор исправлен на spatially coherent |
 | Конец Фазы 1 | ✅ Решено (20 марта 2026). Layout: D_direct/гибрид/D_blocked/A_bitset по типам. P2b не нужен. SC pass. Morton убит. | Все потоки PASS |
 | Конец Фазы 2 | ✅ Решено (21 марта 2026). SC-enforce: pass/damp/reject. Compression: 60-66%. Enox: 4 observation-only patterns. | Все потоки PASS |
-| Конец Фазы 3 | Дерево семантично? C unfreezes? | P3a, P3b отчёты |
-| Конец Фазы 4 | Instrument Readiness Gate пройден? Переход на Track B? | P4a, P4b, C-pre |
+| Конец Фазы 3 | ✅ Решено (22 марта 2026). Anchors: grid PASS, graph/tree FAIL. LCA-distance FAIL. Bushes FAIL (ARI<0.6). C-pre PASS → Track C UNFREEZE. | Exp14–16 отчёты |
+| Конец Фазы 4 | Instrument Readiness Gate пройден? Переход на Track B? | P4a, P4b (C-pre уже DONE) |
 
 ---
 

@@ -1,5 +1,7 @@
 # Curiosity — Adaptive Refinement System
 
+> **[Russian version / Русская версия](README.md)**
+
 ## What Is This
 
 Curiosity is a research ML project building a system of **adaptive refinement** for abstract computational spaces.
@@ -20,9 +22,9 @@ The goal is to reshape the search space so that:
 
 The experiment series Exp0.1–Exp0.8 is **complete**. Results are consolidated into v1.8 documentation. The system is validated: adaptive refinement works and outperforms random selection under budget constraints. The Scale-Consistency Invariant has been formalized. v1.8 adds determinism invariants (DET-1, DET-2).
 
-Phase 0 (Exp0.1–Exp0.8) complete. Phase 1 (P0 layout, DET-1, sensitivity, scale-consistency) complete. P0 Layout **closed** — final layout selection policy across all space types documented in `docs/layout_selection_policy.md`. The exp10 series (8 sub-experiments, 158,000+ trials) determined the optimal layout for each space type.
+Phase 0 (Exp0.1–Exp0.8) complete. Phase 1 (P0 layout, DET-1, sensitivity, scale-consistency) complete. P0 Layout **closed** — final layout selection policy across all space types documented in `docs/layout_selection_policy.md`. The exp10 series (8 sub-experiments, 158,000+ trials) determined the optimal layout for each space type. Phase 2 (end-to-end pipeline validation) complete. Phase 3 (anchors, LCA-distance, bushes, C-pre) complete — Track C UNFREEZE. Phase 3.5 (three-layer rho decomposition, exp17) complete — architectural decomposition of rho into L0/L1/L2, reusability 12/12 PASS.
 
-Next frontier — **Phase 2** (end-to-end pipeline validation).
+Next frontier — **Phase 4** (P4a: downstream consumer test, P4b: matryoshka).
 
 ## Repository Structure
 
@@ -62,8 +64,19 @@ experiments/
   exp10h_cross_space/              — P0: cross-space (vector_grid + tree)
   exp10i_graph_blocks/             — P0: block-based addressing for graphs
   exp10j_tree_perlevel/            — P0: per-level tree break-even analysis
+  exp10k_cost_surface/             — P0: cost-surface analysis
   exp11_dirty_signatures/          — dirty signature compression
+  exp11a_det2_stability/           — DET-2: cross-seed stability
   exp12a_tau_parent/               — data-driven τ_parent per depth
+  exp13_segment_compression/       — tree segment compression
+  exp14_anchors/                   — Phase 3: anchors + periodic rebuild
+  exp14a_sc_enforce/               — SC-enforce: three-tier pass/damp/reject
+  exp15_lca_semantics/             — Phase 3: LCA-distance vs feature similarity
+  exp15b_bushes/                   — Phase 3: leaf-path clustering (bushes)
+  exp16_cpre_profiles/             — Phase 3: C-pre trajectory profiles (Track C UNFREEZE)
+  exp17_three_layer_rho/           — Phase 3.5: three-layer rho (L0/L1/L2)
+  exp_phase2_pipeline/             — Phase 2: full pipeline assembly
+  exp_phase2_e2e/                  — Phase 2: end-to-end validation
   exp_deferred_revisit/            — research note: deferred questions
   halo_crossspace/                 — halo applicability across space types
   p2a_sensitivity/                 — sensitivity sweep of gate thresholds

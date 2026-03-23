@@ -762,7 +762,7 @@ quota = max(1, ceil(cluster_size × min_survival_ratio))
 - Нет magic numbers — единственный параметр (min_survival_ratio) привязан к budget_fraction
 - Информация каскадируется: L0 topology → L1 quotas → L2 budget
 
-**Результат:** scalar_grid 1000 перешёл с 0.725 FAIL → 0.928 PASS.
+**Результат:** scalar_grid 1000 перешёл с 0.725 FAIL → 0.863 PASS (финальный sweep, 20 seeds).
 
 ### Streaming Pipeline
 
@@ -840,5 +840,49 @@ Cluster_2:                           [L0 score] → [L1 filter] → [L2 refine]
 | `experiments/exp17_three_layer_rho/exp17_three_layer_rho.py` | Runner с --chunk для параллельного запуска |
 | `experiments/exp17_three_layer_rho/config17.py` | Параметризация (scales, thresholds, approaches) |
 | `experiments/exp17_three_layer_rho/results/` | JSON результаты по чанкам |
+
+---
+
+# Experiment Results (English Summary)
+
+All experiments through exp17 are complete. Phase 3 and Phase 3.5 are DONE.
+
+## Phase 0 (exp01--exp08): Core Validation
+
+- **Exp0.1--0.2:** Adaptive refinement confirmed (MSE/PSNR winrate 98-100%).
+- **Exp0.3:** Halo (overlap >= 3, cosine feathering) mandatory for boundary artifacts.
+- **Exp0.4--0.5:** Residual-only signal breaks under noise (correlation drops 0.90 to 0.54).
+- **Exp0.6--0.7b:** Two-stage gate solves clean vs degraded mode selection (+0.77-1.49 dB on noise).
+- **Exp0.8:** EMA budget governor mandatory (StdCost -50%, penalty -85%). Phase schedule not confirmed.
+- **Halo cross-space:** Grid/graph PASS, tree FAIL. Rule: boundary parallelism >= 3.
+- **SC-baseline:** D_hf AUC=0.806, D_parent (fixed) AUC=0.853, d=1.491. Cross-space 0.824-1.000.
+
+## Phase 1 (exp10--exp14a): Layout, Determinism, Infrastructure
+
+- **Exp10:** Compact-with-reverse-map KILLED (VRAM +38.6%). Grid baseline.
+- **Exp10d:** DET-1 PASS 240/240 (bitwise determinism CPU+CUDA).
+- **Exp10e--10j:** Layout resolved per space type. D_direct for grid, hybrid for tree, D_blocked conditional for spatial graph.
+- **Exp11:** 12-bit dirty signatures PASS (AUC 0.91-1.0).
+- **DET-2 (exp11a):** Cross-seed stability PASS 8/8.
+- **Exp12a:** Data-driven tau_parent PASS (per-space thresholds, specificity 1.000).
+- **Exp13:** Segment compression PASS (66% on depth-7 trees, thermodynamic guards).
+- **Exp14a:** SC-enforce PASS (three-tier pass/damp/reject + adaptive tau for trees).
+- **Phase 2 E2E:** 240 configs, all kill criteria passed. Topo profiling integrated (97% accuracy, P50=56ms).
+- **Enox infrastructure:** 4 observation-only patterns. Zero functional change. DET-1 PASS.
+
+## Phase 3 (exp14--exp16): Tree Semantics and Rebuild
+
+- **Exp14 (anchors):** 720 configs. Grid divergence=0.000 (PASS). Graph/tree divergence>0.20 (FAIL). dirty_0.05 best strategy (mean_div=0.204). Kill criterion div<0.05: graph/tree ALL FAIL. CONDITIONAL PASS.
+- **Exp15 (LCA-distance):** 80 configs. Spearman mean=0.135 across spaces. Kill r>0.3: ALL FAIL. scalar_grid closest at 0.299. Tree is not semantic.
+- **Exp15b (bushes):** 80 configs. Silhouette>0.4 PASS all spaces. ARI<=0.210 FAIL all spaces. k_mode=2 everywhere. Clusters exist but not stable across seeds.
+- **Exp16 (C-pre profiles):** 80 configs. Gap>1.0 AND Silhouette>0.3: ALL 4 spaces PASS. Track C UNFREEZE.
+
+## Phase 3.5 (exp17): Three-Layer Rho Decomposition
+
+- **1080 configs** (4 spaces x 3 scales x 8 approaches x 20 seeds).
+- **Reusability:** 12/12 PASS (min 0.838). Frozen tree is reusable across queries.
+- **Cascade quotas (Variant C):** Fixed scalar_grid 1000 from 0.725 FAIL to 0.863 PASS. Quota = max(1, ceil(cluster_size x min_survival_ratio)).
+- **Streaming pipeline:** 10-20% faster than batch on grids.
+- **Industry baselines:** kdtree, quadtree, wavelets, leiden. kdtree faster on single query; three_layer wins at >=2 queries on tree_hierarchy.
 
 ---
