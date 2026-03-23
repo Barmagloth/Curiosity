@@ -221,3 +221,11 @@ Layer 2: ЗАПРОС           — "из того что лежит — где 
 
 ---
 
+## Будущие исследования (пост-Phase 4)
+
+### RG-flow verification
+
+RG-flow верификация (пост-Phase 4): basin membership требует multi-pass для формирования бассейнов. Exp18 показал r=0.019 в single-pass (FAIL). Связано с: Exp0.10 (R,Up) sensitivity (concept section 8.10).
+
+---
+

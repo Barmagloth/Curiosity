@@ -48,6 +48,7 @@ v2.1: added DET level (determinism and reproducibility) — cross-infrastructure
 | `exp15b_bushes/` | Leaf-path clustering: silhouette + cross-seed ARI stability. 80 configs. Silhouette >0.4 all spaces, but ARI <0.21 everywhere. | P3b | ❌ FAIL (ARI unstable) |
 | `exp16_cpre_profiles/` | C-pre trajectory profile clustering. 80 configs. Gap >1.0, Silhouette >0.3 all spaces. Track C UNFREEZE signal. | C-pre | ✅ PASS (UNFREEZE) |
 | `exp17_three_layer_rho/` | Three-layer rho decomposition. 1080 configs (4 spaces x 3 scales x 8 approaches x 20 seeds). Cascade quotas (Variant C). Streaming pipeline. Reusability 12/12 PASS (min 0.838). Industry benchmarks (kdtree, quadtree, wavelets, leiden). | Phase 3.5 | ✅ PASS (reusability) |
+| `exp18_basin_membership/` | Basin membership vs feature similarity. 80 configs. Point-biserial r=0.019, kill r>0.3: FAIL. Basins degenerate in single-pass. Deferred to post-multi-pass. | RG-flow (post-Phase 4) | ❌ FAIL (deferred) |
 
 **Phase 2 note:** Graph clustering upgraded from k-means to Leiden (community detection), validated on 10 pathological topologies: Swiss Roll, Barbell, Hub-Spoke, Ring of Cliques, Bipartite, Erdos-Renyi, Grid, Planar Delaunay, Mobius strip.
 
@@ -479,8 +480,9 @@ sub-experiments within levels (B1–B3 in P1). Result: confusion.
 | 11b | P3b | bush clustering (sil>0.4 but ARI<0.21 — unstable) | exp15b ❌ FAIL |
 | 12 | C-pre | trajectory profile clustering (gap>1.0, sil>0.3 — Track C UNFREEZE) | exp16 ✅ PASS |
 | 13 | Three-layer rho | Decompose monolithic rho into L0 (topology) -> L1 (presence) -> L2 (query). Cascade quotas, streaming, industry benchmarks. | exp17 ✅ PASS |
+| 14 | RG-flow | Basin membership vs feature similarity (r=0.019, FAIL — deferred to post-multi-pass) | exp18 ❌ FAIL (deferred) |
 
-All items through Phase 3.5 are complete (exp01--exp17).
+All items through exp18 are complete (exp01--exp18). exp18 deferred to post-Phase 4.
 
 Sequential integer numbering: exp10, exp11, ..., exp17. Sub-experiments use lowercase suffix: exp10a, exp10b. Folder format: `exp{N}{suffix}_{short_name}/`.
 

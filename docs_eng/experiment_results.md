@@ -829,3 +829,17 @@ Four standard approaches for comparison:
 | `experiments/exp17_three_layer_rho/exp17_three_layer_rho.py` | Runner with --chunk for parallel execution |
 | `experiments/exp17_three_layer_rho/config17.py` | Parameterization (scales, thresholds, approaches) |
 | `experiments/exp17_three_layer_rho/results/` | JSON results per chunk |
+
+---
+
+## Exp18 — Basin Membership vs Feature Similarity (RG-flow Hypothesis)
+
+**Question:** Does the refinement tree behave as an RG-flow trajectory? Can basin membership serve as a semantic metric?
+
+**Design:** 80 configs. Point-biserial correlation between basin membership (belonging to the same basin of attraction) and feature similarity. Kill criterion: r > 0.3.
+
+**Result:** Point-biserial r = 0.019. Kill criterion r > 0.3: **FAIL**.
+
+**Root cause:** Basins degenerate in single-pass at 30% budget — tree is not deep enough to form stable basins of attraction. Requires multi-pass for sufficient depth.
+
+**Conclusion:** RG-flow hypothesis not disproven, but not confirmed under current conditions. Deferred to post-multi-pass (after Phase 4). Connected to: Exp0.10 (R,Up) sensitivity (concept section 8.10).

@@ -227,6 +227,14 @@ Each layer narrows the working set for the next. Reusability increases bottom-up
 
 ---
 
+## Future Research (Post-Phase 4)
+
+### RG-flow Verification
+
+RG-flow verification (post-Phase 4): basin membership requires multi-pass to form basins. Exp18 showed r=0.019 in single-pass (FAIL). Connected to: Exp0.10 (R,Up) sensitivity (concept section 8.10).
+
+---
+
 ## What Remains Useful Even If "The Whole Thing" Doesn't Pan Out
 - Content-addressable cache.
 - Incremental recomputation.

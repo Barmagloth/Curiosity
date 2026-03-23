@@ -843,6 +843,20 @@ Cluster_2:                           [L0 score] → [L1 filter] → [L2 refine]
 
 ---
 
+## Exp18 — Basin membership vs feature similarity (RG-flow hypothesis)
+
+**Вопрос:** Ведёт ли refinement tree себя как RG-flow траектория? Можно ли использовать basin membership как семантическую метрику?
+
+**Дизайн:** 80 конфигураций. Point-biserial корреляция между basin membership (принадлежность к одному бассейну аттракции) и feature similarity. Kill criterion: r > 0.3.
+
+**Результат:** Point-biserial r = 0.019. Kill criterion r > 0.3: **FAIL**.
+
+**Причина:** Бассейны вырождены в single-pass при 30% бюджете — дерево недостаточно глубокое для формирования стабильных бассейнов аттракции. Нужен multi-pass для достаточной глубины.
+
+**Вывод:** RG-flow гипотеза не опровергнута, но не подтверждена в текущих условиях. Deferred до post-multi-pass (после Phase 4). Связано с Exp0.10 (R,Up) sensitivity (concept section 8.10).
+
+---
+
 # Experiment Results (English Summary)
 
 All experiments through exp17 are complete. Phase 3 and Phase 3.5 are DONE.
@@ -884,5 +898,10 @@ All experiments through exp17 are complete. Phase 3 and Phase 3.5 are DONE.
 - **Cascade quotas (Variant C):** Fixed scalar_grid 1000 from 0.725 FAIL to 0.863 PASS. Quota = max(1, ceil(cluster_size x min_survival_ratio)).
 - **Streaming pipeline:** 10-20% faster than batch on grids.
 - **Industry baselines:** kdtree, quadtree, wavelets, leiden. kdtree faster on single query; three_layer wins at >=2 queries on tree_hierarchy.
+
+## Exp18: Basin Membership (RG-flow Hypothesis)
+
+- **80 configs.** Point-biserial r = 0.019. Kill r > 0.3: FAIL.
+- Basins degenerate in single-pass at 30% budget. Deferred to post-multi-pass (after Phase 4).
 
 ---
