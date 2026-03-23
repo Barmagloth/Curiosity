@@ -12,7 +12,9 @@ Curiosity project.
 - **Enox infrastructure** — DONE (March 21, 2026). Four observation-only patterns (RegionURI, DecisionJournal, MultiStageDedup, PostStepSweep) — pure annotation, never modify pipeline state.
 - Phase 3 **complete** (March 22, 2026). Exp14 anchors: grid PASS, graph/tree FAIL. Exp15 LCA-distance: FAIL. Exp15b bushes: FAIL. Exp16 C-pre: PASS → **Track C UNFREEZE**.
 - Phase 3.5 **complete** (March 23, 2026). Exp17 three-layer rho: architectural decomposition of rho into L0 (topology) -> L1 (presence, cascade quotas) -> L2 (query). Streaming pipeline. 1080 configs, reusability 12/12 PASS. Industry benchmarks (kdtree, quadtree, wavelets, leiden).
-- **Next step — Phase 4** (P4a: downstream consumer test, P4b: matryoshka) + C-optimization scoring (roadmap). Bushes revisit planned after Track C.
+- Exp18 **complete** (March 23, 2026). Basin membership FAIL (r=0.019). RG-flow basins don't form in single-pass. Deferred to post-multi-pass.
+- **Budget control architecture:** Three orthogonal mechanisms: (1) L1 cascade quotas (structural), (2) Governor EMA (hardware-adaptive, batch/reuse only — NOT streaming), (3) WasteBudget + StrictnessTracker (self-tightening noose, safety). Streaming uses Institutional Inequality Formula: W = N×(1-ECR)^γ + forward carry. γ sweep planned: {1.0..4.0}.
+- **Next step — Phase 4:** P4a downstream consumer test, P4b matryoshka, MultiStageDedup test, Governor EMA restoration + sweep (3 modes × 3 hw × 6 γ × 4 spaces × 20 seeds = 4320 configs). Bushes revisit after Track C. RG-flow after multi-pass.
 
 Workstation: **PC 2** (NVIDIA RTX 2070, 8 GB, CUDA 12.8). Working directory: `R:\Projects\Curiosity`.
 
@@ -21,7 +23,7 @@ Workstation: **PC 2** (NVIDIA RTX 2070, 8 GB, CUDA 12.8). Working directory: `R:
 | # | File | Why |
 |---|------|-----|
 | 1 | `docs/session_handoff.md` | **This file** — current status, what to do next |
-| 2 | `docs/concept_v1.8.md` | Canonical concept (current) |
+| 2 | `docs/concept_v2.0.md` | Canonical concept (current) |
 | 3 | `docs/teamplan.md` | Plan with Phase 0-3.5 marks, Phase 4+ descriptions |
 | 4 | `docs/experiment_hierarchy.md` | Dependency graph, priorities, exp10+ numbering |
 | 5 | `docs/workplan.md` | Modules A-H, C-optimization roadmap |

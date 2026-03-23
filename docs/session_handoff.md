@@ -14,7 +14,9 @@
 - **Enox infrastructure** (21 Mar 2026): Four observation-only patterns (RegionURI, DecisionJournal, MultiStageDedup, PostStepSweep).
 - **Phase 3** (22 Mar 2026): Exp14 anchors (grid PASS, graph/tree FAIL). Exp15 LCA-distance FAIL. Exp15b bushes FAIL. Exp16 C-pre PASS, Track C UNFREEZE.
 - **Phase 3.5** (23 Mar 2026): Three-layer rho decomposition (L0 topology, L1 presence with cascade quotas, L2 query). Streaming pipeline. 1080 configs, reusability 12/12 PASS. Industry benchmarks.
-- **Next: Phase 4** — P4a downstream consumer test, P4b matryoshka, C-optimization scoring. Bushes revisit planned after Track C.
+- **Exp18** (23 Mar 2026): Basin membership FAIL (r=0.019). RG-flow basins don't form in single-pass. Deferred to post-multi-pass.
+- **Budget control architecture:** Three orthogonal mechanisms: (1) L1 cascade quotas (structural), (2) Governor EMA (hardware-adaptive, batch/reuse only — NOT streaming), (3) WasteBudget + StrictnessTracker (self-tightening noose, safety). Streaming uses Institutional Inequality Formula: W = N×(1-ECR)^γ + forward carry. γ sweep planned: {1.0..4.0}.
+- **Next: Phase 4** — P4a downstream consumer test, P4b matryoshka, MultiStageDedup test, Governor EMA restoration + sweep (3 modes × 3 hw × 6 γ × 4 spaces × 20 seeds = 4320 configs). Bushes revisit after Track C. RG-flow after multi-pass.
 
 **Working PC:** PC 2 (NVIDIA RTX 2070, 8 GB, CUDA 12.8). Working directory: `R:\Projects\Curiosity`.
 
@@ -30,7 +32,9 @@
 - **Enox-инфраструктура** — ✅ DONE (21 марта 2026). Четыре observation-only паттерна (RegionURI, DecisionJournal, MultiStageDedup, PostStepSweep) — чистая аннотация, не меняют pipeline state.
 - Фаза 3 **завершена** (22 марта 2026). Exp14 anchors: grid PASS, graph/tree FAIL. Exp15 LCA-distance: FAIL. Exp15b bushes: FAIL. Exp16 C-pre: PASS → **Track C UNFREEZE**.
 - Фаза 3.5 **завершена** (23 марта 2026). Exp17 three-layer rho: архитектурная декомпозиция ρ на L0 (topology) → L1 (presence, cascade quotas) → L2 (query). Streaming pipeline. 1080 конфигов, reusability 12/12 PASS. Industry benchmarks (kdtree, quadtree, wavelets, leiden).
-- **Следующий шаг — Фаза 4** (P4a: downstream consumer test, P4b: matryoshka) + C-оптимизация scoring (roadmap). Bushes revisit запланирован после Track C.
+- Exp18 **завершён** (23 марта 2026). Basin membership FAIL (r=0.019). RG-flow бассейны не формируются в single-pass. Deferred после multi-pass.
+- **Бюджетный контроль:** три ортогональных механизма: (1) L1 cascade quotas (структурный), (2) Governor EMA (hardware-adaptive, batch/reuse only — НЕ streaming), (3) WasteBudget + StrictnessTracker (удавка, safety). Streaming: формула институционального неравенства W = N×(1-ECR)^γ + forward carry. γ sweep запланирован: {1.0..4.0}.
+- **Следующий шаг — Фаза 4:** P4a downstream consumer test, P4b matryoshka, MultiStageDedup test, Governor EMA restoration + sweep (3 режима × 3 hw × 6 γ × 4 spaces × 20 seeds = 4320 конфигов). Bushes revisit после Track C. RG-flow после multi-pass.
 
 Рабочий ПК: **PC 2** (NVIDIA RTX 2070, 8 GB, CUDA 12.8). Рабочая директория: `R:\Projects\Curiosity`.
 
