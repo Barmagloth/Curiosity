@@ -352,6 +352,8 @@ Terminology from the exp10 experiment series (P0 layout). Full methodology: `doc
 
 **PostStepSweep** — post-step scan for identical siblings in tree_hierarchy based on dirty signature comparison. Identifies merge candidates (siblings whose signatures differ by less than the sweep threshold, default 5%). Observation-only. Part of Enox infrastructure.
 
+**Institutional Inequality Formula** — budget allocation formula for the streaming pipeline: $$W_{cluster} = N_{units} \times (1 - ECR)^{\gamma}$$, γ ≥ 2. Quadratic (γ≥2) allocation derived from StrictnessTracker drift thermodynamics: expected drift $$E[\Delta S] = (1 - ECR) \times 0.9 + ECR \times 1.5$$. Replaces naive linear (1-ECR) allocation which wastes budget on RED clusters (67% of nominal at ~42% actual throughput capacity). GREEN clusters get ~90%, RED ~42% of nominal quota. Combined with forward carry (C): RED gets a strict minimum, but if anomalously clean, receives leftover from GREEN.
+
 ---
 
 ## Trajectories and Bushes (exp15-exp16)

@@ -355,6 +355,8 @@
 
 **Industry Baselines** — набор стандартных индустриальных подходов для пространственного поиска + refinement, реализованных в exp17 для сравнения с Curiosity pipeline: (1) cKDTree (scipy) — k-d дерево + NN query; (2) Quadtree — деление на квадранты по rho (grid only); (3) Leiden + brute force — community detection + sort by rho внутри (graph only); (4) Wavelets — Haar DWT detail coefficients как saliency map (scalar grid only).
 
+**Формула институционального неравенства (Institutional Inequality Formula)** — формула аллокации бюджета для streaming pipeline: $$W_{cluster} = N_{units} \times (1 - ECR)^{\gamma}$$, γ ≥ 2. Квадратичная (γ≥2) аллокация, выведенная из термодинамики StrictnessTracker: ожидаемый drift $$E[\Delta S] = (1 - ECR) \times 0.9 + ECR \times 1.5$$. Заменяет наивную линейную (1-ECR) аллокацию, которая тратит бюджет впустую на RED-кластеры (67% номинала при реальной пропускной способности ~42%). GREEN кластеры получают ~90%, RED ~42% номинальной квоты. В комбинации с forward carry (C): RED получает строгий минимум, но при аномально чистом прогоне получает остатки от GREEN.
+
 ---
 
 ## Траектории и кусты (exp15–exp16)

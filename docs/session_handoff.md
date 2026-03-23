@@ -405,9 +405,26 @@ Cluster 2:                                  [L0] → [L1] → [L2 refine]
 В streaming бюджет контролируется global budget cap + per-cluster WasteBudget. EMA добавил бы шум (cross-cluster bleed).
 
 **Открытый вопрос: плавное управление бюджетом в streaming.** Сейчас в streaming только бинарные механизмы ("go" / "stop"), нет плавной регулировки. Планируемое решение — комбинация двух подходов:
-- **(B) L0-informed budget allocation:** L0 уже знает zone (GREEN/YELLOW/RED) каждого кластера. Распределять бюджет пропорционально ожидаемой полезности, а не просто размеру. GREEN → больше бюджета (refinement продуктивен), RED → меньше (много reject'ов).
-- **(C) Adaptive budget redistribution:** если кластер N не израсходовал квоту — остаток перетекает к следующим. Не EMA-feedback, а forward carry: "предыдущий не потратил → тебе больше".
-Нужно оттестировать в sweep вместе с Governor EMA (batch/reuse).
+- **(B) L0-informed budget allocation (формула институционального неравенства):** L0 уже знает zone (GREEN/YELLOW/RED) каждого кластера. Вес кластера в бюджете:
+
+  $$W_{cluster} = N_{units} \times (1 - ECR)^{\gamma}, \quad \gamma \geq 2$$
+
+  **Вывод из термодинамики StrictnessTracker.** Ожидаемый drift strictness за шаг:
+
+  $$E[\Delta S] = (1 - ECR) \times 0.9 + ECR \times 1.5$$
+
+  - GREEN (ECR=0.05): E[ΔS] = 0.93 → strictness падает → кластер процветает
+  - YELLOW (ECR=0.15): E[ΔS] = 0.975 → около равновесия
+  - RED (ECR=0.33): E[ΔS] = 1.098 → strictness растёт → кластер умирает от WasteBudget
+
+  Линейная аллокация (1-ECR) тратит бюджет впустую: RED получает 67% номинала, но не может их освоить (WasteBudget убьёт раньше). Квадратичная (γ=2) соответствует реальной пропускной способности:
+  - GREEN: ~90% номинальной квоты
+  - YELLOW: ~72%
+  - RED: ~42%
+
+- **(C) Adaptive budget redistribution:** если кластер N не израсходовал квоту — остаток перетекает к следующим (forward carry). RED получает строгий минимум, но при аномально чистом прогоне получает остатки от GREEN.
+
+Нужно оттестировать в sweep вместе с Governor EMA (batch/reuse). γ sweep: γ ∈ {1.0, 1.5, 2.0, 2.5, 3.0, 4.0} (от линейного baseline до агрессивного).
 
 **3. WasteBudget + StrictnessTracker** — "аварийный стоп" (safety, per-unit memory)
 - StrictnessTracker: per-unit множитель, escalation ×1.5 при reject, decay ×0.9 per clean step

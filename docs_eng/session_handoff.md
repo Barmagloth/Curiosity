@@ -271,9 +271,26 @@ DET-2 kill metrics (n_refined, compliance): CV≈0. psnr_gain CV=0.09–0.37 —
 In streaming mode, budget is controlled by global budget cap + per-cluster WasteBudget. EMA would add noise (cross-cluster bleed).
 
 **Open question: smooth budget control in streaming.** Currently streaming has only binary mechanisms ("go" / "stop"), no smooth regulation. Planned solution — combination of two approaches:
-- **(B) L0-informed budget allocation:** L0 already knows zone (GREEN/YELLOW/RED) for each cluster. Allocate budget proportional to expected utility, not just size. GREEN → more budget (refinement is productive), RED → less (many rejects expected).
-- **(C) Adaptive budget redistribution:** if cluster N didn't spend its quota — remainder flows to subsequent clusters. Not EMA-feedback, but forward carry: "previous didn't spend → you get more".
-Must be tested in the sweep alongside Governor EMA (batch/reuse).
+- **(B) L0-informed budget allocation (Institutional Inequality Formula):** L0 already knows zone (GREEN/YELLOW/RED) for each cluster. Cluster budget weight:
+
+  $$W_{cluster} = N_{units} \times (1 - ECR)^{\gamma}, \quad \gamma \geq 2$$
+
+  **Derivation from StrictnessTracker thermodynamics.** Expected strictness drift per step:
+
+  $$E[\Delta S] = (1 - ECR) \times 0.9 + ECR \times 1.5$$
+
+  - GREEN (ECR=0.05): E[ΔS] = 0.93 → strictness decreases → cluster thrives
+  - YELLOW (ECR=0.15): E[ΔS] = 0.975 → near-equilibrium
+  - RED (ECR=0.33): E[ΔS] = 1.098 → strictness increases → cluster dies from WasteBudget
+
+  Linear allocation (1-ECR) wastes budget: RED gets 67% of nominal but cannot spend it (WasteBudget kills it first). Quadratic (γ=2) matches actual throughput capacity:
+  - GREEN: ~90% of nominal quota
+  - YELLOW: ~72%
+  - RED: ~42%
+
+- **(C) Adaptive budget redistribution:** if cluster N didn't spend its quota — remainder flows to subsequent clusters (forward carry). RED gets a strict minimum, but if anomalously clean, receives leftover from GREEN.
+
+Must be tested in the sweep alongside Governor EMA (batch/reuse). γ to be validated in sweep: γ ∈ {1.0, 1.5, 2.0, 2.5, 3.0, 4.0} (from linear baseline to aggressive).
 
 **3. WasteBudget + StrictnessTracker** — "emergency stop" (safety, per-unit memory)
 - StrictnessTracker: per-unit multiplier, escalation x1.5 on reject, decay x0.9 per clean step

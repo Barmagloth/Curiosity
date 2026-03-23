@@ -240,12 +240,17 @@ Reconnect EMA feedback from exp0.8 as global strictness thermostat (lost during 
 ### Streaming Budget Control (B+C)
 
 Smooth budget control for streaming mode (currently only binary go/stop):
-- **(B) L0-informed allocation:** budget per cluster proportional to expected utility (zone GREEN → more, RED → less), not just cluster size.
-- **(C) Adaptive redistribution:** unspent cluster budget flows to subsequent clusters (forward carry). Not EMA-feedback, just remainder redistribution.
+- **(B) L0-informed allocation (Institutional Inequality Formula).** Cluster budget weight:
+
+  $$W_{cluster} = N_{units} \times (1 - ECR)^{\gamma}, \quad \gamma \geq 2$$
+
+  Derivation from StrictnessTracker thermodynamics: $$E[\Delta S] = (1 - ECR) \times 0.9 + ECR \times 1.5$$. GREEN (ECR=0.05): E[ΔS]=0.93 → thrives. YELLOW (ECR=0.15): E[ΔS]=0.975 → equilibrium. RED (ECR=0.33): E[ΔS]=1.098 → dies from WasteBudget. Quadratic (γ=2) matches actual throughput capacity: GREEN ~90%, YELLOW ~72%, RED ~42% of nominal. γ to be validated in sweep: γ ∈ {1.0, 1.5, 2.0, 2.5, 3.0, 4.0} (from linear baseline to aggressive).
+
+- **(C) Adaptive redistribution:** unspent cluster budget flows to subsequent clusters (forward carry). RED gets a strict minimum, but if anomalously clean, receives leftover from GREEN.
 
 ### Governor + B+C Sweep Test
 
-Sweep: 3 modes (batch/reuse/streaming) x 3 hardware profiles (low/mid/high) x 4 spaces x 20 seeds. Metrics: PSNR, time, reject rate, compliance. Kill: batch/reuse — EMA improves compliance; streaming — B+C >= equal-allocation baseline.
+Sweep: 3 modes (batch/reuse/streaming) x 3 hardware profiles (low/mid/high) x 6 γ ∈ {1.0, 1.5, 2.0, 2.5, 3.0, 4.0} x 4 spaces x 20 seeds. Metrics: PSNR, time, reject rate, compliance, budget utilization. Kill: batch/reuse — EMA improves compliance; streaming — B+C(γ*) >= equal-allocation baseline.
 
 ---
 

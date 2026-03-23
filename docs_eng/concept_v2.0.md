@@ -308,6 +308,25 @@ The EMA governor (5.1) was designed for the monolithic ρ era. The three-layer p
 
 Key difference from EMA governor: the waste budget is not a smoothed average but a hard cumulative cap with escalating penalties. This provides stricter guarantees in the streaming regime where cluster processing order affects budget distribution.
 
+**Streaming budget allocation (Institutional Inequality Formula).** Cluster budget weight:
+
+$$W_{cluster} = N_{units} \times (1 - ECR)^{\gamma}, \quad \gamma \geq 2$$
+
+Derivation from StrictnessTracker thermodynamics. Expected strictness drift per step:
+
+$$E[\Delta S] = (1 - ECR) \times 0.9 + ECR \times 1.5$$
+
+- GREEN (ECR=0.05): E[ΔS] = 0.93 → strictness decreases → cluster thrives
+- YELLOW (ECR=0.15): E[ΔS] = 0.975 → near-equilibrium
+- RED (ECR=0.33): E[ΔS] = 1.098 → strictness increases → cluster dies from WasteBudget
+
+Linear allocation (1-ECR) wastes budget: RED gets 67% of nominal but cannot spend it (WasteBudget kills it first). Quadratic (γ=2) matches actual throughput capacity:
+- GREEN: ~90% of nominal quota
+- YELLOW: ~72%
+- RED: ~42%
+
+Combined with forward carry (C): RED gets a strict minimum, but if anomalously clean, receives leftover from GREEN. γ sweep: γ ∈ {1.0, 1.5, 2.0, 2.5, 3.0, 4.0} (from linear baseline to aggressive).
+
 The EMA governor remains valid for monolithic-ρ use cases. The two mechanisms are not mixed.
 
 ---

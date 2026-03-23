@@ -234,12 +234,17 @@ RG-flow верификация (пост-Phase 4): basin membership требуе
 ### Streaming budget control (B+C)
 
 Плавное управление бюджетом для streaming mode (сейчас только бинарные go/stop):
-- **(B) L0-informed allocation:** бюджет по кластерам пропорционально ожидаемой полезности (zone GREEN → больше, RED → меньше), а не просто по размеру.
-- **(C) Adaptive redistribution:** неиспользованный бюджет кластера перетекает к следующим (forward carry). Не EMA-feedback, а перераспределение остатка.
+- **(B) L0-informed allocation (формула институционального неравенства).** Вес кластера в бюджете:
+
+  $$W_{cluster} = N_{units} \times (1 - ECR)^{\gamma}, \quad \gamma \geq 2$$
+
+  Вывод из термодинамики StrictnessTracker: $$E[\Delta S] = (1 - ECR) \times 0.9 + ECR \times 1.5$$. GREEN (ECR=0.05): E[ΔS]=0.93 → процветает. YELLOW (ECR=0.15): E[ΔS]=0.975 → равновесие. RED (ECR=0.33): E[ΔS]=1.098 → умирает от WasteBudget. Квадратичная (γ=2) соответствует реальной пропускной способности: GREEN ~90%, YELLOW ~72%, RED ~42% номинала. γ валидируется в sweep: γ ∈ {1.0, 1.5, 2.0, 2.5, 3.0, 4.0} (от линейного baseline до агрессивного).
+
+- **(C) Adaptive redistribution:** неиспользованный бюджет кластера перетекает к следующим (forward carry). RED получает строгий минимум, но при аномально чистом прогоне получает остатки от GREEN.
 
 ### Governor + B+C sweep test
 
-Sweep: 3 режима (batch/reuse/streaming) × 3 hardware profile (low/mid/high) × 4 spaces × 20 seeds. Метрики: PSNR, time, reject rate, compliance. Kill: batch/reuse — EMA улучшает compliance; streaming — B+C ≥ equal-allocation baseline.
+Sweep: 3 режима (batch/reuse/streaming) × 3 hardware profile (low/mid/high) × 6 γ ∈ {1.0, 1.5, 2.0, 2.5, 3.0, 4.0} × 4 spaces × 20 seeds. Метрики: PSNR, time, reject rate, compliance, budget utilization. Kill: batch/reuse — EMA улучшает compliance; streaming — B+C(γ*) ≥ equal-allocation baseline.
 
 ---
 
