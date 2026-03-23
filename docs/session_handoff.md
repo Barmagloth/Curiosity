@@ -381,6 +381,40 @@ Cluster 2:                                  [L0] → [L1] → [L2 refine]
 - C/Cython переписка scoring фаз → 10× ускорение L0/L1/L2
 - Streaming + C-scoring → потенциальный выигрыш над kdtree
 
+### Бюджетный контроль — три ортогональных механизма
+
+**ВАЖНО для следующей сессии:** в проекте есть путаница с термином "Governor". Вот точная картина:
+
+**1. L1 Cascade Quotas** — "где есть данные" (hardware-invariant, structural)
+- Каждый L0-кластер гарантирует минимум выживших юнитов
+- Не зависит от железа — чисто структурный фильтр
+
+**2. Budget Governor (hardware param + EMA feedback)** — "сколько обработать" (hardware-adaptive, dynamic)
+- **Два слоя:** (a) hardware parameter задаёт ДИАПАЗОН (поводок) — мощное железо → широкий диапазон, слабое → узкий; (b) EMA feedback двигается ВНУТРИ диапазона на основе runtime-сигналов (waste rate, rejection rate, cost/step)
+- **История:** в exp0.8 EMA governor работал (halved StdCost, cut P95 from 11→6.5). При сборке Phase 2 pipeline был **потерян** — GovernorIsolation в pipeline.py получает константу 1.0 и ни на что не влияет. StrictnessTracker + WasteBudget заменили его как бюджетный контроллер, но это ДРУГОЙ механизм (аварийный, не плавный).
+- **Статус:** нужно восстановить в Phase 4. Hardware calibration уже есть (Synthetic Transport Probe, 52ms at startup).
+- **GovernorIsolation** из exp10d — это НЕ бюджетный контроллер. Это EMA-телеметрия для DET-1 (проверка order-independence). Не путать!
+
+**3. WasteBudget + StrictnessTracker** — "аварийный стоп" (safety, per-unit memory)
+- StrictnessTracker: per-unit множитель, escalation ×1.5 при reject, decay ×0.9 per clean step
+- WasteBudget: R_max = floor(B_step × ω), каждый reject стоит strictness_multiplier единиц (не 1.0!), force-stop при waste ≥ R_max
+- Это "самозатягивающаяся удавка" — радиоактивный хаб после 3 reject'ов стоит ~3.4 единицы waste, лавинообразно выбивая предохранитель
+- **Работает сейчас** в pipeline.py (строки 421-439, 476)
+
+### Exp18: Basin Membership (FAIL, deferred)
+
+- Гипотеза: дерево = RG-flow, правильная метрика семантичности = basin membership (бассейн аттрактора), а не LCA-distance
+- Результат: point-biserial r = 0.019, kill r > 0.3: **ALL FAIL**
+- Причина: при 30% бюджете в single-pass бассейны не формируются (юниты не доходят до fixed points)
+- **Deferred:** вернуться после multi-pass (Phase 4+), когда дерево будет достаточно глубоким
+
+### MultiStageDedup (Phase 4)
+
+- Код реализован (3 уровня: exact hash, metric distance, policy rule) в enox_infra.py
+- Никогда не тестировался (`enox_dedup_enabled=False` по дефолту)
+- Требует multi-pass / iterative refinement для осмысленной работы
+- Запланирован как S4 в Phase 4
+
 ---
 
 ## Что было сделано ранее (Фаза 0)
