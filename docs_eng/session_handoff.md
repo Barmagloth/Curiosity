@@ -226,6 +226,63 @@ DET-2 kill metrics (n_refined, compliance): CV≈0. psnr_gain CV=0.09–0.37 —
 
 ---
 
+## What to Do Next — Phase 4
+
+### P4a: Downstream Consumer Test
+- Task: classifier or autoencoder on adaptive-refined data vs dense vs coarse
+- Kill criteria: metric loss < 2%
+- Dependencies: all P0-P3.5
+
+### P4b: Matryoshka
+- Each nesting level of the tree is valid for downstream
+- Dependencies: P4a
+
+### Bushes Revisit (after Track C)
+- Leaf-path clusters are real (Silhouette > 0.4), but unstable (ARI < 0.21)
+- Potential: leaf-path similarity for merge candidates, duplicate region detection
+- Idea: use leaf-path features to densify clusters, find similarity between regions
+
+### C-Optimization (Roadmap)
+- C/Cython rewrite of scoring phases → 10x speedup for L0/L1/L2
+- Streaming + C-scoring → potential win over kdtree
+
+### Budget Control — Three Orthogonal Mechanisms
+
+**IMPORTANT for the next session:** the project has confusion around the term "Governor". Here is the precise picture:
+
+**1. L1 Cascade Quotas** — "where is there data" (hardware-invariant, structural)
+- Each L0 cluster guarantees a minimum number of surviving units
+- Hardware-independent — purely structural filter
+
+**2. Budget Governor (hardware param + EMA feedback)** — "how much to process" (hardware-adaptive, dynamic)
+- **Two layers:** (a) hardware parameter sets the RANGE (leash) — powerful hardware → wide range, weak hardware → narrow range; (b) EMA feedback moves WITHIN the range based on runtime signals (waste rate, rejection rate, cost/step)
+- Metaphor: dog on leash. Hardware parameter = leash length. EMA = how far the dog actually walks.
+- **History:** in exp0.8 the EMA governor worked (halved StdCost, cut P95 from 11 → 6.5). During Phase 2 pipeline assembly it was **lost** — GovernorIsolation in pipeline.py receives a constant 1.0 and has no effect. StrictnessTracker + WasteBudget replaced it as the budget controller, but this is a DIFFERENT mechanism (emergency, not smooth).
+- **Status:** needs restoration in Phase 4. Hardware calibration already exists (Synthetic Transport Probe, 52ms at startup).
+- **GovernorIsolation** from exp10d is NOT a budget controller. It is EMA telemetry for DET-1 (order-independence check). Do not confuse!
+
+**3. WasteBudget + StrictnessTracker** — "emergency stop" (safety, per-unit memory)
+- StrictnessTracker: per-unit multiplier, escalation x1.5 on reject, decay x0.9 per clean step
+- WasteBudget: R_max = floor(B_step x omega), each reject costs strictness_multiplier units (not 1.0!), force-stop when waste >= R_max
+- This is a "self-tightening noose" — a radioactive hub after 3 rejects costs ~3.4 waste units, avalanche-tripping the fuse
+- **Currently active** in pipeline.py (lines 421-439, 476)
+
+### Exp18: Basin Membership (FAIL, deferred)
+
+- Hypothesis: tree = RG-flow, the correct semantics metric is basin membership (attractor basin), not LCA-distance
+- Result: point-biserial r = 0.019, kill r > 0.3: **ALL FAIL**
+- Cause: at 30% budget in single-pass, basins do not form (units do not reach fixed points)
+- **Deferred:** revisit after multi-pass (Phase 4+), when trees are deep enough
+
+### MultiStageDedup (Phase 4)
+
+- Code implemented (3 levels: exact hash, metric distance, policy rule) in enox_infra.py
+- Never tested (`enox_dedup_enabled=False` by default)
+- Requires multi-pass / iterative refinement for meaningful operation
+- Scheduled as S4 in Phase 4
+
+---
+
 ## What Was Done Previously (Phase 0)
 
 ### Experiments

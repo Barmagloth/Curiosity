@@ -247,6 +247,12 @@ If the average gain over K splits < δ (5–10% of previous level) — noise spl
 
 **Note:** `GovernorIsolation` from exp10d is an EMA tracker for DET-1 step isolation (always receives 1.0, output never used for decisions). Do not confuse with Budget Governor.
 
+**Two-layer Governor architecture (v2.0):**
+1. **Hardware parameter** (static, at init): sets the RANGE of how much the governor can tighten/loosen. Powerful hardware → wide range. Weak hardware → narrow range. Input: hardware calibration (Synthetic Transport Probe).
+2. **EMA feedback** (dynamic, at runtime): moves WITHIN the hardware-defined range based on live signals (waste rate, rejection rate, cost/step).
+
+Metaphor: dog on leash. Hardware parameter = leash length. EMA = how far the dog actually walks. **Status:** EMA governor worked in exp0.8 but was lost during Phase 2 pipeline assembly. Needs restoration in Phase 4.
+
 **Control variable:** strictness — quantile threshold for selecting refine candidates. All tiles above threshold pass; spending fluctuates.
 
 **Feedback signal:** EMA of actual cost/step (after warmup).
