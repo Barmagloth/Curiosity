@@ -102,15 +102,17 @@ Project-specific terms without which the documentation reads like gibberish. Org
 
 ## Budget Governor
 
-**Governor** — an EMA controller that manages strictness to keep spending within budget. Without the governor, the budget is a declaration, not a constraint.
+**Budget Governor** — the budget control mechanism, implemented as `StrictnessTracker` + `WasteBudget` (see `experiments/exp14a_sc_enforce/sc_enforce.py`, `exp_phase2_pipeline/pipeline.py` lines 421-439, 476). A self-tightening noose: StrictnessTracker maintains per-unit multipliers with escalation (x1.5 on reject) and decay (x0.9 per clean step); WasteBudget computes R_max = floor(B_step * omega), each reject costs strictness_multiplier units (not 1.0), force-stops when waste >= R_max. Without the budget governor, the budget is a declaration, not a constraint.
 
-**Strictness** — the quantile threshold for selecting candidate tiles for refinement. High strictness = only the most "interesting" tiles pass, spending is lower. Low = more tiles, spending is higher. The governor adjusts strictness so that cost/step stays within the corridor.
+**GovernorIsolation (EMA tracker, exp10d)** — a helper EMA tracker in `experiments/exp10d_seed_determinism/exp10d_seed_determinism.py`. Designed for step isolation in DET-1 (seed determinism). Always receives constant 1.0, output is recorded in `PipelineResult.governor_ema_final` but **never used for budget decisions**. This is step-isolation telemetry, not a budget controller. Do not confuse with Budget Governor.
 
-**EMA (Exponential Moving Average)** — exponentially weighted moving average. Used for smoothing: gate weights, feedback signal in the governor, etc. Reacts to recent data more strongly than to old data.
+**Strictness** — the quantile threshold for selecting candidate tiles for refinement. High strictness = only the most "interesting" tiles pass, spending is lower. Low = more tiles, spending is higher. The budget governor adjusts strictness so that cost/step stays within the corridor.
+
+**EMA (Exponential Moving Average)** — exponentially weighted moving average. Used for smoothing: gate weights, feedback signals, etc. Reacts to recent data more strongly than to old data.
 
 **Compliance (budget compliance)** — a metric of how well actual spending matches the target. Asymmetric: overbudget is penalized more heavily than underbudget.
 
-**Warmup** — the initial N steps during which the governor does not adjust strictness but accumulates spending statistics. Needed for correct calibration.
+**Warmup** — the initial N steps during which the budget governor does not adjust strictness but accumulates spending statistics. Needed for correct calibration.
 
 **Hard cap** — a hard ceiling on spending per step (= 3× target). Safety fuse against spending explosion.
 

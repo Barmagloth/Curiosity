@@ -123,7 +123,7 @@ Phase 2 → Instrument Readiness Gate → Track A
 
 ## Открытые вопросы для Фазы 2
 
-1. **Governor гистерезис для irregular high budget** — Track B. Как настроить EMA-контроллер для пространств с нерегулярным бюджетным профилем.
+1. **Budget Governor гистерезис для irregular high budget** — Track B. Как настроить StrictnessTracker + WasteBudget для пространств с нерегулярным бюджетным профилем. (Примечание: GovernorIsolation из exp10d — это EMA-телеметрия для DET-1, не бюджетный контроллер.)
 
 2. **Graph-native sparse для scale-free** — Track C. CSR/COO вместо A_bitset fallback для scale-free графов (barabasi-albert и подобных).
 

@@ -142,6 +142,7 @@
 | **S1: P4a downstream** | Executor A | Classifier/autoencoder на adaptive-refined vs dense vs coarse. Metric loss < 2%. | Все P0–P3.5 + SC |
 | **S2: P4b matryoshka** | Executor B | Каждый уровень вложенности валиден для downstream. | P4a |
 | **S3: C-pre** | — | ✅ DONE (exp16, Phase 3). Track C UNFREEZE. | — |
+| **S4: MultiStageDedup testing** | Executor C | Тестирование MultiStageDedup с epsilon > 0 в multi-pass/iterative refinement режиме. В single-pass (epsilon=0.0) деdup не срабатывает — это заготовка, которая оживает при multi-pass. Kill criteria: dedup должен сократить бюджетный расход на повторные юниты без потери PSNR > 0.5 dB. | P4a (multi-pass контекст) |
 
 ---
 

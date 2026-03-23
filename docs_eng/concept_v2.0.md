@@ -185,6 +185,30 @@ Normalization — quantile (rank-based), not absolute.
 
 **Conclusion:** the two-stage gate is the correct architecture. Residual rules while reliable; when it breaks — smoothly yields to the combination.
 
+## 3.3 Three-Layer Decomposition of ρ (exp17, Phase 3.5, 22–23 March 2026)
+
+Phase 3 showed: monolithic ρ conflates three orthogonal concerns, making the refinement tree non-reusable. Solution — cascading decomposition:
+
+**Layer 0 (Topology)** — "what is the structure of the space?" Data-independent. Computed once at initialization. For graph: Leiden communities + curvature + PageRank + boundary anomalies → per-unit structural score + cluster_ids. For grid: spatial quadrant blocks (trivial topology). For tree: depth-band grouping.
+
+**Layer 1 (Presence)** — "where is there data?" Data-dependent, query-independent. Binary presence map: "is there non-trivial signal here?" Threshold via **cascade quotas** (Variant C) — each L0 cluster guarantees min(1, ceil(cluster_size × budget_fraction)) survivors. Topology dictates quotas; no region is extinguished.
+
+**Layer 2 (Query)** — "where exactly does refinement pay off?" Task-specific. Three interchangeable query functions on the same frozen tree: MSE, max absolute error, HF residual. Cheap — the tree already exists.
+
+**FrozenTree** — serializable snapshot of L0+L1. Reusable spatial index. Analogous to an R-tree in spatial databases.
+
+**Two build modes:**
+- **Batch**: L0(all) → L1(all) → L2(all) — traditional, baseline.
+- **Streaming**: cluster-by-cluster processing with L0-priority ordering and global budget cap. First results appear after the first cluster is processed.
+
+**Budget control** is NOT an EMA governor (section 5.1 describes the Exp0.8-era governor). The three-layer pipeline uses **StrictnessTracker + WasteBudget** (self-tightening noose): each rejected unit's cost equals its strictness multiplier (escalates ×1.5 per reject, decays ×0.9 per clean step). When weighted waste >= R_max = floor(B × ω), the step force-terminates.
+
+**Historical note (v1.8):** the original monolithic ρ = all three layers fused into one number. It works but: non-reusable (different query = full rebuild), opaque (cannot tell topology from signal), mixes concerns (structural analysis entangled with task-specific scoring).
+
+**Experimental status (exp17):** 1080 configs, 4 spaces × 3 scales (100/1K/10K) × 8 approaches × 20 seeds. Reusability: 12/12 PASS (min ratio 0.838). PSNR: 2–4 dB below single_pass on grid (price of pruning), parity on graph/tree. Streaming 10–20% faster than batch. kdtree (scipy C) faster on single query; three_layer wins at >=2 queries on tree_hierarchy. Roadmap: C/Cython scoring optimization for multiplicative speedup.
+
+**Relationship with two-stage gate (3.2):** the gate remains inside Layer 2 — it determines which query signal to use (residual-only or combo). Layers 0–1 operate before the gate and do not depend on it.
+
 ---
 
 # 4. Interestingness Policy
@@ -217,7 +241,11 @@ If the average gain over K splits < δ (5–10% of previous level) — noise spl
 
 # 5. Schedule: Strictness Control (Exp0.8)
 
-## 5.1 Governor (EMA Controller) — Mandatory
+## 5.1 Budget Governor (StrictnessTracker + WasteBudget) — Mandatory
+
+**Implementation:** `StrictnessTracker` + `WasteBudget` (see `experiments/exp14a_sc_enforce/sc_enforce.py`, `pipeline.py` lines 421-439, 476). A self-tightening noose: per-unit multipliers with escalation (x1.5 on reject) and decay (x0.9 per clean step); WasteBudget: R_max = floor(B_step * omega), each reject costs strictness_multiplier units, force-stop when waste >= R_max.
+
+**Note:** `GovernorIsolation` from exp10d is an EMA tracker for DET-1 step isolation (always receives 1.0, output never used for decisions). Do not confuse with Budget Governor.
 
 **Control variable:** strictness — quantile threshold for selecting refine candidates. All tiles above threshold pass; spending fluctuates.
 
@@ -235,8 +263,8 @@ If the average gain over K splits < δ (5–10% of previous level) — noise spl
 **Experimental result (Exp0.8v5):**
 
 * Governor halves StdCost (~5.15 → ~3.25), P95 from 11.0 to ~6.5, compliance penalty from ~3.2 to ~0.5 — across all 4 scenes.
-* PSNR slightly lower (−0.24 dB clean, −0.68 dB shift): fixed threshold "eats" the best tiles upfront, governor spreads more evenly. At equal total cost, governor loses on peak quality but wins on spending predictability.
-* **Conclusion:** governor is needed for budget control, not quality. Without it, the budget is a declaration.
+* PSNR slightly lower (−0.24 dB clean, −0.68 dB shift): fixed threshold "eats" the best tiles upfront, budget governor spreads more evenly. At equal total cost, budget governor loses on peak quality but wins on spending predictability.
+* **Conclusion:** budget governor is needed for budget control, not quality. Without it, the budget is a declaration.
 
 ## 5.2 Governor Applicability Condition
 
@@ -253,6 +281,19 @@ Exp0.8v5 showed no PSNR gain with depth-dependent weights (resid→anomaly acros
 Hypothesis: with ideal refine and reliable ρ, changing priorities by phase is overengineering.
 
 Keep as an optional extension for the future, when a real tree with non-ideal refine appears and phase-based signal switching becomes physically justified.
+
+## 5.4 Budget Control in Three-Layer Pipeline (v2.0, exp17)
+
+The EMA governor (5.1) was designed for the monolithic ρ era. The three-layer pipeline (section 3.3) replaces it with a different mechanism:
+
+**StrictnessTracker + WasteBudget** (self-tightening noose):
+- Each rejected unit accumulates cost equal to its strictness multiplier.
+- Multiplier escalates ×1.5 per consecutive reject, decays ×0.9 per clean (accepted) step.
+- When weighted waste >= R_max = floor(B × ω), the step force-terminates.
+
+Key difference from EMA governor: the waste budget is not a smoothed average but a hard cumulative cap with escalating penalties. This provides stricter guarantees in the streaming regime where cluster processing order affects budget distribution.
+
+The EMA governor remains valid for monolithic-ρ use cases. The two mechanisms are not mixed.
 
 ---
 
@@ -530,8 +571,34 @@ Halo is applied on both sides of a boundary (subject to the applicability rule, 
 
 # 10. Map Construction Strategies
 
-1. Shared density map (reusable).
-2. Meaning-specific map (fast, but single-use).
+## 10.1 Historical Approach (v1.8, monolithic ρ)
+
+Two strategies existed:
+
+1. **Shared density map** (reusable) — a single ρ map shared across queries.
+2. **Meaning-specific map** (fast, but single-use) — ρ tailored to one task.
+
+In practice, the monolithic ρ made strategy 1 illusory: because ρ fused topology, presence, and query concerns into one number, a "shared" map was still query-contaminated. Different queries required full rebuilds.
+
+## 10.2 Current Architecture: Three-Layer Map (v2.0, exp17)
+
+The three-layer decomposition (section 3.3) resolves this by separating concerns:
+
+**Reusable layers (L0 + L1 → FrozenTree):**
+- L0 (Topology): structural analysis — clusters, bridges, hubs, density, boundaries. Computed once per space. Data-independent.
+- L1 (Presence): binary signal map — "is there non-trivial data here?" Data-dependent but query-independent. Cascade quotas from L0 guarantee minimum survivors per cluster.
+- FrozenTree = serializable snapshot of L0+L1. Persists across queries.
+
+**Disposable layer (L2 → Query map):**
+- L2 (Query): task-specific refinement on the frozen tree. Three interchangeable query functions (MSE, max_abs, HF residual). Cheap to swap — the tree is already built.
+
+**Build modes:**
+- **Batch**: L0(all) → L1(all) → L2(all). Traditional full-pass.
+- **Streaming**: cluster-by-cluster (L0→L1→L2 per cluster), L0-priority ordering, global budget cap. First results after first cluster.
+
+**Budget control:** StrictnessTracker + WasteBudget (self-tightening noose). Each rejected unit's cost = its strictness multiplier (escalates ×1.5 per reject, decays ×0.9 per clean step). When weighted waste >= R_max = floor(B × ω), the step force-terminates. This replaces the EMA governor (section 5.1) for the three-layer pipeline.
+
+**Result:** strategy 1 (shared reusable map) is now real — FrozenTree is genuinely query-independent. Strategy 2 (meaning-specific) corresponds to a full L0+L1+L2 pass for a single query. The cost of adding a second query drops to L2-only.
 
 ---
 
@@ -540,7 +607,7 @@ Halo is applied on both sides of a boundary (subject to the applicability rule, 
 1. Refinement is additive (residual).
 2. Halo is mandatory (local boundary of tiles) — subject to topology applicability rule (section 6).
 3. Exploration is mandatory (probe as defense against false fixed points).
-4. Cost is managed by the governor (EMA controller) within budget.
+4. Cost is managed within budget: EMA governor (monolithic ρ) or StrictnessTracker + WasteBudget (three-layer pipeline). See sections 5.1 and 5.4.
 5. The system does not create artificial seams.
 6. The system does not become structurally blind.
 7. ρ defines map semantics; combination via two-stage gate.
@@ -559,14 +626,15 @@ Curiosity is a system that:
 1. Computes only where there is signal.
 2. Does so without creating artificial seams (halo).
 3. Does not become blind to internal structure (probe / defense against false fixed points).
-4. Manages budget consciously (governor), not declaratively.
+4. Manages budget consciously (EMA governor or StrictnessTracker + WasteBudget), not declaratively.
 5. Adapts the informativeness function to conditions (two-stage gate), rather than relying on a single sensor.
+9. **Decomposes ρ into reusable layers** (L0 Topology → L1 Presence → L2 Query), enabling FrozenTree reuse across queries.
 6. **Does not destroy the semantics of the parent scale during refinement (scale-consistency).**
 7. **Is reproducible under fixed conditions and statistically stable across seeds.**
 8. **Selects memory layout by space properties (layout–topology correspondence), not by type name.**
 
 Four conservation laws:
-* budget conservation → budget governor
+* budget conservation → budget governor (monolithic ρ) / StrictnessTracker + WasteBudget (three-layer)
 * scale consistency → D_parent constraint + enforcement
 * process determinism → canonical order + deterministic probe + governor isolation
 * layout–topology correspondence → layout = f(I, M, p); policy table = precomputed cache
@@ -598,13 +666,22 @@ Formally: refinement must be boundary-aware, must include controlled exploration
 | SC-baseline (D_hf) | AUC=0.806, d=1.34 | pass |
 | SC-baseline (D_parent, lf_frac) | AUC [0.824, 1.000] across 4 spaces | pass |
 | coarse_shift generator | Fixed: spatially coherent sign fields | fix applied |
-| P2a sweep | Code ready, 20K configs | ready |
+| P2a sweep | PASS (ridge=100%, MANUAL_OK) | pass |
+
+## Phase 1–3.5: Pipeline Validation and Decomposition (20–23 March 2026)
+
+| Phase | Experiments | Key Result | Status |
+|---|---|---|---|
+| Phase 1 | exp1–exp4 (halo hardening, layout, DET-1, dirty signatures, segment compression) | Pipeline foundation, 240/240 DET-1 PASS | pass |
+| Phase 2 | exp5–exp13 (pipeline assembly, e2e validation, SC-enforce, topo profiling, Enox infra) | 4 space types validated, pipeline production-ready | pass |
+| Phase 3 | exp14 (anchors), exp15 (LCA), exp15b (bushes), exp16 (C-pre) | Anchors: grid PASS, graph/tree FAIL. LCA: FAIL (r<0.3). Bushes: FAIL (ARI<0.21). C-pre: PASS → UNFREEZE Track C | conditional |
+| Phase 3.5 | exp17 (three-layer rho, 1080 configs) | Reusability 12/12 PASS, cascade quotas, streaming pipeline | pass |
 
 ## Open Questions
 
-* Is auto-tuning of gate thresholds needed? (currently manual instability/FSR thresholds)
-* Is a complex data structure needed? (Morton / dynamic list vs. fixed grid)
-* Does the tree provide a semantic metric? (bushes, LCA-distance as feature)
+* ~~Is auto-tuning of gate thresholds needed? (currently manual instability/FSR thresholds)~~ → Closed: P2a sweep showed ridge=100%, manual thresholds sufficient (MANUAL_OK). P2b not needed.
+* ~~Is a complex data structure needed? (Morton / dynamic list vs. fixed grid)~~ → Closed: Morton killed (exp09a, +12-15x overhead). Layout policy fixed per space type (exp10 series, 158K+ trials). D_direct for grid, hybrid D_direct/A_bitset for tree, D_blocked conditional for spatial graph.
+* ~~Does the tree provide a semantic metric? (bushes, LCA-distance as feature)~~ → Closed: exp15 (LCA-distance Spearman r<0.3 all spaces — FAIL), exp15b (bushes: clusters exist, silhouette>0.4, but ARI<0.21 — unstable, FAIL). Tree is not semantic in the current architecture.
 * How does the system behave with non-ideal refine? (step_delta ≠ GT − parent_coarse)
 * Does phase schedule come alive with non-ideal refine?
 * ~~**Scale-consistency baseline:** what is the separability of D_parent / D_hf on positive vs. negative cases? Is the chosen pair (R, Up) sufficiently discriminative?~~ → Closed: baseline completed, separability sufficient (AUC 0.806–1.000). D_parent formula updated to lf_frac, R updated to σ=3.0. coarse_shift generator fixed.

@@ -142,6 +142,7 @@ Four streams, all independent of each other:
 | **S1: P4a downstream** | Executor A | Classifier/autoencoder on adaptive-refined vs dense vs coarse. Metric loss < 2%. | All P0-P3.5 + SC |
 | **S2: P4b matryoshka** | Executor B | Each nesting level is valid for downstream. | P4a |
 | **S3: C-pre** | — | DONE (exp16, Phase 3). Track C UNFREEZE. | — |
+| **S4: MultiStageDedup testing** | Executor C | Test MultiStageDedup with epsilon > 0 in multi-pass/iterative refinement mode. In single-pass (epsilon=0.0) dedup never fires — it is scaffolding that comes alive with multi-pass. Kill criteria: dedup must reduce budget waste on repeated units without PSNR loss > 0.5 dB. | P4a (multi-pass context) |
 
 ---
 

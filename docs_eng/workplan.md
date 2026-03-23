@@ -132,6 +132,16 @@
 
 ---
 
+## Phase 4: MultiStageDedup Testing (Planned)
+
+**Goal:** activate MultiStageDedup (3-level deduplication from Enox infrastructure) with epsilon > 0 in multi-pass/iterative refinement mode. In the current single-pass (epsilon=0.0) no level fires — this is scaffolding for Phase 4.
+
+**Dependencies:** P4a (downstream consumer test) — multi-pass context is required for dedup to be meaningful.
+
+**Kill criteria:** dedup reduces budget waste on repeatedly processed units without PSNR loss > 0.5 dB.
+
+---
+
 ## H. Three-Layer Rho Decomposition (exp17, March 22-23, 2026)
 
 **Status:** experimentally validated. Architecture works, reusability PASS across all spaces and scales (100 / 1K / 10K).

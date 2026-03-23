@@ -1,0 +1,48 @@
+{
+  "experiment": "exp18_basin_membership",
+  "kill_criteria": "point-biserial r > 0.3",
+  "per_space": {
+    "scalar_grid": {
+      "point_biserial_r_mean": 0.0229,
+      "point_biserial_r_std": 0.0382,
+      "spearman_r_mean": 0.0181,
+      "n_basins_mean": 56.4,
+      "same_basin_frac_mean": 0.009,
+      "separation_mean": 0.0089,
+      "n_runs": 20,
+      "PASS": false
+    },
+    "vector_grid": {
+      "point_biserial_r_mean": 0.0,
+      "point_biserial_r_std": 0.0,
+      "spearman_r_mean": 0.0,
+      "n_basins_mean": 16.0,
+      "same_basin_frac_mean": 0.0,
+      "separation_mean": -0.5224,
+      "n_runs": 20,
+      "PASS": false
+    },
+    "irregular_graph": {
+      "point_biserial_r_mean": 0.0531,
+      "point_biserial_r_std": 0.1803,
+      "spearman_r_mean": 0.0425,
+      "n_basins_mean": 8.7,
+      "same_basin_frac_mean": 0.046,
+      "separation_mean": 0.0509,
+      "n_runs": 20,
+      "PASS": false
+    },
+    "tree_hierarchy": {
+      "point_biserial_r_mean": 0.0,
+      "point_biserial_r_std": 0.0,
+      "spearman_r_mean": 0.0,
+      "n_basins_mean": 8.0,
+      "same_basin_frac_mean": 0.0,
+      "separation_mean": -0.564,
+      "n_runs": 20,
+      "PASS": false
+    }
+  },
+  "overall_point_biserial_r": 0.019,
+  "overall_PASS": false
+}
