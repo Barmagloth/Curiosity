@@ -686,3 +686,159 @@ Phase 3 состоит из четырёх экспериментов: три п
 - P4 (downstream consumer test) может идти вперёд — он не зависит от семантики дерева.
 - Track C открыт — дискретные профили существуют, можно ставить multi-objective эксперименты.
 - Local update для graph/tree требует отдельного R&D (structural drift problem).
+
+### Exp15b Bushes — заметки для revisit
+
+Кусты (leaf-path кластеры) формально FAIL по ARI, но содержат потенциально полезную информацию:
+
+1. **Кластеры существуют внутри каждого seed** (Silhouette > 0.4). Нестабильность между seeds (ARI < 0.6) может означать зависимость от конкретного GT, а не бесполезность метода.
+2. **Leaf-path similarity** — потенциальный инструмент для:
+   - Обнаружения дублирующих регионов (листья с похожими путями = похожая структура → merge candidates)
+   - Уплотнения кластеров: если два кластера дают схожие leaf-paths, они потенциально mergeable
+   - Фичи для downstream классификатора (Track C): профиль пути листа = "как pipeline пришёл к этому результату"
+3. **Связь с trajectory profiles (exp16):** trajectory profiles кластеризуются стабильнее (Gap > 1.0), чем bushes. Возможно, trajectory features + leaf-path features дадут более стабильные кластеры, чем каждый по отдельности. Запланирован revisit после первых результатов Track C.
+
+---
+
+## Phase 3.5 — Трёхслойная декомпозиция ρ (exp17, 23 марта 2026)
+
+### Мотивация
+
+Phase 3 показала: дерево refinement не семантично (LCA-distance FAIL, bushes unstable), а local update дрейфует на graph/tree (anchors FAIL). Корневая причина — **монолитная ρ смешивает три ортогональных сигнала:**
+
+1. Структура пространства (топология) — не зависит от данных
+2. Наличие данных — не зависит от конкретного запроса
+3. Задаче-специфический residual — зависит от всего
+
+Смешение делает дерево непереиспользуемым и непрозрачным: нельзя отделить "дерево знает структуру" от "дерево заточено под конкретный residual".
+
+### Архитектура: три слоя
+
+```
+Layer 0: ТОПОЛОГИЯ        "как устроено пространство"
+         Вход:  сырое пространство (граф/дерево/сетка)
+         Выход: per-unit structural score + cluster_ids
+         Для graph: Leiden clusters + Forman/Ollivier curvature + PageRank + boundary anomalies
+         Для tree:  depth-band grouping + subtree size scoring
+         Для grid:  spatial quadrant blocks (тривиальная топология)
+         [data-independent, вычисляется один раз]
+
+Layer 1: ДАННЫЕ ДА/НЕТ    "где есть нетривиальный сигнал"
+         Вход:  L0 cluster structure + ground truth
+         Выход: per-unit presence score + active_mask
+         Метрика: variance(gt[region]) — "есть ли тут структура, заслуживающая compute?"
+         Порог: CASCADE QUOTAS (Variant C) — см. ниже
+         [data-dependent, query-independent]
+
+Layer 2: ЗАПРОС            "из того что лежит — где нужное мне"
+         Вход:  frozen tree (L0+L1) + task-specific query function
+         Выход: ordered refinement list
+         Три сменных query-функции на одном дереве:
+           - MSE (текущий unit_rho)
+           - Max absolute error
+           - HF residual (Лапласиан)
+         [task-specific, дешёвый]
+```
+
+Каждый слой **сужает** рабочее множество для следующего. Информация течёт строго сверху вниз (L0 → L1 → L2).
+
+### Каскадные квоты (Variant C)
+
+**Проблема:** фиксированный порог L1 (l1_threshold = 0.01) убивал 97-98% юнитов на scalar_grid при масштабе 1000. Из 1024 тайлов выживало ~20, single_pass уточнял 307. Reusability ratio = 0.725 FAIL.
+
+**Почему:** мелкие тайлы (8×8 пикселей) на гладких участках GT имеют variance < 0.01 даже без sparsity. Фиксированный порог не учитывает масштаб.
+
+**Решение:** порог привязан к кластерной структуре L0. Каждый L0-кластер гарантирует минимальное число выживших:
+
+```
+quota = max(1, ceil(cluster_size × min_survival_ratio))
+```
+
+Где min_survival_ratio = budget_fraction (обычно 0.30). Внутри каждого кластера юниты сортируются по presence score и сохраняются top-quota.
+
+**Свойства:**
+- Ни один L0-кластер не вымирает полностью
+- Порог адаптивен к масштабу (больше юнитов → больше выживших → больше бюджета)
+- Нет magic numbers — единственный параметр (min_survival_ratio) привязан к budget_fraction
+- Информация каскадируется: L0 topology → L1 quotas → L2 budget
+
+**Результат:** scalar_grid 1000 перешёл с 0.725 FAIL → 0.928 PASS.
+
+### Streaming Pipeline
+
+Вместо batch (L0 all → L1 all → L2 all) — покластерная обработка:
+
+```
+Cluster_0: [L0 score] → [L1 filter] → [L2 refine]
+Cluster_1:              [L0 score] → [L1 filter] → [L2 refine]
+Cluster_2:                           [L0 score] → [L1 filter] → [L2 refine]
+```
+
+Кластеры обрабатываются в порядке L0 priority score (самые структурно важные — первыми). Глобальный budget cap: суммарное число refinements ≤ budget_fraction × n_total. При исчерпании бюджета — ранняя остановка.
+
+**Преимущества:**
+- Первые результаты после 1 кластера, а не после полной карты
+- L1 pruning реально сокращает refinement (budget per-cluster, а не global)
+- 10-20% быстрее batch на grid пространствах
+
+### Industry Baselines
+
+Четыре стандартных подхода для сравнения:
+
+| Baseline | Подход | Пространства |
+|----------|--------|-------------|
+| cKDTree (scipy) | k-d tree build + sort by rho | Все 4 |
+| Quadtree | Деление на квадранты по суммарному rho | Grid only |
+| Leiden + brute force | Community detection + sort by rho внутри | Graph only |
+| Wavelets (Haar DWT) | Detail coefficients как saliency map | Scalar grid only |
+
+### Результаты (1080 конфигов, 4 spaces × 3 scales × 8 approaches × 20 seeds)
+
+**Ошибки:** 0 из 1080.
+
+**Reusability (frozen tree + другой query vs fresh build):**
+
+| Space | Scale 100 | Scale 1000 | Scale 10000 |
+|-------|----------|-----------|------------|
+| scalar_grid | 0.838 PASS | 0.863 PASS | 0.884 PASS |
+| vector_grid | 0.984 PASS | 0.959 PASS | 0.978 PASS |
+| irregular_graph | 0.926 PASS | 0.926 PASS | 1.000 PASS |
+| tree_hierarchy | 0.996 PASS | 0.999 PASS | 0.999 PASS |
+
+**Время (single query, scale=1000):**
+
+| Space | single_pass | three_layer_stream | kdtree (industry best) |
+|-------|------------|-------------------|----------------------|
+| scalar_grid | 51ms | 32ms | 23ms |
+| vector_grid | 690ms | 709ms | 652ms |
+| irregular_graph | 0.4ms | 68ms (L0 overhead) | 0.5ms |
+| tree_hierarchy | 9ms | 12ms | 9ms |
+
+**Amortized cost (break-even for tree_hierarchy):**
+
+| N queries | three_layer | kdtree | single_pass |
+|-----------|------------|--------|-------------|
+| 1 | 12ms | 10ms | 10ms |
+| 2 | 17ms ✅ | 19ms | 19ms |
+| 5 | 34ms ✅ | 48ms | 47ms |
+| 10 | 61ms ✅ | 96ms | 95ms |
+
+### Выводы
+
+1. **Архитектура работает:** reusability 12/12 PASS. Frozen tree переиспользуем.
+2. **PSNR trade-off:** 2-4 dB ниже single_pass на grid (цена L1 pruning), паритет на graph/tree.
+3. **Время:** streaming быстрее batch, но kdtree (scipy C) быстрее обоих на single query. При ≥2 запросах three_layer выигрывает на tree_hierarchy.
+4. **Bottleneck = refinement, не scoring.** Все подходы уточняют ~одинаковое число юнитов, refinement = 50-70% total time (numpy, уже near-C).
+5. **C-оптимизация** scoring фаз даст мультипликативный эффект для streaming: L0 topo 70ms→5ms, L1+L2 scoring 13ms→1.3ms. Streaming на C потенциально обойдёт kdtree на graph/tree.
+6. **Ценность Curiosity vs industry:** побочные данные (topo features, zones, cluster structure, decision journal), которых kdtree не даёт. Interpretability: каждый слой отвечает на отдельный вопрос.
+
+### Ключевые файлы
+
+| Файл | Назначение |
+|------|-----------|
+| `experiments/exp17_three_layer_rho/layers.py` | Ядро: Layer0, Layer1 (cascade quotas), Layer2, FrozenTree, ThreeLayerPipeline, IndustryBaselines |
+| `experiments/exp17_three_layer_rho/exp17_three_layer_rho.py` | Runner с --chunk для параллельного запуска |
+| `experiments/exp17_three_layer_rho/config17.py` | Параметризация (scales, thresholds, approaches) |
+| `experiments/exp17_three_layer_rho/results/` | JSON результаты по чанкам |
+
+---

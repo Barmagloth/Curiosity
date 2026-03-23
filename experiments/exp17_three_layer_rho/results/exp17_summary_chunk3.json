@@ -1,0 +1,257 @@
+{
+  "n_total": 267,
+  "n_errors": 0,
+  "n_skipped": 0,
+  "per_approach": {
+    "irregular_graph/single_pass/1000": {
+      "n_runs": 8,
+      "psnr_mean": 19.72024748626447,
+      "psnr_std": 0.8786922583194274,
+      "time_mean_ms": 0.39033749908412574,
+      "time_std_ms": 0.03083548772790151
+    },
+    "irregular_graph/three_layer/1000": {
+      "n_runs": 8,
+      "psnr_mean": 19.707523905180658,
+      "psnr_std": 0.897003409293193,
+      "time_mean_ms": 83.14548750149697,
+      "time_std_ms": 19.533129439773994
+    },
+    "irregular_graph/three_layer_reuse/1000": {
+      "n_runs": 8,
+      "psnr_mean": 19.707523905180658,
+      "psnr_std": 0.897003409293193,
+      "time_mean_ms": 78.90427500024089,
+      "time_std_ms": 9.56500217082514
+    },
+    "irregular_graph/industry_kdtree/1000": {
+      "n_runs": 8,
+      "psnr_mean": 19.72024748626447,
+      "psnr_std": 0.8786922583194274,
+      "time_mean_ms": 0.6036624999978812,
+      "time_std_ms": 0.04294158603671859
+    },
+    "irregular_graph/industry_leiden_bf/1000": {
+      "n_runs": 8,
+      "psnr_mean": 19.72024748626447,
+      "psnr_std": 0.8786922583194274,
+      "time_mean_ms": 0.4012750014226185,
+      "time_std_ms": 0.03703210690961391
+    },
+    "irregular_graph/naive_full/1000": {
+      "n_runs": 7,
+      "psnr_mean": 19.576081695663962,
+      "psnr_std": 0.8462445837424235,
+      "time_mean_ms": 0.40874285644219654,
+      "time_std_ms": 0.05314182668578082
+    },
+    "tree_hierarchy/naive_full/1000": {
+      "n_runs": 20,
+      "psnr_mean": 15.482850210046445,
+      "psnr_std": 0.2688908618131296,
+      "time_mean_ms": 8.7291699997877,
+      "time_std_ms": 0.5127131830863865
+    },
+    "tree_hierarchy/single_pass/1000": {
+      "n_runs": 20,
+      "psnr_mean": 15.482850210046445,
+      "psnr_std": 0.2688908618131296,
+      "time_mean_ms": 9.468374999778462,
+      "time_std_ms": 2.264428460740959
+    },
+    "tree_hierarchy/three_layer/1000": {
+      "n_runs": 20,
+      "psnr_mean": 15.482850210046445,
+      "psnr_std": 0.2688908618131296,
+      "time_mean_ms": 11.833899999328423,
+      "time_std_ms": 0.4699582314749892
+    },
+    "tree_hierarchy/three_layer_reuse/1000": {
+      "n_runs": 20,
+      "psnr_mean": 15.482850210046445,
+      "psnr_std": 0.2688908618131296,
+      "time_mean_ms": 22.8419600000052,
+      "time_std_ms": 1.0449307491312352
+    },
+    "tree_hierarchy/industry_kdtree/1000": {
+      "n_runs": 20,
+      "psnr_mean": 15.482850210046445,
+      "psnr_std": 0.2688908618131296,
+      "time_mean_ms": 9.551010000723181,
+      "time_std_ms": 2.9131122915530514
+    },
+    "scalar_grid/naive_full/10000": {
+      "n_runs": 5,
+      "psnr_mean": 57.21016882929656,
+      "psnr_std": 1.6252882451818764,
+      "time_mean_ms": 3665.7127399987075,
+      "time_std_ms": 20.35122042314726
+    },
+    "scalar_grid/single_pass/10000": {
+      "n_runs": 5,
+      "psnr_mean": 57.21016882929656,
+      "psnr_std": 1.6252882451818764,
+      "time_mean_ms": 3670.219020001241,
+      "time_std_ms": 18.790997121486768
+    },
+    "scalar_grid/three_layer/10000": {
+      "n_runs": 5,
+      "psnr_mean": 53.535248029972855,
+      "psnr_std": 1.2322124793853866,
+      "time_mean_ms": 3542.27178000001,
+      "time_std_ms": 15.177629942950986
+    },
+    "scalar_grid/three_layer_reuse/10000": {
+      "n_runs": 5,
+      "psnr_mean": 53.535248029972855,
+      "psnr_std": 1.2322124793853866,
+      "time_mean_ms": 10389.852180000162,
+      "time_std_ms": 52.747881344355804
+    },
+    "scalar_grid/industry_kdtree/10000": {
+      "n_runs": 5,
+      "psnr_mean": 57.21016882929656,
+      "psnr_std": 1.6252882451818764,
+      "time_mean_ms": 3389.715839998098,
+      "time_std_ms": 13.69985924782582
+    },
+    "scalar_grid/industry_quadtree/10000": {
+      "n_runs": 5,
+      "psnr_mean": 50.49553890264773,
+      "psnr_std": 1.9935301514441903,
+      "time_mean_ms": 3385.9227199995075,
+      "time_std_ms": 22.40050868190313
+    },
+    "scalar_grid/industry_wavelet/10000": {
+      "n_runs": 5,
+      "psnr_mean": 57.21016882929656,
+      "psnr_std": 1.6252882451818764,
+      "time_mean_ms": 3467.351140001847,
+      "time_std_ms": 18.861616261171637
+    },
+    "vector_grid/naive_full/10000": {
+      "n_runs": 5,
+      "psnr_mean": 37.58757640859948,
+      "psnr_std": 0.055883258048819995,
+      "time_mean_ms": 52939.27643999923,
+      "time_std_ms": 2292.014315755418
+    },
+    "vector_grid/single_pass/10000": {
+      "n_runs": 5,
+      "psnr_mean": 37.58757640859948,
+      "psnr_std": 0.055883258048819995,
+      "time_mean_ms": 53818.567619998066,
+      "time_std_ms": 1772.5114776862788
+    },
+    "vector_grid/three_layer/10000": {
+      "n_runs": 5,
+      "psnr_mean": 36.79014989302855,
+      "psnr_std": 0.0661408559354146,
+      "time_mean_ms": 53782.348180000554,
+      "time_std_ms": 1466.7367521095043
+    },
+    "vector_grid/three_layer_reuse/10000": {
+      "n_runs": 5,
+      "psnr_mean": 36.79014989302855,
+      "psnr_std": 0.0661408559354146,
+      "time_mean_ms": 164819.2389600008,
+      "time_std_ms": 2687.3017602474133
+    },
+    "vector_grid/industry_kdtree/10000": {
+      "n_runs": 5,
+      "psnr_mean": 37.58757640859948,
+      "psnr_std": 0.055883258048819995,
+      "time_mean_ms": 54655.689160000475,
+      "time_std_ms": 503.4177439816293
+    },
+    "vector_grid/industry_quadtree/10000": {
+      "n_runs": 5,
+      "psnr_mean": 36.08458994217696,
+      "psnr_std": 0.03591444755548028,
+      "time_mean_ms": 54228.83833999804,
+      "time_std_ms": 1203.2894954078488
+    },
+    "irregular_graph/naive_full/10000": {
+      "n_runs": 5,
+      "psnr_mean": 18.79083611438204,
+      "psnr_std": 0.6132290707194651,
+      "time_mean_ms": 0.34269999887328595,
+      "time_std_ms": 0.02442138265205499
+    },
+    "irregular_graph/single_pass/10000": {
+      "n_runs": 5,
+      "psnr_mean": 18.79083611438204,
+      "psnr_std": 0.6132290707194651,
+      "time_mean_ms": 0.3469599992968142,
+      "time_std_ms": 0.024921443035874426
+    },
+    "irregular_graph/three_layer/10000": {
+      "n_runs": 5,
+      "psnr_mean": 18.89347673839498,
+      "psnr_std": 0.5957427588972415,
+      "time_mean_ms": 81.20454000018071,
+      "time_std_ms": 1.1203109235897581
+    },
+    "irregular_graph/three_layer_reuse/10000": {
+      "n_runs": 5,
+      "psnr_mean": 18.89347673839498,
+      "psnr_std": 0.5957427588972415,
+      "time_mean_ms": 81.72582000115653,
+      "time_std_ms": 1.5256841231885931
+    },
+    "irregular_graph/industry_kdtree/10000": {
+      "n_runs": 5,
+      "psnr_mean": 18.79083611438204,
+      "psnr_std": 0.6132290707194651,
+      "time_mean_ms": 0.507520000974182,
+      "time_std_ms": 0.03629922452335506
+    },
+    "irregular_graph/industry_leiden_bf/10000": {
+      "n_runs": 5,
+      "psnr_mean": 18.79083611438204,
+      "psnr_std": 0.6132290707194651,
+      "time_mean_ms": 0.34207999997306615,
+      "time_std_ms": 0.026440305513733
+    },
+    "tree_hierarchy/naive_full/10000": {
+      "n_runs": 5,
+      "psnr_mean": 15.501205721623013,
+      "psnr_std": 0.15481073442032123,
+      "time_mean_ms": 17.240760001004674,
+      "time_std_ms": 0.8000765527227016
+    },
+    "tree_hierarchy/single_pass/10000": {
+      "n_runs": 5,
+      "psnr_mean": 15.501205721623013,
+      "psnr_std": 0.15481073442032123,
+      "time_mean_ms": 16.945239997585304,
+      "time_std_ms": 0.2969468142025299
+    },
+    "tree_hierarchy/three_layer/10000": {
+      "n_runs": 5,
+      "psnr_mean": 15.501205721623013,
+      "psnr_std": 0.15481073442032123,
+      "time_mean_ms": 22.566039999946952,
+      "time_std_ms": 0.4835490904494457
+    },
+    "tree_hierarchy/three_layer_reuse/10000": {
+      "n_runs": 5,
+      "psnr_mean": 15.501205721623013,
+      "psnr_std": 0.15481073442032123,
+      "time_mean_ms": 44.11610000097426,
+      "time_std_ms": 1.7829082614115166
+    },
+    "tree_hierarchy/industry_kdtree/10000": {
+      "n_runs": 5,
+      "psnr_mean": 15.501205721623013,
+      "psnr_std": 0.15481073442032123,
+      "time_mean_ms": 16.95130000152858,
+      "time_std_ms": 0.275729222113095
+    }
+  },
+  "per_space": {},
+  "kill_criteria": {
+    "reusability_min_ratio": 0.8839778686436223,
+    "reusability_pass": true
+  }
+}

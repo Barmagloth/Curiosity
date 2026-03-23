@@ -1,0 +1,145 @@
+{
+  "n_total": 271,
+  "n_errors": 0,
+  "n_skipped": 0,
+  "per_approach": {
+    "scalar_grid/industry_wavelet/1000": {
+      "n_runs": 12,
+      "psnr_mean": 47.33990958210725,
+      "psnr_std": 1.2437555741877866,
+      "time_mean_ms": 33.511333334293646,
+      "time_std_ms": 2.422301522378972
+    },
+    "scalar_grid/naive_full/1000": {
+      "n_runs": 11,
+      "psnr_mean": 47.300755952443296,
+      "psnr_std": 1.2905631956395092,
+      "time_mean_ms": 57.77534545499789,
+      "time_std_ms": 5.5824618513154745
+    },
+    "scalar_grid/single_pass/1000": {
+      "n_runs": 11,
+      "psnr_mean": 47.300755952443296,
+      "psnr_std": 1.2905631956395092,
+      "time_mean_ms": 59.22625454563372,
+      "time_std_ms": 6.3698537152501515
+    },
+    "scalar_grid/three_layer/1000": {
+      "n_runs": 11,
+      "psnr_mean": 44.58141696455804,
+      "psnr_std": 0.716171480256833,
+      "time_mean_ms": 42.26130908897506,
+      "time_std_ms": 3.6134133473732724
+    },
+    "scalar_grid/three_layer_reuse/1000": {
+      "n_runs": 11,
+      "psnr_mean": 44.58141696455804,
+      "psnr_std": 0.716171480256833,
+      "time_mean_ms": 102.54825454533353,
+      "time_std_ms": 4.1708301767270655
+    },
+    "scalar_grid/industry_kdtree/1000": {
+      "n_runs": 11,
+      "psnr_mean": 47.300755952443296,
+      "psnr_std": 1.2905631956395092,
+      "time_mean_ms": 26.10448181869949,
+      "time_std_ms": 3.254002946428278
+    },
+    "scalar_grid/industry_quadtree/1000": {
+      "n_runs": 11,
+      "psnr_mean": 41.50865219687824,
+      "psnr_std": 1.7667604832686172,
+      "time_mean_ms": 27.949536363435485,
+      "time_std_ms": 3.9945082326527133
+    },
+    "vector_grid/naive_full/1000": {
+      "n_runs": 20,
+      "psnr_mean": 31.73550372504793,
+      "psnr_std": 0.1796003769311618,
+      "time_mean_ms": 597.1165399987513,
+      "time_std_ms": 17.54029473517622
+    },
+    "vector_grid/single_pass/1000": {
+      "n_runs": 20,
+      "psnr_mean": 31.73550372504793,
+      "psnr_std": 0.1796003769311618,
+      "time_mean_ms": 598.9953249998507,
+      "time_std_ms": 8.799250200739996
+    },
+    "vector_grid/three_layer/1000": {
+      "n_runs": 20,
+      "psnr_mean": 30.549726534353027,
+      "psnr_std": 0.15902209476799117,
+      "time_mean_ms": 590.7580750004854,
+      "time_std_ms": 7.926466046757005
+    },
+    "vector_grid/three_layer_reuse/1000": {
+      "n_runs": 20,
+      "psnr_mean": 30.549726534353027,
+      "psnr_std": 0.15902209476799117,
+      "time_mean_ms": 1855.7579250005801,
+      "time_std_ms": 29.822175118371774
+    },
+    "vector_grid/industry_kdtree/1000": {
+      "n_runs": 20,
+      "psnr_mean": 31.73550372504793,
+      "psnr_std": 0.1796003769311618,
+      "time_mean_ms": 562.7344299999095,
+      "time_std_ms": 11.453245448592561
+    },
+    "vector_grid/industry_quadtree/1000": {
+      "n_runs": 20,
+      "psnr_mean": 29.533419163209043,
+      "psnr_std": 0.13545069197884405,
+      "time_mean_ms": 566.9002000013279,
+      "time_std_ms": 9.183072569264734
+    },
+    "irregular_graph/naive_full/1000": {
+      "n_runs": 13,
+      "psnr_mean": 19.520245557131442,
+      "psnr_std": 0.627544296423634,
+      "time_mean_ms": 0.38288461543673363,
+      "time_std_ms": 0.025596598896049302
+    },
+    "irregular_graph/single_pass/1000": {
+      "n_runs": 12,
+      "psnr_mean": 19.41948201852006,
+      "psnr_std": 0.5428044936834874,
+      "time_mean_ms": 0.4031583333320062,
+      "time_std_ms": 0.04539774948214813
+    },
+    "irregular_graph/three_layer/1000": {
+      "n_runs": 12,
+      "psnr_mean": 19.410062780896304,
+      "psnr_std": 0.5494751638955556,
+      "time_mean_ms": 76.80124166715056,
+      "time_std_ms": 18.031679074112727
+    },
+    "irregular_graph/three_layer_reuse/1000": {
+      "n_runs": 12,
+      "psnr_mean": 19.410062780896304,
+      "psnr_std": 0.5494751638955556,
+      "time_mean_ms": 71.12226666686183,
+      "time_std_ms": 3.2603323883154007
+    },
+    "irregular_graph/industry_kdtree/1000": {
+      "n_runs": 12,
+      "psnr_mean": 19.41948201852006,
+      "psnr_std": 0.5428044936834874,
+      "time_mean_ms": 0.6321583332464797,
+      "time_std_ms": 0.12205480416385057
+    },
+    "irregular_graph/industry_leiden_bf/1000": {
+      "n_runs": 12,
+      "psnr_mean": 19.41948201852006,
+      "psnr_std": 0.5428044936834874,
+      "time_mean_ms": 0.4061416657350492,
+      "time_std_ms": 0.07242782065186953
+    }
+  },
+  "per_space": {},
+  "kill_criteria": {
+    "reusability_min_ratio": 0.9042512010735708,
+    "reusability_pass": true
+  }
+}

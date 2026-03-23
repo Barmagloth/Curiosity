@@ -11,7 +11,8 @@
 - Фаза 2 **завершена** (20 марта 2026). Pipeline assembled, SC-enforce integrated, E2E validated.
 - **Enox-инфраструктура** — ✅ DONE (21 марта 2026). Четыре observation-only паттерна (RegionURI, DecisionJournal, MultiStageDedup, PostStepSweep) — чистая аннотация, не меняют pipeline state.
 - Фаза 3 **завершена** (22 марта 2026). Exp14 anchors: grid PASS, graph/tree FAIL. Exp15 LCA-distance: FAIL. Exp15b bushes: FAIL. Exp16 C-pre: PASS → **Track C UNFREEZE**.
-- **Следующий шаг — Фаза 4** (P4: downstream consumer test) + проектирование Track C.
+- Фаза 3.5 **завершена** (23 марта 2026). Exp17 three-layer rho: архитектурная декомпозиция ρ на L0 (topology) → L1 (presence, cascade quotas) → L2 (query). Streaming pipeline. 1080 конфигов, reusability 12/12 PASS. Industry benchmarks (kdtree, quadtree, wavelets, leiden).
+- **Следующий шаг — Фаза 4** (P4a: downstream consumer test, P4b: matryoshka) + C-оптимизация scoring (roadmap). Bushes revisit запланирован после Track C.
 
 Рабочий ПК: **PC 2** (NVIDIA RTX 2070, 8 GB, CUDA 12.8). Рабочая директория: `R:\Projects\Curiosity`.
 
@@ -21,10 +22,11 @@
 |---|------|-------|
 | 1 | `docs/session_handoff.md` | **Этот файл** — текущий статус, что делать дальше |
 | 2 | `docs/concept_v1.8.md` | Каноническая концепция (актуальная) |
-| 3 | `docs/teamplan.md` | План с отметками Фаза 0, Фаза 1, описание Фаз 2-4 |
+| 3 | `docs/teamplan.md` | План с отметками Фаза 0-3.5, описание Фаз 4+ |
 | 4 | `docs/experiment_hierarchy.md` | Граф зависимостей, приоритеты, нумерация exp10+ |
-| 5 | `docs/environment_2.md` | Как активировать .venv-gpu на PC 2 (CUDA) |
-| 6 | `docs/phase1_plan.md` | Архив — план и результаты Фазы 1 (справочно) |
+| 5 | `docs/workplan.md` | Модули A-H, roadmap C-оптимизации |
+| 6 | `docs/glossary.md` | Все термины проекта (обновлён 23.03.2026) |
+| 7 | `docs/environment_2.md` | Как активировать .venv-gpu на PC 2 (CUDA) |
 
 ## Фаза 1 — Финальные результаты (20 марта 2026)
 

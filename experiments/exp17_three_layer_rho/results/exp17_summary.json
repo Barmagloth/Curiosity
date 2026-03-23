@@ -1,0 +1,61 @@
+{
+  "n_total": 14,
+  "n_errors": 0,
+  "n_skipped": 0,
+  "per_approach": {
+    "scalar_grid/naive_full/100": {
+      "n_runs": 2,
+      "psnr_mean": 38.848536151843646,
+      "psnr_std": 2.5402593390553427,
+      "time_mean_ms": 4.674249998060986,
+      "time_std_ms": 0.07465000089723617
+    },
+    "scalar_grid/single_pass/100": {
+      "n_runs": 2,
+      "psnr_mean": 38.848536151843646,
+      "psnr_std": 2.5402593390553427,
+      "time_mean_ms": 4.8362500019720756,
+      "time_std_ms": 0.04444999649422243
+    },
+    "scalar_grid/three_layer/100": {
+      "n_runs": 2,
+      "psnr_mean": 35.79642280969556,
+      "psnr_std": 1.3203238543906437,
+      "time_mean_ms": 2.7943500026594847,
+      "time_std_ms": 0.1259499986190349
+    },
+    "scalar_grid/three_layer_reuse/100": {
+      "n_runs": 2,
+      "psnr_mean": 35.79642280969556,
+      "psnr_std": 1.3203238543906437,
+      "time_mean_ms": 5.976549997285474,
+      "time_std_ms": 0.2847499999916181
+    },
+    "scalar_grid/industry_kdtree/100": {
+      "n_runs": 2,
+      "psnr_mean": 38.848536151843646,
+      "psnr_std": 2.5402593390553427,
+      "time_mean_ms": 2.108999997290084,
+      "time_std_ms": 0.13620000027003698
+    },
+    "scalar_grid/industry_quadtree/100": {
+      "n_runs": 2,
+      "psnr_mean": 33.42581927892951,
+      "psnr_std": 2.7045845231527625,
+      "time_mean_ms": 1.8653999977686908,
+      "time_std_ms": 0.016299996786983684
+    },
+    "scalar_grid/industry_wavelet/100": {
+      "n_runs": 2,
+      "psnr_mean": 38.659989118263184,
+      "psnr_std": 2.728806372635802,
+      "time_mean_ms": 3.403500002605142,
+      "time_std_ms": 0.6295000021054875
+    }
+  },
+  "per_space": {},
+  "kill_criteria": {
+    "reusability_min_ratio": 0.8967824799890065,
+    "reusability_pass": true
+  }
+}

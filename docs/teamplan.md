@@ -107,13 +107,32 @@
 
 ---
 
+### Фаза 3.5: Декомпозиция ρ (23 марта 2026) — ✅ DONE
+
+> Не была запланирована — вытекла из Phase 3 результатов (anchors FAIL → "почему ρ не переиспользуема?" → трёхслойка).
+
+| Поток | Задача | Результат |
+|-------|--------|-----------|
+| **Exp17: three-layer rho** | Декомпозиция ρ на L0 (topology) → L1 (presence) → L2 (query) | ✅ 1080 конфигов, reusability 12/12 PASS |
+| **Cascade quotas** | Адаптивный L1 порог привязанный к L0 кластерам | ✅ Фикс scalar_grid 1000: 0.725 FAIL → 0.928 PASS |
+| **Streaming pipeline** | Покластерная обработка L0→L1→L2 с L0-priority ordering | ✅ 10-20% быстрее batch на grid |
+| **Industry benchmarks** | kdtree, quadtree, wavelets, leiden — сравнительный анализ | ✅ kdtree быстрее на single query, 3L выигрывает с ≥2 queries на tree |
+| **Roadmap C-opt** | Прогноз speedups при C/Cython переписывании scoring | ✅ Записан в workplan.md, секция H |
+
+**Ключевые выводы:**
+- Архитектура трёхслойки валидна, frozen tree переиспользуем
+- Bottleneck = refinement (numpy), не scoring → C-оптимизация scoring даст мультипликативный эффект
+- Bushes (exp15b) запланированы на revisit: leaf-path similarity для merge candidates / downstream features
+
+---
+
 ### Фаза 4: Интеграция (Неделя 12–14)
 
 | Поток | Исполнитель | Задача | Зависимости |
 |-------|-------------|--------|-------------|
-| **S1: P4a downstream** | Executor A | Classifier/autoencoder на adaptive-refined vs dense vs coarse. Metric loss < 2%. | Все P0–P3 + SC |
+| **S1: P4a downstream** | Executor A | Classifier/autoencoder на adaptive-refined vs dense vs coarse. Metric loss < 2%. | Все P0–P3.5 + SC |
 | **S2: P4b matryoshka** | Executor B | Каждый уровень вложенности валиден для downstream. | P4a |
-| **S3: C-pre** | Executor C | Есть ли natural clustering в trajectory features? Go/no-go для Track C. | P3 результаты |
+| **S3: C-pre** | — | ✅ DONE (exp16, Phase 3). Track C UNFREEZE. | — |
 
 ---
 
