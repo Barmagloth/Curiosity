@@ -368,6 +368,42 @@ P4. "Не сломать фичи"
 
 **Выход P4:** либо "неоднородная глубина не ломает downstream" (и вопрос закрыт), либо конкретный механизм защиты.
 
+### P5-noise. Robustness к шумным данным
+
+**Обнаружено:** viz testbed (24 марта 2026). Система оптимизирует к наблюдаемым данным, не к истинному сигналу. Все эксперименты P0-P4 на чистой синтетике.
+
+```
+P5-noise. Noise robustness
+├── exp20a: sweep подходов к noise-aware refinement
+│        Кандидаты (все на T1 scalar grid, 3 уровня σ × 10 seeds):
+│        (A) Smoothed ρ — ρ от сглаженных данных, refinement = raw
+│        (B) Noise floor (Morozov) — skip tile if residual < σ√N
+│        (C) BayesShrink — analytical soft threshold в wavelet domain
+│        (D) SureShrink — SURE-optimized threshold, model-free
+│        (E) Coarse-as-prior — refined = α×observed + (1-α)×coarse, α = σ²_s/(σ²_s+σ²_n)
+│        (F) SURE-Bayes blend — (E) + SURE для α-selection
+│        Метрики: MSE-to-clean (oracle), PSNR, SURE risk, compute cost
+│        Kill: oracle MSE > coarse MSE (refinement ухудшает quality)
+│        σ² estimation: MAD на Лапласиане (grids), TBD для graph/tree
+│
+├── exp20b: composite из лучших
+│        Собрать лучшие A-F по Pareto (quality × cost)
+│        Возможные композиты:
+│        - Smoothed ρ (selection) + BayesShrink (refinement)
+│        - Noise floor (gate) + Coarse-as-prior (refinement)
+│        - Any winner + SURE spot-check (5-10% тайлов как audit)
+│        Валидация: T1 + T2 + T3(spatial) + T4
+│        σ² estimation для T3/T4 — research question
+│
+└── exp20c: интеграция в pipeline
+         Финальный композит → harness, governor-aware
+         DET-1/DET-2 re-check с noise
+```
+
+**Выход P5-noise:** noise-aware refinement operator + σ² estimator per space type + updated gate thresholds.
+
+**Зависимость:** после P4 (нужен стабильный pipeline). Но Phase 4 эксперименты на шумных данных запрещены без noise-awareness.
+
 ---
 
 # Заморожено
@@ -492,8 +528,10 @@ P0 (layout GPU)
 | 13 | Three-layer rho | Decompose monolithic rho into L0 (topology) → L1 (presence) → L2 (query). Cascade quotas, streaming, industry benchmarks. | exp17 ✅ PASS |
 | 14 | RG-flow | Basin membership vs feature similarity (r=0.019, FAIL — deferred to post-multi-pass) | exp18 ❌ FAIL (deferred) |
 | 15 | P4 | «не сломать фичи» | exp19 |
+| 16 | P5-noise | Noise robustness: sweep подходов к denoising при refinement, затем композит из лучших | exp20 (exp20a sweep, exp20b composite) |
 
 Все пункты до exp18 включительно завершены (exp01--exp18). exp18 deferred to post-Phase 4.
+exp20 (noise robustness) — Phase 5, но awareness и baseline нужны уже в Phase 4.
 
 Номера предварительные. Если между шагами возникнет незапланированный
 эксперимент — он получает следующий свободный номер.
@@ -550,6 +588,7 @@ All experiments through exp17 (Phase 3.5) are complete.
 | Level | Topic | Status |
 |-------|-------|--------|
 | P4 | Downstream consumer test ("don't break features") | NEXT |
+| P5-noise | Noise robustness: sweep denoising approaches (exp20a), composite (exp20b), integration (exp20c) | After P4. Discovered via viz testbed 24 Mar 2026 |
 | Track C | DAG + profiles (UNFROZEN by exp16) | Entry contract needs concretization |
 | SC-sigma | Fine-grained sigma sweep | Low priority (sigma=3.0 passes kill criteria) |
 
@@ -561,6 +600,8 @@ P0 -> P1 (exp11, exp13, exp14) -> P3 (exp15, exp15b, exp16)
 P0 -> SC-baseline -> SC-5 (exp12a) -> SC-enforce (exp14a) -> P4
 Phase 2 pipeline -> Phase 2 E2E -> exp17 (Phase 3.5)
 All above -> P4 (NEXT)
+P4 -> P5-noise (exp20a sweep, exp20b composite, exp20c integration)
+P4 -> Track C (after entry contract concretization)
 ```
 
 ## Naming Convention

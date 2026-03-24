@@ -366,7 +366,9 @@ Convergence rule:
 
 **(D) Coarse-as-prior.** Сравнивать refined не с observed, а с coarse: если |refined - coarse| > expected_signal_variation → refined содержит шум. Тогда dampening: refined = α×observed + (1-α)×coarse, где α адаптивен. По сути — Bayesian: coarse = prior, observed = likelihood.
 
-**Зависимость:** фундаментальная проблема. Не Phase 4 — скорее Phase 5 (robustness). Но нужно как минимум добавить noise-awareness в quality metrics, чтобы Phase 4 эксперименты не давали ложноположительных результатов на шумных данных.
+**План:** sweep всех вариантов (A-D + SureShrink + BayesShrink + SURE-Bayes blend), затем composite из лучших по Pareto (quality × cost). Детали в `docs/experiment_hierarchy.md` → P5-noise (exp20a/b/c).
+
+**Зависимость:** фундаментальная проблема. Не Phase 4 — скорее Phase 5 (robustness). Но нужно как минимум добавить noise-awareness в quality metrics, чтобы Phase 4 эксперименты не давали ложноположительных результатов на шумных данных. Phase 4 на шумных данных запрещена без noise-awareness.
 
 ### Streaming budget control (B+C)
 
