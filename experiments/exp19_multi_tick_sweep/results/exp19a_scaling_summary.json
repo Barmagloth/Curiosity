@@ -1,0 +1,122 @@
+[
+  {
+    "scale": "large",
+    "space_type": "irregular_graph",
+    "n_units": 34,
+    "single_tick_psnr_gain": 4.316366325857466,
+    "best_max_ticks": 13,
+    "best_psnr_gain": 4.327518326909761,
+    "ratio": 1.002583654910263,
+    "ticks_actually_used": 8.0
+  },
+  {
+    "scale": "large",
+    "space_type": "scalar_grid",
+    "n_units": 1024,
+    "single_tick_psnr_gain": 11.55237547608817,
+    "best_max_ticks": 2,
+    "best_psnr_gain": 11.600454053630667,
+    "ratio": 1.0041617914551006,
+    "ticks_actually_used": 2.0
+  },
+  {
+    "scale": "large",
+    "space_type": "tree_hierarchy",
+    "n_units": 8,
+    "single_tick_psnr_gain": 1.3504411491024637,
+    "best_max_ticks": 1,
+    "best_psnr_gain": 1.3504411491024637,
+    "ratio": 1.0,
+    "ticks_actually_used": 1.0
+  },
+  {
+    "scale": "large",
+    "space_type": "vector_grid",
+    "n_units": 256,
+    "single_tick_psnr_gain": 2.862696047606766,
+    "best_max_ticks": 5,
+    "best_psnr_gain": 3.130351336336851,
+    "ratio": 1.0934976275088115,
+    "ticks_actually_used": 5.0
+  },
+  {
+    "scale": "medium",
+    "space_type": "irregular_graph",
+    "n_units": 19,
+    "single_tick_psnr_gain": 4.114162580333504,
+    "best_max_ticks": 1,
+    "best_psnr_gain": 4.114162580333504,
+    "ratio": 1.0,
+    "ticks_actually_used": 1.0
+  },
+  {
+    "scale": "medium",
+    "space_type": "scalar_grid",
+    "n_units": 256,
+    "single_tick_psnr_gain": 9.36915557481729,
+    "best_max_ticks": 1,
+    "best_psnr_gain": 9.36915557481729,
+    "ratio": 1.0,
+    "ticks_actually_used": 1.0
+  },
+  {
+    "scale": "medium",
+    "space_type": "tree_hierarchy",
+    "n_units": 8,
+    "single_tick_psnr_gain": 1.6937273348276456,
+    "best_max_ticks": 1,
+    "best_psnr_gain": 1.6937273348276456,
+    "ratio": 1.0,
+    "ticks_actually_used": 1.0
+  },
+  {
+    "scale": "medium",
+    "space_type": "vector_grid",
+    "n_units": 64,
+    "single_tick_psnr_gain": 2.313301848348585,
+    "best_max_ticks": 20,
+    "best_psnr_gain": 2.6814851299291504,
+    "ratio": 1.159159204339634,
+    "ticks_actually_used": 19.0
+  },
+  {
+    "scale": "small",
+    "space_type": "irregular_graph",
+    "n_units": 10,
+    "single_tick_psnr_gain": 3.446954907709115,
+    "best_max_ticks": 1,
+    "best_psnr_gain": 3.446954907709115,
+    "ratio": 1.0,
+    "ticks_actually_used": 1.0
+  },
+  {
+    "scale": "small",
+    "space_type": "scalar_grid",
+    "n_units": 64,
+    "single_tick_psnr_gain": 6.9499892243584505,
+    "best_max_ticks": 1,
+    "best_psnr_gain": 6.9499892243584505,
+    "ratio": 1.0,
+    "ticks_actually_used": 1.0
+  },
+  {
+    "scale": "small",
+    "space_type": "tree_hierarchy",
+    "n_units": 8,
+    "single_tick_psnr_gain": 2.1104445751906846,
+    "best_max_ticks": 1,
+    "best_psnr_gain": 2.1104445751906846,
+    "ratio": 1.0,
+    "ticks_actually_used": 1.0
+  },
+  {
+    "scale": "small",
+    "space_type": "vector_grid",
+    "n_units": 16,
+    "single_tick_psnr_gain": 1.4234724821080178,
+    "best_max_ticks": 5,
+    "best_psnr_gain": 1.6957512179180423,
+    "ratio": 1.1912778358783638,
+    "ticks_actually_used": 4.0
+  }
+]
