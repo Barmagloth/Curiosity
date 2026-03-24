@@ -201,12 +201,16 @@ def _cold_start_thresholds(rho_values, tick_state: TickState,
 
 
 def _compute_unit_roi(space, state_before: np.ndarray,
-                       state_after: np.ndarray) -> float:
-    """ROI = global MSE reduction from refining this unit."""
-    gt = space.gt
-    mse_before = float(np.mean((gt - state_before) ** 2))
-    mse_after = float(np.mean((gt - state_after) ** 2))
-    gain = max(0.0, mse_before - mse_after)
+                       state_after: np.ndarray, unit) -> float:
+    """ROI = LOCAL rho reduction for this unit (not global MSE).
+
+    Uses unit_rho (local MSE on the unit's region) because global MSE
+    change from one unit is negligible on large spaces, causing ROI to
+    falsely reject useful refinements.
+    """
+    rho_before = space.unit_rho(state_before, unit)
+    rho_after = space.unit_rho(state_after, unit)
+    gain = max(0.0, rho_before - rho_after)
     return gain  # cost = 1.0 for now
 
 
@@ -728,7 +732,7 @@ class CuriosityPipeline:
 
                 # ROI check (issue 6) - only after tick 0 in multi-tick mode
                 if not single_tick_mode and tick > 0 and tick_state.reference_median_gain > 0:
-                    roi = _compute_unit_roi(space, old_state, state_candidate)
+                    roi = _compute_unit_roi(space, old_state, state_candidate, unit)
                     min_roi = tick_state.reference_median_gain * cfg.min_roi_fraction
                     if roi < min_roi:
                         tick_state.evaluated_set.add(unit)
@@ -835,7 +839,7 @@ class CuriosityPipeline:
                     tick_accepted += 1
                     if not single_tick_mode:
                         if tick > 0 and tick_state.reference_median_gain > 0:
-                            tick_gains.append(_compute_unit_roi(space, old_state, state))
+                            tick_gains.append(_compute_unit_roi(space, old_state, state, unit))
                         else:
                             tick_gains.append(float(space.unit_rho(old_state, unit)))
 
