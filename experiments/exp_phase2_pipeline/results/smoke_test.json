@@ -11,9 +11,11 @@
     "n_rejected": 0,
     "reject_rate": 0.0,
     "governor_ema_final": 0.8649148282327008,
-    "gate_stage": "stage1_healthy",
+    "gate_stage": "single_tick",
     "gate_weights": {
-      "resid": 0.95
+      "resid": 1.0,
+      "hf": 0.0,
+      "var": 0.0
     },
     "waste_budget_exhausted": false,
     "compression_viable": false,
@@ -29,7 +31,27 @@
     },
     "enox_dedup_stats": {},
     "enox_sweep_stats": {},
-    "wall_time_seconds": 0.018007755279541016
+    "wall_time_seconds": 0.01000070571899414,
+    "n_ticks_executed": 1,
+    "convergence_reason": "max_ticks",
+    "tick_log": [
+      {
+        "tick": 0,
+        "accepted": 19,
+        "rejected": 0,
+        "damped": 0,
+        "gate": {
+          "stage": "single_tick",
+          "w_resid": 1.0,
+          "w_hf": 0.0,
+          "w_var": 0.0,
+          "instability": 0.0,
+          "fsr": 0.0
+        },
+        "roi_median": 0.0,
+        "governor_strictness": 0.5
+      }
+    ]
   },
   "vector_grid": {
     "quality_mse": 0.018029631601059533,
@@ -43,9 +65,11 @@
     "n_rejected": 0,
     "reject_rate": 0.0,
     "governor_ema_final": 0.34390000000000004,
-    "gate_stage": "stage1_healthy",
+    "gate_stage": "single_tick",
     "gate_weights": {
-      "resid": 0.95
+      "resid": 1.0,
+      "hf": 0.0,
+      "var": 0.0
     },
     "waste_budget_exhausted": false,
     "compression_viable": false,
@@ -61,7 +85,27 @@
     },
     "enox_dedup_stats": {},
     "enox_sweep_stats": {},
-    "wall_time_seconds": 0.014998912811279297
+    "wall_time_seconds": 0.014119148254394531,
+    "n_ticks_executed": 1,
+    "convergence_reason": "max_ticks",
+    "tick_log": [
+      {
+        "tick": 0,
+        "accepted": 4,
+        "rejected": 0,
+        "damped": 0,
+        "gate": {
+          "stage": "single_tick",
+          "w_resid": 1.0,
+          "w_hf": 0.0,
+          "w_var": 0.0,
+          "instability": 0.0,
+          "fsr": 0.0
+        },
+        "roi_median": 0.0,
+        "governor_strictness": 0.5
+      }
+    ]
   },
   "irregular_graph": {
     "quality_mse": 0.03251772427732863,
@@ -75,9 +119,11 @@
     "n_rejected": 0,
     "reject_rate": 0.0,
     "governor_ema_final": 0.271,
-    "gate_stage": "stage1_healthy",
+    "gate_stage": "single_tick",
     "gate_weights": {
-      "resid": 0.95
+      "resid": 1.0,
+      "hf": 0.0,
+      "var": 0.0
     },
     "waste_budget_exhausted": false,
     "compression_viable": false,
@@ -85,7 +131,7 @@
     "compression_d2_skipped": 0,
     "topo_zone": "RED",
     "topo_eta_f": 1.0674126119914007,
-    "topo_computation_ms": 73.90829996438697,
+    "topo_computation_ms": 69.73749998724088,
     "topo_tau_factor": 0.7,
     "enox_journal_summary": {
       "total": 0,
@@ -93,7 +139,27 @@
     },
     "enox_dedup_stats": {},
     "enox_sweep_stats": {},
-    "wall_time_seconds": 0.1665642261505127
+    "wall_time_seconds": 0.13660526275634766,
+    "n_ticks_executed": 1,
+    "convergence_reason": "max_ticks",
+    "tick_log": [
+      {
+        "tick": 0,
+        "accepted": 3,
+        "rejected": 0,
+        "damped": 0,
+        "gate": {
+          "stage": "single_tick",
+          "w_resid": 1.0,
+          "w_hf": 0.0,
+          "w_var": 0.0,
+          "instability": 0.0,
+          "fsr": 0.0
+        },
+        "roi_median": 0.0,
+        "governor_strictness": 0.5
+      }
+    ]
   },
   "tree_hierarchy": {
     "quality_mse": 0.02267528086327205,
@@ -107,9 +173,11 @@
     "n_rejected": 0,
     "reject_rate": 0.0,
     "governor_ema_final": 0.19,
-    "gate_stage": "stage1_healthy",
+    "gate_stage": "single_tick",
     "gate_weights": {
-      "resid": 0.95
+      "resid": 1.0,
+      "hf": 0.0,
+      "var": 0.0
     },
     "waste_budget_exhausted": false,
     "compression_viable": false,
@@ -125,6 +193,334 @@
     },
     "enox_dedup_stats": {},
     "enox_sweep_stats": {},
-    "wall_time_seconds": 0.003002166748046875
+    "wall_time_seconds": 0.0029993057250976562,
+    "n_ticks_executed": 1,
+    "convergence_reason": "max_ticks",
+    "tick_log": [
+      {
+        "tick": 0,
+        "accepted": 2,
+        "rejected": 0,
+        "damped": 1,
+        "gate": {
+          "stage": "single_tick",
+          "w_resid": 1.0,
+          "w_hf": 0.0,
+          "w_var": 0.0,
+          "instability": 0.0,
+          "fsr": 0.0
+        },
+        "roi_median": 0.0,
+        "governor_strictness": 0.5
+      }
+    ]
+  },
+  "scalar_grid_mt5": {
+    "quality_mse": 0.009017533687791653,
+    "quality_psnr": 23.62893782089149,
+    "n_refined": 3,
+    "n_total": 64,
+    "n_ticks_executed": 3,
+    "convergence_reason": "zero_accepted",
+    "tick_log": [
+      {
+        "tick": 0,
+        "accepted": 3,
+        "rejected": 0,
+        "damped": 0,
+        "gate": {
+          "stage": "combo",
+          "w_resid": 0.85,
+          "w_hf": 0.09,
+          "w_var": 0.06,
+          "instability": 1.1230642808283993,
+          "fsr": 0.0,
+          "instab_thresh": 0.4805724982899397,
+          "fsr_thresh": 0.24028624914496985,
+          "in_pilot": true
+        },
+        "roi_median": 0.042622064266994,
+        "governor_strictness": 0.5
+      },
+      {
+        "tick": 1,
+        "accepted": 0,
+        "rejected": 0,
+        "damped": 0,
+        "gate": {
+          "stage": "combo",
+          "w_resid": 0.745,
+          "w_hf": 0.153,
+          "w_var": 0.10200000000000001,
+          "instability": 0.9954335602767468,
+          "fsr": 0.0,
+          "instab_thresh": 0.4805724982899397,
+          "fsr_thresh": 0.24028624914496985,
+          "in_pilot": true
+        },
+        "roi_median": 0.0,
+        "governor_strictness": 0.5
+      },
+      {
+        "tick": 2,
+        "accepted": 0,
+        "rejected": 0,
+        "damped": 0,
+        "gate": {
+          "stage": "combo",
+          "w_resid": 0.6715,
+          "w_hf": 0.1971,
+          "w_var": 0.13140000000000002,
+          "instability": 0.9954335602767466,
+          "fsr": 0.0,
+          "instab_thresh": 0.4805724982899397,
+          "fsr_thresh": 0.24028624914496985,
+          "in_pilot": true
+        },
+        "roi_median": 0.0,
+        "governor_strictness": 0.5
+      }
+    ],
+    "pilot_thresholds": {
+      "instab_thresh": 0.4805724982899397,
+      "fsr_thresh": 0.05
+    },
+    "final_ema_weights": {
+      "w_resid": 0.6715,
+      "w_hf": 0.1971,
+      "w_var": 0.13140000000000002
+    },
+    "governor_strictness_history": []
+  },
+  "vector_grid_mt5": {
+    "quality_mse": 0.02285638666671604,
+    "quality_psnr": 16.70558697307723,
+    "n_refined": 1,
+    "n_total": 16,
+    "n_ticks_executed": 3,
+    "convergence_reason": "zero_accepted",
+    "tick_log": [
+      {
+        "tick": 0,
+        "accepted": 1,
+        "rejected": 0,
+        "damped": 0,
+        "gate": {
+          "stage": "healthy",
+          "w_resid": 1.0,
+          "w_hf": 0.0,
+          "w_var": 0.0,
+          "instability": 0.04907888396286887,
+          "fsr": 0.0,
+          "instab_thresh": 0.1046776093870041,
+          "fsr_thresh": 0.05233880469350205,
+          "in_pilot": true
+        },
+        "roi_median": 0.027858064762223286,
+        "governor_strictness": 0.5
+      },
+      {
+        "tick": 1,
+        "accepted": 0,
+        "rejected": 0,
+        "damped": 0,
+        "gate": {
+          "stage": "healthy",
+          "w_resid": 1.0,
+          "w_hf": 0.0,
+          "w_var": 0.0,
+          "instability": 0.06300480812276178,
+          "fsr": 0.0,
+          "instab_thresh": 0.1046776093870041,
+          "fsr_thresh": 0.05233880469350205,
+          "in_pilot": true
+        },
+        "roi_median": 0.0,
+        "governor_strictness": 0.5
+      },
+      {
+        "tick": 2,
+        "accepted": 0,
+        "rejected": 0,
+        "damped": 0,
+        "gate": {
+          "stage": "healthy",
+          "w_resid": 1.0,
+          "w_hf": 0.0,
+          "w_var": 0.0,
+          "instability": 0.06300480812276178,
+          "fsr": 0.0,
+          "instab_thresh": 0.1046776093870041,
+          "fsr_thresh": 0.05233880469350205,
+          "in_pilot": true
+        },
+        "roi_median": 0.0,
+        "governor_strictness": 0.5
+      }
+    ],
+    "pilot_thresholds": {
+      "instab_thresh": 0.044103365685933246,
+      "fsr_thresh": 0.05
+    },
+    "final_ema_weights": {
+      "w_resid": 1.0,
+      "w_hf": 0.0,
+      "w_var": 0.0
+    },
+    "governor_strictness_history": []
+  },
+  "irregular_graph_mt5": {
+    "quality_mse": 0.04739104465428249,
+    "quality_psnr": 17.903809057604615,
+    "n_refined": 1,
+    "n_total": 10,
+    "n_ticks_executed": 3,
+    "convergence_reason": "zero_accepted",
+    "tick_log": [
+      {
+        "tick": 0,
+        "accepted": 1,
+        "rejected": 0,
+        "damped": 0,
+        "gate": {
+          "stage": "combo",
+          "w_resid": 0.8670852256257437,
+          "w_hf": 0.07974886462455376,
+          "w_var": 0.05316590974970252,
+          "instability": 0.7769360787081667,
+          "fsr": 0.0,
+          "instab_thresh": 0.4119276275478583,
+          "fsr_thresh": 0.20596381377392914,
+          "in_pilot": true
+        },
+        "roi_median": 0.2380183063029051,
+        "governor_strictness": 0.5
+      },
+      {
+        "tick": 1,
+        "accepted": 0,
+        "rejected": 0,
+        "damped": 0,
+        "gate": {
+          "stage": "healthy",
+          "w_resid": 0.9069596579380206,
+          "w_hf": 0.05582420523718763,
+          "w_var": 0.03721613682479176,
+          "instability": 0.2952984357350605,
+          "fsr": 0.0,
+          "instab_thresh": 0.4119276275478583,
+          "fsr_thresh": 0.20596381377392914,
+          "in_pilot": true
+        },
+        "roi_median": 0.0,
+        "governor_strictness": 0.5
+      },
+      {
+        "tick": 2,
+        "accepted": 0,
+        "rejected": 0,
+        "damped": 0,
+        "gate": {
+          "stage": "healthy",
+          "w_resid": 0.9348717605566145,
+          "w_hf": 0.03907694366603135,
+          "w_var": 0.026051295777354235,
+          "instability": 0.29529843573506037,
+          "fsr": 0.0,
+          "instab_thresh": 0.4119276275478583,
+          "fsr_thresh": 0.20596381377392914,
+          "in_pilot": true
+        },
+        "roi_median": 0.0,
+        "governor_strictness": 0.5
+      }
+    ],
+    "pilot_thresholds": {
+      "instab_thresh": 0.20670890501454234,
+      "fsr_thresh": 0.05
+    },
+    "final_ema_weights": {
+      "w_resid": 0.9348717605566145,
+      "w_hf": 0.03907694366603135,
+      "w_var": 0.026051295777354235
+    },
+    "governor_strictness_history": []
+  },
+  "tree_hierarchy_mt5": {
+    "quality_mse": 0.028004202449994315,
+    "quality_psnr": 14.78925067524315,
+    "n_refined": 1,
+    "n_total": 8,
+    "n_ticks_executed": 3,
+    "convergence_reason": "zero_accepted",
+    "tick_log": [
+      {
+        "tick": 0,
+        "accepted": 1,
+        "rejected": 0,
+        "damped": 0,
+        "gate": {
+          "stage": "combo",
+          "w_resid": 0.8653197808089532,
+          "w_hf": 0.08080813151462812,
+          "w_var": 0.05387208767641875,
+          "instability": 0.4946101648893716,
+          "fsr": 0.0,
+          "instab_thresh": 0.26061355771128003,
+          "fsr_thresh": 0.13030677885564002,
+          "in_pilot": true
+        },
+        "roi_median": 0.08473179838265132,
+        "governor_strictness": 0.5
+      },
+      {
+        "tick": 1,
+        "accepted": 0,
+        "rejected": 0,
+        "damped": 0,
+        "gate": {
+          "stage": "combo",
+          "w_resid": 0.8304064124285336,
+          "w_hf": 0.10175615254287983,
+          "w_var": 0.06783743502858657,
+          "instability": 0.39147185416674507,
+          "fsr": 0.0,
+          "instab_thresh": 0.26061355771128003,
+          "fsr_thresh": 0.13030677885564002,
+          "in_pilot": true
+        },
+        "roi_median": 0.0,
+        "governor_strictness": 0.5
+      },
+      {
+        "tick": 2,
+        "accepted": 0,
+        "rejected": 0,
+        "damped": 0,
+        "gate": {
+          "stage": "combo",
+          "w_resid": 0.80596705456224,
+          "w_hf": 0.11641976726265599,
+          "w_var": 0.07761317817510399,
+          "instability": 0.391471854166745,
+          "fsr": 0.0,
+          "instab_thresh": 0.26061355771128003,
+          "fsr_thresh": 0.13030677885564002,
+          "in_pilot": true
+        },
+        "roi_median": 0.0,
+        "governor_strictness": 0.5
+      }
+    ],
+    "pilot_thresholds": {
+      "instab_thresh": 0.26061355771128003,
+      "fsr_thresh": 0.05
+    },
+    "final_ema_weights": {
+      "w_resid": 0.80596705456224,
+      "w_hf": 0.11641976726265599,
+      "w_var": 0.07761317817510399
+    },
+    "governor_strictness_history": []
   }
 }

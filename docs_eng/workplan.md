@@ -1,6 +1,6 @@
 # Work Plan (Curiosity)
 
-> **Status:** Modules A-H described. As of 23 March 2026:
+> **Status:** Modules A-H described. As of 25 March 2026:
 > - Module C (informativeness rho): validated (Exp0.4-0.7, two-stage gate)
 > - Module D (tree + split/merge): validated (Exp0.1-0.3, Exp0.8 governor)
 > - Module E (deltas + boundaries): validated (halo w∈[2,4], SeamScore, Phase 1/2)
@@ -8,8 +8,8 @@
 > - Module G (Scale-Consistency): validated (SC-baseline AUC 0.82-1.0, exp12a tau_parent PASS)
 > - **Module H (three-layer rho): validated** (exp17, 1080 configs, reusability 12/12 PASS, cascade quotas, streaming pipeline)
 > - Modules A, B (canonicalization, cache): NOT implemented (not on critical path)
-> - Phase 1 completed (20.03.2026). Phase 2 completed (21.03.2026). Phase 3 completed (22.03.2026). Phase 3.5 completed (23.03.2026).
-> - Next step: Phase 4 (P4a downstream, P4b matryoshka) + C-optimization scoring (roadmap).
+> - Phase 1 completed (20.03.2026). Phase 2 completed (21.03.2026). Phase 3 completed (22.03.2026). Phase 3.5 completed (23.03.2026). Phase 4 multi-tick completed (25.03.2026).
+> - Next step: C-optimization scoring (roadmap) + Phase 5 (robustness/noise).
 
 ## Core Logic
 1. Only modules that provide standalone benefit survive: cache, detector, recomputation scheduler, profiling.
@@ -236,6 +236,114 @@ RG-flow verification (post-Phase 4): basin membership requires multi-pass to for
 ### Governor EMA Restoration + Sweep
 
 Reconnect EMA feedback from exp0.8 as global strictness thermostat (lost during Phase 2 pipeline assembly). Two-layer architecture: hardware parameter sets range, EMA feedback controls within range. Applicable to batch and frozen reuse modes; NOT applicable to streaming (cross-cluster bleed).
+
+### Rule: Magic Numbers Documentation
+
+> Every numeric constant in config.py must reference the experiment/sweep from which it was derived. If no reference exists, mark with `# UNVALIDATED, needs sweep (exp19)`. Rule introduced March 25, 2026.
+
+### Convergence Detector (missing)
+
+**Discovered:** runtime visualization (viz/index.html) showed that after refining all useful tiles the system continues spinning empty ticks — budget not exhausted, but no candidates remain or all are below threshold. Governor regulates *intensity* of refinement (strictness) but does not decide to *stop*.
+
+**Problem:** no formal convergence detector. Current stop conditions:
+- Budget exhaustion (hard stop)
+- Waste >= R_max (force-stop current tick, not session)
+- Missing: "accepted == 0 for last K ticks -> stop session"
+
+**Required:**
+```
+Convergence rule:
+  IF accepted == 0 for last K ticks (K >= 2):
+    STOP session, return remaining budget as unspent
+  IF accepted < probe_count for last K ticks:
+    STOP session (only probe discovers anything = diminishing returns)
+```
+
+**Dependency:** fix during Phase 4 pipeline assembly. No new experiments needed — purely engineering at harness loop level.
+
+**Status (March 25, 2026):** IMPLEMENTED in pipeline.py Phase 4 multi-tick. accepted==0 for convergence_window ticks -> stop.
+
+### Gate Health Thresholds — Data-Driven Calibration (open problem)
+
+**Discovered:** when implementing the two-stage gate in the visualization (viz/index.html), it turned out that instability/FSR thresholds for switching Stage 1 <-> Stage 2 cannot be fixed. Hardcoded values from P2a sweep (0.3/0.2) don't work on data with different statistics — instability metric (CV residual) scales differently depending on data, tile size, refinement stage, and noise level.
+
+**Solution — composite approach (two mechanisms simultaneously):**
+
+**(A) Pilot calibration.** First K ticks (K=2-3) — always Stage 2 (statistics collection). After pilot: threshold = percentile(observed) x factor. Provides absolute threshold calibrated to specific data.
+
+**(B) Relative threshold.** Switch to Stage 1 when instability < EMA(instability over last K ticks) x factor. Adapts to trend: if instability steadily drops (refinement progressing), threshold tightens.
+
+**Composite A+B:** threshold = min(pilot_threshold, ema_relative_threshold). Pilot sets upper bound (worst-case from initial data). EMA pulls down as data stabilizes.
+
+**Dependency:** implement during Phase 4 pipeline assembly. Requires sweep for factor validation in A and B.
+
+**Status (March 25, 2026):** IMPLEMENTED in pipeline.py Phase 4 multi-tick.
+
+### FSR Metric — Refined Tiles Inflate Sign-Flip Rate (bug)
+
+**Discovered:** viz testbed. FSR (fraction of sign-flips) counts all tiles including just-refined ones. Refined tile -> residual~0 -> guaranteed sign-flip. At 40 tiles/tick out of 1024 this is ~4% baseline FSR even on ideal data. If fsrThresh < 4% -> gate stuck in Stage 2 forever.
+
+**Fix:** FSR must be computed **only on non-refined tiles**. Implemented in viz, needs verification in real pipeline (exp06, exp07).
+
+**Dependency:** verify during Phase 4 assembly.
+
+**Status (March 25, 2026):** IMPLEMENTED in pipeline.py Phase 4 multi-tick.
+
+### Gate Oscillation — Missing Hysteresis
+
+**Discovered:** viz testbed. When instability ~ threshold, gate jumps Stage 1->2->1->2 every tick. Each tick uses a different rho function (residual-only vs combo), breaking DET-2 (metric stability across seeds): one seed may land on Stage 1, another on Stage 2 in the same tick.
+
+**Required:** hysteresis band. Switch to Stage 1 when instab < threshold x 0.8, back to Stage 2 when instab > threshold x 1.2.
+
+**Dependency:** Phase 4 pipeline.
+
+**Status (March 25, 2026):** IMPLEMENTED in pipeline.py Phase 4 multi-tick.
+
+### EMA Weights Uncalibrated on First Ticks
+
+**Discovered:** viz testbed. On tick 1 prevGains=null -> EMA cannot adapt weights -> first ticks of Stage 2 operate with arbitrary initial weights (0.4/0.35/0.25). Decisions based on them are irreversible — refined tiles cannot be unrefined.
+
+**Problem:** pilot calibration solves the **threshold** problem but not the **weights** problem. First K ticks of Stage 2 operate blind.
+
+**Dependency:** Phase 4. Related to pilot calibration threshold — can be unified into a single pilot phase.
+
+**Status (March 25, 2026):** IMPLEMENTED in pipeline.py Phase 4 multi-tick.
+
+### Gain Threshold — Gain/Cost Incommensurability
+
+**Discovered:** viz testbed. When good candidates are exhausted (80%+ tiles refined), the relative threshold (quantile of current candidates) passes tiles with negligible gain because threshold is relative. An absolute threshold is needed, but gain (MSE) and cost (compute units) are incommensurable — direct comparison gain > cost is meaningless.
+
+**Broader problem:** no single "currency" for gain and cost. Governor operates in compute units, rho in normalized scores, gain in MSE. Three different spaces.
+
+**Dependency:** Phase 4. Fundamental architectural question.
+
+**Status (March 25, 2026):** IMPLEMENTED in pipeline.py Phase 4 multi-tick.
+
+### Probe Overlaps with Rejected Tiles
+
+**Discovered:** viz testbed. Probe targets lowest-rho unselected tiles. But governor may evaluate and consciously reject a tile (gain < threshold). Probe can target the same tile — wasting probe budget on a tile governor just rejected.
+
+**Fix:** probe must target **unevaluated** tiles (not in evalCount), not merely unselected. Probe = exploration of the unknown, not re-evaluation of the rejected.
+
+**Dependency:** Phase 4 pipeline. Simple fix at probe selection logic level.
+
+**Status (March 25, 2026):** IMPLEMENTED in pipeline.py Phase 4 multi-tick.
+
+### No Post-Refinement Quality Feedback
+
+**Discovered:** viz testbed. Tile accepted -> refined -> marked forever. Nobody checks whether refinement actually improved quality. If the operator (or in AdaHiMem: compression/decompression) reconstructs poorly, tile is considered "refined" forever, governor gets no signal about poor quality.
+
+**Problem:** per-tile strictness accounts only for accept/reject decision, not post-refinement quality. Tile with high gain but poor refinement — blind spot.
+
+**Dependency:** Phase 4+. Requires additional residual pass after refinement. Increases compute cost by ~10-20%.
+
+### Noise-Fitting — System Optimizes to Noise, Not Signal (fundamental problem)
+
+**Discovered:** viz testbed with noise on the source field (sigma > 0). All experiments (exp00a-exp18) used clean synthetic data or data with negligible noise. The system minimizes residual = |current - observed_data|. If observed_data is noisy, the system spends budget reproducing noise exactly.
+
+**Dependency:** fundamental problem. Not Phase 4 — Phase 5 (robustness). But Phase 4 experiments must not run on noisy data without noise-awareness.
+
+**Plan:** sweep of denoising variants (A-D + SureShrink + BayesShrink + SURE-Bayes blend), then composite from Pareto-best. Details in `docs/experiment_hierarchy.md` -> P5-noise (exp20a/b/c).
 
 ### Streaming Budget Control (B+C)
 

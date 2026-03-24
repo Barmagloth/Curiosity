@@ -8,8 +8,8 @@
 > - Модуль G (Scale-Consistency): валидирован (SC-baseline AUC 0.82-1.0, exp12a τ_parent PASS)
 > - **Модуль H (трёхслойная ρ): валидирован** (exp17, 1080 конфигов, reusability 12/12 PASS, cascade quotas, streaming pipeline)
 > - Модули A, B (каноникализация, кэш): НЕ реализованы (не на критическом пути)
-> - Phase 1 завершена (20.03.2026). Phase 2 завершена (21.03.2026). Phase 3 завершена (22.03.2026). Phase 3.5 завершена (23.03.2026).
-> - Следующий шаг: Phase 4 (P4a downstream, P4b matryoshka) + C-оптимизация scoring (roadmap).
+> - Phase 1 завершена (20.03.2026). Phase 2 завершена (21.03.2026). Phase 3 завершена (22.03.2026). Phase 3.5 завершена (23.03.2026). Phase 4 multi-tick завершена (25.03.2026).
+> - Следующий шаг: exp19 (sweep параметров multi-tick) + Phase 4 continued (P4a downstream, P4b matryoshka) + C-оптимизация scoring (roadmap).
 
 ## Базовая логика
 1. Выживают только модули, которые дают выигрыш **сами по себе**: кэш, детектор, планировщик пересчёта, профилирование.
@@ -231,6 +231,10 @@ RG-flow верификация (пост-Phase 4): basin membership требуе
 
 Восстановить EMA feedback из exp0.8 как глобальный термостат strictness (потерян при сборке Phase 2 pipeline). Двухслойная архитектура: hardware parameter задаёт диапазон, EMA feedback управляет внутри диапазона. Применим в batch и frozen reuse; в streaming НЕ применим (cross-cluster bleed).
 
+### Правило: документирование магических цифр
+
+> Любая числовая константа в config.py должна иметь ссылку на эксперимент/sweep из которого выведена. Если ссылки нет — пометить `# UNVALIDATED, needs sweep (exp19)`. Правило введено 25 марта 2026.
+
 ### Convergence detector (отсутствует)
 
 **Обнаружено:** визуализация рантайма (viz/index.html) показала, что после уточнения всех полезных тайлов система продолжает крутить пустые тики — бюджет не исчерпан, но кандидатов нет или все ниже порога. Governor регулирует *интенсивность* уточнения (strictness), но не принимает решение *остановиться*.
@@ -250,6 +254,8 @@ Convergence rule:
 ```
 
 **Зависимость:** фиксировать при сборке Phase 4 pipeline. Не требует новых экспериментов — чисто инженерное решение на уровне harness loop.
+
+**Статус (25 марта 2026):** РЕАЛИЗОВАНО в pipeline.py Phase 4 multi-tick. accepted==0 за convergence_window тиков → stop.
 
 ### Gate health thresholds — data-driven калибровка (открытая проблема)
 
@@ -273,6 +279,8 @@ Convergence rule:
 
 **Зависимость:** реализовать при сборке Phase 4 pipeline. Требует sweep для валидации factor в A и B. Визуализация (viz/) может быть использована как testbed.
 
+**Статус (25 марта 2026):** РЕАЛИЗОВАНО в pipeline.py Phase 4 multi-tick.
+
 ### FSR metric — refined tiles inflate sign-flip rate (баг)
 
 **Обнаружено:** viz стенд. FSR (fraction of sign-flips) считает все тайлы, включая только что уточнённые. Уточнённый тайл → residual≈0 → гарантированный sign-flip. При 40 тайлах/тик из 1024 это ~4% baseline FSR даже на идеальных данных. Если fsrThresh < 4% → gate застревает в Stage 2 навсегда.
@@ -281,6 +289,8 @@ Convergence rule:
 
 **Зависимость:** проверить при сборке Phase 4.
 
+**Статус (25 марта 2026):** РЕАЛИЗОВАНО в pipeline.py Phase 4 multi-tick.
+
 ### Gate oscillation — отсутствие hysteresis
 
 **Обнаружено:** viz стенд. Когда instability ≈ threshold, gate прыгает Stage 1→2→1→2 каждый тик. Каждый тик использует разную ρ-функцию (residual-only vs combo), что нарушает DET-2 (metric stability across seeds): один seed может попасть на Stage 1, другой на Stage 2 в том же тике.
@@ -288,6 +298,8 @@ Convergence rule:
 **Требуется:** hysteresis band. Переключение в Stage 1 при instab < threshold × 0.8, обратно в Stage 2 при instab > threshold × 1.2. Концепт упоминает "EMA-smoothing с hysteresis" (exp06-07), но неясно реализовано ли это в текущем коде.
 
 **Зависимость:** Phase 4 pipeline. Проверить exp07b_twostage.py.
+
+**Статус (25 марта 2026):** РЕАЛИЗОВАНО в pipeline.py Phase 4 multi-tick.
 
 ### EMA-веса не откалиброваны на первых тиках
 
@@ -302,6 +314,8 @@ Convergence rule:
 
 **Зависимость:** Phase 4. Связано с pilot calibration threshold — можно объединить в единую pilot phase.
 
+**Статус (25 марта 2026):** РЕАЛИЗОВАНО в pipeline.py Phase 4 multi-tick.
+
 ### Gain threshold — несоизмеримость gain и cost
 
 **Обнаружено:** viz стенд. При исчерпании хороших кандидатов (80%+ тайлов уточнено) относительный порог (quantile от текущих кандидатов) пропускает тайлы с мизерным gain, потому что порог relative. Абсолютный порог нужен, но gain (MSE) и cost (compute units) — несоизмеримые величины, прямое сравнение gain > cost не имеет смысла.
@@ -315,6 +329,8 @@ Convergence rule:
 
 **Зависимость:** Phase 4. Фундаментальный архитектурный вопрос.
 
+**Статус (25 марта 2026):** РЕАЛИЗОВАНО в pipeline.py Phase 4 multi-tick.
+
 ### Probe пересекается с rejected tiles
 
 **Обнаружено:** viz стенд. Probe таргетирует lowest-ρ невыбранные тайлы. Но governor может оценить и осознанно отклонить тайл (gain < threshold). Probe может нацелиться на тот же тайл — бессмысленная трата probe budget на тайл, который governor только что отверг.
@@ -322,6 +338,8 @@ Convergence rule:
 **Фикс:** probe должен таргетировать **неоценённые** тайлы (не попавшие в evalCount), а не просто невыбранные. Probe = исследование неизвестного, не переоценка отвергнутого.
 
 **Зависимость:** Phase 4 pipeline. Простой фикс на уровне probe selection logic.
+
+**Статус (25 марта 2026):** РЕАЛИЗОВАНО в pipeline.py Phase 4 multi-tick.
 
 ### Нет обратной связи от качества refinement
 

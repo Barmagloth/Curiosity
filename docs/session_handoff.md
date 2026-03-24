@@ -1,4 +1,4 @@
-# Session Handoff — Curiosity (Phase 4 next)
+# Session Handoff — Curiosity (Phase 4 multi-tick DONE, exp19 next)
 
 Документ для новой сессии AI-оркестратора. Содержит полный контекст для немедленного продолжения работы.
 
@@ -6,7 +6,7 @@
 
 ## English Summary
 
-**Current status:** Phases 0–3.5 DONE. Next up: Phase 4.
+**Current status:** Phases 0–4 (multi-tick) DONE. Next up: exp19 (parameter sweep).
 
 - **Phase 0** (18 Mar 2026): Environment setup, halo cross-space validation, SC-baseline.
 - **Phase 1** (20 Mar 2026): P0 Layout closed (D_direct for grids, hybrid for trees, D_blocked for spatial graphs, A_bitset fallback). DET-1 and DET-2 PASS.
@@ -18,7 +18,8 @@
 - **Budget control architecture:** Three orthogonal mechanisms: (1) L1 cascade quotas (structural), (2) Governor EMA (hardware-adaptive, batch/reuse only — NOT streaming), (3) WasteBudget + StrictnessTracker (self-tightening noose, safety). Streaming uses Institutional Inequality Formula: W = N×(1-ECR)^γ + forward carry. γ sweep planned: {1.0..4.0}.
 - **Runtime visualization** (24 Mar 2026): Interactive testbed `viz/index.html` — real multi-tick T1 runtime with per-tile strictness, two-stage gate with pilot-calibrated thresholds, EMA weight adaptation, noise injection. Exposed **9 architectural issues** recorded in `docs/workplan.md`: (1) missing convergence detector, (2) gate health thresholds not data-driven, (3) FSR inflated by refined tiles, (4) gate oscillation without hysteresis, (5) EMA weights uncalibrated on first ticks, (6) gain/cost incommensurability, (7) probe/reject overlap, (8) no post-refinement quality feedback, (9) **noise-fitting: system optimizes to noisy observations, not true signal** — fundamental blind spot, all experiments ran on clean synthetic data so never caught. Phase 5 (robustness) but awareness needed in Phase 4.
 - **P5-noise planned** (24 Mar 2026): exp20a sweep of 6 denoising approaches (smoothed ρ, noise floor, BayesShrink, SureShrink, coarse-as-prior, SURE-Bayes blend) × 3 σ levels × 10 seeds on T1. exp20b composite from Pareto-best. exp20c pipeline integration + DET re-check. See `docs/experiment_hierarchy.md` P5-noise. σ² estimation for T3/T4 is open research question.
-- **Next: Phase 4** — P4a downstream consumer test, P4b matryoshka, MultiStageDedup test, Governor EMA restoration + sweep (3 modes × 3 hw × 6 γ × 4 spaces × 20 seeds = 4320 configs). **Must address 8 runtime issues (1-8) from viz testbed before sweep. Issue 9 (noise-fitting) is Phase 5 but Phase 4 experiments must not use noisy data without noise-awareness.** Bushes revisit after Track C. RG-flow after multi-pass.
+- **Phase 4 multi-tick** (25 Mar 2026): pipeline.py converted to multi-tick architecture. WeightedRhoGate replaces TwoStageGate (single ρ with smooth EMA weights, no Stage 1/2 switching). Issues 1-7 from viz testbed RESOLVED: convergence detector, data-driven thresholds (cold-start + pilot), FSR excludes refined, smooth EMA weights, EMA calibration, ROI metric, probe exclusion. Governor EMA restored (OFF by default). Backward compat PASS (max_ticks=1 reproduces Phase 2 exactly). DET-1 recheck 40/40 PASS.
+- **Next: exp19** — parameter sweep + benchmark single-tick vs multi-tick vs streaming on real data. P4a downstream consumer test, P4b matryoshka still planned. Issues 8 (post-refinement feedback, Phase 4+) and 9 (noise-fitting, Phase 5) remain open. Bushes revisit after Track C. RG-flow after multi-pass.
 
 **Working PC:** PC 2 (NVIDIA RTX 2070, 8 GB, CUDA 12.8). Working directory: `R:\Projects\Curiosity`.
 
@@ -38,7 +39,8 @@
 - **Бюджетный контроль:** три ортогональных механизма: (1) L1 cascade quotas (структурный), (2) Governor EMA (hardware-adaptive, batch/reuse only — НЕ streaming), (3) WasteBudget + StrictnessTracker (удавка, safety). Streaming: формула институционального неравенства W = N×(1-ECR)^γ + forward carry. γ sweep запланирован: {1.0..4.0}.
 - **Визуализация рантайма** (24 марта 2026): интерактивный стенд `viz/index.html` — реальный multi-tick T1 runtime с per-tile strictness, двухступенчатым gate (pilot calibration + EMA-веса), инъекцией шума. Выявлено **9 архитектурных проблем**, записаны в `docs/workplan.md`: (1) нет convergence detector, (2) пороги gate не data-driven, (3) FSR раздувается от refined tiles, (4) осцилляция gate без hysteresis, (5) EMA-веса не откалиброваны на первых тиках, (6) несоизмеримость gain/cost, (7) probe пересекается с rejected, (8) нет обратной связи от качества refinement, (9) **noise-fitting: система оптимизирует к зашумлённым наблюдениям, а не к сигналу** — фундаментальный blind spot, все эксперименты были на чистой синтетике. Phase 5 (robustness), но Phase 4 должна быть noise-aware.
 - **P5-noise запланирован** (24 марта 2026): exp20a sweep 6 подходов к denoising (smoothed ρ, noise floor, BayesShrink, SureShrink, coarse-as-prior, SURE-Bayes blend) × 3 уровня σ × 10 seeds на T1. exp20b composite из лучших по Pareto (quality × cost). exp20c интеграция в pipeline + DET re-check. Детали: `docs/experiment_hierarchy.md` P5-noise. Оценка σ² для T3/T4 — открытый research question.
-- **Следующий шаг — Фаза 4:** P4a downstream consumer test, P4b matryoshka, MultiStageDedup test, Governor EMA restoration + sweep (3 режима × 3 hw × 6 γ × 4 spaces × 20 seeds = 4320 конфигов). **Перед sweep обязательно закрыть 8 runtime issues (1-8) из viz стенда. Issue 9 (noise-fitting) — Phase 5, но Phase 4 эксперименты не запускать на шумных данных без noise-awareness.** Bushes revisit после Track C. RG-flow после multi-pass.
+- **Фаза 4 multi-tick завершена** (25 марта 2026). pipeline.py переведён на multi-tick архитектуру. WeightedRhoGate заменил TwoStageGate. Issues 1-7 из viz testbed РЕАЛИЗОВАНЫ. Governor EMA restored (OFF по умолчанию). Backward compat PASS. DET-1 recheck 40/40 PASS.
+- **Следующий шаг — exp19:** sweep параметров + benchmark single-tick vs multi-tick vs streaming. P4a downstream consumer test, P4b matryoshka по-прежнему запланированы. Issues 8 (post-refinement feedback, Phase 4+) и 9 (noise-fitting, Phase 5) остаются открытыми. Bushes revisit после Track C. RG-flow после multi-pass.
 
 Рабочий ПК: **PC 2** (NVIDIA RTX 2070, 8 GB, CUDA 12.8). Рабочая директория: `R:\Projects\Curiosity`.
 
@@ -366,6 +368,51 @@ Cluster 2:                                  [L0] → [L1] → [L2 refine]
 - `experiments/exp17_three_layer_rho/config17.py` — конфигурация эксперимента
 - `experiments/exp17_three_layer_rho/results/` — результаты по чанкам (JSON)
 - `experiments/exp17_three_layer_rho/README.md` — полное описание (RU+EN)
+
+---
+
+## Phase 4 — Multi-tick pipeline (25 марта 2026)
+
+### Что сделано
+
+1. **Multi-tick pipeline** — pipeline.py переведён на multi-tick архитектуру:
+   - Outer tick loop: per-tick recompute unit_rho (L2 query), FSR, instability
+   - Единая ρ = Σ(w_i × signal_i) с динамическими EMA-весами (без дискретных переключений Stage 1↔2)
+   - Cold-start порогов из topo zone / CV(initial_rho)
+   - Pilot fine-tuning первых K тиков
+   - Backward compat: max_ticks=1 (default) воспроизводит Phase 2 поведение точно
+
+2. **Issues 1-7 из viz testbed — РЕАЛИЗОВАНЫ:**
+   - #1: Convergence detector (accepted==0 за K тиков → stop)
+   - #2: Data-driven пороги gate (cold-start + pilot fine-tuning)
+   - #3: FSR exclude refined (sign-flip rate по non-refined юнитам)
+   - #4: Плавные EMA-веса ρ (вместо дискретного переключения)
+   - #5: Калибровка EMA-весов (cold-start + pilot)
+   - #6: ROI metric (gain/cost, абсолютный порог)
+   - #7: Probe exclusion (только неоценённые юниты)
+
+3. **Governor EMA restored** из exp08: EMA(cost) → strictness corridor. Двухслойная arch (hardware range + EMA feedback). По умолчанию OFF (governor_ema_enabled=False).
+
+4. **WeightedRhoGate** заменил TwoStageGate — одна ρ-функция с плавными весами вместо Stage 1/2.
+
+### Верификация
+
+- Backward compat smoke test: PASS (все 4 пространства, идентичные PSNR)
+- Multi-tick smoke test (max_ticks=5): PASS (все 4 пространства, convergence работает)
+- DET-1 recheck: 40/40 PASS (побитовый детерминизм сохранён)
+
+### Новые конфиг-ручки (config.py)
+
+max_ticks, convergence_window, pilot_ticks, pilot_thresh_factor, pilot_fsr_floor, ema_weight_alpha, min_roi_fraction, governor_ema_enabled, governor_corridor_hi/lo, governor_strictness_clamp, governor_warmup_ticks.
+
+Все UNVALIDATED параметры помечены — нужен sweep (exp19).
+
+### Что дальше
+
+- **exp19:** sweep параметров + benchmark single-tick vs multi-tick vs streaming на реальных данных (CIFAR, ImageNet, реальные графы)
+- **D_parent как модификатор probe-приоритета** (concept_v2.0.md строки 475-477)
+- **Teacher-guided сигнал** как компонент ρ (исследование)
+- Issues 8 (post-refinement quality feedback) и 9 (noise-fitting) остаются на Phase 4+ и Phase 5
 
 ---
 

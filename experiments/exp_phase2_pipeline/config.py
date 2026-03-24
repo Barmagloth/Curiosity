@@ -59,3 +59,27 @@ class PipelineConfig:
     # Diagnostics
     track_seam_score: bool = True
     reject_rate_alert: float = 0.20  # flag if > 20% rejects
+
+    # === Phase 4: Multi-tick ===
+    max_ticks: int = 1                       # 1 = backward compat single-pass
+
+    # Issue 1: Convergence detector
+    convergence_window: int = 2              # UNVALIDATED, needs sweep (exp19)
+
+    # Issues 2+5: Cold-start + pilot fine-tuning
+    pilot_ticks: int = 3                     # UNVALIDATED, needs sweep (exp19)
+    pilot_thresh_factor: float = 0.7         # UNVALIDATED, needs sweep (exp19)
+    pilot_fsr_floor: float = 0.05            # UNVALIDATED, needs sweep (exp19)
+
+    # Issue 4: EMA rate for rho signal weights
+    ema_weight_alpha: float = 0.3            # UNVALIDATED, needs sweep (exp19)
+
+    # Issue 6: ROI threshold
+    min_roi_fraction: float = 0.15           # UNVALIDATED, needs sweep (exp19)
+
+    # Governor EMA (restored from exp08)
+    governor_ema_enabled: bool = False        # default=False for backward compat
+    governor_corridor_hi: float = 1.5         # from exp08 (TARGET * 1.5)
+    governor_corridor_lo: float = 0.5         # from exp08 (TARGET * 0.5)
+    governor_strictness_clamp: float = 0.05   # from exp08
+    governor_warmup_ticks: int = 3            # from exp08 (WARMUP_STEPS=3)
