@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Curiosity — Рантайм T1 Scalar Grid</title>
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --border: #30363d;
+  --text: #c9d1d9; --dim: #8b949e;
+  --blue: #58a6ff; --green: #3fb950; --yellow: #d29922; --red: #f85149; --purple: #bc8cff;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,sans-serif; }
+.app { display:grid; grid-template-columns:300px 1fr; grid-template-rows:auto 1fr; height:100vh; }
+header { grid-column:1/-1; padding:12px 20px; border-bottom:1px solid var(--border); background:var(--surface); display:flex; align-items:center; gap:16px; }
+header h1 { font-size:16px; font-weight:600; }
+.sidebar { border-right:1px solid var(--border); background:var(--surface); overflow-y:auto; padding:16px; }
+.main { overflow-y:auto; padding:24px; display:flex; flex-direction:column; gap:16px; }
+
+.btn { padding:8px 12px; border:1px solid var(--border); border-radius:6px; background:var(--surface); color:var(--text); cursor:pointer; font-size:13px; font-family:inherit; transition:all 0.15s; }
+.btn:hover { border-color:var(--blue); }
+.btn.primary { background:var(--blue); color:#fff; border-color:var(--blue); }
+.btn:disabled { opacity:0.3; cursor:default; }
+
+/* SETTINGS */
+.settings { padding-bottom:12px; border-bottom:1px solid var(--border); margin-bottom:12px; }
+.settings label { display:flex; justify-content:space-between; font-size:12px; color:var(--dim); margin-bottom:2px; }
+.settings input[type=range] { width:100%; margin-bottom:10px; }
+.val { color:var(--blue); font-weight:600; }
+
+/* GOVERNOR DASHBOARD */
+.gov-panel { background:rgba(88,166,255,0.05); border:1px solid var(--border); border-radius:8px; padding:12px; margin-bottom:12px; }
+.gov-panel h3 { font-size:12px; color:var(--dim); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; }
+.gov-row { display:flex; justify-content:space-between; font-size:13px; margin-bottom:4px; }
+.gov-row .label { color:var(--dim); }
+.gov-bar { height:6px; border-radius:3px; background:var(--border); margin:4px 0 8px; overflow:hidden; }
+.gov-bar-fill { height:100%; border-radius:3px; transition:width 0.3s; }
+
+/* TICK LOG */
+.tick-log { font-size:12px; max-height:200px; overflow-y:auto; }
+.tick-entry { padding:6px 8px; border-left:3px solid var(--border); margin-bottom:4px; border-radius:0 4px 4px 0; background:rgba(255,255,255,0.02); }
+.tick-entry.current { border-left-color:var(--blue); background:rgba(88,166,255,0.08); }
+.tick-entry .tick-head { font-weight:600; margin-bottom:2px; }
+.tick-entry .tick-detail { color:var(--dim); font-size:11px; }
+
+/* VIZ */
+.viz-row { display:flex; gap:16px; flex-wrap:wrap; }
+.viz-panel { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px; flex:1; min-width:250px; }
+.viz-panel h3 { font-size:13px; color:var(--dim); margin-bottom:8px; font-weight:500; }
+canvas { display:block; border-radius:4px; image-rendering:pixelated; }
+
+.info-box { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px; font-size:14px; line-height:1.7; }
+.info-box h2 { font-size:18px; margin-bottom:8px; }
+.info-box code { background:rgba(88,166,255,0.1); padding:1px 6px; border-radius:3px; font-size:12px; }
+.metric { display:inline-block; padding:2px 10px; border-radius:4px; font-weight:600; font-size:12px; margin:2px; }
+.m-blue { background:rgba(88,166,255,0.15); color:var(--blue); }
+.m-green { background:rgba(63,185,80,0.15); color:var(--green); }
+.m-yellow { background:rgba(210,153,34,0.15); color:var(--yellow); }
+.m-red { background:rgba(248,81,73,0.15); color:var(--red); }
+.m-purple { background:rgba(188,140,255,0.15); color:var(--purple); }
+
+.controls { display:flex; gap:8px; margin-top:12px; }
+.phase-label { font-size:11px; color:var(--dim); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; }
+
+/* LEGEND */
+.legend-bar { display:flex; align-items:center; gap:6px; margin-top:6px; font-size:11px; color:var(--dim); }
+.legend-bar canvas { border-radius:2px; }
+.legend-bar .lo { }
+.legend-bar .hi { }
+.legend-symbols { display:flex; flex-wrap:wrap; gap:8px; margin-top:6px; font-size:11px; color:var(--dim); }
+.legend-sym { display:flex; align-items:center; gap:4px; }
+.legend-sym .swatch { width:14px; height:14px; border-radius:3px; border:1.5px solid; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Curiosity Runtime — T1 Scalar Grid</h1>
+    <span style="color:var(--dim); font-size:13px">Реальный multi-tick рантайм с governor</span>
+  </header>
+
+  <div class="sidebar">
+    <div class="settings">
+      <label>Seed <span class="val" id="seedVal">42</span></label>
+      <input type="number" id="seedInput" value="42" min="1" max="99999" style="width:100%;padding:4px 8px;margin-bottom:10px;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:13px;">
+      <label>Сложность поля <span class="val" id="complexVal">8</span></label>
+      <input type="range" id="complexSlider" min="2" max="15" value="8">
+      <label>Общий бюджет (compute units) <span class="val" id="budgetVal">1500</span></label>
+      <input type="range" id="budgetSlider" min="200" max="5000" step="50" value="1500">
+      <label>Размер тайла <span class="val" id="tileVal">8</span></label>
+      <input type="range" id="tileSlider" min="4" max="32" step="4" value="8">
+      <label>Шум данных σ <span class="val" id="noiseVal">0.00</span>
+        <span style="font-size:10px;color:var(--dim)">(сенсорный шум на исходном поле)</span></label>
+      <input type="range" id="noiseSlider" min="0" max="50" step="1" value="0">
+      <label>Waste tolerance ω <span class="val" id="omegaVal">0.15</span>
+        <span style="font-size:10px;color:var(--dim)">(R_max = B×ω — лимит потерь на отклонения)</span></label>
+      <input type="range" id="omegaSlider" min="5" max="30" step="1" value="15">
+      <div style="margin-top:8px">
+        <button class="btn primary" onclick="regenerate()" style="width:100%">Новое поле</button>
+      </div>
+    </div>
+
+    <div class="gov-panel" id="govPanel">
+      <h3>Governor</h3>
+      <div class="gov-row"><span class="label">Бюджет осталось</span><span id="govBudget">—</span></div>
+      <div class="gov-bar"><div class="gov-bar-fill" id="govBudgetBar" style="width:100%;background:var(--green)"></div></div>
+      <div class="gov-row"><span class="label">Strictness (средний)</span><span id="govStrict">1.00</span></div>
+      <div class="gov-bar"><div class="gov-bar-fill" id="govStrictBar" style="width:10%;background:var(--yellow)"></div></div>
+      <div class="gov-row"><span class="label">Waste / R_max</span><span id="govWaste">0 / —</span></div>
+      <div class="gov-bar"><div class="gov-bar-fill" id="govWasteBar" style="width:0%;background:var(--red)"></div></div>
+      <div class="gov-row"><span class="label">Тик</span><span id="govTick">0</span></div>
+      <div class="gov-row"><span class="label">Всего уточнено</span><span id="govRefined">0</span></div>
+    </div>
+
+    <div class="phase-label">Лог тиков</div>
+    <div class="tick-log" id="tickLog">
+      <div style="color:var(--dim);font-size:12px;padding:8px">Нажми «Следующий тик» чтобы начать</div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" id="initBtn" onclick="doInit()">Инициализация</button>
+      <button class="btn primary" id="tickBtn" onclick="doTick()" disabled>Следующий тик</button>
+    </div>
+    <div class="controls">
+      <button class="btn" onclick="autoRun()">▶ Авто (до конца)</button>
+      <button class="btn" onclick="regenerate()">Сброс</button>
+    </div>
+  </div>
+
+  <div class="main" id="mainArea">
+    <div class="info-box" style="text-align:center;padding:40px">
+      <h2>Curiosity Runtime — пошаговая демонстрация</h2>
+      <p style="color:var(--dim);margin-top:8px">1. Настрой параметры слева<br>2. Нажми «Инициализация» → увидишь исходное поле и грубое приближение<br>3. Жми «Следующий тик» — каждый тик = один цикл рантайма:<br>
+      <code>L1→L2→Governor→Split/Reject→Refine→Probe→Update</code></p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+// MATH
+// ════════════════════════════════════════════════════════════════
+class RNG {
+  constructor(s){this.s=s%2147483647;if(this.s<=0)this.s+=2147483646;}
+  next(){this.s=this.s*16807%2147483647;return(this.s-1)/2147483646;}
+  gauss(){let u=0,v=0;while(!u)u=this.next();while(!v)v=this.next();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+}
+
+function makeField(sz,nB,seed){
+  const r=new RNG(seed),f=new Float64Array(sz*sz);
+  for(let b=0;b<nB;b++){const cx=r.next()*2-1,cy=r.next()*2-1,sig=0.01+r.next()*0.08,amp=0.3+r.next()*0.7;
+    for(let y=0;y<sz;y++){const yy=y/sz*2-1;for(let x=0;x<sz;x++){const xx=x/sz*2-1;f[y*sz+x]+=amp*Math.exp(-((xx-cx)**2+(yy-cy)**2)/sig);}}}
+  const dcx=r.next()*0.6-0.3,dcy=r.next()*0.6-0.3,dr=0.1+r.next()*0.15;
+  for(let y=0;y<sz;y++){const yy=y/sz*2-1;for(let x=0;x<sz;x++){const xx=x/sz*2-1;if((xx-dcx)**2+(yy-dcy)**2<dr*dr)f[y*sz+x]+=0.5;}}
+  const rx=r.next()*0.6-0.3,ry=r.next()*0.6-0.3,rw=0.05+r.next()*0.15,rh=0.05+r.next()*0.2;
+  for(let y=0;y<sz;y++){const yy=y/sz*2-1;for(let x=0;x<sz;x++){const xx=x/sz*2-1;if(Math.abs(xx-rx)<rw&&Math.abs(yy-ry)<rh)f[y*sz+x]+=0.4;}}
+  for(let i=0;i<f.length;i++)f[i]+=r.gauss()*0.01;
+  let mn=Infinity,mx=-Infinity;for(let i=0;i<f.length;i++){if(f[i]<mn)mn=f[i];if(f[i]>mx)mx=f[i];}
+  const rng=mx-mn||1;for(let i=0;i<f.length;i++)f[i]=(f[i]-mn)/rng;return f;
+}
+function downsample(f,sz,fac){const cs=sz/fac|0,c=new Float64Array(cs*cs);for(let cy=0;cy<cs;cy++)for(let cx=0;cx<cs;cx++){let s=0,n=0;for(let dy=0;dy<fac;dy++)for(let dx=0;dx<fac;dx++){s+=f[(cy*fac+dy)*sz+(cx*fac+dx)];n++;}c[cy*cs+cx]=s/n;}return{data:c,size:cs};}
+function upsample(c,cs,sz){const u=new Float64Array(sz*sz);for(let y=0;y<sz;y++)for(let x=0;x<sz;x++){const sy=y*cs/sz-0.5,sx=x*cs/sz-0.5,y0=Math.max(0,sy|0),y1=Math.min(cs-1,y0+1),x0=Math.max(0,sx|0),x1=Math.min(cs-1,x0+1),fy=sy-y0,fx=sx-x0;u[y*sz+x]=c[y0*cs+x0]*(1-fy)*(1-fx)+c[y0*cs+x1]*(1-fy)*fx+c[y1*cs+x0]*fy*(1-fx)+c[y1*cs+x1]*fy*fx;}return u;}
+function absResidual(a,b,sz){const r=new Float64Array(sz*sz);for(let i=0;i<r.length;i++)r[i]=Math.abs(a[i]-b[i]);return r;}
+function laplacian(f,sz){const l=new Float64Array(sz*sz);for(let y=1;y<sz-1;y++)for(let x=1;x<sz-1;x++){l[y*sz+x]=Math.abs(f[(y-1)*sz+x]+f[(y+1)*sz+x]+f[y*sz+x-1]+f[y*sz+x+1]-4*f[y*sz+x]);}return l;}
+function localVar(f,sz,w=1){const v=new Float64Array(sz*sz);for(let y=w;y<sz-w;y++)for(let x=w;x<sz-w;x++){let s=0,s2=0,n=0;for(let dy=-w;dy<=w;dy++)for(let dx=-w;dx<=w;dx++){const val=f[(y+dy)*sz+(x+dx)];s+=val;s2+=val*val;n++;}v[y*sz+x]=Math.max(0,s2/n-(s/n)**2);}return v;}
+function tileAgg(f,fsz,tsz){const nt=fsz/tsz|0,t=new Float64Array(nt*nt);for(let ty=0;ty<nt;ty++)for(let tx=0;tx<nt;tx++){let s=0;for(let dy=0;dy<tsz;dy++)for(let dx=0;dx<tsz;dx++)s+=f[(ty*tsz+dy)*fsz+(tx*tsz+dx)];t[ty*nt+tx]=s/(tsz*tsz);}return{data:t,nt};}
+function qnorm(a){const s=[...a].sort((a,b)=>a-b),q10=s[s.length*0.1|0],q50=s[s.length*0.5|0],q90=s[s.length*0.9|0],sc=q90-q10+1e-8,o=new Float64Array(a.length);for(let i=0;i<a.length;i++)o[i]=Math.max(-3,Math.min(3,(a[i]-q50)/sc));return o;}
+function mse(a,b){let s=0;for(let i=0;i<a.length;i++)s+=(a[i]-b[i])**2;return s/a.length;}
+function signalCorr(sig,gains){
+  // Pearson correlation between signal and gains
+  let n=Math.min(sig.length,gains.length),sx=0,sy=0,sxy=0,sx2=0,sy2=0;
+  for(let i=0;i<n;i++){sx+=sig[i];sy+=gains[i];sxy+=sig[i]*gains[i];sx2+=sig[i]**2;sy2+=gains[i]**2;}
+  const num=n*sxy-sx*sy, den=Math.sqrt((n*sx2-sx*sx)*(n*sy2-sy*sy));
+  return den>1e-10?num/den:0;
+}
+function psnr(m){return m<1e-12?100:10*Math.log10(1/m);}
+
+// ════════════════════════════════════════════════════════════════
+// RENDERING
+// ════════════════════════════════════════════════════════════════
+const CM={
+  viridis:t=>[Math.round(68*(1-t)+253*t),Math.round(1*(1-t)+231*t*t+180*t*(1-t)),Math.round(84*(1-t*t)+37*t*t+200*t*(1-t))],
+  heat:t=>[(Math.min(255,t*510))|0,(Math.max(0,Math.min(255,(t-0.25)*510)))|0,(Math.max(0,(t-0.5)*510))|0],
+  coolwarm:t=>t<0.5?(s=>[(59+s*137)|0,(76+s*100)|0,(192-s*20)|0])(t*2):(s=>[(196+s*59)|0,(176-s*130)|0,(172-s*130)|0])((t-0.5)*2),
+};
+
+// Colorbar: draws a gradient + labels under canvas
+function colorbarHTML(id,cmap,lo,hi){
+  return `<div class="legend-bar"><span class="lo">${lo}</span><canvas id="${id}" width="150" height="10"></canvas><span class="hi">${hi}</span></div>`;
+}
+function drawColorbar(id,cmap){
+  const cv=document.getElementById(id);if(!cv)return;
+  const ctx=cv.getContext('2d'),w=cv.width,h=cv.height;
+  for(let x=0;x<w;x++){const t=x/w,[r,g,b]=CM[cmap](t);ctx.fillStyle=`rgb(${r},${g},${b})`;ctx.fillRect(x,0,1,h);}
+}
+// Symbol legend for overlays
+function symbolsHTML(items){
+  return '<div class="legend-symbols">'+items.map(([color,border,label])=>
+    `<div class="legend-sym"><div class="swatch" style="background:${color};border-color:${border}"></div>${label}</div>`
+  ).join('')+'</div>';
+}
+
+function renderField(cv,data,sz,cmap='viridis',ov={}){
+  const ctx=cv.getContext('2d'),w=cv.width,h=cv.height,img=ctx.createImageData(w,h);
+  let mn=Infinity,mx=-Infinity;for(let i=0;i<data.length;i++){if(data[i]<mn)mn=data[i];if(data[i]>mx)mx=data[i];}
+  const rng=mx-mn||1,sc=w/sz;
+  for(let py=0;py<h;py++)for(let px=0;px<w;px++){const sy=Math.min(sz-1,(py/h*sz)|0),sx=Math.min(sz-1,(px/w*sz)|0),t=(data[sy*sz+sx]-mn)/rng,[r,g,b]=CM[cmap](t),idx=(py*w+px)*4;img.data[idx]=r;img.data[idx+1]=g;img.data[idx+2]=b;img.data[idx+3]=255;}
+  ctx.putImageData(img,0,0);
+  if(ov.tileSize){ctx.strokeStyle='rgba(255,255,255,0.12)';ctx.lineWidth=0.5;for(let y=0;y<sz;y+=ov.tileSize){ctx.beginPath();ctx.moveTo(0,y*sc);ctx.lineTo(w,y*sc);ctx.stroke();}for(let x=0;x<sz;x+=ov.tileSize){ctx.beginPath();ctx.moveTo(x*sc,0);ctx.lineTo(x*sc,h);ctx.stroke();}}
+  const nt=ov.nt||0,ts=(ov.tileSize||1)*sc;
+  if(ov.accepted){for(let ty=0;ty<nt;ty++)for(let tx=0;tx<nt;tx++)if(ov.accepted[ty*nt+tx]){ctx.fillStyle='rgba(63,185,80,0.2)';ctx.fillRect(tx*ts,ty*ts,ts,ts);ctx.strokeStyle='rgba(63,185,80,0.9)';ctx.lineWidth=2;ctx.strokeRect(tx*ts+1,ty*ts+1,ts-2,ts-2);}}
+  if(ov.rejected){for(let ty=0;ty<nt;ty++)for(let tx=0;tx<nt;tx++)if(ov.rejected[ty*nt+tx]){ctx.fillStyle='rgba(248,81,73,0.15)';ctx.fillRect(tx*ts,ty*ts,ts,ts);ctx.strokeStyle='rgba(248,81,73,0.6)';ctx.lineWidth=1;ctx.strokeRect(tx*ts+1,ty*ts+1,ts-2,ts-2);}}
+  if(ov.refined){for(let ty=0;ty<nt;ty++)for(let tx=0;tx<nt;tx++)if(ov.refined[ty*nt+tx]){ctx.strokeStyle='rgba(63,185,80,0.4)';ctx.lineWidth=1;ctx.strokeRect(tx*ts+1,ty*ts+1,ts-2,ts-2);}}
+  if(ov.halo&&ov.accepted){const hw=4*sc;ctx.fillStyle='rgba(188,140,255,0.25)';for(let ty=0;ty<nt;ty++)for(let tx=0;tx<nt;tx++)if(ov.accepted[ty*nt+tx]){if(ty>0&&!ov.accepted[(ty-1)*nt+tx]&&!(ov.refined&&ov.refined[(ty-1)*nt+tx]))ctx.fillRect(tx*ts,ty*ts-hw,ts,hw);if(ty<nt-1&&!ov.accepted[(ty+1)*nt+tx]&&!(ov.refined&&ov.refined[(ty+1)*nt+tx]))ctx.fillRect(tx*ts,(ty+1)*ts,ts,hw);if(tx>0&&!ov.accepted[ty*nt+tx-1]&&!(ov.refined&&ov.refined[ty*nt+tx-1]))ctx.fillRect(tx*ts-hw,ty*ts,hw,ts);if(tx<nt-1&&!ov.accepted[ty*nt+tx+1]&&!(ov.refined&&ov.refined[ty*nt+tx+1]))ctx.fillRect((tx+1)*ts,ty*ts,hw,ts);}}
+  if(ov.probe){ctx.fillStyle='rgba(210,153,34,0.4)';ctx.strokeStyle='rgba(210,153,34,0.9)';ctx.lineWidth=1.5;for(const p of ov.probe){ctx.fillRect(p.x*ts,p.y*ts,ts,ts);ctx.strokeRect(p.x*ts,p.y*ts,ts,ts);}}
+}
+
+function renderTileHeat(cv,data,nt,cmap='heat',ov={}){
+  const ctx=cv.getContext('2d'),w=cv.width,h=cv.height;
+  let mn=Infinity,mx=-Infinity;for(let i=0;i<data.length;i++){if(data[i]<mn)mn=data[i];if(data[i]>mx)mx=data[i];}
+  const rng=mx-mn||1,ts=w/nt;ctx.clearRect(0,0,w,h);
+  for(let ty=0;ty<nt;ty++)for(let tx=0;tx<nt;tx++){const t=(data[ty*nt+tx]-mn)/rng,[r,g,b]=CM[cmap](t);ctx.fillStyle=`rgb(${r},${g},${b})`;ctx.fillRect(tx*ts,ty*ts,ts+1,ts+1);}
+  ctx.strokeStyle='rgba(255,255,255,0.15)';ctx.lineWidth=0.5;for(let i=0;i<=nt;i++){ctx.beginPath();ctx.moveTo(i*ts,0);ctx.lineTo(i*ts,h);ctx.stroke();ctx.beginPath();ctx.moveTo(0,i*ts);ctx.lineTo(w,i*ts);ctx.stroke();}
+  if(ov.accepted){for(let ty=0;ty<nt;ty++)for(let tx=0;tx<nt;tx++)if(ov.accepted[ty*nt+tx]){ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.strokeRect(tx*ts+1,ty*ts+1,ts-2,ts-2);}}
+  if(ov.rejected){for(let ty=0;ty<nt;ty++)for(let tx=0;tx<nt;tx++)if(ov.rejected[ty*nt+tx]){ctx.strokeStyle='rgba(248,81,73,0.8)';ctx.lineWidth=2;const m=ts*0.2;ctx.beginPath();ctx.moveTo(tx*ts+m,ty*ts+m);ctx.lineTo((tx+1)*ts-m,(ty+1)*ts-m);ctx.moveTo((tx+1)*ts-m,ty*ts+m);ctx.lineTo(tx*ts+m,(ty+1)*ts-m);ctx.stroke();}}
+}
+
+// ════════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════════
+let S = {};
+let autoRunning = false;
+
+function getP(){return{
+  complexity:+document.getElementById('complexSlider').value,
+  totalBudget:+document.getElementById('budgetSlider').value,
+  tileSize:+document.getElementById('tileSlider').value,
+  omega:+document.getElementById('omegaSlider').value/100,
+  noiseSigma:+document.getElementById('noiseSlider').value/100,  // 0..0.50
+  fieldSize:256,
+};}
+
+function regenerate(){
+  autoRunning=false;
+  S={seed: +document.getElementById('seedInput').value || 42};
+  document.getElementById('tickBtn').disabled=true;
+  document.getElementById('initBtn').disabled=false;
+  document.getElementById('tickLog').innerHTML='<div style="color:var(--dim);font-size:12px;padding:8px">Нажми «Инициализация»</div>';
+  updateGovUI();
+  document.getElementById('mainArea').innerHTML=`
+    <div class="info-box" style="text-align:center;padding:40px">
+      <h2>Curiosity Runtime</h2>
+      <p style="color:var(--dim);margin-top:8px">Настрой параметры → Инициализация → Следующий тик</p>
+    </div>`;
+}
+
+// ════════════════════════════════════════════════════════════════
+// GOVERNOR
+// ════════════════════════════════════════════════════════════════
+function initGovernor(p){
+  S.gov = {
+    totalBudget: p.totalBudget,
+    remaining: p.totalBudget,
+    strictness: 1.0,       // multiplier: higher = stricter
+    waste: 0,
+    wasteMax: Math.floor(p.totalBudget * p.omega),  // R_max
+    tick: 0,
+    totalAccepted: 0,
+    totalRejected: 0,
+    costPerTile: 3,        // 3 compute units per tile refinement
+    targetPerStep: Math.max(5, Math.floor(p.totalBudget / 25)),  // ~25 ticks worth of budget
+    safetyFuse: 2,         // max 2x target_per_step per tick
+    history: [],           // per-tick records
+    tileStrict: null,      // per-tile strictness (initialized on first tick)
+  };
+}
+
+function governorDecide(rho, gains, nt, alreadyRefined) {
+  const g = S.gov;
+  g.tick++;
+
+  // Initialize per-tile strictness on first tick
+  if (!g.tileStrict) {
+    g.tileStrict = new Float64Array(nt*nt);
+    for (let i = 0; i < nt*nt; i++) g.tileStrict[i] = 1.0;
+  }
+
+  // Global strictness = mean of per-tile strictness (for reporting & quantile cut)
+  let strictSum = 0, strictCount = 0;
+  for (let i = 0; i < nt*nt; i++) {
+    if (!alreadyRefined[i]) { strictSum += g.tileStrict[i]; strictCount++; }
+  }
+  g.strictness = strictCount > 0 ? strictSum / strictCount : 1.0;
+
+  // Quantile cut based on mean strictness
+  const quantileCut = Math.max(0.02, 0.4 / g.strictness);
+  const maxCandidates = Math.max(1, Math.round(nt * nt * quantileCut));
+
+  // Sort tiles by rho descending, exclude already refined
+  const candidates = [];
+  for (let i = 0; i < nt*nt; i++) {
+    if (!alreadyRefined[i]) candidates.push({i, rho: rho[i], gain: gains[i], strict: g.tileStrict[i]});
+  }
+  candidates.sort((a,b) => b.rho - a.rho);
+
+  const accepted = new Uint8Array(nt*nt);
+  const rejected = new Uint8Array(nt*nt);
+  let tickAccepted = 0, tickRejected = 0, tickWaste = 0, tickCost = 0;
+  const evalCount = Math.min(maxCandidates, candidates.length);
+
+  // Base gain threshold (relative + absolute)
+  const gainSorted = candidates.map(c=>c.gain).sort((a,b)=>a-b);
+  const quantileIdx = Math.min(gainSorted.length-1,
+    Math.floor(gainSorted.length * Math.min(0.9, 0.2 + 0.15 * g.strictness)));
+  const relativeThreshold = gainSorted.length > 0 ? gainSorted[quantileIdx] : 0;
+  if (!g.refGain && gainSorted.length > 0) g.refGain = gainSorted[(gainSorted.length*0.5)|0];
+  const absoluteThreshold = (g.refGain || 0) * 0.15 * g.strictness;
+  const baseThreshold = Math.max(relativeThreshold, absoluteThreshold);
+
+  const tickBudgetMax = g.targetPerStep * g.safetyFuse;
+
+  for (let ci = 0; ci < evalCount; ci++) {
+    const c = candidates[ci];
+
+    if (g.remaining < g.costPerTile) break;
+    if (tickCost >= tickBudgetMax) break;
+
+    // Per-tile threshold: base × unit strictness
+    const tileThreshold = baseThreshold * (0.5 + 0.5 * c.strict);
+
+    if (c.gain > tileThreshold && g.remaining >= g.costPerTile) {
+      // ACCEPT → reset this tile's strictness toward 1.0
+      accepted[c.i] = 1;
+      g.remaining -= g.costPerTile;
+      tickAccepted++;
+      tickCost += g.costPerTile;
+      g.tileStrict[c.i] = Math.max(0.7, c.strict * 0.9);  // relax on accept
+    } else {
+      // REJECT → tighten this tile's strictness
+      rejected[c.i] = 1;
+      tickRejected++;
+      g.tileStrict[c.i] = Math.min(5.0, c.strict * 1.5);  // ×1.5 on reject, cap 5.0
+      const wasteCost = g.costPerTile * 0.1 * c.strict;
+      tickWaste += wasteCost;
+      g.waste += wasteCost;
+
+      if (g.waste >= g.wasteMax) break;
+    }
+  }
+
+  // Decay strictness of tiles that weren't evaluated (aging → slight relax)
+  for (let i = 0; i < nt*nt; i++) {
+    if (!alreadyRefined[i] && !accepted[i] && !rejected[i]) {
+      g.tileStrict[i] = Math.max(0.7, g.tileStrict[i] * 0.97);
+    }
+  }
+
+  g.totalAccepted += tickAccepted;
+  g.totalRejected += tickRejected;
+
+  // Probe: 7% of remaining unrefined, targeting low-variance
+  const probeCount = Math.max(1, Math.round(0.07 * candidates.length));
+  const unselected = candidates.filter(c => !accepted[c.i] && !rejected[c.i]).slice(-probeCount); // lowest rho
+  const probeSet = unselected.map(c => ({x: c.i % nt, y: (c.i / nt)|0}));
+
+  const record = {
+    tick: g.tick,
+    evaluated: evalCount,
+    accepted: tickAccepted,
+    rejected: tickRejected,
+    waste: tickWaste.toFixed(2),
+    strictness: g.strictness.toFixed(2),
+    quantileCut: (quantileCut*100).toFixed(1),
+    remaining: g.remaining,
+    forceStop: g.waste >= g.wasteMax,
+    budgetExhausted: g.remaining < g.costPerTile,
+  };
+  g.history.push(record);
+
+  // Snapshot of per-tile strictness for visualization
+  const strictSnap = new Float64Array(g.tileStrict);
+
+  return { accepted, rejected, probeSet, record, strictSnap };
+}
+
+// ════════════════════════════════════════════════════════════════
+// RUNTIME
+// ════════════════════════════════════════════════════════════════
+
+function doInit() {
+  const p = getP();
+  S.seed = S.seed || (Date.now()%100000);
+  S.fieldSize = p.fieldSize;
+  S.tileSize = p.tileSize;
+
+  // Generate field
+  S.fieldClean = makeField(p.fieldSize, p.complexity, S.seed);
+
+  // Add sensor noise to field (simulates real-world data acquisition)
+  S.field = new Float64Array(S.fieldClean);
+  if (p.noiseSigma > 0) {
+    const noiseRng = new RNG(S.seed + 31337);
+    for (let i = 0; i < S.field.length; i++) {
+      S.field[i] = Math.max(0, Math.min(1, S.field[i] + noiseRng.gauss() * p.noiseSigma));
+    }
+  }
+
+  // Coarse approximation
+  const c = downsample(S.field, p.fieldSize, p.tileSize);
+  S.coarse = c.data; S.coarseSize = c.size;
+  S.coarseInterp = upsample(S.coarse, S.coarseSize, p.fieldSize);
+
+  // Current state = coarse (will be refined over ticks)
+  S.current = new Float64Array(S.coarseInterp);
+  S.refined = new Uint8Array(S.coarseSize * S.coarseSize); // which tiles are refined
+  S.nt = S.coarseSize;
+
+  // L0 topology — computed once
+  S.hf = laplacian(S.coarse, S.coarseSize);
+  S.variance = localVar(S.coarse, S.coarseSize);
+
+  // Init governor
+  initGovernor(p);
+
+  // Render
+  const CW = 300;
+  const main = document.getElementById('mainArea');
+  const curMSE = mse(S.current, S.field);
+  main.innerHTML = `
+    <div class="info-box">
+      <h2>Инициализация завершена</h2>
+      <p><strong>L0 Topology:</strong> quadrant blocks (${S.nt}&times;${S.nt} тайлов). Вычислен один раз.</p>
+      <p><strong>HF-энергия</strong> (Лапласиан) и <strong>локальная дисперсия</strong> — извлечены из грубого представления.</p>
+      <p><strong>Governor:</strong> бюджет = ${p.totalBudget} units, R_max = ${S.gov.wasteMax} (ω=${p.omega}), strictness = 1.0</p>
+      <p><span class="metric m-red">MSE = ${curMSE.toFixed(6)}</span> <span class="metric m-blue">PSNR = ${psnr(curMSE).toFixed(1)} dB</span>
+      ${p.noiseSigma > 0 ? `<span class="metric m-yellow">шум σ=${p.noiseSigma.toFixed(2)}</span>` : ''}</p>
+      <p style="color:var(--dim);margin-top:8px">Жми «Следующий тик» — каждый тик: L1→L2→Governor→Split/Reject→Refine→Probe</p>
+    </div>
+    <div class="viz-row">
+      ${p.noiseSigma > 0 ? `
+      <div class="viz-panel"><h3>Чистое поле (без шума)</h3><canvas id="c0" width="${CW}" height="${CW}"></canvas>
+        ${colorbarHTML('cb0','viridis','мин','макс')}</div>` : ''}
+      <div class="viz-panel"><h3>${p.noiseSigma > 0 ? 'Зашумлённое поле (наблюдаемое)' : 'Целевое поле'}</h3><canvas id="c1" width="${CW}" height="${CW}"></canvas>
+        ${colorbarHTML('cb1','viridis','мин','макс')}</div>
+      <div class="viz-panel"><h3>Грубое приближение (старт)</h3><canvas id="c2" width="${CW}" height="${CW}"></canvas>
+        ${colorbarHTML('cb2','viridis','мин','макс')}</div>
+      <div class="viz-panel"><h3>HF-энергия + дисперсия</h3><canvas id="c3" width="${CW}" height="${CW}"></canvas>
+        ${colorbarHTML('cb3','heat','низкая','высокая')}</div>
+    </div>`;
+  if (p.noiseSigma > 0) {
+    renderField(document.getElementById('c0'), S.fieldClean, p.fieldSize);
+    drawColorbar('cb0','viridis');
+  }
+  renderField(document.getElementById('c1'), S.field, p.fieldSize);
+  drawColorbar('cb1','viridis');
+  renderField(document.getElementById('c2'), S.coarseInterp, p.fieldSize, 'viridis', {tileSize:S.tileSize});
+  drawColorbar('cb2','viridis');
+  const combined = new Float64Array(S.nt*S.nt);
+  const hfn=qnorm(S.hf), vn=qnorm(S.variance);
+  for(let i=0;i<combined.length;i++) combined[i]=0.5*hfn[i]+0.5*vn[i];
+  renderTileHeat(document.getElementById('c3'), combined, S.nt, 'heat');
+  drawColorbar('cb3','heat');
+
+  // Initialize two-stage gate EMA state
+  S.gate = {
+    // EMA weights for Stage 2 (start equal)
+    wResid: 0.40,
+    wHF: 0.35,
+    wVar: 0.25,
+    emaAlpha: 0.3,       // EMA smoothing factor
+    // Pilot calibration: first pilotTicks are always Stage 2 (collecting stats)
+    // After pilot: thresholds = percentile of observed values
+    pilotTicks: 3,
+    pilotInstab: [],      // instability samples during pilot
+    pilotFSR: [],         // FSR samples during pilot
+    instabilityThresh: null,  // null = not yet calibrated
+    fsrThresh: null,
+    threshFactor: 0.7,    // threshold = pilotMedian × factor (below median = healthy)
+    // History for display
+    stage1Count: 0,
+    stage2Count: 0,
+    history: [],
+  };
+
+  document.getElementById('tickBtn').disabled = false;
+  document.getElementById('initBtn').disabled = true;
+  document.getElementById('tickLog').innerHTML = '';
+  updateGovUI();
+  addTickLog({tick:0, note:`Инициализация. L0 topology. Gate: pilot ${S.gate.pilotTicks} тиков → калибровка порогов.`});
+}
+
+function doTick() {
+  if (!S.gov || S.gov.remaining < S.gov.costPerTile) return;
+  if (S.gov.waste >= S.gov.wasteMax) return;
+
+  const p = getP();
+  const CW = 300;
+
+  // L1: recompute residual from current state
+  const residual = absResidual(S.current, S.field, S.fieldSize);
+  const residTiles = tileAgg(residual, S.fieldSize, S.tileSize);
+  const residNorm = qnorm(residTiles.data);
+  const hfNorm = qnorm(S.hf);
+  const varNorm = qnorm(S.variance);
+
+  // ══════ L2: Two-Stage Adaptive Gate ══════
+  const gt = S.gate;
+
+  // Stage 1: Health check on residual signal
+  // instability = stddev(residNorm) / mean(|residNorm|) — measures signal noise
+  // FSR = fraction of tiles where residual flipped sign vs previous tick
+  let residMean = 0, residVar = 0;
+  for (let i = 0; i < residNorm.length; i++) residMean += Math.abs(residNorm[i]);
+  residMean /= residNorm.length;
+  for (let i = 0; i < residNorm.length; i++) residVar += (Math.abs(residNorm[i]) - residMean) ** 2;
+  const instability = residMean > 1e-8 ? Math.sqrt(residVar / residNorm.length) / residMean : 0;
+
+  // FSR: fraction of sign-flips vs previous tick, ONLY among non-refined tiles
+  // (refined tiles go to residual≈0, which is expected, not signal degradation)
+  let fsr = 0;
+  if (gt.prevResidNorm) {
+    let flips = 0, count = 0;
+    for (let i = 0; i < residNorm.length; i++) {
+      if (S.refined[i]) continue;  // skip already-refined tiles
+      count++;
+      const wasHigh = (gt.prevResidNorm[i] || 0) > 0;
+      const isHigh = residNorm[i] > 0;
+      if (wasHigh !== isHigh) flips++;
+    }
+    fsr = count > 0 ? flips / count : 0;
+  }
+  gt.prevResidNorm = new Float64Array(residNorm);
+
+  // ── Pilot calibration: first N ticks collect stats, then freeze thresholds ──
+  const inPilot = gt.pilotInstab.length < gt.pilotTicks;
+  if (inPilot) {
+    gt.pilotInstab.push(instability);
+    gt.pilotFSR.push(fsr);
+    // After collecting enough samples → calibrate
+    if (gt.pilotInstab.length === gt.pilotTicks) {
+      const sortedI = [...gt.pilotInstab].sort((a,b)=>a-b);
+      const sortedF = [...gt.pilotFSR].sort((a,b)=>a-b);
+      const medianI = sortedI[(sortedI.length*0.5)|0];
+      const medianF = sortedF[(sortedF.length*0.5)|0];
+      gt.instabilityThresh = medianI * gt.threshFactor;
+      gt.fsrThresh = Math.max(0.05, medianF * gt.threshFactor);  // floor 5%
+    }
+  }
+
+  // During pilot → always Stage 2. After pilot → check health.
+  const threshCalibrated = gt.instabilityThresh !== null;
+  const residualHealthy = threshCalibrated &&
+    instability < gt.instabilityThresh && fsr < gt.fsrThresh;
+
+  // Compute rho based on gate stage
+  const rho = new Float64Array(S.nt * S.nt);
+  let gateStage;
+
+  if (residualHealthy) {
+    // Stage 1: residual-only — zero loss vs oracle on clean data
+    gateStage = 1;
+    gt.stage1Count++;
+    for (let i = 0; i < rho.length; i++) rho[i] = residNorm[i];
+  } else {
+    // Stage 2: EMA-weighted combination
+    gateStage = 2;
+    gt.stage2Count++;
+
+    // Update EMA weights based on signal usefulness (correlation with gains from previous tick)
+    if (gt.prevGains) {
+      // Compute correlation of each signal with actual gains
+      const corrR = signalCorr(residNorm, gt.prevGains);
+      const corrH = signalCorr(hfNorm, gt.prevGains);
+      const corrV = signalCorr(varNorm, gt.prevGains);
+      const totalCorr = Math.abs(corrR) + Math.abs(corrH) + Math.abs(corrV) + 1e-8;
+
+      // Target weights from correlation
+      const tR = Math.abs(corrR) / totalCorr;
+      const tH = Math.abs(corrH) / totalCorr;
+      const tV = Math.abs(corrV) / totalCorr;
+
+      // EMA update toward target
+      gt.wResid += gt.emaAlpha * (tR - gt.wResid);
+      gt.wHF += gt.emaAlpha * (tH - gt.wHF);
+      gt.wVar += gt.emaAlpha * (tV - gt.wVar);
+
+      // Normalize to sum=1
+      const wSum = gt.wResid + gt.wHF + gt.wVar;
+      gt.wResid /= wSum; gt.wHF /= wSum; gt.wVar /= wSum;
+    }
+
+    for (let i = 0; i < rho.length; i++) {
+      rho[i] = gt.wResid * residNorm[i] + gt.wHF * hfNorm[i] + gt.wVar * varNorm[i];
+    }
+  }
+
+  // Record gate state for this tick
+  gt.history.push({
+    tick: S.gov.tick + 1,
+    stage: inPilot ? 'pilot' : gateStage,
+    instability: instability.toFixed(3),
+    fsr: fsr.toFixed(3),
+    weights: gateStage === 2 ? `R=${gt.wResid.toFixed(2)} H=${gt.wHF.toFixed(2)} V=${gt.wVar.toFixed(2)}` : 'residual-only',
+    threshI: gt.instabilityThresh !== null ? gt.instabilityThresh.toFixed(3) : '—',
+    threshF: gt.fsrThresh !== null ? gt.fsrThresh.toFixed(3) : '—',
+  });
+
+  // Gains: tile-level MSE (what we'd gain by refining)
+  const gains = new Float64Array(S.nt*S.nt);
+  for(let ty=0;ty<S.nt;ty++) for(let tx=0;tx<S.nt;tx++){
+    let s=0;
+    for(let dy=0;dy<S.tileSize;dy++) for(let dx=0;dx<S.tileSize;dx++){
+      const fy=ty*S.tileSize+dy, fx=tx*S.tileSize+dx;
+      s += (S.current[fy*S.fieldSize+fx] - S.field[fy*S.fieldSize+fx])**2;
+    }
+    gains[ty*S.nt+tx] = s/(S.tileSize*S.tileSize);
+  }
+
+  // Store gains for EMA weight adaptation on next tick
+  S.gate.prevGains = new Float64Array(gains);
+
+  // Governor decides
+  const decision = governorDecide(rho, gains, S.nt, S.refined);
+
+  // Apply refinement
+  for(let ty=0;ty<S.nt;ty++) for(let tx=0;tx<S.nt;tx++){
+    if(decision.accepted[ty*S.nt+tx]){
+      S.refined[ty*S.nt+tx] = 1;
+      for(let dy=0;dy<S.tileSize;dy++) for(let dx=0;dx<S.tileSize;dx++){
+        const fy=ty*S.tileSize+dy, fx=tx*S.tileSize+dx;
+        S.current[fy*S.fieldSize+fx] = S.field[fy*S.fieldSize+fx];
+      }
+    }
+  }
+
+  // Metrics after this tick
+  const curMSE = mse(S.current, S.field);
+  const rec = decision.record;
+  const allRefined = S.refined.every(v => v);
+  const done = rec.budgetExhausted || rec.forceStop || allRefined ||
+    (rec.accepted === 0);
+
+  // Render
+  const main = document.getElementById('mainArea');
+  const statusText = done ?
+    (rec.forceStop ? '⛔ Waste budget исчерпан — governor остановил' :
+     rec.budgetExhausted ? '✅ Compute budget исчерпан' :
+     allRefined ? '✅ Все тайлы уточнены (бюджет не израсходован полностью)' :
+     '✅ Сходимость — нечего уточнять') :
+    `Тик ${rec.tick}: ${rec.accepted} принято, ${rec.rejected} отклонено`;
+
+  main.innerHTML = `
+    <div class="info-box">
+      <h2>Тик ${rec.tick}</h2>
+      <p>${statusText}</p>
+      <p>
+        <span class="metric m-green">${rec.accepted} принято</span>
+        <span class="metric m-red">${rec.rejected} отклонено</span>
+        <span class="metric m-yellow">strictness = ${rec.strictness}</span>
+        <span class="metric m-purple">квантиль = top ${rec.quantileCut}%</span>
+      </p>
+      <p>
+        ${(() => {
+          const gl = gt.history[gt.history.length-1];
+          const isPilot = gl.stage === 'pilot';
+          const stageLabel = isPilot ? 'Pilot (калибровка)' : `Stage ${gateStage}`;
+          const stageColor = isPilot ? 'm-purple' : gateStage===1 ? 'm-green' : 'm-yellow';
+          let detail = '';
+          if (isPilot) {
+            detail = `<span class="metric m-blue">тик ${gt.pilotInstab.length}/${gt.pilotTicks} — сбор статистики</span>
+                      <span class="metric m-red">instab=${gl.instability} FSR=${gl.fsr}</span>`;
+          } else if (gateStage === 1) {
+            detail = `<span class="metric m-blue">residual-only</span>
+                      <span class="metric m-green">instab=${gl.instability} &lt; ${gl.threshI}</span>`;
+          } else {
+            detail = `<span class="metric m-purple">${gl.weights}</span>
+                      <span class="metric m-red">instab=${gl.instability} (порог=${gl.threshI})</span>`;
+          }
+          return `<span class="metric ${stageColor}">Gate: ${stageLabel}</span>${detail}`;
+        })()}
+      </p>
+      <p>
+        <span class="metric m-blue">MSE = ${curMSE.toFixed(6)}</span>
+        <span class="metric m-green">PSNR = ${psnr(curMSE).toFixed(1)} dB</span>
+        <span class="metric m-yellow">осталось ${rec.remaining} units</span>
+      </p>
+      ${done ? '<p style="margin-top:8px;color:var(--yellow)">Рантайм завершён.</p>' :
+        '<p style="color:var(--dim);margin-top:4px">Жми «Следующий тик» для продолжения</p>'}
+    </div>
+    <div class="viz-row">
+      <div class="viz-panel"><h3>Текущее состояние</h3><canvas id="c1" width="${CW}" height="${CW}"></canvas>
+        ${colorbarHTML('cb1','viridis','мин','макс')}
+        ${symbolsHTML([
+          ['rgba(63,185,80,0.2)','rgba(63,185,80,0.9)','принято (этот тик)'],
+          ['transparent','rgba(63,185,80,0.4)','уточнено ранее'],
+          ['rgba(188,140,255,0.25)','rgba(188,140,255,0.5)','halo-зона'],
+          ['rgba(210,153,34,0.4)','rgba(210,153,34,0.9)','probe (разведка)'],
+        ])}</div>
+      <div class="viz-panel"><h3>Решения тика ${rec.tick}</h3><canvas id="c2" width="${CW}" height="${CW}"></canvas>
+        ${symbolsHTML([
+          ['rgba(63,185,80,0.2)','rgba(63,185,80,0.9)','принято'],
+          ['rgba(248,81,73,0.15)','rgba(248,81,73,0.6)','отклонено'],
+          ['rgba(210,153,34,0.4)','rgba(210,153,34,0.9)','probe'],
+        ])}</div>
+      <div class="viz-panel"><h3>ρ(x) карта интереса</h3><canvas id="c3" width="${CW}" height="${CW}"></canvas>
+        ${colorbarHTML('cb3','heat','низкий ρ','высокий ρ')}</div>
+    </div>
+    <div class="viz-row">
+      <div class="viz-panel"><h3>Strictness per-tile (после тика ${rec.tick})</h3><canvas id="c7" width="${CW}" height="${CW}"></canvas>
+        ${colorbarHTML('cb7','coolwarm','расслаблен (0.7)','жёсткий (5.0)')}
+        <div style="font-size:11px;color:var(--dim);margin-top:4px">×1.5 при reject, ×0.9 при accept, ×0.97 aging. Серые = уже уточнены.</div></div>
+    </div>
+    <div class="viz-row">
+      <div class="viz-panel"><h3>Целевое поле (ground truth)</h3><canvas id="c5" width="${CW}" height="${CW}"></canvas>
+        ${colorbarHTML('cb5','viridis','мин','макс')}</div>
+      <div class="viz-panel"><h3>Текущий результат</h3><canvas id="c6" width="${CW}" height="${CW}"></canvas>
+        ${colorbarHTML('cb6','viridis','мин','макс')}</div>
+      <div class="viz-panel"><h3>Residual (текущий)</h3><canvas id="c4" width="${CW}" height="${CW}"></canvas>
+        ${colorbarHTML('cb4','heat','ошибка=0','макс. ошибка')}</div>
+    </div>`;
+
+  renderField(document.getElementById('c1'), S.current, S.fieldSize, 'viridis',
+    {tileSize:S.tileSize, nt:S.nt, refined:S.refined, accepted:decision.accepted, halo:true, probe:decision.probeSet});
+  drawColorbar('cb1','viridis');
+
+  renderField(document.getElementById('c2'), S.field, S.fieldSize, 'viridis',
+    {tileSize:S.tileSize, nt:S.nt, accepted:decision.accepted, rejected:decision.rejected, probe:decision.probeSet});
+
+  // Rho heatmap with accepted/rejected
+  renderTileHeat(document.getElementById('c3'), rho, S.nt, 'heat',
+    {accepted:decision.accepted, rejected:decision.rejected, nt:S.nt});
+  drawColorbar('cb3','heat');
+
+  // Residual
+  renderField(document.getElementById('c4'), residual, S.fieldSize, 'heat', {tileSize:S.tileSize});
+  drawColorbar('cb4','heat');
+
+  // Target
+  renderField(document.getElementById('c5'), S.field, S.fieldSize);
+  drawColorbar('cb5','viridis');
+
+  // Current result (clean, no overlays)
+  renderField(document.getElementById('c6'), S.current, S.fieldSize);
+  drawColorbar('cb6','viridis');
+
+  // Per-tile strictness heatmap
+  // Normalize: already-refined tiles shown as 0 (grey), rest as strictness value
+  const strictViz = new Float64Array(S.nt*S.nt);
+  for (let i = 0; i < S.nt*S.nt; i++) {
+    strictViz[i] = S.refined[i] ? -1 : decision.strictSnap[i];
+  }
+  // Custom render: grey for refined, coolwarm for active
+  const c7 = document.getElementById('c7');
+  const ctx7 = c7.getContext('2d'), w7=c7.width, ts7=w7/S.nt;
+  ctx7.clearRect(0,0,w7,w7);
+  for (let ty=0;ty<S.nt;ty++) for (let tx=0;tx<S.nt;tx++) {
+    const v = strictViz[ty*S.nt+tx];
+    if (v < 0) {
+      ctx7.fillStyle = 'rgb(40,44,52)';  // grey = already refined
+    } else {
+      const t = Math.min(1, Math.max(0, (v - 0.7) / (5.0 - 0.7)));  // 0.7..5.0 → 0..1
+      const [r,g,b] = CM.coolwarm(t);
+      ctx7.fillStyle = `rgb(${r},${g},${b})`;
+    }
+    ctx7.fillRect(tx*ts7, ty*ts7, ts7+1, ts7+1);
+  }
+  // Grid
+  ctx7.strokeStyle='rgba(255,255,255,0.12)';ctx7.lineWidth=0.5;
+  for(let i=0;i<=S.nt;i++){ctx7.beginPath();ctx7.moveTo(i*ts7,0);ctx7.lineTo(i*ts7,w7);ctx7.stroke();ctx7.beginPath();ctx7.moveTo(0,i*ts7);ctx7.lineTo(w7,i*ts7);ctx7.stroke();}
+  drawColorbar('cb7','coolwarm');
+
+  // Update UI
+  updateGovUI();
+  addTickLog(rec);
+
+  if (done) {
+    document.getElementById('tickBtn').disabled = true;
+  }
+}
+
+function updateGovUI(){
+  const g = S.gov;
+  if(!g){
+    document.getElementById('govBudget').textContent = '—';
+    document.getElementById('govStrict').textContent = '—';
+    document.getElementById('govWaste').textContent = '—';
+    document.getElementById('govTick').textContent = '0';
+    document.getElementById('govRefined').textContent = '0';
+    document.getElementById('govBudgetBar').style.width = '100%';
+    document.getElementById('govStrictBar').style.width = '10%';
+    document.getElementById('govWasteBar').style.width = '0%';
+    return;
+  }
+  const pct = g.remaining/g.totalBudget*100;
+  document.getElementById('govBudget').textContent = `${g.remaining} / ${g.totalBudget}`;
+  document.getElementById('govBudgetBar').style.width = pct+'%';
+  document.getElementById('govBudgetBar').style.background = pct>50?'var(--green)':pct>20?'var(--yellow)':'var(--red)';
+
+  document.getElementById('govStrict').textContent = g.strictness.toFixed(2);
+  const spct = Math.min(100, g.strictness/5*100);
+  document.getElementById('govStrictBar').style.width = spct+'%';
+  document.getElementById('govStrictBar').style.background = g.strictness<2?'var(--green)':g.strictness<4?'var(--yellow)':'var(--red)';
+
+  document.getElementById('govWaste').textContent = `${g.waste.toFixed(1)} / ${g.wasteMax}`;
+  const wpct = g.wasteMax>0?g.waste/g.wasteMax*100:0;
+  document.getElementById('govWasteBar').style.width = Math.min(100,wpct)+'%';
+  document.getElementById('govWasteBar').style.background = wpct<50?'var(--yellow)':'var(--red)';
+
+  document.getElementById('govTick').textContent = g.tick;
+  document.getElementById('govRefined').textContent = g.totalAccepted + ' тайлов';
+}
+
+function addTickLog(rec){
+  const log = document.getElementById('tickLog');
+  // Remove 'current' from previous
+  log.querySelectorAll('.current').forEach(e=>e.classList.remove('current'));
+  const div = document.createElement('div');
+  div.className = 'tick-entry current';
+  if(rec.note){
+    div.innerHTML = `<div class="tick-head">Инит</div><div class="tick-detail">${rec.note}</div>`;
+  } else {
+    const status = rec.forceStop ? '⛔ waste stop' : rec.budgetExhausted ? '✅ budget=0' : rec.accepted===0&&rec.evaluated>0 ? '✅ сходимость' : '';
+    div.innerHTML = `<div class="tick-head">Тик ${rec.tick} ${status}</div>
+      <div class="tick-detail">+${rec.accepted} / −${rec.rejected} | strict=${rec.strictness} | top ${rec.quantileCut}% | осталось ${rec.remaining}</div>`;
+  }
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+async function autoRun(){
+  if(autoRunning){autoRunning=false;return;}
+  autoRunning=true;
+  if(!S.gov) doInit();
+  await new Promise(r=>setTimeout(r,500));
+  while(autoRunning && !document.getElementById('tickBtn').disabled){
+    doTick();
+    await new Promise(r=>setTimeout(r,600));
+  }
+  autoRunning=false;
+}
+
+// Sliders & inputs
+document.getElementById('seedInput').oninput=e=>document.getElementById('seedVal').textContent=e.target.value;
+document.getElementById('noiseSlider').oninput=e=>document.getElementById('noiseVal').textContent=(e.target.value/100).toFixed(2);
+document.getElementById('complexSlider').oninput=e=>document.getElementById('complexVal').textContent=e.target.value;
+document.getElementById('budgetSlider').oninput=e=>document.getElementById('budgetVal').textContent=e.target.value;
+document.getElementById('tileSlider').oninput=e=>document.getElementById('tileVal').textContent=e.target.value;
+document.getElementById('omegaSlider').oninput=e=>document.getElementById('omegaVal').textContent=(e.target.value/100).toFixed(2);
+
+regenerate();
+</script>
+</body>
+</html>

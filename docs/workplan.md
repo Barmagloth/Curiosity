@@ -231,6 +231,143 @@ RG-flow верификация (пост-Phase 4): basin membership требуе
 
 Восстановить EMA feedback из exp0.8 как глобальный термостат strictness (потерян при сборке Phase 2 pipeline). Двухслойная архитектура: hardware parameter задаёт диапазон, EMA feedback управляет внутри диапазона. Применим в batch и frozen reuse; в streaming НЕ применим (cross-cluster bleed).
 
+### Convergence detector (отсутствует)
+
+**Обнаружено:** визуализация рантайма (viz/index.html) показала, что после уточнения всех полезных тайлов система продолжает крутить пустые тики — бюджет не исчерпан, но кандидатов нет или все ниже порога. Governor регулирует *интенсивность* уточнения (strictness), но не принимает решение *остановиться*.
+
+**Проблема:** нет формального convergence detector. Текущие stop-условия:
+- Budget exhaustion (hard stop)
+- Waste ≥ R_max (force-stop текущего тика, но не сессии)
+- Нет: "accepted == 0 последние K тиков → stop session"
+
+**Требуется:**
+```
+Convergence rule:
+  IF accepted == 0 for last K ticks (K ≥ 2):
+    STOP session, return remaining budget as unspent
+  IF accepted < probe_count for last K ticks:
+    STOP session (only probe discovers anything = diminishing returns)
+```
+
+**Зависимость:** фиксировать при сборке Phase 4 pipeline. Не требует новых экспериментов — чисто инженерное решение на уровне harness loop.
+
+### Gate health thresholds — data-driven калибровка (открытая проблема)
+
+**Обнаружено:** при реализации двухступенчатого gate в визуализации (viz/index.html) выяснилось, что пороги instability/FSR для переключения Stage 1 ↔ Stage 2 не могут быть фиксированными. Захардкоженные значения из P2a sweep (0.3/0.2) не работают на данных с другой статистикой — instability metric (CV residual) масштабируется по-разному в зависимости от данных, tile size, стадии refinement и уровня шума.
+
+**Текущее состояние в коде:** P2a sweep дал точечные значения для тестовых полей. Не generalization.
+
+**Пороги зависят от:**
+- Шум данных — больше шума → порог relaxed (иначе Stage 1 никогда не включится)
+- Гетерогенность поля — однородное поле → CV naturally низкий → порог должен быть ниже
+- Tile size — крупные тайлы → больше averaging → ниже CV
+- Стадия refinement — на первых тиках residual нестабилен, к концу стабилизируется
+
+**Решение — композитный подход (два механизма одновременно):**
+
+**(A) Pilot calibration.** Первые K тиков (K=2-3) — всегда Stage 2 (сбор статистики). После pilot: threshold = percentile(observed) × factor. Даёт абсолютный порог, откалиброванный под конкретные данные. Работает в viz: при seed=42 pilot даёт instabThresh=1.295, после чего gate осциллирует на границе Stage 1/2 — реалистичная динамика.
+
+**(B) Relative threshold.** Переключаться в Stage 1 когда instability < EMA(instability за последние K тиков) × factor. Адаптируется к тренду: если instability стабильно падает (refinement прогрессирует) — порог подтягивается вниз, не застревает на pilot-калиброванном значении.
+
+**Композит A+B:** порог = min(pilot_threshold, ema_relative_threshold). Pilot задаёт верхнюю границу (worst-case из начальных данных). EMA подтягивает вниз по мере стабилизации. Это предотвращает и слишком раннее переключение (до калибровки), и застревание в Stage 2 когда данные давно стабильны.
+
+**Зависимость:** реализовать при сборке Phase 4 pipeline. Требует sweep для валидации factor в A и B. Визуализация (viz/) может быть использована как testbed.
+
+### FSR metric — refined tiles inflate sign-flip rate (баг)
+
+**Обнаружено:** viz стенд. FSR (fraction of sign-flips) считает все тайлы, включая только что уточнённые. Уточнённый тайл → residual≈0 → гарантированный sign-flip. При 40 тайлах/тик из 1024 это ~4% baseline FSR даже на идеальных данных. Если fsrThresh < 4% → gate застревает в Stage 2 навсегда.
+
+**Фикс:** FSR должен считаться **только по non-refined тайлам**. Реализовано в viz, нужно проверить реальный pipeline (exp06, exp07).
+
+**Зависимость:** проверить при сборке Phase 4.
+
+### Gate oscillation — отсутствие hysteresis
+
+**Обнаружено:** viz стенд. Когда instability ≈ threshold, gate прыгает Stage 1→2→1→2 каждый тик. Каждый тик использует разную ρ-функцию (residual-only vs combo), что нарушает DET-2 (metric stability across seeds): один seed может попасть на Stage 1, другой на Stage 2 в том же тике.
+
+**Требуется:** hysteresis band. Переключение в Stage 1 при instab < threshold × 0.8, обратно в Stage 2 при instab > threshold × 1.2. Концепт упоминает "EMA-smoothing с hysteresis" (exp06-07), но неясно реализовано ли это в текущем коде.
+
+**Зависимость:** Phase 4 pipeline. Проверить exp07b_twostage.py.
+
+### EMA-веса не откалиброваны на первых тиках
+
+**Обнаружено:** viz стенд. На тике 1 prevGains=null → EMA не может адаптировать веса → первые тики Stage 2 работают с произвольными начальными весами (0.4/0.35/0.25). Решения на их основе необратимы — уточнённые тайлы не отменишь.
+
+**Проблема:** pilot calibration решает проблему **порогов**, но не проблему **весов**. Первые K тиков Stage 2 работают вслепую.
+
+**Возможные решения:**
+- Первый тик Stage 2 использовать equal weights, но пометить решения как low-confidence
+- Использовать HF+Variance only на первом тике (они не зависят от предыдущих gains)
+- Задержать commitment: pilot тики оценивают но не уточняют, только собирают статистику для калибровки весов
+
+**Зависимость:** Phase 4. Связано с pilot calibration threshold — можно объединить в единую pilot phase.
+
+### Gain threshold — несоизмеримость gain и cost
+
+**Обнаружено:** viz стенд. При исчерпании хороших кандидатов (80%+ тайлов уточнено) относительный порог (quantile от текущих кандидатов) пропускает тайлы с мизерным gain, потому что порог relative. Абсолютный порог нужен, но gain (MSE) и cost (compute units) — несоизмеримые величины, прямое сравнение gain > cost не имеет смысла.
+
+**Проблема шире:** в текущей архитектуре нет единой "валюты" для gain и cost. Governor оперирует compute units, ρ оперирует нормализованными scores, gain — это MSE. Три разных пространства.
+
+**Возможные решения:**
+- ROI metric: gain_MSE / cost_compute — безразмерный, сравнимый. Порог = min ROI для accept.
+- Reference gain: порог = fraction × median_gain_tick1 (реализовано в viz как refGain × 0.15 × strictness). Хрупко, но работает.
+- Decision-theoretic: expected_improvement / expected_cost > threshold, где threshold = f(remaining_budget, remaining_candidates).
+
+**Зависимость:** Phase 4. Фундаментальный архитектурный вопрос.
+
+### Probe пересекается с rejected tiles
+
+**Обнаружено:** viz стенд. Probe таргетирует lowest-ρ невыбранные тайлы. Но governor может оценить и осознанно отклонить тайл (gain < threshold). Probe может нацелиться на тот же тайл — бессмысленная трата probe budget на тайл, который governor только что отверг.
+
+**Фикс:** probe должен таргетировать **неоценённые** тайлы (не попавшие в evalCount), а не просто невыбранные. Probe = исследование неизвестного, не переоценка отвергнутого.
+
+**Зависимость:** Phase 4 pipeline. Простой фикс на уровне probe selection logic.
+
+### Нет обратной связи от качества refinement
+
+**Обнаружено:** viz стенд. Тайл accepted → refined → помечен навсегда. Никто не проверяет, дало ли уточнение реальное улучшение. Если оператор (или в AdaHiMem: compression/decompression) плохо реконструирует — тайл считается "уточнённым" навсегда, governor не получает сигнал о плохом качестве.
+
+**Проблема:** strictness per-tile учитывает только accept/reject решение, не post-refinement quality. Тайл с высоким gain но плохим refinement — blind spot.
+
+**Возможные решения:**
+- Verify-after-refine: после уточнения проверить residual на этом тайле. Если residual не уменьшился значимо → пометить как suspicious, увеличить strictness для соседей.
+- Quality-weighted strictness: strictness decay пропорционален реальному improvement, а не просто факту accept.
+- Rollback: если post-refinement quality < threshold → откатить, вернуть тайл в candidates pool, увеличить strictness.
+
+**Зависимость:** Phase 4+. Требует дополнительного residual pass после refinement. Увеличивает compute cost на ~10-20% (один дополнительный residual на уточнённые тайлы).
+
+### Noise-fitting — система оптимизирует к шуму, не к сигналу (фундаментальная проблема)
+
+**Обнаружено:** viz стенд с шумом на исходном поле (σ > 0).
+
+**Суть проблемы:** Curiosity минимизирует residual = |current - observed_data|. Если observed_data зашумлены, система будет тратить бюджет на точное воспроизведение шума. После "уточнения" тайла residual → 0, но quality не улучшилось — шум скопирован в результат. Система считает тайл "уточнённым" (residual=0, gain=0, больше не кандидат), хотя реальный сигнал восстановлен с ошибкой σ.
+
+**Где это проявляется в текущей архитектуре:**
+
+1. **ρ(x) слепа к шуму.** Все три сигнала (residual, HF, variance) вычисляются из наблюдаемых данных. На зашумлённых данных HF-энергия повышена (шум = high-frequency), variance повышена, residual смещён. ρ(x) считает зашумлённые области "интересными" и направляет бюджет на воспроизведение шума.
+
+2. **Gain = MSE к наблюдаемым данным.** gain_marginal[tile] = MSE(current, observed). При шуме gain > 0 даже для плоских областей (шум создаёт ненулевую MSE). Governor принимает тайлы с gain > threshold, где gain — это "расстояние до шума", а не "расстояние до сигнала".
+
+3. **Refinement = копирование шума.** Уточнение тайла заменяет coarse approximation на observed data. Если observed = signal + noise, то refined = signal + noise. Coarse approximation (downsampled) фактически была ближе к signal (downsampling = low-pass filter → noise reduction). Парадокс: **уточнение ухудшает quality на зашумлённых данных**, хотя residual падает.
+
+4. **Scale-consistency invariant не защищает.** D_parent проверяет что delta не содержит low-frequency content. Шум — high-frequency. Delta = noise проходит SC-check без проблем.
+
+5. **Two-stage gate адаптируется, но не спасает.** При шуме gate остаётся в Stage 2 (instability высокий), EMA-веса перевешивают с residual на HF+variance. Это правильная реакция на нестабильный residual, но не решает проблему: HF и variance тоже contaminated шумом.
+
+**Почему это не поймали раньше:** все эксперименты (exp00a-exp18) работали с чистыми синтетическими данными или с данными где шум пренебрежимо мал. P2a sweep тестировал шум как добавку к ρ-сигналу (noise on signal scores), но не шум на исходных данных.
+
+**Возможные решения:**
+
+**(A) Noise floor rejection.** Не уточнять тайл если gain < estimated_noise_variance. Требует оценку дисперсии шума (можно из flat regions или из разницы соседних пикселей). Простой, но хрупкий — noise_floor estimation на реальных данных нетривиальна.
+
+**(B) Regularized refinement.** Вместо refined = observed, использовать refined = denoise(observed). Например: local average, bilateral filter, или wavelet thresholding. Добавляет ещё один оператор в pipeline, но гарантирует что refinement не хуже coarse.
+
+**(C) Oracle-free quality metric.** Вместо MSE к observed data использовать cross-validation: разбить тайл на две половины, уточнить одну, проверить предсказание на другой. Если prediction error не уменьшился → refinement бесполезно (шум не предсказуем). Дорого (2× compute), но honest.
+
+**(D) Coarse-as-prior.** Сравнивать refined не с observed, а с coarse: если |refined - coarse| > expected_signal_variation → refined содержит шум. Тогда dampening: refined = α×observed + (1-α)×coarse, где α адаптивен. По сути — Bayesian: coarse = prior, observed = likelihood.
+
+**Зависимость:** фундаментальная проблема. Не Phase 4 — скорее Phase 5 (robustness). Но нужно как минимум добавить noise-awareness в quality metrics, чтобы Phase 4 эксперименты не давали ложноположительных результатов на шумных данных.
+
 ### Streaming budget control (B+C)
 
 Плавное управление бюджетом для streaming mode (сейчас только бинарные go/stop):
@@ -245,6 +382,72 @@ RG-flow верификация (пост-Phase 4): basin membership требуе
 ### Governor + B+C sweep test
 
 Sweep: 3 режима (batch/reuse/streaming) × 3 hardware profile (low/mid/high) × 6 γ ∈ {1.0, 1.5, 2.0, 2.5, 3.0, 4.0} × 4 spaces × 20 seeds. Метрики: PSNR, time, reject rate, compliance, budget utilization. Kill: batch/reuse — EMA улучшает compliance; streaming — B+C(γ*) ≥ equal-allocation baseline.
+
+### Content-Addressable Frozen Tree Cache (после валидации RegionURI Hash)
+
+**Зависимость:** RegionURI Hash (из Enox ADOPT-списка) должен быть валидирован как стабильный ключ кеширования.
+
+**Идея:** Frozen Tree — уже переносимый артефакт (l0_scores, l1_scores, active_units, zone, memory footprint). Добавить content-addressable хеширование по аналогии с Bazel/CAS: одинаковые входные данные (region + параметры) дают детерминированный hash, frozen tree сохраняется по этому ключу и переиспользуется без пересчёта.
+
+**Шаги:**
+1. Валидация RegionURI Hash как ключа (детерминизм, коллизии, стабильность при разных seeds).
+2. Реализация portable cache store (файловый CAS: hash -> frozen tree blob).
+3. Cache hit/miss метрики + измерение реального выигрыша по времени.
+4. Shared cache между сессиями/машинами (если выигрыш > 2x на cache hit).
+
+**Kill:** cache hit rate < 20% на типичных workloads ИЛИ overhead хеширования > выигрыша от кеша.
+
+### Code Domain Application (исследование)
+
+**Принцип:** начинать с инвариантов Curiosity (identity, distance, rho, budget, refinement), а не с выбора структуры данных. Носитель вторичен — сигнал, бюджет, локальность и уточнение первичны.
+
+**Правильная постановка:** для кодовой базы нужно выбрать семейство пространств X, на которых можно стабильно определить identity, distance, rho, budget и refinement.
+
+#### Три варианта пространства
+
+**A. Код как дерево** — refinement = углубление по иерархии (repo > package > file > class > function > block). split = спуск на уровень, distance = LCA/общий префикс, hash = структурный хеш поддерева, probe = выборочные углубления в тихих ветках. Самый естественный перенос (дерево как журнал уточнения уже зафиксировано в концепции).
+
+**B. Код как граф** — refinement зависит от связности (call graph, dependency graph, inheritance, data-flow, test-impact). split = локализация внутри подграфа, distance = hops/weighted path/co-change affinity, boundary = интерфейсы между подграфами. Другой носитель топологии, не "правильнее" дерева.
+
+**C. Код как гибридное пространство (рекомендуемый):**
+- tree gives identity (адресация и кеш)
+- graph gives interaction (сигналы риска и влияния)
+- budget gives decision (стоимость анализа/тестов/рефакторинга)
+- change history как дополнительная геометрия поверх всего
+
+#### Parser stack (не один parser)
+
+1. AST / иерархия символов — для дерева регионов
+2. dependency / call relations — для графовой топологии
+3. git / change history — для эмпирической близости
+4. test / runtime coverage — для поведенческого слоя
+
+#### Метрики (пространственно-зависимые)
+
+Дерево: subtree size, depth, branching irregularity, structural churn, hash invalidation rate.
+Граф: degree/fan-in/fan-out, SCC/cycles, betweenness/centrality, cut edges/bridge nodes, coupling density.
+Гибрид: structural anomaly, graph influence, churn/bug history, uncertainty, expected payoff vs cost.
+
+#### Семейство расстояний (не одно)
+
+- tree distance: LCA, глубина общего предка, путь в иерархии
+- graph distance: shortest path, weighted path, centrality-aware proximity
+- change distance: как часто менялись вместе
+- behavior distance: общие тесты, общие трассы
+
+#### Refinement != refactor
+
+Refinement в коде: переход к более дорогому и локальному способу понять или изменить выбранный регион. Частные случаи: спуск на мелкие юниты, построение точного подграфа, запуск дорогого анализа, таргетные тесты, локальный рефакторинг, оптимизация, постановка guardrails.
+
+#### Три слоя Curiosity-on-code
+
+1. **Space representation:** tree / graph / hybrid
+2. **Selection semantics:** rho(x) + payoff vs cost + probe
+3. **Refinement action:** deeper analysis / verification / refactor / optimization / policy hardening
+
+**Контекст:** анализ joi-lab/ouroboros (self-modifying AI agent) + уточнение от Агента 1.
+
+**Статус:** заморожено до завершения Phase 4.
 
 ---
 

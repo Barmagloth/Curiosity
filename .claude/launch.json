@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "curiosity-viz",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "viz"],
+      "port": 3000
+    }
+  ]
+}
