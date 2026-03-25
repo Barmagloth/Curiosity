@@ -77,7 +77,7 @@ canvas { display:block; border-radius:4px; image-rendering:pixelated; }
 <div class="app">
   <header>
     <h1>Curiosity Runtime — T1 Scalar Grid</h1>
-    <span style="color:var(--dim); font-size:13px">Реальный multi-tick рантайм с governor</span>
+    <span style="color:var(--dim); font-size:13px">Multi-tick pipeline: WeightedRhoGate + GovernorEMA + ROI + Convergence</span>
   </header>
 
   <div class="sidebar">
@@ -113,6 +113,27 @@ canvas { display:block; border-radius:4px; image-rendering:pixelated; }
       <div class="gov-row"><span class="label">Всего уточнено</span><span id="govRefined">0</span></div>
     </div>
 
+    <div class="gov-panel" id="gatePanel">
+      <h3>WeightedRhoGate</h3>
+      <div class="gov-row"><span class="label">w_resid</span><span id="gateWResid">1.00</span></div>
+      <div class="gov-bar"><div class="gov-bar-fill" id="gateWResidBar" style="width:100%;background:var(--green)"></div></div>
+      <div class="gov-row"><span class="label">w_hf</span><span id="gateWHF">0.00</span></div>
+      <div class="gov-bar"><div class="gov-bar-fill" id="gateWHFBar" style="width:0%;background:var(--blue)"></div></div>
+      <div class="gov-row"><span class="label">w_var</span><span id="gateWVar">0.00</span></div>
+      <div class="gov-bar"><div class="gov-bar-fill" id="gateWVarBar" style="width:0%;background:var(--purple)"></div></div>
+      <div class="gov-row"><span class="label">Instab thresh</span><span id="gateInstabThresh">—</span></div>
+      <div class="gov-row"><span class="label">FSR thresh</span><span id="gateFsrThresh">—</span></div>
+      <div class="gov-row"><span class="label">Gate state</span><span id="gateState">—</span></div>
+    </div>
+
+    <div class="gov-panel" id="govEmaPanel">
+      <h3>GovernorEMA</h3>
+      <div class="gov-row"><span class="label">EMA strictness</span><span id="govEmaStrict">0.500</span></div>
+      <div class="gov-bar"><div class="gov-bar-fill" id="govEmaStrictBar" style="width:50%;background:var(--yellow)"></div></div>
+      <div class="gov-row"><span class="label">EMA cost</span><span id="govEmaCost">—</span></div>
+      <div class="gov-row"><span class="label">Corridor</span><span id="govEmaCorridor">—</span></div>
+    </div>
+
     <div class="phase-label">Лог тиков</div>
     <div class="tick-log" id="tickLog">
       <div style="color:var(--dim);font-size:12px;padding:8px">Нажми «Следующий тик» чтобы начать</div>
@@ -132,7 +153,7 @@ canvas { display:block; border-radius:4px; image-rendering:pixelated; }
     <div class="info-box" style="text-align:center;padding:40px">
       <h2>Curiosity Runtime — пошаговая демонстрация</h2>
       <p style="color:var(--dim);margin-top:8px">1. Настрой параметры слева<br>2. Нажми «Инициализация» → увидишь исходное поле и грубое приближение<br>3. Жми «Следующий тик» — каждый тик = один цикл рантайма:<br>
-      <code>L1→L2→Governor→Split/Reject→Refine→Probe→Update</code></p>
+      <code>L1→WeightedRhoGate→ROI→Governor→Split/Reject→Refine→Probe→GovEMA→Convergence</code></p>
     </div>
   </div>
 </div>
@@ -276,7 +297,7 @@ function initGovernor(p){
   };
 }
 
-function governorDecide(rho, gains, nt, alreadyRefined) {
+function governorDecide(rho, gains, nt, alreadyRefined, roiMask) {
   const g = S.gov;
   g.tick++;
 
@@ -297,10 +318,10 @@ function governorDecide(rho, gains, nt, alreadyRefined) {
   const quantileCut = Math.max(0.02, 0.4 / g.strictness);
   const maxCandidates = Math.max(1, Math.round(nt * nt * quantileCut));
 
-  // Sort tiles by rho descending, exclude already refined
+  // Sort tiles by rho descending, exclude already refined and ROI-masked
   const candidates = [];
   for (let i = 0; i < nt*nt; i++) {
-    if (!alreadyRefined[i]) candidates.push({i, rho: rho[i], gain: gains[i], strict: g.tileStrict[i]});
+    if (!alreadyRefined[i] && !(roiMask && roiMask[i])) candidates.push({i, rho: rho[i], gain: gains[i], strict: g.tileStrict[i]});
   }
   candidates.sort((a,b) => b.rho - a.rho);
 
@@ -415,6 +436,7 @@ function doInit() {
   S.current = new Float64Array(S.coarseInterp);
   S.refined = new Uint8Array(S.coarseSize * S.coarseSize); // which tiles are refined
   S.nt = S.coarseSize;
+  S.acceptedHistory = [];  // for convergence detector
 
   // L0 topology — computed once
   S.hf = laplacian(S.coarse, S.coarseSize);
@@ -433,9 +455,11 @@ function doInit() {
       <p><strong>L0 Topology:</strong> quadrant blocks (${S.nt}&times;${S.nt} тайлов). Вычислен один раз.</p>
       <p><strong>HF-энергия</strong> (Лапласиан) и <strong>локальная дисперсия</strong> — извлечены из грубого представления.</p>
       <p><strong>Governor:</strong> бюджет = ${p.totalBudget} units, R_max = ${S.gov.wasteMax} (ω=${p.omega}), strictness = 1.0</p>
+      <p><strong>WeightedRhoGate:</strong> cold-start instab=${S.gate.instabilityThresh.toFixed(3)}, FSR=${S.gate.fsrThresh.toFixed(3)}. Pilot ${S.gate.pilotTicks} тиков fine-tune.</p>
+      <p><strong>GovernorEMA:</strong> corridor=[${(S.govEma.targetPerTick * S.govEma.corridorLo).toFixed(0)}..${(S.govEma.targetPerTick * S.govEma.corridorHi).toFixed(0)}], target/tick=${S.govEma.targetPerTick}</p>
       <p><span class="metric m-red">MSE = ${curMSE.toFixed(6)}</span> <span class="metric m-blue">PSNR = ${psnr(curMSE).toFixed(1)} dB</span>
       ${p.noiseSigma > 0 ? `<span class="metric m-yellow">шум σ=${p.noiseSigma.toFixed(2)}</span>` : ''}</p>
-      <p style="color:var(--dim);margin-top:8px">Жми «Следующий тик» — каждый тик: L1→L2→Governor→Split/Reject→Refine→Probe</p>
+      <p style="color:var(--dim);margin-top:8px">Жми «Следующий тик» — каждый тик: L1→WeightedRhoGate→ROI→Governor→Refine→GovEMA→Convergence</p>
     </div>
     <div class="viz-row">
       ${p.noiseSigma > 0 ? `
@@ -462,24 +486,64 @@ function doInit() {
   renderTileHeat(document.getElementById('c3'), combined, S.nt, 'heat');
   drawColorbar('cb3','heat');
 
-  // Initialize two-stage gate EMA state
+  // WeightedRhoGate state (replaces discrete Stage 1/2)
+  // EMA weights start at (1,0,0) = residual-only, shift toward combo when unstable
   S.gate = {
-    // EMA weights for Stage 2 (start equal)
-    wResid: 0.40,
-    wHF: 0.35,
-    wVar: 0.25,
-    emaAlpha: 0.3,       // EMA smoothing factor
-    // Pilot calibration: first pilotTicks are always Stage 2 (collecting stats)
-    // After pilot: thresholds = percentile of observed values
+    wResid: 1.0,
+    wHF: 0.0,
+    wVar: 0.0,
+    emaAlpha: 0.3,           // EMA smoothing for weight transitions
+    residMinWeight: 0.20,    // floor for w_resid (from config)
+    // Cold-start thresholds: set from CV(initial_rho) before first tick
+    // Pilot fine-tunes after pilotTicks
     pilotTicks: 3,
-    pilotInstab: [],      // instability samples during pilot
-    pilotFSR: [],         // FSR samples during pilot
-    instabilityThresh: null,  // null = not yet calibrated
+    pilotInstab: [],
+    pilotFSR: [],
+    instabilityThresh: null, // set by cold-start, refined by pilot
     fsrThresh: null,
-    threshFactor: 0.7,    // threshold = pilotMedian × factor (below median = healthy)
+    threshFactor: 0.7,
+    fsrFloor: 0.05,
+    // Convergence detector
+    convergenceWindow: 2,    // stop if accepted==0 for this many ticks
+    // ROI gating
+    referenceMedianGain: 0,  // set after tick 0
+    minRoiFraction: 0.15,
     // History for display
-    stage1Count: 0,
-    stage2Count: 0,
+    healthyCount: 0,
+    comboCount: 0,
+    history: [],
+  };
+
+  // Cold-start thresholds from CV(initial_rho)
+  // (viz has no topo profiling, so we use CV only)
+  {
+    const initResid = absResidual(S.current, S.field, S.fieldSize);
+    const initResidTiles = tileAgg(initResid, S.fieldSize, S.tileSize);
+    const absVals = initResidTiles.data.map(Math.abs);
+    let sum = 0; for (let i = 0; i < absVals.length; i++) sum += absVals[i];
+    const meanAbs = sum / absVals.length;
+    let varSum = 0; for (let i = 0; i < absVals.length; i++) varSum += (absVals[i] - meanAbs) ** 2;
+    const cvRho = meanAbs > 1e-10 ? Math.sqrt(varSum / absVals.length) / meanAbs : 0;
+    // No topo zone in viz, use default prior (0.25 = YELLOW)
+    const instabPrior = 0.25;
+    const instabThresh = (0.5 * instabPrior + 0.5 * cvRho) * S.gate.threshFactor;
+    const fsrThresh = Math.max(S.gate.fsrFloor, instabThresh * 0.5);
+    S.gate.instabilityThresh = instabThresh;
+    S.gate.fsrThresh = fsrThresh;
+  }
+
+  // GovernorEMA state (optional EMA-based strictness control from exp08)
+  S.govEma = {
+    enabled: true,
+    alpha: 0.3,
+    targetPerTick: Math.max(1, Math.floor(p.totalBudget / 25)),
+    corridorHi: 1.5,      // target * 1.5
+    corridorLo: 0.5,      // target * 0.5
+    clamp: 0.05,
+    warmupTicks: 3,
+    emaCost: Math.max(1, Math.floor(p.totalBudget / 25)),  // init at target
+    strictness: 0.5,       // start in middle
+    tickCount: 0,
     history: [],
   };
 
@@ -487,7 +551,7 @@ function doInit() {
   document.getElementById('initBtn').disabled = true;
   document.getElementById('tickLog').innerHTML = '';
   updateGovUI();
-  addTickLog({tick:0, note:`Инициализация. L0 topology. Gate: pilot ${S.gate.pilotTicks} тиков → калибровка порогов.`});
+  addTickLog({tick:0, note:`Инициализация. L0 topology. WeightedRhoGate: cold-start thresh instab=${S.gate.instabilityThresh.toFixed(3)}, FSR=${S.gate.fsrThresh.toFixed(3)}. Pilot ${S.gate.pilotTicks} тиков → fine-tune.`});
 }
 
 function doTick() {
@@ -504,20 +568,22 @@ function doTick() {
   const hfNorm = qnorm(S.hf);
   const varNorm = qnorm(S.variance);
 
-  // ══════ L2: Two-Stage Adaptive Gate ══════
+  // ══════ WeightedRhoGate (smooth EMA transitions, no discrete Stage 1/2) ══════
   const gt = S.gate;
 
-  // Stage 1: Health check on residual signal
-  // instability = stddev(residNorm) / mean(|residNorm|) — measures signal noise
-  // FSR = fraction of tiles where residual flipped sign vs previous tick
-  let residMean = 0, residVar = 0;
-  for (let i = 0; i < residNorm.length; i++) residMean += Math.abs(residNorm[i]);
-  residMean /= residNorm.length;
-  for (let i = 0; i < residNorm.length; i++) residVar += (Math.abs(residNorm[i]) - residMean) ** 2;
-  const instability = residMean > 1e-8 ? Math.sqrt(residVar / residNorm.length) / residMean : 0;
+  // Instability = CV(|residNorm|) among non-refined tiles
+  let residMean = 0, residCount = 0;
+  for (let i = 0; i < residNorm.length; i++) {
+    if (!S.refined[i]) { residMean += Math.abs(residNorm[i]); residCount++; }
+  }
+  residMean = residCount > 0 ? residMean / residCount : 0;
+  let residVar = 0;
+  for (let i = 0; i < residNorm.length; i++) {
+    if (!S.refined[i]) residVar += (Math.abs(residNorm[i]) - residMean) ** 2;
+  }
+  const instability = residMean > 1e-8 ? Math.sqrt(residVar / Math.max(1, residCount)) / residMean : 0;
 
   // FSR: fraction of sign-flips vs previous tick, ONLY among non-refined tiles
-  // (refined tiles go to residual≈0, which is expected, not signal degradation)
   let fsr = 0;
   if (gt.prevResidNorm) {
     let flips = 0, count = 0;
@@ -532,67 +598,64 @@ function doTick() {
   }
   gt.prevResidNorm = new Float64Array(residNorm);
 
-  // ── Pilot calibration: first N ticks collect stats, then freeze thresholds ──
+  // ── Pilot fine-tuning: collect stats and refine cold-start thresholds ──
+  const tickNum = S.gov.tick;  // 0-based before increment
   const inPilot = gt.pilotInstab.length < gt.pilotTicks;
   if (inPilot) {
     gt.pilotInstab.push(instability);
     gt.pilotFSR.push(fsr);
-    // After collecting enough samples → calibrate
+    // On last pilot tick: refine thresholds (blend cold-start with observed)
     if (gt.pilotInstab.length === gt.pilotTicks) {
       const sortedI = [...gt.pilotInstab].sort((a,b)=>a-b);
       const sortedF = [...gt.pilotFSR].sort((a,b)=>a-b);
       const medianI = sortedI[(sortedI.length*0.5)|0];
       const medianF = sortedF[(sortedF.length*0.5)|0];
-      gt.instabilityThresh = medianI * gt.threshFactor;
-      gt.fsrThresh = Math.max(0.05, medianF * gt.threshFactor);  // floor 5%
+      // Fine-tune: take minimum of cold-start and observed median * factor
+      gt.instabilityThresh = Math.min(gt.instabilityThresh, medianI * gt.threshFactor);
+      gt.fsrThresh = Math.max(gt.fsrFloor, Math.min(gt.fsrThresh, medianF * gt.threshFactor));
     }
   }
 
-  // During pilot → always Stage 2. After pilot → check health.
-  const threshCalibrated = gt.instabilityThresh !== null;
-  const residualHealthy = threshCalibrated &&
-    instability < gt.instabilityThresh && fsr < gt.fsrThresh;
+  // Determine health and compute target weights (smooth, no discrete jump)
+  const instabThresh = gt.instabilityThresh || 0.25;
+  const fsrThresh = gt.fsrThresh || 0.05;
+  const residHealthy = instability <= instabThresh && fsr <= fsrThresh;
 
-  // Compute rho based on gate stage
-  const rho = new Float64Array(S.nt * S.nt);
+  let targetWResid, targetWHF, targetWVar;
   let gateStage;
 
-  if (residualHealthy) {
-    // Stage 1: residual-only — zero loss vs oracle on clean data
-    gateStage = 1;
-    gt.stage1Count++;
-    for (let i = 0; i < rho.length; i++) rho[i] = residNorm[i];
+  if (residHealthy) {
+    // Healthy: drift toward residual-only
+    targetWResid = 1.0;
+    targetWHF = 0.0;
+    targetWVar = 0.0;
+    gateStage = 'healthy';
+    gt.healthyCount++;
   } else {
-    // Stage 2: EMA-weighted combination
-    gateStage = 2;
-    gt.stage2Count++;
+    // Unhealthy: shift toward combo proportional to instability excess
+    const instabExcess = Math.max(0, instability - instabThresh) / Math.max(instabThresh, 1e-6);
+    const comboStrength = Math.min(1.0, instabExcess);  // 0..1
+    targetWResid = Math.max(gt.residMinWeight, 1.0 - 0.5 * comboStrength);
+    targetWHF = (1.0 - targetWResid) * 0.6;   // 60% of combo to HF
+    targetWVar = (1.0 - targetWResid) * 0.4;   // 40% to variance
+    gateStage = 'combo';
+    gt.comboCount++;
+  }
 
-    // Update EMA weights based on signal usefulness (correlation with gains from previous tick)
-    if (gt.prevGains) {
-      // Compute correlation of each signal with actual gains
-      const corrR = signalCorr(residNorm, gt.prevGains);
-      const corrH = signalCorr(hfNorm, gt.prevGains);
-      const corrV = signalCorr(varNorm, gt.prevGains);
-      const totalCorr = Math.abs(corrR) + Math.abs(corrH) + Math.abs(corrV) + 1e-8;
+  // EMA update (smooth transition, no discrete jumps)
+  const alpha = gt.emaAlpha;
+  gt.wResid += alpha * (targetWResid - gt.wResid);
+  gt.wHF += alpha * (targetWHF - gt.wHF);
+  gt.wVar += alpha * (targetWVar - gt.wVar);
 
-      // Target weights from correlation
-      const tR = Math.abs(corrR) / totalCorr;
-      const tH = Math.abs(corrH) / totalCorr;
-      const tV = Math.abs(corrV) / totalCorr;
+  // Renormalize to sum=1
+  const wTotal = gt.wResid + gt.wHF + gt.wVar;
+  if (wTotal > 1e-10) { gt.wResid /= wTotal; gt.wHF /= wTotal; gt.wVar /= wTotal; }
 
-      // EMA update toward target
-      gt.wResid += gt.emaAlpha * (tR - gt.wResid);
-      gt.wHF += gt.emaAlpha * (tH - gt.wHF);
-      gt.wVar += gt.emaAlpha * (tV - gt.wVar);
-
-      // Normalize to sum=1
-      const wSum = gt.wResid + gt.wHF + gt.wVar;
-      gt.wResid /= wSum; gt.wHF /= wSum; gt.wVar /= wSum;
-    }
-
-    for (let i = 0; i < rho.length; i++) {
-      rho[i] = gt.wResid * residNorm[i] + gt.wHF * hfNorm[i] + gt.wVar * varNorm[i];
-    }
+  // Compute rho = weighted combination (always, no stage switch)
+  const rho = new Float64Array(S.nt * S.nt);
+  for (let i = 0; i < rho.length; i++) {
+    rho[i] = gt.wResid * residNorm[i] + gt.wHF * hfNorm[i] + gt.wVar * varNorm[i];
   }
 
   // Record gate state for this tick
@@ -601,9 +664,10 @@ function doTick() {
     stage: inPilot ? 'pilot' : gateStage,
     instability: instability.toFixed(3),
     fsr: fsr.toFixed(3),
-    weights: gateStage === 2 ? `R=${gt.wResid.toFixed(2)} H=${gt.wHF.toFixed(2)} V=${gt.wVar.toFixed(2)}` : 'residual-only',
-    threshI: gt.instabilityThresh !== null ? gt.instabilityThresh.toFixed(3) : '—',
-    threshF: gt.fsrThresh !== null ? gt.fsrThresh.toFixed(3) : '—',
+    weights: `R=${gt.wResid.toFixed(2)} H=${gt.wHF.toFixed(2)} V=${gt.wVar.toFixed(2)}`,
+    threshI: instabThresh.toFixed(3),
+    threshF: fsrThresh.toFixed(3),
+    inPilot,
   });
 
   // Gains: tile-level MSE (what we'd gain by refining)
@@ -620,8 +684,33 @@ function doTick() {
   // Store gains for EMA weight adaptation on next tick
   S.gate.prevGains = new Float64Array(gains);
 
-  // Governor decides
-  const decision = governorDecide(rho, gains, S.nt, S.refined);
+  // ROI check: zero out gains below reference_median_gain * min_roi_fraction (skip tick 0)
+  let roiSkipped = 0;
+  const roiMask = new Uint8Array(S.nt * S.nt);  // 1 = below ROI threshold
+  if (S.gov.tick > 0 && gt.referenceMedianGain > 0) {
+    const minRoi = gt.referenceMedianGain * gt.minRoiFraction;
+    for (let i = 0; i < gains.length; i++) {
+      if (!S.refined[i] && gains[i] < minRoi) {
+        roiMask[i] = 1;
+        roiSkipped++;
+      }
+    }
+  }
+
+  // Set reference_median_gain after tick 0
+  if (S.gov.tick === 0) {
+    const nonZeroGains = [];
+    for (let i = 0; i < gains.length; i++) {
+      if (!S.refined[i] && gains[i] > 0) nonZeroGains.push(gains[i]);
+    }
+    if (nonZeroGains.length > 0) {
+      nonZeroGains.sort((a,b) => a-b);
+      gt.referenceMedianGain = nonZeroGains[(nonZeroGains.length * 0.5)|0];
+    }
+  }
+
+  // Governor decides (passes ROI mask to exclude below-ROI tiles)
+  const decision = governorDecide(rho, gains, S.nt, S.refined, roiMask);
 
   // Apply refinement
   for(let ty=0;ty<S.nt;ty++) for(let tx=0;tx<S.nt;tx++){
@@ -634,12 +723,36 @@ function doTick() {
     }
   }
 
+  // GovernorEMA update (smooth strictness control)
+  const ge = S.govEma;
+  ge.tickCount++;
+  ge.emaCost = ge.alpha * decision.record.accepted + (1.0 - ge.alpha) * ge.emaCost;
+  if (ge.tickCount > ge.warmupTicks) {
+    const hi = ge.targetPerTick * ge.corridorHi;
+    const lo = ge.targetPerTick * ge.corridorLo;
+    if (ge.emaCost > hi) {
+      ge.strictness = Math.min(0.995, ge.strictness + ge.clamp);
+    } else if (ge.emaCost < lo) {
+      ge.strictness = Math.max(0.5, ge.strictness - ge.clamp);
+    }
+  }
+  ge.history.push({tick: ge.tickCount, emaCost: ge.emaCost, strictness: ge.strictness});
+
   // Metrics after this tick
   const curMSE = mse(S.current, S.field);
   const rec = decision.record;
+  rec.roiSkipped = roiSkipped;
+  rec.govEmaStrictness = ge.strictness.toFixed(3);
   const allRefined = S.refined.every(v => v);
-  const done = rec.budgetExhausted || rec.forceStop || allRefined ||
-    (rec.accepted === 0);
+
+  // Convergence detector: stop if accepted==0 for convergenceWindow ticks
+  if (!S.acceptedHistory) S.acceptedHistory = [];
+  S.acceptedHistory.push(rec.accepted);
+  const cw = gt.convergenceWindow;
+  const converged = S.acceptedHistory.length >= cw &&
+    S.acceptedHistory.slice(-cw).every(a => a === 0);
+
+  const done = rec.budgetExhausted || rec.forceStop || allRefined || converged;
 
   // Render
   const main = document.getElementById('mainArea');
@@ -647,7 +760,8 @@ function doTick() {
     (rec.forceStop ? '⛔ Waste budget исчерпан — governor остановил' :
      rec.budgetExhausted ? '✅ Compute budget исчерпан' :
      allRefined ? '✅ Все тайлы уточнены (бюджет не израсходован полностью)' :
-     '✅ Сходимость — нечего уточнять') :
+     converged ? `✅ Сходимость — accepted=0 для ${cw} тиков подряд` :
+     '✅ Нечего уточнять') :
     `Тик ${rec.tick}: ${rec.accepted} принято, ${rec.rejected} отклонено`;
 
   main.innerHTML = `
@@ -663,20 +777,12 @@ function doTick() {
       <p>
         ${(() => {
           const gl = gt.history[gt.history.length-1];
-          const isPilot = gl.stage === 'pilot';
-          const stageLabel = isPilot ? 'Pilot (калибровка)' : `Stage ${gateStage}`;
-          const stageColor = isPilot ? 'm-purple' : gateStage===1 ? 'm-green' : 'm-yellow';
-          let detail = '';
-          if (isPilot) {
-            detail = `<span class="metric m-blue">тик ${gt.pilotInstab.length}/${gt.pilotTicks} — сбор статистики</span>
-                      <span class="metric m-red">instab=${gl.instability} FSR=${gl.fsr}</span>`;
-          } else if (gateStage === 1) {
-            detail = `<span class="metric m-blue">residual-only</span>
-                      <span class="metric m-green">instab=${gl.instability} &lt; ${gl.threshI}</span>`;
-          } else {
-            detail = `<span class="metric m-purple">${gl.weights}</span>
-                      <span class="metric m-red">instab=${gl.instability} (порог=${gl.threshI})</span>`;
-          }
+          const isPilot = gl.inPilot;
+          const stageLabel = isPilot ? 'Pilot (fine-tune)' : (gateStage === 'healthy' ? 'Healthy' : 'Combo');
+          const stageColor = isPilot ? 'm-purple' : gateStage === 'healthy' ? 'm-green' : 'm-yellow';
+          const detail = `<span class="metric m-blue">${gl.weights}</span>
+                    <span class="metric ${gateStage==='healthy'?'m-green':'m-red'}">instab=${gl.instability} (thresh=${gl.threshI})</span>
+                    <span class="metric m-purple">FSR=${gl.fsr} (thresh=${gl.threshF})</span>`;
           return `<span class="metric ${stageColor}">Gate: ${stageLabel}</span>${detail}`;
         })()}
       </p>
@@ -684,6 +790,8 @@ function doTick() {
         <span class="metric m-blue">MSE = ${curMSE.toFixed(6)}</span>
         <span class="metric m-green">PSNR = ${psnr(curMSE).toFixed(1)} dB</span>
         <span class="metric m-yellow">осталось ${rec.remaining} units</span>
+        ${roiSkipped > 0 ? `<span class="metric m-red">ROI skip: ${roiSkipped}</span>` : ''}
+        <span class="metric m-purple">GovEMA: s=${rec.govEmaStrictness}</span>
       </p>
       ${done ? '<p style="margin-top:8px;color:var(--yellow)">Рантайм завершён.</p>' :
         '<p style="color:var(--dim);margin-top:4px">Жми «Следующий тик» для продолжения</p>'}
@@ -790,6 +898,21 @@ function updateGovUI(){
     document.getElementById('govBudgetBar').style.width = '100%';
     document.getElementById('govStrictBar').style.width = '10%';
     document.getElementById('govWasteBar').style.width = '0%';
+    // Gate panel defaults
+    document.getElementById('gateWResid').textContent = '1.00';
+    document.getElementById('gateWHF').textContent = '0.00';
+    document.getElementById('gateWVar').textContent = '0.00';
+    document.getElementById('gateWResidBar').style.width = '100%';
+    document.getElementById('gateWHFBar').style.width = '0%';
+    document.getElementById('gateWVarBar').style.width = '0%';
+    document.getElementById('gateInstabThresh').textContent = '—';
+    document.getElementById('gateFsrThresh').textContent = '—';
+    document.getElementById('gateState').textContent = '—';
+    // GovEMA defaults
+    document.getElementById('govEmaStrict').textContent = '0.500';
+    document.getElementById('govEmaStrictBar').style.width = '50%';
+    document.getElementById('govEmaCost').textContent = '—';
+    document.getElementById('govEmaCorridor').textContent = '—';
     return;
   }
   const pct = g.remaining/g.totalBudget*100;
@@ -809,6 +932,38 @@ function updateGovUI(){
 
   document.getElementById('govTick').textContent = g.tick;
   document.getElementById('govRefined').textContent = g.totalAccepted + ' тайлов';
+
+  // WeightedRhoGate panel
+  const gt = S.gate;
+  if (gt) {
+    document.getElementById('gateWResid').textContent = gt.wResid.toFixed(2);
+    document.getElementById('gateWHF').textContent = gt.wHF.toFixed(2);
+    document.getElementById('gateWVar').textContent = gt.wVar.toFixed(2);
+    document.getElementById('gateWResidBar').style.width = (gt.wResid*100)+'%';
+    document.getElementById('gateWHFBar').style.width = (gt.wHF*100)+'%';
+    document.getElementById('gateWVarBar').style.width = (gt.wVar*100)+'%';
+    document.getElementById('gateInstabThresh').textContent =
+      gt.instabilityThresh !== null ? gt.instabilityThresh.toFixed(3) : '—';
+    document.getElementById('gateFsrThresh').textContent =
+      gt.fsrThresh !== null ? gt.fsrThresh.toFixed(3) : '—';
+    const lastH = gt.history.length > 0 ? gt.history[gt.history.length-1] : null;
+    document.getElementById('gateState').textContent = lastH ?
+      (lastH.inPilot ? 'pilot' : lastH.stage) : '—';
+  }
+
+  // GovernorEMA panel
+  const ge = S.govEma;
+  if (ge) {
+    document.getElementById('govEmaStrict').textContent = ge.strictness.toFixed(3);
+    const sPct = ((ge.strictness - 0.5) / 0.495) * 100;  // 0.5..0.995 -> 0..100
+    document.getElementById('govEmaStrictBar').style.width = Math.min(100, Math.max(0, sPct))+'%';
+    document.getElementById('govEmaStrictBar').style.background =
+      ge.strictness < 0.7 ? 'var(--green)' : ge.strictness < 0.9 ? 'var(--yellow)' : 'var(--red)';
+    document.getElementById('govEmaCost').textContent = ge.emaCost.toFixed(1);
+    const lo = (ge.targetPerTick * ge.corridorLo).toFixed(0);
+    const hi = (ge.targetPerTick * ge.corridorHi).toFixed(0);
+    document.getElementById('govEmaCorridor').textContent = `[${lo} .. ${hi}] target=${ge.targetPerTick}`;
+  }
 }
 
 function addTickLog(rec){
@@ -821,8 +976,10 @@ function addTickLog(rec){
     div.innerHTML = `<div class="tick-head">Инит</div><div class="tick-detail">${rec.note}</div>`;
   } else {
     const status = rec.forceStop ? '⛔ waste stop' : rec.budgetExhausted ? '✅ budget=0' : rec.accepted===0&&rec.evaluated>0 ? '✅ сходимость' : '';
+    const roiStr = rec.roiSkipped ? ` | roi-skip=${rec.roiSkipped}` : '';
+    const emaStr = rec.govEmaStrictness ? ` | ema-s=${rec.govEmaStrictness}` : '';
     div.innerHTML = `<div class="tick-head">Тик ${rec.tick} ${status}</div>
-      <div class="tick-detail">+${rec.accepted} / −${rec.rejected} | strict=${rec.strictness} | top ${rec.quantileCut}% | осталось ${rec.remaining}</div>`;
+      <div class="tick-detail">+${rec.accepted} / −${rec.rejected} | strict=${rec.strictness} | top ${rec.quantileCut}%${roiStr}${emaStr} | осталось ${rec.remaining}</div>`;
   }
   log.appendChild(div);
   log.scrollTop = log.scrollHeight;
