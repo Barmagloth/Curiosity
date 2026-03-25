@@ -360,6 +360,19 @@ Smooth budget control for streaming mode (currently only binary go/stop):
 
 Sweep: 3 modes (batch/reuse/streaming) x 3 hardware profiles (low/mid/high) x 6 γ ∈ {1.0, 1.5, 2.0, 2.5, 3.0, 4.0} x 4 spaces x 20 seeds. Metrics: PSNR, time, reject rate, compliance, budget utilization. Kill: batch/reuse — EMA improves compliance; streaming — B+C(γ*) >= equal-allocation baseline.
 
+### exp19 — Multi-tick sweep (DONE, March 25, 2026, 2050 configs)
+
+Full validation of multi-tick pipeline. 5 sub-experiments:
+- **19a** (840): scaling law → `max_ticks = min(5, max(2, ceil(n_budget/50)))`. vector_grid: multi-tick +6-19%.
+- **19b** (160): gate stress → 160/160 PASS, alpha=0.3.
+- **19c** (420): param sweep → on clean data all multi-tick features = overhead.
+- **19d** (150): CIFAR + real graphs → mt=3 = 96-97%, overhead <5%.
+- **19e** (480): noisy/hetero → **noisy: multi-tick +2-7%**, clean hetero: -30%, mixed σ≥0.10: +4-7%.
+
+**ROI fix:** global MSE → local unit_rho. Critical bug found and fixed during exp19a.
+
+**Conclusion:** multi-tick justified under noise. Issue 9 (noise-fitting) remains open → Phase 5.
+
 ---
 
 ## What Remains Useful Even If "The Whole Thing" Doesn't Pan Out

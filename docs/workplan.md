@@ -8,8 +8,8 @@
 > - Модуль G (Scale-Consistency): валидирован (SC-baseline AUC 0.82-1.0, exp12a τ_parent PASS)
 > - **Модуль H (трёхслойная ρ): валидирован** (exp17, 1080 конфигов, reusability 12/12 PASS, cascade quotas, streaming pipeline)
 > - Модули A, B (каноникализация, кэш): НЕ реализованы (не на критическом пути)
-> - Phase 1 завершена (20.03.2026). Phase 2 завершена (21.03.2026). Phase 3 завершена (22.03.2026). Phase 3.5 завершена (23.03.2026). Phase 4 multi-tick завершена (25.03.2026).
-> - Следующий шаг: exp19 (sweep параметров multi-tick) + Phase 4 continued (P4a downstream, P4b matryoshka) + C-оптимизация scoring (roadmap).
+> - Phase 1 завершена (20.03.2026). Phase 2 завершена (21.03.2026). Phase 3 завершена (22.03.2026). Phase 3.5 завершена (23.03.2026). Phase 4 multi-tick завершена (25.03.2026). exp19 завершён (25.03.2026, 2050 конфигов).
+> - Следующий шаг: Phase 5 (P5-noise, exp20 — denoising refinement) + P4a downstream + P4b matryoshka + C-оптимизация scoring (roadmap).
 
 ## Базовая логика
 1. Выживают только модули, которые дают выигрыш **сами по себе**: кэш, детектор, планировщик пересчёта, профилирование.
@@ -218,6 +218,21 @@ Layer 2: ЗАПРОС           — "из того что лежит — где 
 1. L0 topo на C/Cython (максимальный ROI — 70ms → 5ms)
 2. L1 + L2 scoring на C (единый vectorized pass)
 3. Батчинг refinement (группировка смежных тайлов для cache locality)
+
+---
+
+### exp19 — Multi-tick sweep (DONE, 25 марта 2026, 2050 конфигов)
+
+Полная валидация multi-tick pipeline. 5 sub-экспериментов:
+- **19a** (840): scaling law → `max_ticks = min(5, max(2, ceil(n_budget/50)))`. vector_grid: multi-tick +6-19%.
+- **19b** (160): gate stress → 160/160 PASS, alpha=0.3.
+- **19c** (420): param sweep → на чистых данных все multi-tick features = overhead.
+- **19d** (150): CIFAR + real graphs → mt=3 = 96-97%, overhead <5%.
+- **19e** (480): noisy/hetero → **шум: multi-tick +2-7%**, чистый hetero: -30%, mixed σ≥0.10: +4-7%.
+
+**ROI fix:** global MSE → local unit_rho. Критический баг обнаружен и исправлен в ходе exp19a.
+
+**Вывод:** multi-tick оправдан при шуме. Issue 9 (noise-fitting) остаётся открытой → Phase 5.
 
 ---
 

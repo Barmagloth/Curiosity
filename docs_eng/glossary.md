@@ -336,7 +336,11 @@ Terminology from the exp10 experiment series (P0 layout). Full methodology: `doc
 
 **Industry Baselines** — standard industry approaches for spatial search and refinement, implemented in exp17 for comparison with the Curiosity pipeline: (1) cKDTree (scipy) — k-d tree + NN query; (2) Quadtree — quadrant splitting by rho (grid only); (3) Leiden + brute force — community detection + sort by rho within (graph only); (4) Wavelets — Haar DWT detail coefficients as a saliency map (scalar grid only).
 
-**unit_rho** — the per-unit informativeness score computed by the rho function. In the three-layer architecture, unit_rho at Layer 2 is the task-specific signal (e.g., MSE residual) evaluated only on units that survived L0 and L1 filtering.
+**unit_rho** — the per-unit informativeness score computed by the rho function. In the three-layer architecture, unit_rho at Layer 2 is the task-specific signal (e.g., MSE residual) evaluated only on units that survived L0 and L1 filtering. In the Phase 4 pipeline (pipeline.py), unit_rho = MSE to GT (pure resid). HF and variance signals are scaffolded as WeightedRhoGate components but not yet implemented (TODO).
+
+**WeightedRhoGate (Phase 4, 2026-03-25)** — replaces TwoStageGate. Instead of discrete Stage 1/2 switching, uses a single function rho = sum(w_i * signal_i) with smooth EMA weight transitions. When resid is healthy: w_resid~1.0, w_hf~0, w_var~0. When unstable: EMA shifts toward combo proportional to instability excess. SC-enforce is unaffected by weight changes because delta = refine_unit() does not depend on rho — rho determines WHO is refined, not HOW.
+
+**Cold-start thresholds (Phase 4)** — initial gate instability/FSR thresholds computed from pre-computed data (topo zone for graphs, CV(initial_rho) for all spaces) instead of blind pilot. Pilot ticks (first K) fine-tune these from real observations.
 
 **anchor** — a node in the refinement tree designated as a fixed reference point during periodic rebuild. Anchors are retained across rebuild cycles to preserve structural continuity. Exp14 tested anchor + periodic rebuild strategies: grid divergence = 0 (PASS), graph/tree divergence > 0.20 (FAIL due to structural drift).
 

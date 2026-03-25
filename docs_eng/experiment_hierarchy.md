@@ -49,6 +49,7 @@ v2.1: added DET level (determinism and reproducibility) — cross-infrastructure
 | `exp16_cpre_profiles/` | C-pre trajectory profile clustering. 80 configs. Gap >1.0, Silhouette >0.3 all spaces. Track C UNFREEZE signal. | C-pre | ✅ PASS (UNFREEZE) |
 | `exp17_three_layer_rho/` | Three-layer rho decomposition. 1080 configs (4 spaces x 3 scales x 8 approaches x 20 seeds). Cascade quotas (Variant C). Streaming pipeline. Reusability 12/12 PASS (min 0.838). Industry benchmarks (kdtree, quadtree, wavelets, leiden). | Phase 3.5 | ✅ PASS (reusability) |
 | `exp18_basin_membership/` | Basin membership vs feature similarity. 80 configs. Point-biserial r=0.019, kill r>0.3: FAIL. Basins degenerate in single-pass. Deferred to post-multi-pass. | RG-flow (post-Phase 4) | ❌ FAIL (deferred) |
+| `exp19_multi_tick_sweep/` | Multi-tick pipeline validation. 5 sub-experiments (19a-e). 2050 configs. Scaling law, gate stress, param sweep, real data, noisy/hetero. Key: multi-tick +2-7% under noise, neutral on clean. ROI fix (global→local). | Phase 4 | ✅ DONE (2050 configs) |
 
 **Phase 2 note:** Graph clustering upgraded from k-means to Leiden (community detection), validated on 10 pathological topologies: Swiss Roll, Barbell, Hub-Spoke, Ring of Cliques, Bipartite, Erdos-Renyi, Grid, Planar Delaunay, Mobius strip.
 

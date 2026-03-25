@@ -17,6 +17,22 @@ Curiosity project.
 - **Runtime visualization** (March 24, 2026): Interactive testbed `viz/index.html` — real multi-tick T1 runtime with per-tile strictness, two-stage gate with pilot-calibrated thresholds, EMA weight adaptation, noise injection. Exposed **9 architectural issues** recorded in `docs/workplan.md`: (1) missing convergence detector, (2) gate health thresholds not data-driven, (3) FSR inflated by refined tiles, (4) gate oscillation without hysteresis, (5) EMA weights uncalibrated on first ticks, (6) gain/cost incommensurability, (7) probe/reject overlap, (8) no post-refinement quality feedback, (9) **noise-fitting: system optimizes to noisy observations, not true signal** — fundamental blind spot, all experiments ran on clean synthetic data so never caught. Phase 5 (robustness) but awareness needed in Phase 4.
 - **P5-noise planned** (March 24, 2026): exp20a sweep of 6 denoising approaches (smoothed rho, noise floor, BayesShrink, SureShrink, coarse-as-prior, SURE-Bayes blend) x 3 sigma levels x 10 seeds on T1. exp20b composite from Pareto-best. exp20c pipeline integration + DET re-check. See `docs/experiment_hierarchy.md` P5-noise. Sigma-squared estimation for T3/T4 is open research question.
 - **Phase 4 multi-tick pipeline** (March 25, 2026): issues 1-7 from viz testbed IMPLEMENTED in `exp_phase2_pipeline/pipeline.py`. WeightedRhoGate replaces TwoStageGate (EMA weight transitions, cold-start pilot calibration, ROI gating). Governor EMA restored as global strictness thermostat. Convergence detector added. Hysteresis band for gate switching. FSR excludes refined tiles. Probe targets unevaluated tiles only. Verification pending (exp19 sweep).
+### exp19 — Multi-tick sweep (March 25, 2026) — 2050 configs, 0 errors
+
+| Sub-exp | Configs | Key Result |
+|---------|---------|------------|
+| **19a** scaling law | 840 | mt=2-3 optimal. vector_grid: +6-19%. Scaling: `min(5, max(2, ceil(n_budget/50)))` |
+| **19b** gate stress | 160 | 160/160 PASS. alpha=0.3 recommended |
+| **19c** param sweep | 420 | On clean synthetic: multi-tick features = overhead |
+| **19d** real data | 150 | CIFAR: mt=3 = 96-97%. Real graphs: 100%. Overhead <5% |
+| **19e** noisy+hetero | 480 | **Noisy: multi-tick +2-7%. Hetero clean: -26-30%. Mixed σ≥0.10: +4-7%** |
+
+**Key finding:** multi-tick beneficial under noise (gate adapts w_resid 1.0→0.84). On clean data, single-tick optimal. Issue 9 (noise-fitting) NOT addressed — Phase 5.
+
+**ROI fix:** global MSE → local unit_rho reduction. mt=3 went from 37%→99% of single-tick PSNR.
+
+**Viz updated** to match new pipeline: WeightedRhoGate, cold-start, ROI, convergence, GovernorEMA.
+
 - **Next step — Phase 4 (continued):** P4a downstream consumer test, P4b matryoshka, MultiStageDedup test, Governor EMA sweep (3 modes x 3 hw x 6 gamma x 4 spaces x 20 seeds = 4320 configs). **Issue 8 (post-refinement quality feedback) open — Phase 4+. Issue 9 (noise-fitting) is Phase 5 but Phase 4 experiments must not use noisy data without noise-awareness.** Bushes revisit after Track C. RG-flow after multi-pass.
 
 Workstation: **PC 2** (NVIDIA RTX 2070, 8 GB, CUDA 12.8). Working directory: `R:\Projects\Curiosity`.
