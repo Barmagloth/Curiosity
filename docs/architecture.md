@@ -1,250 +1,346 @@
-# Архитектура Curiosity
+# Архитектура Curiosity (Phase 4, 25 марта 2026)
 
-Документ описывает ключевые компоненты системы и принятые архитектурные решения. Каждое решение подкреплено результатами экспериментов.
-
----
-
-## Общая схема
-
-```
-Пространство X (произвольной природы)
-       |
-       v
-[Coarse representation] — грубое начальное приближение
-       |
-       v
-[Функция информативности ρ(x)] — определяет, где уточнять
-       |
-       v
-[Split decision] — решение о дроблении региона
-       |
-       v
-[Adaptive refinement] — уточнение выбранных регионов
-       |
-       v
-[Scale-Consistency check] — D_parent < τ_parent? (v1.7)
-       |
-       v
-[Halo blending] — cosine feathering на границах
-       (если применим по правилу топологии)
-       |
-       v
-[Budget governor] — EMA-контроль расхода бюджета
-       |
-       v
-[Probe allocation] — 5–10% бюджета на exploration
-```
+Документ описывает текущую архитектуру системы по состоянию на Phase 4 (multi-tick pipeline).
+Терминология соответствует `docs/glossary.md`.
 
 ---
 
-## Компонент 1: Функция информативности ρ(x)
+## 1. Обзор системы
 
-### Сигналы
+Curiosity --- adaptive refinement для абстрактных пространств. Система уточняет
+представление только там, где функция информативности ρ показывает, что это оправдано
+информационно и бюджетно. Размерность --- не фиксированное число осей, а глубина
+уточнения.
 
-| Сигнал | Назначение | Слабость |
-|---|---|---|
-| Residual | Основной: ошибка текущей аппроксимации | Деградирует при шуме (corr 0.90->0.54) |
-| HF energy | Лапласиан/градиент, структурная энергия | Ложные срабатывания на стыках |
-| Variance | Локальная дисперсия / disagreement | Любит шум |
-| Окупаемость | Expected gain vs. стоимость | — |
+Поддерживаемые типы пространств:
 
-### Двухстадийный гейт (canonical решение)
+| Тип | Описание |
+|-----|----------|
+| scalar_grid | 2D скалярная сетка (image-like) |
+| vector_grid | 2D векторная сетка (multi-channel) |
+| irregular_graph | Нерегулярный граф (k-NN, Swiss Roll и др.) |
+| tree_hierarchy | Иерархия деревьев (branching factor варьируется) |
 
-**Stage 1:** Проверка здоровья residual
-- Метрики: instability, FSR (False Signal Rate)
-- Если здоров: ρ = residual-only (нулевые потери на clean данных)
-- Если нездоров: переход к Stage 2
+Ключевая формула уточнения: `refined = parent_coarse + step_delta`.
+Step_delta инициализируется нулём, ограничена по энергии; при отключении текущего
+уровня система откатывается к parent_coarse.
 
-**Stage 2:** Utility-weighted комбинация
-- Веса сглажены EMA с гистерезисом
-- Нормализация: квантильная (ранговая), не абсолютная
+---
 
-### Three-layer rho decomposition (Phase 3.5, exp17)
+## 2. Pipeline архитектура (Phase 4, multi-tick)
 
-ρ декомпозируется на три архитектурных слоя:
+Pipeline реализован в `experiments/exp_phase2_pipeline/pipeline.py`.
+
+**Outer loop (multi-tick):** каждый tick пересчитывает unit_rho (L2 query), FSR,
+instability, затем выполняет inner loop. Количество тиков: `max_ticks` (config).
+
+**Inner loop (per tick):**
+1. Canonical sort юнитов по rho (Z-order tie-break, DET-1)
+2. Per-unit: compression guard (tree) --> dedup check (Enox) --> refine_unit() --> SC-enforce --> ROI check --> track
+3. Probe allocation из неоценённых/неуточнённых юнитов
+4. Governor EMA update
+
+**Backward compat:** `max_ticks=1` (default) воспроизводит Phase 2 поведение побитово.
+В single-tick mode пропускаются: cold-start, FSR/instability, ROI check, convergence
+detector, weighted rho. DET-1 recheck: 40/40 PASS.
+
+**Tick budget:** `target_per_tick = n_budget / max_ticks`. При исчерпании ---
+`budget_exhausted` stop.
+
+---
+
+## 3. WeightedRhoGate
+
+Замена TwoStageGate (Phase 2). Вместо дискретного переключения Stage 1/Stage 2 ---
+единая функция:
+
+```
+ρ = Σ(w_i × signal_i),  i ∈ {resid, hf, var}
+```
+
+EMA-веса (alpha = `ema_weight_alpha`, default 0.3) плавно переходят между состояниями:
+- resid здоров (instability <= thresh AND FSR <= thresh): w_resid -> 1.0
+- resid нестабилен: w_resid снижается пропорционально excess instability, HF/var получают
+  60%/40% от остатка. Минимальный w_resid = `resid_min_weight` (0.20).
+
+**Cold-start:** начальные пороги instability/FSR вычисляются из:
+- Topo zone (GREEN=0.15, YELLOW=0.25, RED=0.40 --- prior на instability)
+- CV(initial_rho) --- эмпирическая оценка нестабильности
+- Blend: 50% prior + 50% empirical, умноженный на `pilot_thresh_factor`
+
+**Pilot fine-tuning:** первые `pilot_ticks` (default 3) тиков собирают реальные
+instability/FSR; на последнем pilot-тике пороги уточняются: min(cold-start, median
+observed * pilot_thresh_factor).
+
+**SC-enforce инвариантен к весам:** delta = refine_unit() не зависит от ρ. ρ определяет
+КТО уточняется, не КАК. Смена весов не ломает scale-consistency.
+
+---
+
+## 4. Трёхслойная декомпозиция ρ (L0 / L1 / L2)
+
+Монолитная ρ декомпозируется на три каскадных слоя (exp17, Phase 3.5):
 
 | Слой | Назначение | Частота пересчёта |
 |------|-----------|-------------------|
-| L0 (topology) | Структурные свойства пространства (кривизна, связность) | Редко (при перестройке дерева) |
-| L1 (presence) | Каскадные квоты, dirty-сигнатуры | Каждый step (инкрементально) |
-| L2 (query) | Конкретный запрос (residual, HF, utility-weighted комбинация) | Каждый query |
+| L0 (Topology) | Структура пространства: кластеры, мосты, кривизна | Один раз при init |
+| L1 (Presence) | Где есть данные: variance GT per unit | Каждый step (инкрементально) |
+| L2 (Query) | Задаче-специфическое уточнение: residual, HF, max abs error | Каждый query |
 
-Cascade quotas (Variant C) управляют бюджетом по слоям. Streaming pipeline обеспечивает переиспользование L0/L1 между запросами. Reusability валидирована 12/12 PASS (min 0.838) на 1080 конфигурациях.
+Каждый слой сужает рабочее множество для следующего. Переиспользуемость растёт
+снизу вверх.
 
----
+**L0 реализация:** irregular_graph --- Leiden communities + curvature + PageRank;
+scalar/vector_grid --- spatial quadrant blocks; tree_hierarchy --- depth-band grouping.
 
-## Компонент 2: Halo (boundary-aware blending)
+**L1 cascade quotas (Variant C):** каждый L0-кластер гарантирует
+`max(1, ceil(cluster_size * budget_fraction))` выживших юнитов. Ни один регион
+не вымирает.
 
-**Зачем:** Жёсткая вставка refined-тайла создаёт ступеньку на границе. Лапласиан ловит это как ложный HF-сигнал. Чем умнее adaptive выбор, тем сильнее артефакт.
+**Frozen Tree:** сериализуемый снапшот L0+L1 (скоры + active units). Аналог R-tree.
+Строится один раз, разные L2-запросы работают поверх.
 
-**Реализация:**
-- Overlap ≥ 3 элемента (не "пикселя" — система не привязана к изображениям)
-- Cosine feathering относительно coarse уровня
-
-**Правило применимости (Phase 0, concept v1.7 §6):**
-
-Halo применим ТОЛЬКО когда выполнены ОБА условия:
-1. **Boundary parallelism ≥ 3** — минимум 3 независимых cross-edge на границе тайлов
-2. **No context leakage** — halo expansion не протекает в несвязанные тайлы
-
-| Топология | Halo? | Причина |
-|---|---|---|
-| Grid (tile ≥ 3) | ✅ Всегда | boundary = широкая полоса, нет leakage |
-| k-NN graph | ✅ Применять | min_cut обычно >> 3 |
-| Tree / Forest | ❌ Никогда | min_cut=1 (bottleneck), context leakage в sibling-поддеревья |
-| DAG | ⚠️ Per-case | Проверять boundary parallelism и leakage |
-
-Root cause tree failure: single-edge bottleneck + sibling bleed (85% fade на hop 1 достигает чужого поддерева) + extreme S/V asymmetry (0.032 vs 0.5 для grid).
-
-**Примечание:** свойства «инициализация нулём», «ограничение по энергии», «при отключении уровня — валидный откат» относятся к delta / уровню уточнения в целом, а не к halo. Halo — механизм согласования границ между тайлами, а не самостоятельный residual-носитель.
+**Streaming pipeline:** покластерная обработка (L0->L1->L2 per cluster),
+L0-priority ordering, глобальный budget cap. Первые результаты --- после первого
+кластера. 10-20% быстрее batch.
 
 ---
 
-## Компонент 3: Probe (exploration)
+## 5. Бюджетный контроль (3 механизма)
 
-**Зачем:** Без exploration система становится структурно слепой. Exploitation-only пропускает сдвиги, редкие паттерны, новые области интереса.
+Три ортогональных механизма:
 
-**Бюджет:** 5–10% от общего бюджета на каждом шаге.
+**1. L1 cascade quotas (структурный).** Встроены в трёхслойную ρ. Топология диктует
+бюджет по кластерам. Streaming формула аллокации:
+`W_cluster = N_units * (1 - ECR)^gamma`, gamma >= 2. GREEN кластеры получают ~90%
+номинала, RED ~42%. Forward carry перераспределяет остатки.
 
-**Приоритеты probe:**
-1. Coarse residual / variance
-2. Неопределённость (uncertainty)
-3. Давность последней проверки
+**2. Governor EMA (hardware-adaptive).** EMA(cost) -> strictness corridor.
+`governor_ema_enabled=False` по умолчанию. Двухслойная архитектура: hardware range +
+EMA feedback. Параметры: corridor_hi=1.5, corridor_lo=0.5, strictness_clamp=0.05,
+warmup_ticks=3. Работает в batch/reuse mode, НЕ в streaming.
 
-**Trade-off:** На стационарных сценах probe может слегка снижать PSNR, но это страховка от слепоты, а не оптимизация качества.
-
----
-
-## Компонент 4: Budget Governor (EMA-контроллер)
-
-**Зачем:** Без governor'а бюджет — декларация, а не ограничение.
-
-**Объект управления:** strictness — квантильный порог отбора кандидатов.
-
-**Параметры:**
-- Δstrictness ≤ clamp (anti-oscillation)
-- hard_cap_per_step = 3× target (safety fuse)
-- Warmup: N шагов без движения strictness
-- Compliance: асимметричная (overbudget penalty > underbudget)
-
-**Числа (Exp0.8v5):**
-- StdCost: −50% (~5.15 -> ~3.25)
-- P95: 11.0 -> ~6.5
-- Compliance penalty: −85% (~3.2 -> ~0.5)
-- PSNR: −0.24 дБ (clean), −0.68 дБ (shift) — незначительная плата
+**3. WasteBudget + StrictnessTracker (safety).** Самозатягивающаяся петля:
+- StrictnessTracker: per-unit множители, эскалация x1.5 при reject, затухание x0.9
+- WasteBudget: R_max = floor(B_step * omega), reject стоит strictness_multiplier единиц
+- Force-stop при waste >= R_max
+- Параметры: waste_omega=0.2, strictness_escalation=1.5, strictness_decay=0.9
 
 ---
 
-## Компонент 5: SeamScore — метрика швов
+## 6. SC-enforce
 
-**Формула:** `SeamScore = Jumpout / (Jumpin + eps)`
+Scale-Consistency Invariant: step_delta не должна переопределять семантику
+parent_coarse. Формально: `D_parent = ||R(step_delta)|| / (||step_delta|| + eps) < tau_parent`.
 
-Вычисляется по edge strips (полоскам на границе тайлов).
+R = gaussian blur (sigma=3.0) + decimation. Up = bilinear upsampling. Пара фиксирована.
 
-**Валидация:** 2D scalar grids, vector-valued grids, irregular graphs, tree hierarchies.
+**Three-tier enforcement:**
+- `D_parent <= tau_parent` --> **pass** (delta принимается as-is)
+- `D_parent > tau_parent` после damping --> **damp** (delta *= damp_factor, до max_damp_iterations=3)
+- Damping не помогло --> **reject** (state откатывается)
 
-**Статус:** Валидирована и стабильна в текущем scope валидации (4 типа пространств). Финальная production-readiness зависит от результатов P0–P4.
+**Adaptive tau для tree_hierarchy:** tau_parent[L, space_type] задаётся per-space
+(youden_j из baseline). Grids ~0.42-0.50, graph ~0.08, tree ~0.19.
 
----
+**Topo zone modifiers (irregular_graph):** tau_eff = tau_parent * zone_factor.
+GREEN=1.3 (relax), YELLOW=1.0, RED=0.7 (tighten).
 
-## Компонент 6: Scale-Consistency Invariant (v1.7)
-
-**Зачем:** Halo обеспечивает локальную геометрическую корректность на границах тайлов. Но refined уровень может быть гладким по швам и при этом семантически противоречить coarse уровню — delta «контрабандой» проталкивает низкочастотный смысл наверх. Scale-Consistency Invariant гарантирует, что этого не происходит.
-
-**Принцип:** coarse — якорь, delta — подчинённая поправка. Delta должна быть невидима с уровня выше.
-
-**Формальное требование:**
-```
-‖R(delta)‖ / (‖delta‖ + ε) < τ_rel
-```
-
-**Пара операторов (R, Up):**
-- **R** (coarse-graining): `gaussian blur (σ=3.0) + decimation`. Проецирует fine → coarse.
-- **Up** (восстановление): `bilinear upsampling`. Проекция обратно в fine. Не обратный оператор к R.
-- Пара фиксируется до экспериментов. Разные пары дают разные физики дерева.
-
-**Метрики:**
-
-| Метрика | Формула | Интерпретация |
-|---|---|---|
-| D_parent | `‖R(delta)‖ / (‖delta‖ + ε)` | Доля LF-энергии в delta. Ниже = лучше. Enforcement-сигнал. |
-| D_hf | `‖delta - Up(R(delta))‖ / (‖delta‖ + ε)` | HF-чистота delta. Выше = лучше. Диагностика, не hard constraint. |
-
-**Enforcement (после baseline-валидации):**
-- `D_parent > τ_parent` → damp delta / reject split / increase local strictness
-- D_parent также используется как контекстный сигнал в ρ (не самодостаточный)
-
-**Пороги:** τ_parent — data-driven по baseline-эксперименту, может зависеть от уровня L.
-
-**Кросс-пространственная валидация (Phase 0):**
-
-| Пространство | D_parent AUC | D_hf AUC |
-|---|---|---|
-| T1 Scalar grid | 1.000 | 0.806 |
-| T2 Vector grid | 1.000 | 0.810 |
-| T3 Irregular graph | 1.000 | — |
-| T4 Tree hierarchy | 0.824 | — |
-
-**Статус:** SC-baseline (SC-0..SC-4) ✅ ЗАВЕРШЁН. D_parent валидирован на 4 пространствах. SC-5 (τ_parent) и SC-enforce — открыты. Протокол: `scale_consistency_verification_protocol_v1.0.md`.
+D_hf = ||delta - Up(R(delta))|| / (||delta|| + eps) --- диагностика, не hard constraint.
 
 ---
 
-## Компонент 7: Дерево уточнения
+## 7. Halo + Probe
 
-Дерево — журнал маршрутов решений split. Каждый путь от корня к листу = последовательность решений.
+### Halo (boundary-aware blending)
 
-**Требования:**
-- GPU-дружественная структура (плоская упаковка, без pointer chasing)
-- Morton и block-sparse layouts: **отложены (deferred)** по итогам Exp0.9a microbench (sort overhead / expansion ratio). Окончательное решение — после P0 (0.9b0+).
-- Compact layouts: предварительно перспективны при low sparsity + large grid. Kill/go — в Exp0.9b0.
+Cosine feathering на границах тайлов, предотвращает ложные HF-сигналы на швах.
 
-**Куст** = множество путей, ведущих к одному смыслу. Метрика расстояния через LCA / общий префикс.
+| Топология | Halo? | Параметр |
+|-----------|-------|----------|
+| scalar_grid, vector_grid | Да | halo_width=2 (grid spaces) |
+| irregular_graph | Да | halo_hops=1 |
+| tree_hierarchy | Нет | boundary parallelism < 3, context leakage |
+
+Правило применимости: boundary parallelism >= 3 AND no context leakage.
+
+### Probe (exploration)
+
+Бюджет: `probe_fraction` (default 10%) от tick budget.
+
+Phase 4: probe выбирается только из юнитов, НЕ входящих в refined_set и
+evaluated_set (Issue 7). DeterministicProbe: seed = f(coords, level, global_seed).
+
+Probe --- страховка от ложных fixed points и структурной слепоты.
 
 ---
 
-## Компонент 8: Graph Community Detection
+## 8. Topo profiling (irregular_graph)
 
-**Задача:** Разбиение нерегулярного графа (T3: irregular_graph) на связные community для формирования refinement units.
+Многоступенчатый анализ топологии, выполняется при инициализации ДО первого tick.
 
-**Требования:**
-1. Кластеры должны быть **топологически связными** — R/Up операторы (restrict = cluster-mean, prolong = piecewise constant) требуют этого для корректности.
-2. Разбиение должно следовать **структуре связности**, а не геометрии координат. На скрученных манифольдах (Swiss Roll и подобные) геометрия лжёт.
-3. Сложность O(N log N) или лучше — линейная масштабируемость по числу узлов.
+**Hybrid curvature engine:**
+1. Forman-Ricci для ВСЕХ рёбер (O(1) per edge)
+2. Сортировка по |Forman| аномалии
+3. Upgrade top-N к Ollivier-Ricci (EMD, O(W^3)), N = floor(topo_budget / t_ollivier)
 
-**Primary: Leiden** (`leidenalg` + `igraph`)
-- Максимизирует модулярность, режет строго по топологическим швам.
-- Нативная гарантия связности community (каждый кластер = связный подграф).
-- O(N log N), детерминистичен при фиксированном seed.
-- Edge cut 6.9–7.9% на Swiss Roll тестах (vs 12.7–15.3% у k-means).
-- D_parent на 14–16% ниже чем у k-means на патологических графах.
+**Synthetic Transport Probe:** аппаратная калибровка (~52ms), определяет kappa_max.
 
-**Fallback: Louvain + CC post-fix** (NetworkX, zero C-dependencies)
+**Признаки:** sigma_F (std Forman), eta_F (entropy index = sigma_F / sqrt(2 * mean_degree)),
+Gini(PageRank).
 
-На платформах, где `igraph` не может быть скомпилирован (экзотические ARM-архитектуры, минимальные контейнеры без build tools, среды без C-компилятора), допустима замена на связку:
-1. `networkx.algorithms.community.louvain_communities()` — O(N log N), чистый Python.
-2. `networkx.connected_components()` на каждом кластере — O(V+E), линейное время.
-3. Если внутри кластера обнаружены изолированные компоненты — каждый получает уникальный ID.
+**Zone classification (v3):**
+- kappa_mean > 0 --> GREEN (плотные клики, ECR < 5%)
+- kappa < 0 AND Gini < 0.12 AND eta_F <= 0.70 --> YELLOW (регулярные решётки)
+- Иначе --> RED (структурный хаос)
 
-Результат функционально идентичен Leiden: связные community, топологическое разбиение. Fallback активируется автоматически при `ImportError` на `igraph`/`leidenalg`.
+Валидация: 34/35 на 35-graph корпусе. eta_F порог 0.70 из мёртвой зоны [0.60, 0.76].
 
-**Ограничения fallback:** NetworkX Louvain в ~50–80× медленнее и потребляет ~70–170× больше памяти, чем Leiden (замеры на PC2, RTX 2070). На больших графах (>10K узлов) это может быть неприемлемо. Если Leiden недоступен на целевом железе — рекомендуется решить проблему на уровне деплоя (установить C-компилятор), а не мириться с производительностью fallback.
+---
 
-**Валидация:** `experiments/exp_phase2_pipeline/test_swiss_roll.py` — Swiss Roll stress test, 4 конфигурации (500–3000 точек), 3 seed, 4 алгоритма (k-means, spectral, Louvain, Leiden).
+## 9. Enox infrastructure
 
-| Метрика | k-means | Spectral | Louvain | Leiden |
-|---|---|---|---|---|
-| Edge Cut (pathological) | 12.7% | 10.6% | 7.2% | **6.9%** |
-| D_parent mean | 0.098 | 0.099 | 0.085 | **0.082** |
-| Связность | ❌ | ❌ | ✅ (post-fix) | ✅ (native) |
+Четыре observation-only паттерна. Все default OFF (`enox_*_enabled=False`).
+Не модифицируют pipeline state.
+
+| Паттерн | Назначение |
+|---------|-----------|
+| **RegionURI** | SHA256-based стабильный адрес юнита: `SHA256(parent_id \| op_type \| child_idx)` -> 16 hex |
+| **DecisionJournal** | Append-only лог решений gate/SC-enforce с метриками (URI, action, rho, D_parent) |
+| **MultiStageDedup** | 3-уровневая дедупликация: exact hash -> metric (epsilon) -> policy. epsilon=0.0 default |
+| **PostStepSweep** | Поиск merge candidates: sibling-юниты с overlap > `enox_sweep_threshold` (0.05) |
+
+MultiStageDedup --- заготовка для multi-pass; в single-pass (epsilon=0.0) не срабатывает.
+
+---
+
+## 10. Compression guard (tree_hierarchy)
+
+**Thermodynamic guards:** segment compression для degree-2 transit nodes. Критерий:
+N_critical = 12 (N_CRITICAL_D2). Degree-2 nodes с стабильным содержимым пропускаются
+в inner loop (d2_skip_set).
+
+**Динамическая деактивация:** внутри inner loop проверяется should_compress() ---
+если guards перестают выполняться (n_active снизился, budget исчерпан), d2_skip_set
+очищается и compression прекращается.
+
+Применяется только к tree_hierarchy.
+
+---
+
+## 11. Layout policy
+
+Выбор layout --- функция типа пространства (статически известен):
+
+| Пространство | Layout | Обоснование |
+|-------------|--------|-------------|
+| scalar_grid | D_direct (packed tiles + tile_map) | exp10g: both contours PASS |
+| vector_grid | D_direct | exp10h: 72/72 PASS |
+| tree_hierarchy | Hybrid per-level: D_direct при p_l < 0.40 AND heavy compute; A_bitset иначе | exp10j: 158K trials |
+| irregular_graph (spatial) | D_blocked (cbr <= 0.35) | exp10i |
+| irregular_graph (scale-free) | A_bitset (fallback) | cbr=0.66, blocked rejected |
+
+D_direct: активные тайлы в компактном массиве, tile_map[tile_id] -> slot (int32).
+A_bitset: полноразмерный тензор + bitset mask. D_blocked: узлы в блоках фиксированного
+размера, block_map[block_id] -> slot.
+
+Layout Selection Invariant (гипотеза, Track C): C(I, M, p) --- отложена, не доказана.
+
+---
+
+## 12. Convergence + ROI
+
+**Convergence detector (Issue 1):** если accepted == 0 за `convergence_window` (default 2)
+последовательных тиков --> stop с reason "zero_accepted". Только в multi-tick mode.
+
+**ROI gating (Issue 6):** после tick 0 каждый юнит проверяется:
+`roi = unit_rho(before) - unit_rho(after)`. Если roi < reference_median_gain *
+min_roi_fraction (0.15) --> skip. Reference_median_gain берётся из tick 0.
+
+**ROI fix (exp19):** global MSE -> local unit_rho reduction. Причина: изменение одного
+юнита даёт пренебрежимое изменение global MSE на больших пространствах, что приводит
+к ложным reject. После fix: mt=3 восстанавливает 99% от single-tick PSNR (было 37%).
+
+---
+
+## 13. Детерминизм
+
+**DET-1 (Seed determinism, Hard Constraint):** одни данные + ρ + seed + бюджет =
+побитово идентичное дерево. Три компонента:
+
+1. **Canonical traversal:** Z-order/Morton index tie-break при равном ρ
+2. **Deterministic probe:** seed = f(coords, level, global_seed)
+3. **Governor isolation:** EMA-update строго после полного шага, canonical order
+
+DET-1 recheck Phase 4: 40/40 PASS.
+
+**DET-2 (Cross-seed stability, Soft Constraint):** CV < tau_cv для PSNR, cost,
+compliance, SeamScore по разным seeds. Phase 1: PASS.
+
+---
+
+## 14. Модули A-H (из workplan)
+
+| Модуль | Назначение | Статус |
+|--------|-----------|--------|
+| A | Каноникализация + контентный хэш тайлов | НЕ реализован (не на критическом пути) |
+| B | Планировщик пересчёта по изменению | НЕ реализован (не на критическом пути) |
+| C | Интересность ρ как измеряемая функция | Валидирован (Exp0.4-0.7, двухстадийный гейт) |
+| D | Дерево + split/merge | Валидирован (Exp0.1-0.3, Exp0.8 governor) |
+| E | Дельты + границы (halo) | Валидирован (halo w=[2,4], SeamScore, Phase 1/2) |
+| F | Бенчмарк + стоимость управления | Проведён (exp10, 158K+ trials, layout policy) |
+| G | Scale-Consistency | Валидирован (SC-baseline AUC 0.82-1.0, exp12a tau_parent PASS) |
+| H | Трёхслойная декомпозиция ρ | Валидирован (exp17, 1080 конфигов, reusability 12/12 PASS) |
+
+---
+
+## 15. Статус валидации
+
+### Фазы
+
+| Фаза | Дата | Результат |
+|------|------|-----------|
+| Phase 0 | 18.03.2026 | Environment setup, halo cross-space validation, SC-baseline |
+| Phase 1 | 20.03.2026 | P0 Layout ЗАКРЫТ. DET-1 PASS. DET-2 PASS |
+| Phase 2 | 20.03.2026 | E2E pipeline assembled, SC-enforce integrated, topo profiling |
+| Enox | 21.03.2026 | 4 observation-only паттерна |
+| Phase 3 | 22.03.2026 | Exp14 anchors (grid PASS, graph/tree FAIL). Exp15/15b FAIL. Exp16 C-pre PASS -> Track C UNFREEZE |
+| Phase 3.5 | 23.03.2026 | Three-layer rho. 1080 конфигов, reusability 12/12 PASS |
+| Exp18 | 23.03.2026 | Basin membership FAIL (r=0.019). Deferred post-multi-pass |
+| Phase 4 | 25.03.2026 | Multi-tick pipeline. WeightedRhoGate. Issues 1-7 resolved. DET-1 40/40 PASS |
+
+### Exp19 (multi-tick sweep, 2050 конфигов, 0 ошибок)
+
+| Sub-exp | Конфигов | Результат |
+|---------|----------|-----------|
+| 19a scaling law | 840 | mt=2-3 оптимум. vector_grid: +6-19% |
+| 19b gate stress | 160 | 160/160 PASS. alpha=0.3 оптимален |
+| 19c param sweep | 420 | Чистая синтетика: multi-tick = overhead |
+| 19d real data | 150 | CIFAR mt=3: 96-97%. Real graphs: 100%. Overhead <5% |
+| 19e noisy+hetero | 480 | Шум: +2-7%. Чистый hetero: -26-30%. Mixed sigma>=0.10: +4-7% |
+
+**Ключевой вывод:** multi-tick полезен при шуме (gate адаптирует w_resid 1.0->0.84).
+На чистых данных single-tick оптимален.
+
+### Открытые вопросы
+
+- **Issue 8:** post-refinement quality feedback (Phase 4+)
+- **Issue 9:** noise-fitting --- refinement копирует шумный GT (Phase 5)
+- **Phase 5:** P5-noise (exp20) --- denoising refinement, 6 подходов x 3 sigma x 10 seeds
+- **Track C:** C-оптимизация scoring (roadmap)
+- **P4a:** downstream consumer test
+- **P4b:** matryoshka invariant validation
+- **Bushes:** revisit после Track C
+- **RG-flow basins:** revisit после multi-pass
 
 ---
 
 ## Стек технологий
 
-- **Язык:** Python
-- **ML-фреймворк:** PyTorch
-- **GPU:** CUDA (environment_2) / DirectML (environment_1, AMD GPU)
-- **Окружения:** `.venv` (CPU, Python 3.13) + `.venv-gpu` (DirectML, Python 3.12). См. `docs/environment_1.md`
-- **Эксперименты:** Jupyter Notebooks
+- **Язык:** Python (CPU-only core logic, no PyTorch dependency)
+- **ML-фреймворк:** PyTorch (для экспериментов)
+- **GPU:** CUDA (PC 2, RTX 2070) / DirectML (PC 1, AMD)
+- **Кластеризация:** Leiden (igraph/leidenalg, primary), Louvain (NetworkX, fallback)
+- **Эксперименты:** Jupyter Notebooks + Python scripts
 - **Документация:** Versioned markdown
-- **Зависимости:** `requirements.txt` в корне проекта
+- **Конфигурация:** `experiments/exp_phase2_pipeline/config.py` (dataclass PipelineConfig)

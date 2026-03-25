@@ -160,30 +160,32 @@ Tree semantics are defined by ρ.
 
 One signal = one bias. Residual is blind to hidden structure under noise; HF catches false frequencies; Variance loves noise.
 
-Combination architecture — two-stage gate:
+Combination architecture — **WeightedRhoGate** (updated Phase 4, 2026-03-25):
 
-**Stage 1** — "Is residual healthy?" (binary check):
+**Single rho function** with dynamic EMA weights:
 
-* If residual is stable (instability < threshold, FSR < threshold) → weights collapse to residual-only.
-* If not → transition to Stage 2.
+```
+ρ = w_resid × resid + w_hf × HF + w_var × variance
+```
 
-**Stage 2** — utility-based soft weights:
+* When resid is stable (instability < threshold, FSR < threshold): EMA weights drift toward (1, 0, 0) → ρ ≡ resid.
+* When resid is unstable: EMA smoothly shifts toward combo, proportional to instability excess.
+* Transition is **smooth via EMA** (alpha=0.3), no discrete Stage 1↔2 switching.
+* When w_hf≈0, w_var≈0: HF/variance are not computed (optimization).
+* SC-enforce is unaffected by weights: delta = refine_unit() is invariant — ρ determines WHO is refined, not HOW.
 
-* Each expert (resid, var, hf) gets a weight by utility: U_i = median(gain) − λ·FSR − μ·instability.
-* Residual has a minimum guaranteed weight (prior).
-* Weights are EMA-smoothed with hysteresis.
+**Cold-start thresholds** (instead of blind pilot): topo zone for graphs + CV(initial_rho) for all spaces. Pilot ticks (first K) fine-tune estimates.
 
-Normalization — quantile (rank-based), not absolute.
+**Normalization** — quantile (rank-based), not absolute.
 
-**Experimental status:**
+**Historical justification (Exp0.4–Exp0.7b):**
 
 * Exp0.4: Residual-only = oracle on clean data.
-* Exp0.5: Oracle breaks under noise (corr 0.90 → 0.54), degraded coarse.
-* Exp0.6: Binary switch resid/combo works, but alias is a borderline case.
-* Exp0.7: Soft gating wins on noise/spatvar/jpeg (+0.08–1.10 dB), but loses on clean/blur (−1.6–2.5 dB) due to softmax "democracy".
-* Exp0.7b: Two-stage gate solves clean/blur (Δ ≈ 0) and retains gains on noise/spatvar (+0.77–1.49 dB). JPEG — only downside (−0.21 dB, threshold tuning issue).
+* Exp0.5: Oracle breaks under noise (corr 0.90 → 0.54).
+* Exp0.7b: Two-stage gate (predecessor to WeightedRhoGate) solved the clean vs noise problem.
+* Phase 4 (exp19e): WeightedRhoGate beats single-tick by 2-7% under noise. On clean data — parity.
 
-**Conclusion:** the two-stage gate is the correct architecture. Residual rules while reliable; when it breaks — smoothly yields to the combination.
+**Conclusion:** single ρ with EMA weights is the correct architecture. Residual rules while reliable; when it breaks — EMA smoothly shifts weights toward the combination.
 
 ## 3.3 Three-Layer Decomposition of ρ (exp17, Phase 3.5, 22–23 March 2026)
 
@@ -251,7 +253,7 @@ If the average gain over K splits < δ (5–10% of previous level) — noise spl
 1. **Hardware parameter** (static, at init): sets the RANGE of how much the governor can tighten/loosen. Powerful hardware → wide range. Weak hardware → narrow range. Input: hardware calibration (Synthetic Transport Probe).
 2. **EMA feedback** (dynamic, at runtime): moves WITHIN the hardware-defined range based on live signals (waste rate, rejection rate, cost/step).
 
-Metaphor: dog on leash. Hardware parameter = leash length. EMA = how far the dog actually walks. **Status:** EMA governor worked in exp0.8 but was lost during Phase 2 pipeline assembly. Needs restoration in Phase 4.
+Metaphor: dog on leash. Hardware parameter = leash length. EMA = how far the dog actually walks. **Status (2026-03-25):** RESTORED in Phase 4 as GovernorEMA class in pipeline.py. Default OFF (governor_ema_enabled=False). Exp19b: 160/160 gate stress PASS, alpha=0.3 optimal.
 
 **Control variable:** strictness — quantile threshold for selecting refine candidates. All tiles above threshold pass; spending fluctuates.
 
