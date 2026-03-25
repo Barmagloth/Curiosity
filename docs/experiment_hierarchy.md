@@ -520,7 +520,7 @@ P0 (layout GPU)
 | 8 | P1-B1 | segment compression (thermodynamic guards, N_critical=12) | exp13 ✅ |
 | 9 | P1-B3 | anchors + rebuild (grid PASS, graph/tree FAIL — structural drift) | exp14 ✅ CONDITIONAL |
 | 10 | SC-enforce | enforcement: three-tier + waste budget + adaptive τ | exp14a ✅ |
-| — | SC-σ | fine-grained σ sweep × tile_size × 4 пространства (низкий приоритет) | exp14b |
+| — | SC-σ | fine-grained σ sweep × tile_size × 4 пространства (низкий приоритет) | exp14b | (deferred)
 | 10½ | Phase 2 | full pipeline assembly (gate+governor+SC-enforce+probe+traversal) | exp_phase2_pipeline ✅ |
 | 10¾ | Phase 2 | end-to-end validation (4 spaces, 240 configs, DET-1 verified) | exp_phase2_e2e ✅ |
 | 10⅞ | Topo | topological pre-runtime profiling: hybrid Forman/Ollivier curvature + three-zone classifier v3 (κ+Gini+η_F). 35-graph corpus, 97% accuracy. η_F=0.70 from gap [0.60, 0.76] | exp_phase2_pipeline (topo_features.py) ✅ |

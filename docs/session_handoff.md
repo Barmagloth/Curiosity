@@ -46,7 +46,7 @@
 
 Рабочий ПК: **PC 2** (NVIDIA RTX 2070, 8 GB, CUDA 12.8). Рабочая директория: `R:\Projects\Curiosity`.
 
-## Что читать (в этом порядке)
+## Что внимательно читать (в этом порядке)
 
 | # | Файл | Зачем |
 |---|------|-------|
@@ -55,7 +55,14 @@
 | 3 | `docs/teamplan.md` | План с отметками Фаза 0-3.5, описание Фаз 4+ |
 | 4 | `docs/experiment_hierarchy.md` | Граф зависимостей, приоритеты, нумерация exp10+ |
 | 5 | `docs/workplan.md` | Модули A-H, roadmap C-оптимизации |
-| 6 | `docs/glossary.md` | Все термины проекта (обновлён 23.03.2026) |
+| 6 | `docs/glossary.md` | Все термины проекта (обновлён 25.03.2026) |
+| 8 | `experiments/exp_phase2_pipeline/pipeline.py` | Production multi-tick pipeline (Phase 4) |
+| 9 | `experiments/exp_phase2_pipeline/config.py` | Все конфиг-ручки pipeline |
+| 10 | `experiments/exp19_multi_tick_sweep/README.md` | Результаты exp19 (2050 конфигов) |
+
+**ВНИМАНИЕ:** `docs/architecture.md` **СИЛЬНО УСТАРЕЛ** (описывает Phase 2 состояние). НЕ использовать как источник истины. Актуальная архитектура — в concept_v2.0.md + session_handoff.md + pipeline.py.
+
+**Правило магических цифр:** любая числовая константа в config.py должна иметь ссылку на эксперимент/sweep. Без ссылки → пометка `# UNVALIDATED, needs sweep`.
 | 7 | `docs/environment_2.md` | Как активировать .venv-gpu на PC 2 (CUDA) |
 
 ## Фаза 1 — Финальные результаты (20 марта 2026)
@@ -434,9 +441,9 @@ max_ticks, convergence_window, pilot_ticks, pilot_thresh_factor, pilot_fsr_floor
 
 ---
 
-## Что дальше — Фаза 4
+## Что дальше — оставшиеся задачи Phase 4+ и Phase 5
 
-### P4a: Downstream Consumer Test
+### P4a: Downstream Consumer Test (НЕ НАЧАТО)
 - Задача: классификатор или автоэнкодер на adaptive-refined данных vs dense vs coarse
 - Kill criteria: metric loss < 2%
 - Зависимости: все P0-P3.5
@@ -464,8 +471,8 @@ max_ticks, convergence_window, pilot_ticks, pilot_thresh_factor, pilot_fsr_floor
 
 **2. Budget Governor (hardware param + EMA feedback)** — "сколько обработать" (hardware-adaptive, dynamic)
 - **Два слоя:** (a) hardware parameter задаёт ДИАПАЗОН (поводок) — мощное железо → широкий диапазон, слабое → узкий; (b) EMA feedback двигается ВНУТРИ диапазона на основе runtime-сигналов (waste rate, rejection rate, cost/step)
-- **История:** в exp0.8 EMA governor работал (halved StdCost, cut P95 from 11→6.5). При сборке Phase 2 pipeline был **потерян** — GovernorIsolation в pipeline.py получает константу 1.0 и ни на что не влияет. StrictnessTracker + WasteBudget заменили его как бюджетный контроллер, но это ДРУГОЙ механизм (аварийный, не плавный).
-- **Статус:** нужно восстановить в Phase 4. Hardware calibration уже есть (Synthetic Transport Probe, 52ms at startup).
+- **История:** в exp0.8 EMA governor работал (halved StdCost, cut P95 from 11→6.5). При сборке Phase 2 pipeline был **потерян**. В Phase 4 (25.03.2026) **восстановлен** как GovernorEMA class. GovernorIsolation в pipeline.py по-прежнему получает 1.0 (DET-1 телеметрия, не бюджетный контроллер). StrictnessTracker + WasteBudget работают как аварийный механизм (ортогонален EMA).
+- **Статус (25.03.2026):** ВОССТАНОВЛЕН в Phase 4. Класс GovernorEMA в pipeline.py. По умолчанию OFF (governor_ema_enabled=False). Hardware calibration есть (Synthetic Transport Probe, 52ms at startup). Exp19b: 160/160 gate stress PASS.
 - **GovernorIsolation** из exp10d — это НЕ бюджетный контроллер. Это EMA-телеметрия для DET-1 (проверка order-independence). Не путать!
 
 **Область применения по режимам pipeline:**

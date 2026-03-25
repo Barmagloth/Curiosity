@@ -1,4 +1,4 @@
-# Session Handoff — Curiosity (Phase 4 next)
+# Session Handoff — Curiosity (Phase 4 multi-tick + exp19 DONE, Phase 5 next)
 
 Document for a new AI orchestrator session. Contains full context for immediately continuing work.
 
@@ -46,8 +46,15 @@ Workstation: **PC 2** (NVIDIA RTX 2070, 8 GB, CUDA 12.8). Working directory: `R:
 | 3 | `docs/teamplan.md` | Plan with Phase 0-3.5 marks, Phase 4+ descriptions |
 | 4 | `docs/experiment_hierarchy.md` | Dependency graph, priorities, exp10+ numbering |
 | 5 | `docs/workplan.md` | Modules A-H, C-optimization roadmap |
-| 6 | `docs/glossary.md` | All project terms (updated March 23, 2026) |
+| 6 | `docs/glossary.md` | All project terms (updated March 25, 2026) |
 | 7 | `docs/environment_2.md` | How to activate .venv-gpu on PC 2 (CUDA) |
+| 8 | `experiments/exp_phase2_pipeline/pipeline.py` | Production multi-tick pipeline (Phase 4) |
+| 9 | `experiments/exp_phase2_pipeline/config.py` | All pipeline config knobs |
+| 10 | `experiments/exp19_multi_tick_sweep/README.md` | exp19 results (2050 configs) |
+
+**WARNING:** `docs/architecture.md` is **SEVERELY OUTDATED** (describes Phase 2 state). Do NOT use as source of truth. Current architecture: concept_v2.0.md + session_handoff.md + pipeline.py.
+
+**Magic numbers rule:** every numeric constant in config.py must reference its source experiment/sweep. No reference → mark `# UNVALIDATED, needs sweep`.
 
 ## Phase 1 — Final Results (March 20, 2026)
 
