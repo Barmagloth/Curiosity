@@ -209,7 +209,7 @@ Phase 3 showed: monolithic ρ conflates three orthogonal concerns, making the re
 
 **Experimental status (exp17):** 1080 configs, 4 spaces × 3 scales (100/1K/10K) × 8 approaches × 20 seeds. Reusability: 12/12 PASS (min ratio 0.838). PSNR: 2–4 dB below single_pass on grid (price of pruning), parity on graph/tree. Streaming 10–20% faster than batch. kdtree (scipy C) faster on single query; three_layer wins at >=2 queries on tree_hierarchy. Roadmap: C/Cython scoring optimization for multiplicative speedup.
 
-**Relationship with two-stage gate (3.2):** the gate remains inside Layer 2 — it determines which query signal to use (residual-only or combo). Layers 0–1 operate before the gate and do not depend on it.
+**Relationship with WeightedRhoGate (3.2):** the gate remains inside Layer 2 — it determines which query signal to use (residual-only or combo). Layers 0–1 operate before the gate and do not depend on it.
 
 ---
 
@@ -646,7 +646,7 @@ The three-layer decomposition (section 3.3) resolves this by separating concerns
 4. Cost is managed within budget: EMA governor (monolithic ρ) or StrictnessTracker + WasteBudget (three-layer pipeline). See sections 5.1 and 5.4.
 5. The system does not create artificial seams.
 6. The system does not become structurally blind.
-7. ρ defines map semantics; combination via two-stage gate.
+7. ρ defines map semantics; combination via WeightedRhoGate.
 8. **Scale-consistency:** step_delta does not redefine the semantics of the parent scale. `‖R(step_delta)‖ / (‖step_delta‖ + ε) < τ_rel`. Pair (R, Up) is fixed. Thresholds are data-driven.
 9. **Cross-space validation:** any claim about "arbitrary spaces" must be validated on ≥4 space types (scalar grid, vector grid, irregular graph, tree hierarchy). A result on a single type is NOT sufficient.
 10. **Seed determinism:** identical data + ρ + seed + budget = identical tree. Canonical traversal order (Z-order tie-break), deterministic probe (seed from coordinates), governor isolation from processing order. (Section 8A.)
@@ -663,7 +663,7 @@ Curiosity is a system that:
 2. Does so without creating artificial seams (halo).
 3. Does not become blind to internal structure (probe / defense against false fixed points).
 4. Manages budget consciously (EMA governor or StrictnessTracker + WasteBudget), not declaratively.
-5. Adapts the informativeness function to conditions (two-stage gate), rather than relying on a single sensor.
+5. Adapts the informativeness function to conditions (WeightedRhoGate), rather than relying on a single sensor.
 9. **Decomposes ρ into reusable layers** (L0 Topology → L1 Presence → L2 Query), enabling FrozenTree reuse across queries.
 6. **Does not destroy the semantics of the parent scale during refinement (scale-consistency).**
 7. **Is reproducible under fixed conditions and statistically stable across seeds.**

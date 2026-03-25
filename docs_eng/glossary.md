@@ -60,9 +60,9 @@ Project-specific terms without which the documentation reads like gibberish. Org
 
 ---
 
-## Two-Stage Gate
+## Gate — rho signal combination
 
-**Two-stage gate** — the canonical architecture for combining ρ signals. Solves the problem: residual is good on clean data but breaks under noise; combination helps with noise but hurts on clean data.
+**Two-stage gate (historical)** — original architecture (Exp0.4–0.7b). Replaced by WeightedRhoGate in Phase 4. Solved the problem: residual is good on clean data but breaks under noise; combination helps with noise but hurts on clean data.
 
 **Stage 1** — binary check: "Is residual healthy?" using instability and FSR metrics. If healthy — residual-only is used (zero loss on clean data). If not — transition to Stage 2.
 
